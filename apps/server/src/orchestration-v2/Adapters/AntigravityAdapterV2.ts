@@ -17,6 +17,7 @@ import * as EffectAcpErrors from "effect-acp/errors";
 
 import * as ProviderHost from "@t3tools/provider-core/server/ProviderHost";
 import { PULL_REQUEST_LINKING_INSTRUCTIONS } from "@t3tools/provider-core/server/runtimeInstructions";
+import { readAntigravityGlobalInstructions } from "../../provider/acp/AntigravityGlobalInstructions.ts";
 import type { AntigravityAuth } from "../../provider/AntigravityAuth.ts";
 import type * as AcpSessionRuntime from "@t3tools/provider-acp/server/AcpSessionRuntime";
 import {
@@ -151,13 +152,27 @@ export function makeAntigravityAcpAdapterFlavor(
   const makeRuntime = Effect.fn("AntigravityAdapterV2.makeRuntime")(
     function* (input: AcpAdapterV2RuntimeInput) {
       const scope = yield* Scope.fork(yield* Effect.scope);
+      const globalInstructions = yield* readAntigravityGlobalInstructions(
+        options.fileSystem,
+        options.path,
+      ).pipe(
+        Effect.mapError(
+          (cause) =>
+            new EffectAcpErrors.AcpTransportError({
+              detail: "Cannot read Antigravity global instructions",
+              cause,
+            }),
+        ),
+      );
       const runtime = yield* options
         .withProcess(
           Scope.close(scope, Exit.void),
           options.makeRuntime({
             ...input,
             clientFileReads: true,
-            sessionSystemPromptAppend: PULL_REQUEST_LINKING_INSTRUCTIONS,
+            sessionSystemPromptAppend: [globalInstructions, PULL_REQUEST_LINKING_INSTRUCTIONS]
+              .filter((instructions) => instructions !== undefined)
+              .join("\n\n"),
           }),
         )
         .pipe(Effect.provideService(Scope.Scope, scope));
