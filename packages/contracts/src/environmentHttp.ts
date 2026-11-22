@@ -82,6 +82,13 @@ import {
 } from "./orchestrationV2.ts";
 import { Project, ProjectMutation, ProjectSnapshot } from "./project.ts";
 import {
+  AgentSessionImportInput,
+  AgentSessionImportResult,
+  AgentSessionImportProjectChangedError,
+  AgentSessionImportProjectNotFoundError,
+  AgentSessionScanError,
+} from "./agentSessions.ts";
+import {
   PullRequestDiffInput,
   PullRequestDiffResult,
   PullRequestOperationError,
@@ -821,6 +828,19 @@ class EnvironmentProjectsHttpApi extends HttpApiGroup.make("projects")
       payload: ProjectMutation,
       success: Project,
       error: EnvironmentProjectMutationErrors,
+    }).middleware(EnvironmentAuthenticatedAuth),
+  )
+  .add(
+    HttpApiEndpoint.post("importHistory", "/api/projects/import-history", {
+      headers: OptionalBearerHeaders,
+      payload: AgentSessionImportInput,
+      success: AgentSessionImportResult,
+      error: [
+        AgentSessionImportProjectChangedError,
+        AgentSessionImportProjectNotFoundError,
+        AgentSessionScanError,
+        EnvironmentScopeRequiredError,
+      ],
     }).middleware(EnvironmentAuthenticatedAuth),
   ) {}
 

@@ -1,5 +1,6 @@
 import {
   AuthOrchestrationReadScope,
+  AuthOrchestrationOperateScope,
   EnvironmentHttpApi,
   requiredScopesForProjectMutation,
 } from "@t3tools/contracts";
@@ -16,6 +17,7 @@ import { traceLocalHandlerWork } from "../cloud/traceRelayRequest.ts";
 import * as ServerRuntimeStartup from "../serverRuntimeStartup.ts";
 import * as ProjectCloneTracker from "./ProjectCloneTracker.ts";
 import * as ProjectService from "./ProjectService.ts";
+import * as AgentSessionImporter from "./AgentSessionImporter.ts";
 import { mutateProjectWithClone } from "./ProjectMutation.ts";
 
 const failProjectMutation = Effect.fn("environment.projects.failMutation")(function* (
@@ -37,6 +39,7 @@ export const layer = HttpApiBuilder.group(
   "projects",
   Effect.fnUntraced(function* (handlers) {
     const projects = yield* ProjectService.ProjectService;
+    const agentSessionImporter = yield* AgentSessionImporter.AgentSessionImporter;
     const startup = yield* ServerRuntimeStartup.ServerRuntimeStartup;
     const projectClones = yield* ProjectCloneTracker.ProjectCloneTracker;
 
@@ -63,6 +66,14 @@ export const layer = HttpApiBuilder.group(
           return yield* startup
             .enqueueCommand(operation)
             .pipe(traceLocalHandlerWork, Effect.catch(failProjectMutation));
+        }),
+      )
+      .handle(
+        "importHistory",
+        Effect.fn("environment.projects.importHistory")(function* (args) {
+          yield* annotateEnvironmentRequest(args.endpoint.name);
+          yield* requireEnvironmentScope(AuthOrchestrationOperateScope);
+          return yield* agentSessionImporter.importRecentAgentThreads(args.payload);
         }),
       );
   }),
