@@ -1,3 +1,4 @@
+import { layerWithoutOfficialRelay } from "../cloud/officialRelay.ts";
 import type { AgentAwarenessThread } from "../orchestration-v2/ProjectionStore.ts";
 import {
   isListedThreadLineage,
@@ -35,7 +36,6 @@ import * as Queue from "effect/Queue";
 import * as Ref from "effect/Ref";
 import type * as Scope from "effect/Scope";
 import * as Stream from "effect/Stream";
-import * as FetchHttpClient from "effect/http/FetchHttpClient";
 import * as HttpClient from "effect/http/HttpClient";
 import * as HttpClientRequest from "effect/http/HttpClientRequest";
 import * as HttpApiClient from "effect/http-api/HttpApiClient";
@@ -471,7 +471,7 @@ export const make = Effect.gen(function* () {
     HttpApiClient.make(RelayApi, {
       baseUrl: relayConfig.url,
       transformClient: relayEnvironmentClient(relayConfig.environmentCredential),
-    }).pipe(Effect.provide(FetchHttpClient.layer));
+    }).pipe(Effect.provide(layerWithoutOfficialRelay));
 
   let cachedRelayClient: Effect.Success<ReturnType<typeof makeRelayClient>> | undefined;
   let publishedRelayConfig: NonNullable<Effect.Success<typeof readRelayConfig>> | undefined;

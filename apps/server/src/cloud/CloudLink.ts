@@ -1,3 +1,4 @@
+import { isOfficialRelayUrl } from "./officialRelay.ts";
 import {
   type EnvironmentCloudLinkStateResult,
   type EnvironmentCloudPreferencesRequest,
@@ -344,7 +345,8 @@ function validateCloudMintPublicKey(
 function invalidRelayConfigField(
   payload: RelayEnvironmentConfigRequest,
 ): CloudLinkRelayConfigInvalidError["field"] | null {
-  if (!isSecureRelayUrl(payload.relayUrl)) return "relayUrl";
+  if (!isSecureRelayUrl(payload.relayUrl) || isOfficialRelayUrl(payload.relayUrl))
+    return "relayUrl";
   if (payload.relayIssuer !== undefined && !isSecureRelayUrl(payload.relayIssuer)) {
     return "relayIssuer";
   }
@@ -723,11 +725,17 @@ const make = Effect.gen(function* () {
     });
     return yield* endpointRuntime.withLinkStateLock(
       Effect.gen(function* () {
-        const [runtimeBytes, markerBytes] = yield* Effect.all([
+        const [runtimeBytes, markerBytes, relayUrl] = yield* Effect.all([
           secrets.get(CLOUD_ENDPOINT_RUNTIME_CONFIG),
           secrets.get(CLOUD_ENDPOINT_CONFIRMED_ORIGIN),
+          secrets.get(RELAY_URL_SECRET),
         ]);
-        if (Option.isNone(runtimeBytes)) return false;
+        if (
+          Option.isNone(runtimeBytes) ||
+          Option.isNone(relayUrl) ||
+          isOfficialRelayUrl(bytesToString(relayUrl.value))
+        )
+          return false;
         const config = Option.getOrNull(decodeRuntimeConfig(bytesToString(runtimeBytes.value)));
         if (config === null || config.providerKind !== "cloudflare_tunnel") return false;
         // Require the relay-confirmed port unless falling back after the relay stayed unreachable.

@@ -1,3 +1,4 @@
+import { layerWithoutOfficialRelay } from "../cloud/officialRelay.ts";
 import {
   AuthRelayReadScope,
   AuthRelayWriteScope,
@@ -24,7 +25,7 @@ import * as Path from "effect/Path";
 import * as References from "effect/References";
 import * as Schema from "effect/Schema";
 import { Command, Flag, GlobalFlag, Prompt } from "effect/cli";
-import { FetchHttpClient, HttpClient, HttpClientRequest, HttpClientResponse } from "effect/http";
+import { HttpClient, HttpClientRequest, HttpClientResponse } from "effect/http";
 
 import * as EnvironmentAuth from "../auth/EnvironmentAuth.ts";
 import * as ManagedLimits from "../policy/managedLimits.ts";
@@ -550,7 +551,7 @@ export const runCloudCommand = Effect.fn("cloud.cli.run_cloud_command")(function
     CliService.layer(config),
     RelayTracing.layerHeadlessRelayClient.pipe(Layer.provide(ManagedPolicy.layer)),
   ).pipe(
-    Layer.provideMerge(FetchHttpClient.layer),
+    Layer.provideMerge(layerWithoutOfficialRelay),
     Layer.provideMerge(ServerConfig.layer(config)),
     Layer.provide(Layer.succeed(References.MinimumLogLevel, minimumLogLevel)),
   );

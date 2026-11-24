@@ -1,6 +1,6 @@
+import { layerWithoutOfficialRelay } from "../cloud/officialRelay.ts";
 import { RelayApi } from "@t3tools/contracts/relay";
 import * as Effect from "effect/Effect";
-import * as FetchHttpClient from "effect/http/FetchHttpClient";
 import * as HttpClient from "effect/http/HttpClient";
 import * as HttpClientRequest from "effect/http/HttpClientRequest";
 import * as HttpApiClient from "effect/http-api/HttpApiClient";
@@ -14,4 +14,4 @@ export const makeRelayEnvironmentClient = (connection: {
     transformClient: HttpClient.mapRequest(
       HttpClientRequest.setHeader("authorization", `Bearer ${connection.environmentCredential}`),
     ),
-  }).pipe(Effect.provide(FetchHttpClient.layer));
+  }).pipe(Effect.provide(layerWithoutOfficialRelay));

@@ -5,7 +5,6 @@ import {
   type SignalExport,
 } from "@t3tools/shared/observability";
 import * as OtelEnvironment from "@t3tools/shared/otelEnvironment";
-import { parsePersistedServerObservabilitySettings } from "@t3tools/shared/serverSettings";
 import { DesktopBackendBootstrap, PortSchema } from "@t3tools/contracts";
 import * as Config from "effect/Config";
 import * as Duration from "effect/Duration";
@@ -250,17 +249,6 @@ const resolveOptionPrecedence = <Value>(
   ...values: ReadonlyArray<Option.Option<Value>>
 ): Option.Option<Value> => Option.firstSomeOf(values);
 
-const loadPersistedObservabilitySettings = Effect.fn(function* (settingsPath: string) {
-  const fs = yield* FileSystem.FileSystem;
-  const exists = yield* fs.exists(settingsPath).pipe(Effect.orElseSucceed(() => false));
-  if (!exists) {
-    return { otlpTracesUrl: undefined, otlpMetricsUrl: undefined, otlpLogsUrl: undefined };
-  }
-
-  const raw = yield* fs.readFileString(settingsPath).pipe(Effect.orElseSucceed(() => ""));
-  return parsePersistedServerObservabilitySettings(raw);
-});
-
 export const resolveServerConfig = Effect.fn("config.resolveServerConfig")(function* (
   flags: CliServerFlags,
   cliLogLevel: Option.Option<LogLevel.LogLevel>,
@@ -368,9 +356,6 @@ export const resolveServerConfig = Effect.fn("config.resolveServerConfig")(funct
   }
   yield* fs.makeDirectory(cwd, { recursive: true });
   yield* ServerConfig.ensureServerDirectories(derivedPaths);
-  const persistedObservabilitySettings = yield* loadPersistedObservabilitySettings(
-    derivedPaths.settingsPath,
-  );
   const serverTracePath = env.traceFile ?? derivedPaths.serverTracePath;
   yield* fs.makeDirectory(path.dirname(serverTracePath), { recursive: true });
   const startupPresentation = options?.startupPresentation ?? "browser";
@@ -456,34 +441,6 @@ export const resolveServerConfig = Effect.fn("config.resolveServerConfig")(funct
     headers: env.otlpHeaders,
     exportIntervalMs: env.otlpExportIntervalMs,
   };
-  const traces = OtelEnvironment.resolveSignalEndpoint(
-    otel,
-    "traces",
-    { url: env.otlpTracesUrl, export: signalExport },
-    {
-      bootstrapUrl: bootstrap?.otlpTracesUrl,
-      settingsUrl: persistedObservabilitySettings.otlpTracesUrl,
-    },
-  );
-  const metrics = OtelEnvironment.resolveSignalEndpoint(
-    otel,
-    "metrics",
-    { url: env.otlpMetricsUrl, export: signalExport },
-    {
-      bootstrapUrl: bootstrap?.otlpMetricsUrl,
-      settingsUrl: persistedObservabilitySettings.otlpMetricsUrl,
-    },
-  );
-  const logs = OtelEnvironment.resolveSignalEndpoint(
-    otel,
-    "logs",
-    { url: env.otlpLogsUrl, export: signalExport },
-    {
-      bootstrapUrl: bootstrap?.otlpLogsUrl,
-      settingsUrl: persistedObservabilitySettings.otlpLogsUrl,
-    },
-  );
-
   const config: ServerConfig.ServerConfig["Service"] = {
     logLevel,
     traceMinLevel: env.traceMinLevel,
@@ -491,18 +448,12 @@ export const resolveServerConfig = Effect.fn("config.resolveServerConfig")(funct
     traceBatchWindowMs: env.traceBatchWindowMs,
     traceMaxBytes: env.traceMaxBytes,
     traceMaxFiles: env.traceMaxFiles,
-    otlpTracesUrl: traces?.url,
-    otlpMetricsUrl: metrics?.url,
-    otlpLogsUrl: logs?.url,
-    otlpTracesExport: traces?.export ?? signalExport,
-    otlpMetricsExport: metrics?.export ?? signalExport,
-    otlpLogsExport: logs?.export ?? signalExport,
-    ...(traces !== undefined ? { otlpTracesSource: traces.source } : {}),
-    ...(traces?.variable !== undefined ? { otlpTracesVariable: traces.variable } : {}),
-    ...(metrics !== undefined ? { otlpMetricsSource: metrics.source } : {}),
-    ...(metrics?.variable !== undefined ? { otlpMetricsVariable: metrics.variable } : {}),
-    ...(logs !== undefined ? { otlpLogsSource: logs.source } : {}),
-    ...(logs?.variable !== undefined ? { otlpLogsVariable: logs.variable } : {}),
+    otlpTracesUrl: undefined,
+    otlpMetricsUrl: undefined,
+    otlpLogsUrl: undefined,
+    otlpTracesExport: signalExport,
+    otlpMetricsExport: signalExport,
+    otlpLogsExport: signalExport,
     otelEnvironment: otel,
     mode,
     port,

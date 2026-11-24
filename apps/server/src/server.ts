@@ -1,3 +1,4 @@
+import { layerWithoutOfficialRelay } from "./cloud/officialRelay.ts";
 import * as ProviderEventLoggers from "@t3tools/provider-core/server/ProviderEventLoggers";
 import type { RelayManagedEndpointRuntimeConfig } from "@t3tools/contracts/relay";
 import * as Random from "effect/Random";
@@ -26,7 +27,7 @@ import * as Effect from "effect/Effect";
 import * as Option from "effect/Option";
 import * as Layer from "effect/Layer";
 import * as Stream from "effect/Stream";
-import { FetchHttpClient, HttpRouter, HttpServer } from "effect/http";
+import { HttpRouter, HttpServer } from "effect/http";
 import * as HttpApiBuilder from "effect/http-api/HttpApiBuilder";
 
 import * as BackgroundPolicy from "./background/BackgroundPolicy.ts";
@@ -849,7 +850,7 @@ const layerRuntimeDependencies = layerRuntimeCoreDependencies.pipe(
   Layer.provideMerge(TraceDiagnostics.layer),
   Layer.provideMerge(TriageService.layer.pipe(Layer.provide(GitVcsDriver.layer))),
   // Layers memoize by reference, so this is the same policy the settings layer reads.
-  Layer.provideMerge(AnalyticsService.layer.pipe(Layer.provide(ManagedPolicy.layer))),
+  Layer.provideMerge(AnalyticsService.layerDisabled),
   Layer.provideMerge(ExternalLauncher.layer),
   Layer.provideMerge(RemoteOpenTargets.layer),
   Layer.provideMerge(DirectEndpoints.layer.pipe(Layer.provide(layerServerEnvironment))),
@@ -1405,7 +1406,7 @@ const layerMakeServer = Layer.unwrap(
       ),
       Layer.provideMerge(layerHttpServer),
       Layer.provide(layerApplicationObservability),
-      Layer.provideMerge(FetchHttpClient.layer),
+      Layer.provideMerge(layerWithoutOfficialRelay),
       Layer.provide(VcsProcess.layer),
       Layer.provideMerge(AgentScopeLive.layer),
       Layer.provideMerge(layerPlatformServices),
