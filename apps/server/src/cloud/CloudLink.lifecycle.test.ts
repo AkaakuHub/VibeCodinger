@@ -833,6 +833,7 @@ describe("releaseManagedTunnelOnShutdown", () => {
       };
       const { store } = makeMemorySecretStore([
         [CLOUD_ENDPOINT_RUNTIME_CONFIG, configJson],
+        [RELAY_URL_SECRET, "https://relay.example.test"],
         [
           CLOUD_ENDPOINT_CONFIRMED_ORIGIN,
           `{"config":${configJson},"origin":{"localHttpHost":"127.0.0.1","localHttpPort":3773}}`,
@@ -860,6 +861,7 @@ describe("releaseManagedTunnelOnShutdown", () => {
     },
   ])("does not start a connector with a $name origin marker", ({ marker, origin }) => {
     const entries: Array<readonly [string, string]> = [
+      [RELAY_URL_SECRET, "https://relay.example.test"],
       [
         CLOUD_ENDPOINT_RUNTIME_CONFIG,
         '{"providerKind":"cloudflare_tunnel","connectorToken":"existing-token","tunnelId":"existing-tunnel"}',
@@ -879,9 +881,12 @@ describe("releaseManagedTunnelOnShutdown", () => {
   });
 
   // regression: #9386 remove tunnels after hosts go offline
-  it.effect(
-    "starts the stored connector without a marker when confirmation is not required",
-    () => {
+  it.effect.each([
+    { relayUrl: "https://relay.example.test", starts: true },
+    { relayUrl: "https://relay.t3.codes", starts: false },
+  ])(
+    "starts the stored connector only for a self-hosted relay ($relayUrl)",
+    ({ relayUrl, starts }) => {
       const config = {
         providerKind: "cloudflare_tunnel" as const,
         connectorToken: "existing-token",
@@ -889,6 +894,7 @@ describe("releaseManagedTunnelOnShutdown", () => {
       };
       const { store } = makeMemorySecretStore([
         [CLOUD_ENDPOINT_RUNTIME_CONFIG, JSON.stringify(config)],
+        [RELAY_URL_SECRET, relayUrl],
       ]);
       const applyConfigCalls: Array<unknown> = [];
       const requests: Array<HttpClientRequest.HttpClientRequest> = [];
@@ -899,8 +905,8 @@ describe("releaseManagedTunnelOnShutdown", () => {
           yield* link.startManagedTunnelIfOriginConfirmed("http://127.0.0.1:3773", {
             requireConfirmedOrigin: false,
           }),
-        ).toBe(true);
-        expect(applyConfigCalls).toEqual([config]);
+        ).toBe(starts);
+        expect(applyConfigCalls).toEqual(starts ? [config] : []);
         expect(requests).toEqual([]);
       }).pipe(provideReleaseHarness({ store, applyConfigCalls, requests }));
     },
