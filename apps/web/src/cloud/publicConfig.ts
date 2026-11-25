@@ -1,20 +1,5 @@
-import {
-  clerkFrontendApiHostnameFromPublishableKey,
-  relayClerkTokenOptions,
-} from "@t3tools/shared/relayAuth";
+import { clerkFrontendApiHostnameFromPublishableKey } from "@t3tools/shared/relayAuth";
 import { normalizeSecureRelayUrl } from "@t3tools/shared/relayUrl";
-import * as Schema from "effect/Schema";
-
-export class CloudPublicConfigMissingError extends Schema.TaggedError<CloudPublicConfigMissingError>()(
-  "CloudPublicConfigMissingError",
-  {
-    key: Schema.Literal("VIBECODINGER_CLERK_JWT_TEMPLATE"),
-  },
-) {
-  override get message(): string {
-    return `${this.key} is not configured.`;
-  }
-}
 
 export interface CloudPublicConfig {
   readonly clerkPublishableKey: string | null;
@@ -22,7 +7,7 @@ export interface CloudPublicConfig {
   readonly relayUrl: string | null;
 }
 
-export function trimNonEmpty(value: string | undefined): string | null {
+function trimNonEmpty(value: string | undefined): string | null {
   return value?.trim() || null;
 }
 
@@ -68,12 +53,4 @@ export function hasCloudPublicConfig(): boolean {
   } catch {
     return false;
   }
-}
-
-export function resolveRelayClerkTokenOptions() {
-  const { clerkJwtTemplate } = resolveCloudPublicConfig();
-  if (!clerkJwtTemplate) {
-    throw new CloudPublicConfigMissingError({ key: "VIBECODINGER_CLERK_JWT_TEMPLATE" });
-  }
-  return relayClerkTokenOptions(clerkJwtTemplate);
 }
