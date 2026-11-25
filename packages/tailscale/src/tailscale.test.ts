@@ -318,12 +318,10 @@ describe("tailscale", () => {
 
   it.effect("reads the HTTPS serve capability from the status capability map", () =>
     Effect.gen(function* () {
-      const enabled = yield* parseTailscaleStatus(
-        `{"Self":{"CapMap":{"https":null,"funnel":null}}}`,
-      );
+      const enabled = yield* parseTailscaleStatus(`{"Self":{"CapMap":{"https":null,"ssh":null}}}`);
       assert.equal(enabled.httpsServeEnabled, true);
 
-      const disabled = yield* parseTailscaleStatus(`{"Self":{"CapMap":{"funnel":null}}}`);
+      const disabled = yield* parseTailscaleStatus(`{"Self":{"CapMap":{"ssh":null}}}`);
       assert.equal(disabled.httpsServeEnabled, false);
     }),
   );
