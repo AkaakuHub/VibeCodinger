@@ -1697,12 +1697,13 @@ const make = Effect.gen(function* () {
 
   if (!ManagedLimits.allowsConnect(managedPolicy)) {
     // Reading state and unlinking stay available so clients can show and leave the old link.
-    yield* unlink().pipe(
-      Effect.tap(() => Effect.logInfo("T3 Connect is off by managed policy; unlinked.")),
-      Effect.catch((cause) =>
-        Effect.logWarning("Failed to unlink T3 Connect turned off by managed policy", { cause }),
-      ),
-    );
+    if (managedPolicy.connectDisabled !== true)
+      yield* unlink().pipe(
+        Effect.tap(() => Effect.logInfo("T3 Connect is off by managed policy; unlinked.")),
+        Effect.catch((cause) =>
+          Effect.logWarning("Failed to unlink T3 Connect turned off by managed policy", { cause }),
+        ),
+      );
     const refused = Effect.fn("CloudLink.refusedByPolicy")(function* () {
       return yield* ManagedLimits.refuseConnect(managedPolicy);
     });
@@ -1724,7 +1725,9 @@ const make = Effect.gen(function* () {
       registerManagedTunnelRecovery: notLinked,
       recoverManagedTunnel: notStarted,
       startManagedTunnelIfOriginConfirmed: notStarted,
-      releaseManagedTunnelOnShutdown,
+      releaseManagedTunnelOnShutdown: managedPolicy.connectDisabled
+        ? notStarted
+        : releaseManagedTunnelOnShutdown,
     });
   }
 

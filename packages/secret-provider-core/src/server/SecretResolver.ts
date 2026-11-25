@@ -1,12 +1,11 @@
-// Reads secrets that settings point at through a configured secret provider. Each read, including
-// a failed one, is held for the server's life so rebuilds never re-prompt an unlock; `invalidate`
-// (the Settings refresh) and a `fresh` read are the only ways to read again.
 import type { SecretReference, ServerSettings } from "@t3tools/contracts";
+import * as Clock from "effect/Clock";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as Option from "effect/Option";
 import * as Schema from "effect/Schema";
+import * as Scope from "effect/Scope";
 import * as Semaphore from "effect/Semaphore";
 
 import type { SecretProviderDriver, SecretProviderDriverServices } from "./driver.ts";
@@ -30,6 +29,8 @@ export class SecretResolver extends Context.Service<
   }
 >()("@t3tools/secret-provider-core/server/SecretResolver") {}
 
+const cacheTtlMs = 60_000;
+
 const cacheKey = (reference: SecretReference) =>
   `${reference.provider}\u0000${reference.reference}`;
 
@@ -37,6 +38,7 @@ interface CachedSecret {
   // A provider whose config changed, such as another account, reads again.
   readonly config: string;
   readonly value: string | undefined;
+  readonly expiresAt: number;
 }
 
 const decodeConfigWith = Schema.decodeUnknownOption<Schema.Codec<unknown, unknown>>;
@@ -59,6 +61,7 @@ export const make = Effect.fn("SecretResolver.make")(function* (options: {
     ]),
   );
   const cache = new Map<string, CachedSecret>();
+  const scope = yield* Scope.Scope;
   const semaphore = yield* Semaphore.make(1);
 
   // Only a provider this build can read is cached; anything else fails fast and is checked again
@@ -78,16 +81,19 @@ export const make = Effect.fn("SecretResolver.make")(function* (options: {
       : { driver, config: config.value, configKey: JSON.stringify(config.value) };
   };
 
-  const isCached = (reference: SecretReference, plan: ReadablePlan) =>
-    cache.get(cacheKey(reference))?.config === plan.configKey;
+  const isCached = (reference: SecretReference, plan: ReadablePlan, now: number) => {
+    const entry = cache.get(cacheKey(reference));
+    return entry !== undefined && entry.config === plan.configKey && entry.expiresAt > now;
+  };
 
   const answer = (
     references: ReadonlyArray<SecretReference>,
     plans: ReadonlyArray<ReadablePlan | undefined>,
+    now: number,
   ) =>
     references.map((reference, index) => {
       const plan = plans[index];
-      return plan !== undefined && isCached(reference, plan)
+      return plan !== undefined && isCached(reference, plan, now)
         ? cache.get(cacheKey(reference))?.value
         : undefined;
     });
@@ -100,14 +106,16 @@ export const make = Effect.fn("SecretResolver.make")(function* (options: {
     const fresh = readOptions?.fresh === true;
     const providers = yield* options.secretProviders;
     const plans = references.map((reference) => planFor(providers, reference));
+    let now = yield* Clock.currentTimeMillis;
     const isMissing = (reference: SecretReference, index: number) => {
       const plan = plans[index];
-      return plan !== undefined && (fresh || !isCached(reference, plan));
+      return plan !== undefined && (fresh || !isCached(reference, plan, now));
     };
-    if (!references.some(isMissing)) return answer(references, plans);
+    if (!references.some(isMissing)) return answer(references, plans, now);
 
     return yield* semaphore.withPermits(1)(
       Effect.gen(function* () {
+        now = yield* Clock.currentTimeMillis;
         const wanted = new Map<
           string,
           {
@@ -128,20 +136,36 @@ export const make = Effect.fn("SecretResolver.make")(function* (options: {
         const answered = new Map<string, string | undefined>();
         for (const { plan, byReference } of wanted.values()) {
           const values = yield* plan.driver.read(plan.config, [...byReference.keys()]);
-          [...byReference.values()].forEach((sameReference, index) => {
+          now = yield* Clock.currentTimeMillis;
+          for (const [index, sameReference] of [...byReference.values()].entries()) {
             const value = values[index];
             const readable = value !== undefined && value.trim() !== "";
             for (const reference of sameReference) {
-              answered.set(cacheKey(reference), value);
-              if (!fresh || readable || !isCached(reference, plan)) {
-                cache.set(cacheKey(reference), { config: plan.configKey, value });
+              const key = cacheKey(reference);
+              answered.set(key, value);
+              if (!fresh || readable || !isCached(reference, plan, now)) {
+                const entry = { config: plan.configKey, value, expiresAt: now + cacheTtlMs };
+                cache.set(key, entry);
+                yield* Effect.sleep(cacheTtlMs).pipe(
+                  Effect.andThen(
+                    Effect.sync(() => {
+                      if (cache.get(key) === entry) cache.delete(key);
+                    }),
+                  ),
+                  Effect.forkIn(scope),
+                );
               }
             }
-          });
+          }
         }
-        return fresh
-          ? references.map((reference) => answered.get(cacheKey(reference)))
-          : answer(references, plans);
+        return references.map((reference, index) => {
+          const key = cacheKey(reference);
+          if (answered.has(key)) return answered.get(key);
+          const plan = plans[index];
+          return !fresh && plan !== undefined && isCached(reference, plan, now)
+            ? cache.get(key)?.value
+            : undefined;
+        });
       }),
     );
   }, Effect.provideContext(context));

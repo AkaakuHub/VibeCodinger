@@ -12,6 +12,7 @@ import * as Effect from "effect/Effect";
 import * as Fiber from "effect/Fiber";
 import * as Layer from "effect/Layer";
 import * as Schema from "effect/Schema";
+import * as TestClock from "effect/testing/TestClock";
 
 import { defineSecretProviderDriver } from "./driver.ts";
 import * as SecretResolver from "./SecretResolver.ts";
@@ -76,6 +77,20 @@ describe("SecretResolver", () => {
       assert.deepStrictEqual(yield* resolver.read([token]), ["sk-live"]);
       assert.deepStrictEqual(yield* resolver.read([token]), ["sk-live"]);
       assert.deepStrictEqual(reads, [{ account: "a", references: ["fake://openai"] }]);
+    }).pipe(Effect.provide(resolverLayer(driver)));
+  });
+
+  it.effect("reads rotated credentials after the cache expires", () => {
+    let current = "first";
+    const { driver } = fakeDriver(() => current);
+    return Effect.gen(function* () {
+      const resolver = yield* SecretResolver.SecretResolver;
+      const token = ref("fake://openai");
+
+      assert.deepStrictEqual(yield* resolver.read([token]), ["first"]);
+      current = "second";
+      yield* TestClock.adjust("1 minute");
+      assert.deepStrictEqual(yield* resolver.read([token]), ["second"]);
     }).pipe(Effect.provide(resolverLayer(driver)));
   });
 

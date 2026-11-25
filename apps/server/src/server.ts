@@ -164,7 +164,6 @@ import * as SourceControlRateLimit from "@t3tools/source-control-core/server/Sou
 import * as SourceControlRepositoryService from "./sourceControl/SourceControlRepositoryService.ts";
 import * as WorktreeSetupTracker from "./project/WorktreeSetupTracker.ts";
 import * as Observability from "./observability/Observability.ts";
-import * as HeapSnapshot from "./observability/HeapSnapshot.ts";
 import * as EventLoopMonitor from "./observability/EventLoopMonitor.ts";
 import * as ServerEnvironment from "./environment/ServerEnvironment.ts";
 import * as DirectEndpoints from "./environment/DirectEndpoints.ts";
@@ -175,7 +174,6 @@ import * as ServerSecretStore from "./auth/ServerSecretStore.ts";
 import * as CodexManagedTokenBroker from "./provider/CodexManagedTokenBroker.ts";
 import * as WebhookRoute from "./scheduledTasks/webhookRoute.ts";
 import * as RelayDeliveryProof from "./scheduledTasks/RelayDeliveryProof.ts";
-import * as HeldHooksWaker from "./relay/HeldHooksWaker.ts";
 import * as McpOAuth from "./auth/McpOAuth.ts";
 import * as McpOAuthHttp from "./auth/mcpOAuthHttp.ts";
 import {
@@ -728,9 +726,8 @@ const layerServerRestart = Layer.effect(
 );
 
 const layerRuntimeCoreDependenciesBase = Layer.mergeAll(
-  AgentAwarenessRelay.layer,
+  AgentAwarenessRelay.layerDisabled,
   ProviderHostPathWatcher.layer.pipe(Layer.provide(layerDesktopTelemetryReceiver)),
-  HeldHooksWaker.layer,
   layerThreadSettlementWorker,
   layerIdleCompactionWorker,
   StorageCleanup.layer.pipe(Layer.provide(ProjectionStoreV2.layer)),
@@ -1412,7 +1409,6 @@ const layerMakeServer = Layer.unwrap(
       layerRuntimeState.pipe(Layer.provide(layerLauncher)),
       layerTailscaleServe,
       layerCloudDesiredLinkReconcile,
-      HeapSnapshot.layer,
     );
 
     return layerServerApplication.pipe(
