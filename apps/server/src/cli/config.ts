@@ -1,10 +1,4 @@
 import * as NetService from "@t3tools/shared/Net";
-import {
-  OtlpHeadersFromString,
-  OtlpProtocol,
-  type SignalExport,
-} from "@t3tools/shared/observability";
-import * as OtelEnvironment from "@t3tools/shared/otelEnvironment";
 import { DesktopBackendBootstrap, PortSchema } from "@t3tools/contracts";
 import * as Config from "effect/Config";
 import * as Duration from "effect/Duration";
@@ -114,28 +108,6 @@ const EnvServerConfig = Config.all({
   traceMaxFiles: traceMaxFilesConfig,
   traceBatchWindowMs: Config.Int("VIBECODINGER_TRACE_BATCH_WINDOW_MS").pipe(
     Config.withDefault(1_000),
-  ),
-  otlpTracesUrl: Config.String("VIBECODINGER_OTLP_TRACES_URL").pipe(
-    Config.option,
-    Config.map(Option.getOrUndefined),
-  ),
-  otlpMetricsUrl: Config.String("VIBECODINGER_OTLP_METRICS_URL").pipe(
-    Config.option,
-    Config.map(Option.getOrUndefined),
-  ),
-  otlpLogsUrl: Config.String("VIBECODINGER_OTLP_LOGS_URL").pipe(
-    Config.option,
-    Config.map(Option.getOrUndefined),
-  ),
-  otlpExportIntervalMs: Config.Int("VIBECODINGER_OTLP_EXPORT_INTERVAL_MS").pipe(
-    Config.withDefault(10_000),
-  ),
-  otlpHeaders: Config.schema(OtlpHeadersFromString, "VIBECODINGER_OTLP_HEADERS").pipe(
-    Config.option,
-    Config.map(Option.getOrUndefined),
-  ),
-  otlpProtocol: Config.schema(OtlpProtocol, "VIBECODINGER_OTLP_PROTOCOL").pipe(
-    Config.withDefault("http/json"),
   ),
   mode: Config.schema(ServerConfig.RuntimeMode, "VIBECODINGER_MODE").pipe(
     Config.option,
@@ -445,13 +417,6 @@ export const resolveServerConfig = Effect.fn("config.resolveServerConfig")(funct
   );
   const logLevel = Option.getOrElse(cliLogLevel, () => env.logLevel);
 
-  const otel = yield* OtelEnvironment.load;
-
-  const signalExport: SignalExport = {
-    protocol: env.otlpProtocol,
-    headers: env.otlpHeaders,
-    exportIntervalMs: env.otlpExportIntervalMs,
-  };
   const config: ServerConfig.ServerConfig["Service"] = {
     logLevel,
     traceMinLevel: env.traceMinLevel,
@@ -459,13 +424,6 @@ export const resolveServerConfig = Effect.fn("config.resolveServerConfig")(funct
     traceBatchWindowMs: env.traceBatchWindowMs,
     traceMaxBytes: env.traceMaxBytes,
     traceMaxFiles: env.traceMaxFiles,
-    otlpTracesUrl: undefined,
-    otlpMetricsUrl: undefined,
-    otlpLogsUrl: undefined,
-    otlpTracesExport: signalExport,
-    otlpMetricsExport: signalExport,
-    otlpLogsExport: signalExport,
-    otelEnvironment: otel,
     mode,
     port,
     cwd,

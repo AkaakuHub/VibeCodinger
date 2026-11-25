@@ -40,12 +40,6 @@ export const processServiceInstanceId = (
   return generatedServiceInstanceId;
 };
 
-export const DEFAULT_SIGNAL_EXPORT: SignalExport = {
-  protocol: "http/json",
-  headers: undefined,
-  exportIntervalMs: 10_000,
-};
-
 const FLUSH_BUFFER_THRESHOLD = 256;
 
 export type TraceAttributes = Readonly<Record<string, unknown>>;
