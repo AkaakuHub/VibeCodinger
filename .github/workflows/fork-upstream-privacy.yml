@@ -1,0 +1,48 @@
+name: Fork upstream privacy
+
+on:
+  pull_request_target:
+    branches: [main]
+    types: [opened, reopened, synchronize, ready_for_review]
+
+permissions:
+  contents: read
+  statuses: write
+
+jobs:
+  privacy:
+    name: Keep removed features disabled
+    if: github.repository == 'AkaakuHub/t3code'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Compare against trusted fork policy
+        shell: bash
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          HEAD_REF: ${{ github.head_ref }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          [[ "$BASE_SHA" =~ ^[0-9a-f]{40}$ && "$HEAD_SHA" =~ ^[0-9a-f]{40}$ ]]
+          publish_status() {
+            gh api --method POST "repos/$GITHUB_REPOSITORY/statuses/$HEAD_SHA" \
+              -f "state=$1" -f context=fork-upstream-privacy \
+              -f "target_url=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" \
+              -f "description=$2" >/dev/null
+          }
+          if [[ "$HEAD_REF" != review/t3-upstream-* ]]; then
+            publish_status success "Manual fork changes are outside the upstream import policy"
+            exit 0
+          fi
+          publish_status pending "Checking protected fork paths and added code"
+          trap 'publish_status failure "See the upstream privacy check log"' EXIT
+          git init --bare "$RUNNER_TEMP/privacy-check.git"
+          cd "$RUNNER_TEMP/privacy-check.git"
+          git fetch --no-tags --depth=1 "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.git" "$BASE_SHA" "$HEAD_SHA"
+          guard="$RUNNER_TEMP/check-upstream-removals.py"
+          git show "$BASE_SHA:.github/scripts/check-upstream-removals.py" > "$guard"
+          python3 "$guard" verify "$BASE_SHA" "$HEAD_SHA"
+          publish_status success "No removed feature detected in the upstream proposal"
+          trap - EXIT

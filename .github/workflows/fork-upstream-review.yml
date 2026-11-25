@@ -76,12 +76,15 @@ jobs:
           export GIT_WORK_TREE="$RUNNER_TEMP/upstream-review-empty"
           mkdir "$GIT_WORK_TREE"
           git read-tree "$tree"
-          # Only reviewed workflow definitions may run when the review branch is published.
-          git ls-files -z -- .github/workflows | git update-index --force-remove -z --stdin
-          git ls-tree -r -z "$base" -- .github/workflows | git update-index -z --index-info
+          guard="$RUNNER_TEMP/check-upstream-removals.py"
+          git show "$base:.github/scripts/check-upstream-removals.py" > "$guard"
+          python3 "$guard" restore "$base" "$tree" > "$RUNNER_TEMP/kept-fork-paths.txt"
           stamp=$(printf '%s\n' "$upstream" | git hash-object -w --stdin)
           git update-index --add --cacheinfo "100644,$stamp,.github/t3-upstream-reviewed"
           tree=$(git write-tree)
+          if ! python3 "$guard" verify "$base" "$tree" 2> "$RUNNER_TEMP/fork-guard.txt"; then
+            draft=(--draft)
+          fi
 
           {
             echo 'Review the pinned upstream changes before merging.'
@@ -89,7 +92,17 @@ jobs:
             echo "Upstream commit: https://github.com/pingdotgg/t3code/commit/$upstream"
             echo
             echo 'Review analytics, endpoints, identifiers, credential handling, dependencies, and build/install scripts for new outbound collection.'
-            echo 'The proposal uses the fork’s current workflow definitions. Review upstream workflow changes separately.'
+            echo 'The proposal preserves the fork-owned workflow and privacy paths.'
+            if [[ -s "$RUNNER_TEMP/kept-fork-paths.txt" ]]; then
+              echo
+              echo 'Fork versions retained for these upstream changes:'
+              sed 's/^/- /' "$RUNNER_TEMP/kept-fork-paths.txt"
+            fi
+            if [[ -s "$RUNNER_TEMP/fork-guard.txt" ]]; then
+              echo
+              echo 'Resolve the following privacy-check failures before approving:'
+              sed 's/^/- /' "$RUNNER_TEMP/fork-guard.txt"
+            fi
             echo 'The proposed .github/t3-upstream-reviewed records the exact commit for the next comparison.'
             changed=$(git diff --no-ext-diff --no-textconv --name-only -i -G 'telemetry|posthog|axiom|otlp|analytics|sendBeacon|distinct_id|crashReport' "$base" "$tree")
             if [[ -n "$changed" ]]; then
