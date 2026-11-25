@@ -12,7 +12,7 @@ import {
   holdImageCompression,
   pasteWideScreenshot,
 } from "./image-compression-hold.ts";
-import { makeState, rpcClient, runPromise, test, WEB } from "./t3.ts";
+import { makeState, rpcClient, runPromise, test, WEB } from "./vc.ts";
 
 const ACP = `
 import { createInterface } from "node:readline";
@@ -57,9 +57,9 @@ for await (const line of createInterface({ input: process.stdin })) {
 test(
   "Stopping an unanswered question keeps a screenshot that is still preparing",
   WEB,
-  async ({ t3, app, browser }) => {
+  async ({ vc, app, browser }) => {
     await holdImageCompression(browser);
-    const project = await t3.project("demo", { "question-agent.mjs": ACP });
+    const project = await vc.project("demo", { "question-agent.mjs": ACP });
     const instanceId = ProviderInstanceId.make("scenario-question-agent");
     await runPromise(
       Effect.gen(function* () {
@@ -104,7 +104,7 @@ test(
       ),
     );
     const { threadId } = JSON.parse(started.stdout) as { threadId: string };
-    await t3.open({ threadId });
+    await vc.open({ threadId });
 
     const composer = browser.locator('[data-chat-composer-form="true"]');
     const question = browser.locator(

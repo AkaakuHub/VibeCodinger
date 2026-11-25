@@ -5,7 +5,7 @@ import * as Schema from "effect/Schema";
 
 import { APP_DATA_HOME } from "../e2e.config.ts";
 import { SECOND_HOME, startSecondServer } from "./second-server.ts";
-import { environmentId, makeState, rpcClient, runPromise, test, WEB } from "./t3.ts";
+import { environmentId, makeState, rpcClient, runPromise, test, WEB } from "./vc.ts";
 
 const decodePairing = Schema.decodeEffect(
   Schema.fromJsonString(Schema.Struct({ credential: Schema.String })),
@@ -14,8 +14,8 @@ const decodePairing = Schema.decodeEffect(
 test(
   "Try again immediately reads a linked thread once it is reachable",
   WEB,
-  async ({ t3, app, browser, screen }) => {
-    await t3.project("primary");
+  async ({ vc, app, browser, screen }) => {
+    await vc.project("primary");
     const origin = app.baseUrl ?? "";
     const server = startSecondServer(origin);
     try {
@@ -93,7 +93,7 @@ test(
         };
       });
 
-      await t3.open(`/linked/${via}/${linked}/${thread.threadId}`);
+      await vc.open(`/linked/${via}/${linked}/${thread.threadId}`);
       await screen.getByRole("button", "Try again", { exact: true }).tap();
       await app.screenshot("after-trying-again");
       // The automatic retry waits 15 seconds. This checks the user's explicit retry.

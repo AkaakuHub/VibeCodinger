@@ -4,7 +4,7 @@ import * as FileSystem from "effect/FileSystem";
 import * as Path from "effect/Path";
 
 import { APP_DATA_HOME } from "../e2e.config.ts";
-import { runPromise, test, WEB } from "./t3.ts";
+import { runPromise, test, WEB } from "./vc.ts";
 
 // A saved rule that binds Enter to the command palette only while the right panel is closed.
 const panelConditionedEnter = Effect.gen(function* () {
@@ -28,20 +28,20 @@ const panelConditionedEnter = Effect.gen(function* () {
 test(
   "Enter sends from the composer while the right panel is open and a rule binds it when closed",
   WEB,
-  async ({ t3, app, screen }) => {
+  async ({ vc, app, screen }) => {
     const keybindings = await runPromise(panelConditionedEnter);
     try {
       await runPromise(keybindings.save);
-      const project = await t3.project("demo");
-      const thread = await t3.thread({ project, title: "Panel work", messages: ["Start"] });
+      const project = await vc.project("demo");
+      const thread = await vc.thread({ project, title: "Panel work", messages: ["Start"] });
 
       // The settings list shows the rule once the server has loaded the saved file.
-      await t3.open("/settings/keybindings");
+      await vc.open("/settings/keybindings");
       await screen
         .getByRole("button", "Edit shortcut for Command Palette: Toggle: Enter")
         .waitFor();
 
-      await t3.open(thread);
+      await vc.open(thread);
       await screen.getByRole("button", "Toggle right panel").tap();
       await screen.getByRole("button", { name: "Toggle right panel", pressed: true }).waitFor();
 

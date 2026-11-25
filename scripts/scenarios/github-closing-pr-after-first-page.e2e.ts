@@ -12,7 +12,7 @@ import { FetchHttpClient, HttpClient, HttpClientResponse } from "effect/http";
 import { APP_DIR, APP_DATA_HOME } from "../e2e.config.ts";
 import { run, ScenarioError } from "./shell.ts";
 import { prepareHome, start } from "./start-app.ts";
-import { makeState, runPromise, test, WEB } from "./t3.ts";
+import { makeState, runPromise, test, WEB } from "./vc.ts";
 
 const HOST = "github.scenario.invalid";
 const SCOPE = "scenario/demo";
@@ -157,8 +157,8 @@ function startFixtureServer(webOrigin: string) {
 test(
   "A closing pull request remains visible after its timeline reference ages out",
   WEB,
-  async ({ t3, app, browser, screen }) => {
-    const workspace = await t3.project("Release");
+  async ({ vc, app, browser, screen }) => {
+    const workspace = await vc.project("Release");
     const server = startFixtureServer(app.baseUrl ?? "");
     try {
       const { origin, token } = await server.ready;
@@ -192,7 +192,7 @@ test(
         selectedProjectId: projectId,
       });
 
-      await t3.open("/settings/connections");
+      await vc.open("/settings/connections");
       await screen.getByRole("button", "Add environment").tap();
       const dialog = screen.getByRole("dialog");
       await dialog.getByPlaceholder("backend.example.com").fill(origin);

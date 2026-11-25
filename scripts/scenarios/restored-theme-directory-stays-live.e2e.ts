@@ -3,13 +3,13 @@ import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";
 
 import { APP_DATA_HOME } from "../e2e.config.ts";
-import { runPromise, test, WEB } from "./t3.ts";
+import { runPromise, test, WEB } from "./vc.ts";
 
 test(
   "Appearance reflects new edits after the environment theme directory is restored",
   WEB,
-  async ({ t3, app, screen }) => {
-    await t3.project("theme-directory");
+  async ({ vc, app, screen }) => {
+    await vc.project("theme-directory");
     const themes = `${APP_DATA_HOME}/userdata/themes`;
     const previous = `${APP_DATA_HOME}/themes-before-restore`;
     const restored = `${APP_DATA_HOME}/themes-to-restore`;
@@ -30,7 +30,7 @@ test(
       }),
     );
     try {
-      await t3.open("/settings/appearance");
+      await vc.open("/settings/appearance");
       await screen.getByRole("button", "Use Original Palette theme", { exact: true }).waitFor();
       await runPromise(
         Effect.gen(function* () {

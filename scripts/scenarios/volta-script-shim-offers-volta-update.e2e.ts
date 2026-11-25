@@ -5,7 +5,7 @@ import * as Path from "effect/Path";
 import * as Schema from "effect/Schema";
 
 import { APP_DATA_HOME } from "../e2e.config.ts";
-import { runPromise, test, WEB } from "./t3.ts";
+import { runPromise, test, WEB } from "./vc.ts";
 
 // Windows Volta 2 writes `bin/<tool>` scripts that run `volta run`, not links to `volta-shim`.
 // The fake `volta` only reports a version, so nothing installs or reaches a model. The latest
@@ -54,11 +54,11 @@ const installVoltaOpenCode = Effect.gen(function* () {
 test(
   "OpenCode installed through a Volta script shim offers a Volta update",
   WEB,
-  async ({ t3, app, browser, screen }) => {
+  async ({ vc, app, browser, screen }) => {
     await browser.emulateMedia({ colorScheme: "dark" });
-    await t3.project("demo");
+    await vc.project("demo");
     await runPromise(installVoltaOpenCode);
-    await t3.open("/settings/providers?instanceId=opencode");
+    await vc.open("/settings/providers?instanceId=opencode");
 
     // The list row and the detail header both carry the button; take the header's.
     const details = screen.getByRole("button", /view details/).last();

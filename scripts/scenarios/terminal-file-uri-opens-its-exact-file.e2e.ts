@@ -5,7 +5,7 @@ import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";
 
 import { APP_DATA_HOME } from "../e2e.config.ts";
-import { runPromise, test, WEB } from "./t3.ts";
+import { runPromise, test, WEB } from "./vc.ts";
 
 const EDITOR_ARGS = `${APP_DATA_HOME}/editor-args.txt`;
 
@@ -42,7 +42,7 @@ const LINKS = [
 test(
   "Ctrl+click on a terminal file URI opens the exact file it names, even one ending like a position",
   WEB,
-  async ({ t3, app, browser, screen }) => {
+  async ({ vc, app, browser, screen }) => {
     await removeEditorArgs();
     const files: Record<string, string> = {
       "build:2026/keep.txt": "keep\n",
@@ -56,9 +56,9 @@ test(
       files[`print-${index}.sh`] =
         `for i in $(seq 1 100); do ${link.print}; done; touch printed-${index}\n`;
     }
-    const project = await t3.project("demo", files);
-    const thread = await t3.thread({ project, title: "List", messages: ["List it"] });
-    await t3.open(thread);
+    const project = await vc.project("demo", files);
+    const thread = await vc.thread({ project, title: "List", messages: ["List it"] });
+    await vc.open(thread);
 
     await screen.getByRole("button", "Toggle terminal drawer").tap();
     const input = screen.getByRole("textbox", "Terminal input");

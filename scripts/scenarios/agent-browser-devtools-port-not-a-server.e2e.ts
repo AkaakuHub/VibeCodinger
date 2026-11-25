@@ -9,7 +9,7 @@ import * as Stream from "effect/Stream";
 import { ChildProcess, ChildProcessSpawner } from "effect/process";
 
 import { ScenarioError } from "./shell.ts";
-import { runPromise, test, WEB } from "./t3.ts";
+import { runPromise, test, WEB } from "./vc.ts";
 
 // Serves on the port its last argument ends in, and prints once it listens.
 const LISTENER = `require("node:http").createServer((_, res) => res.end("ok")).listen(Number(process.argv.at(-1).split("=").at(-1)), "127.0.0.1", () => console.log("listening"))`;
@@ -48,9 +48,9 @@ const listen = Effect.fn("scenario.listen")(function* (threadId: string, arg: st
 test(
   "An agent browser's DevTools port is not listed with the thread's servers",
   WEB,
-  async ({ t3, app, browser, screen }) => {
-    const project = await t3.project("demo");
-    const thread = await t3.thread({ project, title: "Dev server", messages: ["Start"] });
+  async ({ vc, app, browser, screen }) => {
+    const project = await vc.project("demo");
+    const thread = await vc.thread({ project, title: "Dev server", messages: ["Start"] });
     const [serverPort, devToolsPort] = [await freePort(), await freePort()];
     const scope = await runPromise(Scope.make());
     try {
@@ -61,7 +61,7 @@ test(
         ]).pipe(Scope.provide(scope)),
       );
       await browser.setViewport({ width: 1920, height: 1000 });
-      await t3.open(thread);
+      await vc.open(thread);
 
       const servers = screen.getByRole("region", "Servers");
       await servers.getByText(`localhost:${serverPort}`).waitFor({ timeout: 60_000 });

@@ -5,7 +5,7 @@ import * as Schema from "effect/Schema";
 
 import { APP_DATA_HOME } from "../e2e.config.ts";
 import { SECOND_HOME, startSecondServer } from "./second-server.ts";
-import { environmentId, makeState, rpcClient, runPromise, test, WEB } from "./t3.ts";
+import { environmentId, makeState, rpcClient, runPromise, test, WEB } from "./vc.ts";
 
 const decodePairing = Schema.decodeEffect(
   Schema.fromJsonString(Schema.Struct({ credential: Schema.String })),
@@ -34,8 +34,8 @@ const linkEnvironments = Effect.fn("scenario.linkEnvironments")(function* (
 test(
   "Connect to interact opens the editable thread before a silent fallback times out",
   WEB,
-  async ({ t3, app, browser, screen }) => {
-    await t3.project("primary");
+  async ({ vc, app, browser, screen }) => {
+    await vc.project("primary");
     const primary = app.baseUrl ?? "";
     const secondServer = startSecondServer(primary);
     try {
@@ -70,7 +70,7 @@ test(
         };
       }, alternate.origin);
 
-      await t3.open(`/linked/${via}/${target}/${thread.threadId}`);
+      await vc.open(`/linked/${via}/${target}/${thread.threadId}`);
       await screen.getByRole("heading", "Linked handoff").waitFor();
       await screen.getByRole("button", "Connect to interact").tap();
 

@@ -1,5 +1,5 @@
-// `test` for web scenarios: e2e's web test plus `t3`, which seeds state and opens the signed-in
-// app. `t3-mobile.ts` is the same for the iOS app.
+// `test` for web scenarios: e2e's web test plus `vc`, which seeds state and opens the signed-in
+// app. `vc-mobile.ts` is the same for the iOS app.
 import * as NodeCrypto from "@effect/platform-node/NodeCrypto";
 import * as NodeServices from "@effect/platform-node/NodeServices";
 import * as NodeWS from "@effect/platform-node/NodeWS";
@@ -36,7 +36,7 @@ import { Socket } from "effect/socket";
 import { APP_DIR, APP_DATA_HOME } from "../e2e.config.ts";
 import { run, ScenarioError } from "./shell.ts";
 
-export interface T3State {
+export interface VibeCodingerState {
   /** Creates a git repository holding `files` and adds it as a project. Returns its path. */
   readonly project: (
     title: string,
@@ -52,19 +52,19 @@ export interface T3State {
     readonly title: string;
     readonly messages: ReadonlyArray<string>;
     readonly model?: string;
-  }) => Promise<T3Thread>;
+  }) => Promise<VibeCodingerThread>;
 }
 
-export interface T3Thread {
+export interface VibeCodingerThread {
   readonly threadId: string;
 }
 
-export interface T3 extends T3State {
+export interface VibeCodinger extends VibeCodingerState {
   /**
-   * Opens the app, signed in, at a path or on a thread `t3.thread` returned. Opening the thread
+   * Opens the app, signed in, at a path or on a thread `vc.thread` returned. Opening the thread
    * by its link is the reliable way to reach it: a sidebar row covers its own title text.
    */
-  readonly open: (target?: string | T3Thread) => Promise<void>;
+  readonly open: (target?: string | VibeCodingerThread) => Promise<void>;
 }
 
 /** e2e's fixtures are promise functions; this is the one place an Effect becomes a promise. */
@@ -209,7 +209,7 @@ export function makeState(home: string, env: NodeJS.ProcessEnv = {}) {
     const started = yield* turn(["start", input.project, first, "--title", input.title, ...replay]);
     const { threadId } = yield* decodeLaunched(started.stdout);
     for (const message of rest) yield* turn(["send", threadId, message]);
-    return { threadId } satisfies T3Thread;
+    return { threadId } satisfies VibeCodingerThread;
   });
 
   return {
@@ -217,7 +217,7 @@ export function makeState(home: string, env: NodeJS.ProcessEnv = {}) {
     state: {
       project: (title, files = {}) => runPromise(project(title, files)),
       thread: (input) => runPromise(thread(input)),
-    } satisfies T3State,
+    } satisfies VibeCodingerState,
     // The server outlives the test, so the next one must not see this one's projects.
     cleanup: Effect.forEach(
       projects,
@@ -323,8 +323,8 @@ export const rpcClient = Effect.fn("scenario.rpcClient")(function* (home: string
   return yield* RpcClient.make(WsRpcGroup).pipe(Effect.provideContext(protocol));
 });
 
-export const test = base.extend<{ t3: T3 }>({
-  t3: async ({ app, browser }, use) => {
+export const test = base.extend<{ vc: VibeCodinger }>({
+  vc: async ({ app, browser }, use) => {
     const { state, cleanup } = makeState(APP_DATA_HOME);
     await use({
       ...state,

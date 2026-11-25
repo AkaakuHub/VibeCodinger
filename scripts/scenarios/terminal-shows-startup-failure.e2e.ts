@@ -8,13 +8,13 @@ import * as Schema from "effect/Schema";
 
 import { APP_DIR, APP_DATA_HOME } from "../e2e.config.ts";
 import { run } from "./shell.ts";
-import { runPromise, test, WEB } from "./t3.ts";
+import { runPromise, test, WEB } from "./vc.ts";
 
 const decodeRuntime = Schema.decodeUnknownEffect(
   Schema.fromJsonString(Schema.Struct({ pid: Schema.Int })),
 );
 
-/** The scenario's own server: the pid its T3 home records, running from the app checkout. */
+/** The scenario's own server: the pid its VibeCodinger home records, running from the app checkout. */
 const scenarioServerPid = Effect.gen(function* () {
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
@@ -53,10 +53,10 @@ const exhaustFileDescriptors = Effect.fn("scenario.exhaustFileDescriptors")(func
 test(
   "A terminal whose shell cannot start says why, also after its drawer reopens",
   WEB,
-  async ({ t3, app, browser, screen }) => {
-    const project = await t3.project("demo");
-    const thread = await t3.thread({ project, title: "Shell", messages: ["hello"] });
-    await t3.open(thread);
+  async ({ vc, app, browser, screen }) => {
+    const project = await vc.project("demo");
+    const thread = await vc.thread({ project, title: "Shell", messages: ["hello"] });
+    await vc.open(thread);
     const pid = await runPromise(scenarioServerPid);
 
     const toggle = screen.getByRole("button", "Toggle terminal drawer");

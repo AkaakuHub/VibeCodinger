@@ -4,7 +4,7 @@ import * as FileSystem from "effect/FileSystem";
 import * as Schema from "effect/Schema";
 
 import { APP_DATA_HOME } from "../e2e.config.ts";
-import { runPromise, test, WEB } from "./t3.ts";
+import { runPromise, test, WEB } from "./vc.ts";
 
 const decodeSettings = Schema.decodeSync(
   Schema.fromJsonString(Schema.Record(Schema.String, Schema.Unknown)),
@@ -13,8 +13,8 @@ const decodeSettings = Schema.decodeSync(
 test(
   "Maintenance reflects edits to a symlinked settings file after restoring its directory",
   WEB,
-  async ({ t3, app, screen }) => {
-    await t3.project("settings-restore");
+  async ({ vc, app, screen }) => {
+    await vc.project("settings-restore");
     const settingsPath = `${APP_DATA_HOME}/userdata/settings.json`;
     const active = `${APP_DATA_HOME}/active-settings`;
     const previous = `${APP_DATA_HOME}/old-settings`;
@@ -44,7 +44,7 @@ test(
       }),
     );
     try {
-      await t3.open("/settings/maintenance");
+      await vc.open("/settings/maintenance");
       const days = screen.getByLabel("Delete old rotated logs in days");
       await days.scrollIntoView();
       await expect(days).toHaveValue("5");

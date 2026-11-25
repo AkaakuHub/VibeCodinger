@@ -2,7 +2,7 @@
 import { expect } from "e2e";
 
 import { APP_DATA_HOME } from "../e2e.config.ts";
-import { makeState, runPromise, test, WEB } from "./t3.ts";
+import { makeState, runPromise, test, WEB } from "./vc.ts";
 
 const FILE = "quarterly-handoff.txt";
 const CONTENT = "Handoff notes from the shared file";
@@ -10,11 +10,11 @@ const CONTENT = "Handoff notes from the shared file";
 test(
   "A citation finds one file listed by two overlapping projects",
   WEB,
-  async ({ t3, app, browser, screen }) => {
-    const repository = await t3.project("reports", { [`docs/${FILE}`]: CONTENT });
+  async ({ vc, app, browser, screen }) => {
+    const repository = await vc.project("reports", { [`docs/${FILE}`]: CONTENT });
     const nested = `${repository}/docs`;
-    const project = await t3.project("planning");
-    const thread = await t3.thread({
+    const project = await vc.project("planning");
+    const thread = await vc.thread({
       project,
       title: "Find the report",
       messages: [`See :codex-file-citation{path="${FILE}" line_range_start="1"}`],
@@ -22,7 +22,7 @@ test(
     const { cli } = makeState(APP_DATA_HOME);
     await runPromise(cli(["project", "add", nested, "--title", "Report docs"]));
     try {
-      await t3.open(thread);
+      await vc.open(thread);
       await screen.getByRole("button", /^Agent See/).tap();
       await screen.getByRole("link", /^quarterly-handoff\.txt/).tap();
 

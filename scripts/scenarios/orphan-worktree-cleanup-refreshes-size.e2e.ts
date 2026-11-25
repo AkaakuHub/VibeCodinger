@@ -7,7 +7,7 @@ import * as Schema from "effect/Schema";
 
 import { APP_DATA_HOME } from "../e2e.config.ts";
 import { run } from "./shell.ts";
-import { runPromise, test, WEB } from "./t3.ts";
+import { runPromise, test, WEB } from "./vc.ts";
 
 const decodeSettings = Schema.decodeSync(
   Schema.fromJsonString(Schema.Record(Schema.String, Schema.Unknown)),
@@ -16,8 +16,8 @@ const decodeSettings = Schema.decodeSync(
 test(
   "Cleanup updates the displayed size of a kept worktree",
   WEB,
-  async ({ t3, app, browser, screen }) => {
-    const project = await t3.project("cleanup-size", { "README.md": "Example project" });
+  async ({ vc, app, browser, screen }) => {
+    const project = await vc.project("cleanup-size", { "README.md": "Example project" });
     const settingsPath = `${APP_DATA_HOME}/userdata/settings.json`;
     const original = await runPromise(
       Effect.flatMap(FileSystem.FileSystem, (fs) => fs.readFileString(settingsPath)),
@@ -48,7 +48,7 @@ test(
         }),
       );
 
-      await t3.open("/settings/maintenance");
+      await vc.open("/settings/maintenance");
       const runCleanup = screen.getByRole("button", "Delete now", { exact: true });
       await runCleanup.tap();
       await screen.getByRole("button", /^Last run/).tap();

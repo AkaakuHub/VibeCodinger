@@ -3,11 +3,11 @@ import { expect } from "e2e";
 import * as Effect from "effect/Effect";
 
 import { APP_DATA_HOME } from "../e2e.config.ts";
-import { rpcClient, runPromise, test, WEB } from "./t3.ts";
+import { rpcClient, runPromise, test, WEB } from "./vc.ts";
 
-test("The drawer removes a terminal closed by another client", WEB, async ({ t3, app, screen }) => {
-  const cwd = await t3.project("demo");
-  const thread = await t3.thread({ project: cwd, title: "Shared terminals", messages: ["first"] });
+test("The drawer removes a terminal closed by another client", WEB, async ({ vc, app, screen }) => {
+  const cwd = await vc.project("demo");
+  const thread = await vc.thread({ project: cwd, title: "Shared terminals", messages: ["first"] });
   const threadId = ThreadId.make(thread.threadId);
   const origin = app.baseUrl ?? "";
   const kept = "kept-shell";
@@ -21,7 +21,7 @@ test("The drawer removes a terminal closed by another client", WEB, async ({ t3,
       }
     }).pipe(Effect.scoped),
   );
-  await t3.open(thread);
+  await vc.open(thread);
   await screen.getByRole("button", "Toggle terminal drawer").tap();
   await screen.getByRole("button", kept, { exact: true }).tap();
   const closedTab = screen.getByRole("button", closed, { exact: true });

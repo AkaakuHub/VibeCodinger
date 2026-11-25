@@ -1,20 +1,20 @@
 import { expect } from "e2e";
 
 import { APP_DATA_HOME } from "../e2e.config.ts";
-import { makeState, runPromise, test, WEB } from "./t3.ts";
+import { makeState, runPromise, test, WEB } from "./vc.ts";
 
 test(
   "A queued message shows its @-file mention by name, not as a raw link",
   WEB,
-  async ({ t3, app, screen, browser }) => {
-    const project = await t3.project("demo", { "src/foo.ts": "export {};\n" });
-    const thread = await t3.thread({
+  async ({ vc, app, screen, browser }) => {
+    const project = await vc.project("demo", { "src/foo.ts": "export {};\n" });
+    const thread = await vc.thread({
       project,
       title: "Long work",
       messages: ["Show me around"],
       model: "showcase",
     });
-    await t3.open(thread);
+    await vc.open(thread);
 
     const composer = screen.getByRole("textbox");
     await composer.pressSequentially("Review @foo");

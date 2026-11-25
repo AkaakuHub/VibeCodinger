@@ -1,7 +1,7 @@
 /// <reference lib="dom" />
 import { expect } from "e2e";
 
-import { test, WEB } from "./t3.ts";
+import { test, WEB } from "./vc.ts";
 
 const MATCH = "quartzneedle";
 const columns = Array.from({ length: 16 }, (_, index) => `DiagnosticsColumn${index + 1}`);
@@ -15,10 +15,10 @@ const TABLE = [
 test(
   "Find reveals a match in the last column of a wide table",
   WEB,
-  async ({ t3, app, screen, browser }) => {
-    const project = await t3.project("wide-table");
-    const thread = await t3.thread({ project, title: "Diagnostics table", messages: [TABLE] });
-    await t3.open(thread);
+  async ({ vc, app, screen, browser }) => {
+    const project = await vc.project("wide-table");
+    const thread = await vc.thread({ project, title: "Diagnostics table", messages: [TABLE] });
+    await vc.open(thread);
     await screen.getByText("first fixture turn complete", { exact: false }).waitFor({
       timeout: 120_000,
     });

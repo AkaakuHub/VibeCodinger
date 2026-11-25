@@ -4,20 +4,20 @@ import * as FileSystem from "effect/FileSystem";
 import * as Path from "effect/Path";
 
 import { APP_DATA_HOME } from "../e2e.config.ts";
-import { makeState, rpcClient, runPromise, test, WEB } from "./t3.ts";
+import { makeState, rpcClient, runPromise, test, WEB } from "./vc.ts";
 
 const KEPT = "a".repeat(199);
 // The emoji's two UTF-16 units straddle unit 200, where the server cuts a run's title.
-const DEFINITION = `export default T3.workflow("titled", { version: 1, payload: Schema.Struct({}) },
+const DEFINITION = `export default VibeCodinger.workflow("titled", { version: 1, payload: Schema.Struct({}) },
   Effect.fn(function* () {
-    yield* T3.title("${KEPT}😀 and the rest of the title");
+    yield* VibeCodinger.title("${KEPT}😀 and the rest of the title");
   }));
 `;
 
 test(
   "A long workflow run title ends without a broken character",
   WEB,
-  async ({ t3, app, screen }) => {
+  async ({ vc, app, screen }) => {
     const definition = await runPromise(
       Effect.map(Path.Path, (path) => path.join(APP_DATA_HOME, "workflows/titled.ts")),
     );
@@ -37,13 +37,13 @@ test(
           yield* fs.writeFileString(definition, DEFINITION);
         }),
       );
-      await t3.project("demo");
+      await vc.project("demo");
       await workflowsOn(true);
       const started = await runPromise(
         makeState(APP_DATA_HOME).cli(["workflow", "start", "titled", "--key", "one", "--json"]),
       );
       const { run } = JSON.parse(started.stdout);
-      await t3.open(`/workflows?run=${run.runId}`);
+      await vc.open(`/workflows?run=${run.runId}`);
 
       // Until the title activity commits, the heading is the workflow's name and key.
       const heading = screen.getByRole("heading", KEPT, { exact: false });

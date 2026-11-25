@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // The app command of e2e.config.ts: starts the dev stack of the checkout it runs in on a fresh
-// T3 home. e2e stops it with a signal, which ends the scope and the processes it started.
+// VibeCodinger home. e2e stops it with a signal, which ends the scope and the processes it started.
 import * as NodeCrypto from "@effect/platform-node/NodeCrypto";
 import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
 import * as NodeServices from "@effect/platform-node/NodeServices";

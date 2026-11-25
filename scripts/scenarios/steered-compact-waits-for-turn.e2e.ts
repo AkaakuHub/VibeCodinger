@@ -5,7 +5,7 @@ import * as Path from "effect/Path";
 import * as Schema from "effect/Schema";
 
 import { APP_DATA_HOME } from "../e2e.config.ts";
-import { makeState, runPromise, test, WEB } from "./t3.ts";
+import { makeState, runPromise, test, WEB } from "./vc.ts";
 
 const SettingsJson = Schema.fromJsonString(Schema.Record(Schema.String, Schema.Unknown));
 const decodeSettings = Schema.decodeEffect(SettingsJson);
@@ -25,16 +25,16 @@ const threadRuntimeSettings = Effect.gen(function* () {
   };
 });
 
-test("/compact sent while the agent works waits for the turn", WEB, async ({ t3, app, screen }) => {
-  const project = await t3.project("demo");
+test("/compact sent while the agent works waits for the turn", WEB, async ({ vc, app, screen }) => {
+  const project = await vc.project("demo");
   // The showcase recording streams for several seconds, long enough to send into its turn.
-  const thread = await t3.thread({
+  const thread = await vc.thread({
     project,
     title: "Long work",
     messages: ["Show me around"],
     model: "showcase",
   });
-  await t3.open(thread);
+  await vc.open(thread);
 
   const composer = screen.getByRole("textbox");
   await composer.tap();
@@ -52,7 +52,7 @@ test("/compact sent while the agent works waits for the turn", WEB, async ({ t3,
   try {
     // An approval holds this turn open, so the queued command stays put while Send now is hovered.
     await runPromise(settings.supervise);
-    const waiting = await t3.thread({
+    const waiting = await vc.thread({
       project,
       title: "Waiting work",
       messages: ["Change the file"],
@@ -61,7 +61,7 @@ test("/compact sent while the agent works waits for the turn", WEB, async ({ t3,
     await runPromise(
       makeState(APP_DATA_HOME).cli(["thread", "send", waiting.threadId, "/compact"]),
     );
-    await t3.open(waiting);
+    await vc.open(waiting);
     await screen.getByRole("button", "Send now").hover();
     await expect(
       screen.getByText("Move this command to the front of the queue", { exact: false }),

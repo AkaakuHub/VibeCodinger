@@ -5,16 +5,16 @@ import * as Schema from "effect/Schema";
 
 import { APP_DATA_HOME } from "../e2e.config.ts";
 import { SECOND_HOME, startSecondServer } from "./second-server.ts";
-import { environmentId, makeState, rpcClient, runPromise, test, WEB } from "./t3.ts";
+import { environmentId, makeState, rpcClient, runPromise, test, WEB } from "./vc.ts";
 
 const decodeCredential = Schema.decodeUnknownSync(Schema.Struct({ credential: Schema.String }));
 
 test(
   "A closed linked-thread tab does not take over the conversation when pairing finishes",
   WEB,
-  async ({ t3, app, browser, screen }) => {
-    const project = await t3.project("primary");
-    const parent = await t3.thread({
+  async ({ vc, app, browser, screen }) => {
+    const project = await vc.project("primary");
+    const parent = await vc.thread({
       project,
       title: "Current work",
       messages: ["Keep this conversation open"],
@@ -114,7 +114,7 @@ test(
         await route.continue();
       });
       try {
-        await t3.open(parent);
+        await vc.open(parent);
         await screen.getByText(linkedPrompt, { exact: true }).waitFor();
         const originalUrl = await browser.url();
         await screen.getByRole("button", "Connect to interact", { exact: true }).tap();

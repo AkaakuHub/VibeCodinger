@@ -7,7 +7,7 @@ import { FetchHttpClient, HttpClient, HttpClientRequest } from "effect/http";
 
 import { APP_DATA_HOME } from "../e2e.config.ts";
 import { ScenarioError } from "./shell.ts";
-import { makeState, runPromise, test, WEB } from "./t3.ts";
+import { makeState, runPromise, test, WEB } from "./vc.ts";
 
 const SettingsJson = Schema.fromJsonString(Schema.Record(Schema.String, Schema.Unknown));
 const decodeSettings = Schema.decodeEffect(SettingsJson);
@@ -92,13 +92,13 @@ const archiveOverMcp = Effect.fn("scenario.archiveOverMcp")(function* (
 test(
   "Settings Archived lists a thread archived elsewhere while it is open",
   WEB,
-  async ({ t3, app, screen }) => {
+  async ({ vc, app, screen }) => {
     const settings = await runPromise(approvalRequiredThreads);
     try {
       await runPromise(settings.apply);
-      const project = await t3.project("demo");
-      const thread = await t3.thread({ project, title: "Archived elsewhere", messages: ["first"] });
-      await t3.open("/settings/archived");
+      const project = await vc.project("demo");
+      const thread = await vc.thread({ project, title: "Archived elsewhere", messages: ["first"] });
+      await vc.open("/settings/archived");
       await expect(screen.getByText("No archived threads")).toBeVisible();
 
       await runPromise(archiveOverMcp(app.baseUrl ?? "", thread.threadId));

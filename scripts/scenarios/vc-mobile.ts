@@ -1,4 +1,4 @@
-// `test` for iOS scenarios: e2e's mobile test plus `t3`, which seeds state like the web one and
+// `test` for iOS scenarios: e2e's mobile test plus `vc`, which seeds state like the web one and
 // opens the dev client paired with the scenario's server.
 import { test as base } from "@e2e-dev/mobile";
 import * as HostProcess from "@vibecodinger/shared/HostProcess";
@@ -9,12 +9,12 @@ import * as Schema from "effect/Schema";
 
 import { APP_DIR, MOBILE, MOBILE_APP_DATA_HOME } from "../e2e.config.ts";
 import { run, ScenarioError } from "./shell.ts";
-import { makeState, runPromise, type T3State } from "./t3.ts";
+import { makeState, runPromise, type VibeCodingerState } from "./vc.ts";
 
 const APP_ID = "net.akaaku.vibecodinger.dev";
 const SCHEME = "vibecodinger-dev";
 
-export interface MobileT3 extends T3State {
+export interface MobileVibeCodinger extends VibeCodingerState {
   /** Installs the dev client if the device lacks it, loads it from Metro, and pairs it. */
   readonly open: () => Promise<void>;
 }
@@ -44,8 +44,8 @@ const devClientPath = Effect.gen(function* () {
 let installed = false;
 let paired = false;
 
-export const test = base.extend<{ t3: MobileT3 }>({
-  t3: async ({ device, screen }, use) => {
+export const test = base.extend<{ vc: MobileVibeCodinger }>({
+  vc: async ({ device, screen }, use) => {
     const { state, cli, cleanup } = makeState(MOBILE_APP_DATA_HOME, {
       VIBECODINGER_PORT: String(MOBILE.serverPort),
     });

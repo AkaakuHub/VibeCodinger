@@ -1,16 +1,16 @@
 import { expect } from "e2e";
 
 import { MOBILE } from "../e2e.config.ts";
-import { environmentId, runPromise } from "./t3.ts";
-import { IOS, test } from "./t3-mobile.ts";
+import { environmentId, runPromise } from "./vc.ts";
+import { IOS, test } from "./vc-mobile.ts";
 
 test(
   "A latched terminal ctrl key reads as selected to iOS accessibility",
   IOS,
-  async ({ t3, app, screen, device }) => {
-    const project = await t3.project("demo");
-    const { threadId } = await t3.thread({ project, title: "Latched keys", messages: ["hello"] });
-    await t3.open();
+  async ({ vc, app, screen, device }) => {
+    const project = await vc.project("demo");
+    const { threadId } = await vc.thread({ project, title: "Latched keys", messages: ["hello"] });
+    await vc.open();
     await screen.getByText("Latched keys", { exact: false }).first().waitFor({ timeout: 120_000 });
 
     const environment = await runPromise(
