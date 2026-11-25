@@ -25,7 +25,7 @@ export const FeedbackToolkit = Toolkit.make(
   Tool.make("t3_feedback", {
     ...shared,
     description:
-      "Send feedback to the T3 team: a T3 tool or `t3` command that misbehaved, a confusing instruction, a missing capability, or anything about T3 Code the user asks you to send. Not the user's own code. Use your own words; never quote the user's messages, code, files, or names. A report the user asks for opens a card where they approve it and choose whether to include the conversation of the `turns` you set, so call this when asked without asking first, and never paste the conversation into it.",
+      "Save VibeCodinger feedback on this machine: broken tools or commands, confusing instructions, missing capabilities, or other product feedback. Use your own words and exclude the user's messages, code, files, and names. When asked, call directly to open an approval card where the user chooses whether to include the selected turns. Never paste the conversation into the report.",
     parameters: FeedbackInput,
     success: Schema.Union([FeedbackSubmitResult, FeedbackAwaitingApproval]),
   })

@@ -13,7 +13,7 @@ export const FEEDBACK_TRACE_TURNS = 5;
 const reportFields = {
   kind: AgentFeedbackKind,
   subject: Schema.String.annotate({
-    description: "T3 tool name, `vibecodinger` command, or `general`.",
+    description: "Tool name, `vibecodinger` command, or `general`.",
   }),
   expected: FeedbackText,
   actual: FeedbackText,
@@ -205,7 +205,7 @@ export type FeedbackInput = typeof FeedbackInput.Type;
 export type FeedbackReport = typeof FeedbackReport.Type;
 
 export const FEEDBACK_SUBJECT_MESSAGE =
-  "Set subject to the exact T3 tool name, the vibecodinger command, or `general`.";
+  "Set subject to the exact tool name, the vibecodinger command, or `general`.";
 
 // The shared resolver knows the presented tools; the prefix covers the rest, such as these.
 // Codex also registers `t3-code-direct` for T3 tools it keeps out of Code Mode.
