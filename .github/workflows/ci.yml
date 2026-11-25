@@ -475,16 +475,18 @@ jobs:
             node apps/server/node_modules/playwright-core/cli.js install-deps chromium
           fi
 
-      # Each server test file runs in its own Vitest process, and a fresh install starts
-      # Vitest's content-keyed module cache empty, so every file re-transformed its imports.
-      # Only pushes to main save it, so pull requests never evict each other's entries.
-      - name: Restore Vitest module cache
+      # GitHub scopes PR caches to their merge ref. Keep one warm cache per PR,
+      # lockfile and shard so repeated pushes do not save another large archive.
+      - name: Restore server test caches
+        id: server_test_cache
         if: steps.changes.outputs.test_server != 'false'
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: node_modules/.vitest-cache
-          key: vitest-modules-server-${{ matrix.shard }}-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
-          restore-keys: vitest-modules-server-${{ matrix.shard }}-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
+          path: |
+            node_modules/.vitest-cache
+            node_modules/.vite/task-cache
+          key: server-tests-v2-${{ matrix.shard }}-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.sha }}
+          restore-keys: server-tests-v2-${{ matrix.shard }}-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('pnpm-lock.yaml') }}-
 
       - name: Test
         if: steps.changes.outputs.test_server != 'false'
@@ -498,12 +500,14 @@ jobs:
           --uncached apps/server/integration/transferBudgetV2.integration.test.ts
           --verify-hits 1 apps/server
 
-      - name: Save Vitest module cache
-        if: github.event_name == 'push' && steps.changes.outputs.test_server != 'false'
+      - name: Save server test caches
+        if: steps.changes.outputs.test_server != 'false' && steps.server_test_cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: node_modules/.vitest-cache
-          key: vitest-modules-server-${{ matrix.shard }}-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+          path: |
+            node_modules/.vitest-cache
+            node_modules/.vite/task-cache
+          key: ${{ steps.server_test_cache.outputs.cache-primary-key }}
 
       # integration/transferBudgetV2.integration.test.ts writes the report; exactly one shard
       # produces these files. Gating the upload on their presence keeps a
