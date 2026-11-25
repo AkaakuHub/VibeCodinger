@@ -23,7 +23,7 @@ import {
   codexMcpListLaunchArgs,
   resolveCodexLaunchArgs,
 } from "../provider/codexLaunchArgs.ts";
-import { codexAppServerEnvironment } from "../provider/CodexProvider.ts";
+import { codexCliEnvironment } from "../provider/CodexProvider.ts";
 import * as TextGenerationOperations from "@vibecodinger/provider-core/server/textGenerationOperations";
 import {
   normalizeCliError,
@@ -290,7 +290,7 @@ export const makeCodexTextGeneration = Effect.fn("makeCodexTextGeneration")(func
         resolved || fellBack ? undefined : getCodexServiceTierOptionValue(modelSelection);
       const binary = effectiveConfig.binaryPath || "codex";
       const env = {
-        ...codexAppServerEnvironment(effectiveEnvironment),
+        ...codexCliEnvironment(effectiveEnvironment),
         ...(effectiveConfig.homePath
           ? {
               CODEX_HOME: expandHomePath(

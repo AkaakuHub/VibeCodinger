@@ -60,7 +60,7 @@ interface FakeCodexInput {
   requiredCwd?: string;
   requireInstructions?: string;
   requireMcpServersOff?: ReadonlyArray<string>;
-  requireOriginator?: string;
+  requireDefaultOriginator?: boolean;
 }
 
 function makeFakeCodexBinary(dir: string, input: FakeCodexInput) {
@@ -77,7 +77,7 @@ function makeFakeCodexBinary(dir: string, input: FakeCodexInput) {
     requiredCwd: input.requiredCwd ?? null,
     requireInstructions: input.requireInstructions ?? null,
     requireMcpServersOff: input.requireMcpServersOff ?? [],
-    requireOriginator: input.requireOriginator ?? null,
+    requireDefaultOriginator: input.requireDefaultOriginator ?? false,
     stderr: input.stderr ?? null,
     output: input.output,
     exitCode: input.exitCode ?? 0,
@@ -161,7 +161,7 @@ function makeFakeCodexBinary(dir: string, input: FakeCodexInput) {
         "for (const name of check.requireMcpServersOff) {",
         '  if (!offServers.has(name)) fail("MCP server left on: " + name, 13);',
         "}",
-        "if (check.requireOriginator !== null && process.env.CODEX_INTERNAL_ORIGINATOR_OVERRIDE !== check.requireOriginator) {",
+        "if (check.requireDefaultOriginator && process.env.CODEX_INTERNAL_ORIGINATOR_OVERRIDE !== undefined) {",
         '  fail("unexpected originator: " + process.env.CODEX_INTERNAL_ORIGINATOR_OVERRIDE, 14);',
         "}",
         'if (check.requiredCwd !== null && process.cwd() !== check.requiredCwd) fail("cannot inspect checkout", 10);',
@@ -526,9 +526,9 @@ it.layer(layerCodexTextGenerationTest)("CodexTextGeneration", (it) => {
     ),
   );
 
-  it.effect("identifies codex exec as T3 Code", () =>
+  it.effect("leaves the Codex CLI originator at its default", () =>
     withFakeCodexEnv(
-      { output: JSON.stringify({ title: "Live title" }), requireOriginator: "T3 Code" },
+      { output: JSON.stringify({ title: "Live title" }), requireDefaultOriginator: true },
       (textGeneration) =>
         Effect.gen(function* () {
           const result = yield* textGeneration.generateThreadTitle({

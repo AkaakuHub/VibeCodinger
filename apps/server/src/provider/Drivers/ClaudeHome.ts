@@ -50,6 +50,7 @@ export const makeClaudeEnvironment = Effect.fn("makeClaudeEnvironment")(function
 const CLAUDE_HOST_SESSION_VARIABLES = [
   "CLAUDECODE",
   "CLAUDE_CODE_SESSION_ID",
+  "CLAUDE_CODE_ENTRYPOINT",
   "CLAUDE_CODE_HOST_SESSION_ID",
   "CLAUDE_CODE_CHILD_SESSION",
   "CLAUDE_CODE_SESSION_ATTENDED",
@@ -63,21 +64,18 @@ const CLAUDE_HOST_SESSION_VARIABLES = [
 ];
 
 /**
- * Base env for the Claude processes T3 Code runs, before `makeClaudeEnvironment`.
- * Claude Code reads its entrypoint from the process env, not its settings `env`, so T3 Code applies that override itself.
+ * Base env for the Claude processes VibeCodinger runs, before `makeClaudeEnvironment`.
+ * Claude Code reads its entrypoint from the process env, not its settings `env`, so VibeCodinger applies that override itself.
  */
 export const mergeClaudeProcessEnvironment = Effect.fn("mergeClaudeProcessEnvironment")(function* (
   config: Pick<ClaudeSettings, "homePath">,
   instanceEnvironment: ProviderInstanceEnvironment | undefined,
   hostEnvironment: NodeJS.ProcessEnv,
 ) {
-  const baseEnvironment: NodeJS.ProcessEnv = {
-    ...hostEnvironment,
-    CLAUDE_CODE_ENTRYPOINT: "t3-code",
-  };
+  const baseEnvironment = { ...hostEnvironment };
   for (const name of CLAUDE_HOST_SESSION_VARIABLES) delete baseEnvironment[name];
   // The desktop runs the server as Node through Electron. Commands Claude runs inherit its env, so
-  // an Electron app they start (T3 Code itself, VS Code) would run as Node and exit.
+  // an Electron app they start (VibeCodinger itself, VS Code) would run as Node and exit.
   delete baseEnvironment.ELECTRON_RUN_AS_NODE;
   const environment = yield* mergeProviderInstanceEnvironment(instanceEnvironment, baseEnvironment);
   const settingsEntrypoint = (yield* readClaudeSettingsEnv(config, undefined, environment))

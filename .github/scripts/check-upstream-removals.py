@@ -118,6 +118,7 @@ FORBIDDEN = re.compile(
     rb"GuestShareService\.layer|guestShareCreate|guestShare\.create|CloudManagedEndpointRuntime|/api/guest/|"
     rb"cloudGetRelayClientStatus|cloudInstallRelayClient|cloud\.(?:getRelayClientStatus|installRelayClient)|RelayClientInstallDialog|"
     rb"CloudHttp\.layer|HttpApiBuilder\.layer\(EnvironmentHttpApi\).*connect|"
+    rb"CODEX_INTERNAL_ORIGINATOR_OVERRIDE\s*:|CLAUDE_CODE_ENTRYPOINT\s*:\s*['\x22]t3-code|"
     rb"VIBECODINGER_REPOSITORY_URL.{0,64}github\.com/pingdotgg/t3code|"
     rb"usePrimaryCloudLinkState|useCloudLinkState|PhoneConnectLink|WebhookDeliveryMode|"
     rb"CloudLinkRow|CloudRemoteEnvironmentRows|useCloudLinkController|relayHttpBaseUrl|t3ConnectMcpUrl|"
