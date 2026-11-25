@@ -36,6 +36,7 @@ import * as BackgroundPolicy from "./background/BackgroundPolicy.ts";
 import * as HostPowerMonitor from "./background/HostPowerMonitor.ts";
 import * as KeepAwake from "./background/KeepAwake.ts";
 import * as ServerConfig from "./config.ts";
+import * as TransportTls from "./transportTls.ts";
 import { withRootRequestSpans } from "./http.ts";
 import * as ServerHttp from "./http.ts";
 import {
@@ -382,27 +383,29 @@ const layerHttpServer = Layer.unwrap(
     });
     yield* ManagedLimits.closeTailscaleServeTo(policy, { host: bindHost, port: config.port });
     const runSync = Effect.runSyncWith(yield* Effect.context<never>());
-    return NodeHttpServer.layer(
-      () => {
-        const server = rejectRequestsUntilServing(
-          keepIdleConnections(guardHttpResponseWriteErrors(NodeHttp.createServer())),
-        );
-        if (config.privateNetworkOnly) {
-          runSync(closeNonPrivateNetworkConnections(server));
-        }
-        return server;
-      },
-      {
-        host: bindHost,
-        port: config.port,
-        gracefulShutdownTimeout: HTTP_PREEMPTIVE_SHUTDOWN_GRACE_MS,
-        // Context takeover stays enabled (ws default) so the compression
-        // window is shared across frames — that also makes small frames cheap
-        // to compress, so no size threshold is set (ws only honors
-        // `threshold` when context takeover is disabled).
-        websocket: { perMessageDeflate: true },
-      },
-    ).pipe(Layer.merge(layerSpawner));
+    const server = rejectRequestsUntilServing(
+      keepIdleConnections(guardHttpResponseWriteErrors(NodeHttp.createServer())),
+    );
+    if (config.privateNetworkOnly) runSync(closeNonPrivateNetworkConnections(server));
+    return NodeHttpServer.layer(() => server, {
+      host: bindHost,
+      port: config.port,
+      gracefulShutdownTimeout: HTTP_PREEMPTIVE_SHUTDOWN_GRACE_MS,
+      // Context takeover stays enabled (ws default) so the compression
+      // window is shared across frames — that also makes small frames cheap
+      // to compress, so no size threshold is set (ws only honors
+      // `threshold` when context takeover is disabled).
+      websocket: { perMessageDeflate: true },
+    }).pipe(
+      Layer.merge(
+        TransportTls.layer(server, {
+          plainHost: bindHost,
+          remoteClientsAllowed: ManagedLimits.allowsRemoteClients(policy),
+          tailscaleServeEnabled: config.tailscaleServeEnabled,
+        }),
+      ),
+      Layer.merge(layerSpawner),
+    );
   }),
 ).pipe(
   Layer.provide(ManagedPolicy.layer),

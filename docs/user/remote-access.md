@@ -88,6 +88,35 @@ opens and approve. The new limit applies the next time you add a machine. If you
 cancel or downgrade T3 Chat, machines you already linked stay linked, but you
 cannot add more until you are under the limit again.
 
+## Direct TLS over Tailscale
+
+For a headless host, T3 Code can terminate HTTPS and WebSocket TLS itself. Set
+`T3CODE_TLS_PORT`, `T3CODE_TLS_CERT_FILE`, and `T3CODE_TLS_KEY_FILE` together
+in the server process environment. The certificate and key must be PEM files,
+and the certificate must cover the Tailscale hostname and be trusted by your
+clients. The TLS listener binds to `127.0.0.1` and requires TLS 1.3. Keep the
+regular server listener on `127.0.0.1` for local administration.
+
+Once T3 Code is listening, forward TCP from the tailnet to the TLS port. For
+example, to forward tailnet port 13443 to a T3 TLS listener on port 3774:
+
+```sh
+tailscale serve --bg --tcp=13443 tcp://127.0.0.1:3774
+```
+
+If port 13443 already has a Tailscale HTTPS mapping for this server, remove that
+mapping before replacing it. Use [TCP forwarding](https://tailscale.com/docs/reference/tailscale-cli/serve)
+and keep the regular HTTP port private. The Tailscale forwarder carries the
+encrypted connection through to T3 Code. Only the client and T3 Code terminate
+TLS. T3 Code still processes and stores conversation data on the host.
+
+Run `t3 pair` on the host to create a one-time code. In the app's **Add
+environment** screen, enter the HTTPS address of the tailnet host, including the
+forwarded port, and the pairing code. Enable certificate renewal to replace the
+PEM files in place. T3 Code checks the files every five minutes and applies
+a valid new pair to new connections. [Tailscale certificate setup](https://tailscale.com/docs/how-to/set-up-https-certificates)
+covers issuance and expiry.
+
 ## Pair over a LAN or private network
 
 Use direct pairing when the other device can reach the host's network address.
