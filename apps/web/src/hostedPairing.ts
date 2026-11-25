@@ -69,7 +69,10 @@ export function hasHostedPairingRequest(url: URL = new URL(window.location.href)
 export function buildHostedChannelSelectionUrl(input: {
   readonly channel: HostedAppChannel;
 }): string {
-  const url = new URL("/__t3code/channel", configuredHostedAppUrl() || window.location.origin);
+  const url = new URL(
+    "/__vibecodinger/channel",
+    configuredHostedAppUrl() || window.location.origin,
+  );
   url.searchParams.set("channel", input.channel);
   return url.toString();
 }

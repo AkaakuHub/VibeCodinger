@@ -192,7 +192,7 @@ type ReviewAnnotation = DiffLineAnnotation<ReviewAnnotationGroup>;
 
 const COMMIT_PAGE_SIZE = 10;
 
-const PULL_REQUEST_FILE_TREE_STORAGE_KEY = "t3code.pullRequestFileTreeOpen";
+const PULL_REQUEST_FILE_TREE_STORAGE_KEY = "vibecodinger.pullRequestFileTreeOpen";
 
 interface DiffSlice {
   readonly source: PullRequestDiffResult;

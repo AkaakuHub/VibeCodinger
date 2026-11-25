@@ -2,9 +2,9 @@ import { PullRequestContextMetadata } from "@vibecodinger/contracts";
 import { serializeComposerFileLink } from "@vibecodinger/shared/composerTrigger";
 import { Option, Schema } from "effect";
 
-export const COMPOSER_MENTION_DRAG_TYPE = "application/x-t3code-composer-mention";
+export const COMPOSER_MENTION_DRAG_TYPE = "application/x-vibecodinger-composer-mention";
 
-export const COMPOSER_PULL_REQUEST_DRAG_TYPE = "application/x-t3code-pull-request";
+export const COMPOSER_PULL_REQUEST_DRAG_TYPE = "application/x-vibecodinger-pull-request";
 
 const PullRequestDragPayload = Schema.fromJsonString(PullRequestContextMetadata);
 const decodePullRequestPayload = Schema.decodeUnknownOption(PullRequestDragPayload);
