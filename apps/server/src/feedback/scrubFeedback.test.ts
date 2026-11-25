@@ -17,9 +17,9 @@ describe("scrubFeedback", () => {
     ],
     [
       "known values only as whole words",
-      "t3_feedback failed for vibecodinger and Bob, not bobcat",
-      ["vibecodinger", "Bob", "x"],
-      "t3_feedback failed for vibecodinger and [redacted], not bobcat",
+      "Feedback failed for qa and Bob, not bobcat",
+      ["qa", "Bob", "x"],
+      "Feedback failed for qa and [redacted], not bobcat",
     ],
     [
       "URLs with credentials before emails inside them",
@@ -141,12 +141,7 @@ describe("scrubFeedback", () => {
       [],
       'Opened [redacted]\nand "[redacted]" then',
     ],
-    [
-      "a two-letter username such as vibecodinger",
-      "vibecodinger thread send failed for vibecodinger",
-      ["vibecodinger"],
-      "vibecodinger thread send failed for vibecodinger",
-    ],
+    ["a two-letter username", "Thread send failed for qa", ["qa"], "Thread send failed for qa"],
     ["a 1,200-character adversarial path", `/a/b${" x/".repeat(398)}`, [], "[redacted]"],
   ])("scrubs %s", (_, text, sensitive, expected) => {
     expect(scrubFeedback(text, sensitive)).toBe(expected);

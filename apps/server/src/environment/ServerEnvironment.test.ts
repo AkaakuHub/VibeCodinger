@@ -88,7 +88,7 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("ServerEnvironmen
       yield* fs.writeFileString(entry, "");
       yield* fs.writeFileString(
         `${prefix}/lib/node_modules/vibecodinger/package.json`,
-        '{"name":"t3","version":"0.0.45","bin":{"t3":"./dist/bin.mjs"}}',
+        '{"name":"vibecodinger","version":"0.0.45","bin":{"vibecodinger":"./dist/bin.mjs"}}',
       );
       yield* fs.symlink(entry, `${prefix}/bin/vibecodinger`);
       const config = yield* makeServerConfig(baseDir);
