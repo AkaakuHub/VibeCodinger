@@ -160,6 +160,6 @@ const decodeNpmReleaseMigrationManifest = Schema.decodeUnknownOption(NpmReleaseM
 
 /** Highest database migration a release's server knows, from its npm `t3` manifest. */
 export function npmReleaseDatabaseMigration(manifest: unknown): number | undefined {
-  return Option.getOrUndefined(decodeNpmReleaseMigrationManifest(manifest))?.t3code
+  return Option.getOrUndefined(decodeNpmReleaseMigrationManifest(manifest))?.vibecodinger
     .databaseMigration;
 }
