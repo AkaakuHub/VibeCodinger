@@ -3,12 +3,6 @@ name: Fork iPhone IPA
 on:
   pull_request:
     branches: [main]
-    paths:
-      - ".github/workflows/fork-ios-ipa.yml"
-      - "apps/mobile/**"
-      - "assets/prod/**"
-      - "packages/**"
-      - "pnpm-lock.yaml"
   workflow_dispatch:
     inputs:
       release_tag:
@@ -34,6 +28,12 @@ jobs:
     timeout-minutes: 60
     permissions:
       contents: read
+    env:
+      APP_VARIANT: production
+      T3CODE_IOS_PERSONAL_TEAM: "1"
+      T3CODE_IOS_PERSONAL_TEAM_BUNDLE_ID: net.akaaku.vibecodinger
+      EXPO_NO_GIT_STATUS: "1"
+      NODE_OPTIONS: --max-old-space-size=8192
     steps:
       - name: Checkout build source
         shell: bash
@@ -53,19 +53,19 @@ jobs:
       - name: Install mobile dependencies
         run: vp install --frozen-lockfile --filter=@t3tools/mobile... --filter=@t3tools/scripts...
 
+      - name: Generate the Xcode project
+        working-directory: apps/mobile
+        run: vp exec expo prebuild --clean --platform ios --no-install
+
+      - name: Install CocoaPods dependencies
+        working-directory: apps/mobile/ios
+        run: pod install
+
       - name: Build and verify the unsigned device IPA
         working-directory: apps/mobile
         shell: bash
-        env:
-          APP_VARIANT: production
-          T3CODE_IOS_PERSONAL_TEAM: "1"
-          T3CODE_IOS_PERSONAL_TEAM_BUNDLE_ID: net.akaaku.vibecodinger
-          EXPO_NO_GIT_STATUS: "1"
-          NODE_OPTIONS: --max-old-space-size=8192
         run: |
           set -euo pipefail
-          vp exec expo prebuild --clean --platform ios --no-install
-          (cd ios && pod install)
           archive="$RUNNER_TEMP/VibeCodinger.xcarchive"
           xcrun xcodebuild archive \
             -workspace ios/VibeCodinger.xcworkspace \
