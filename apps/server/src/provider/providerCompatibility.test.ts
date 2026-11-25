@@ -35,7 +35,7 @@ const decodeCompatibilityPolicies = Schema.decodeUnknownSync(
 const driver = ProviderDriverKind.make("codex");
 const policy: ProviderCompatibilityPolicy = {
   driver,
-  t3CodeRange: ">=0.0.0",
+  vibeCodingerRange: ">=0.0.0",
   recommendedVersion: "2.0.0",
   recommendedRange: ">=2.0.0 <3.0.0",
   ranges: [
@@ -108,7 +108,7 @@ describe("provider compatibility", () => {
     const cursor = ProviderDriverKind.make("cursor");
     const cursorPolicy: ProviderCompatibilityPolicy = {
       driver: cursor,
-      t3CodeRange: policy.t3CodeRange,
+      vibeCodingerRange: policy.vibeCodingerRange,
       versionPattern: "^(\\d{4}\\.\\d{2}\\.\\d{2})-[a-f0-9]+$",
       ranges: [
         { range: "<2026.05.09", status: "unsupported" },
@@ -174,7 +174,7 @@ describe("provider compatibility", () => {
   });
 
   it("applies policies only within their VibeCodinger version range", () => {
-    const scopedPolicy = { ...policy, t3CodeRange: ">=0.0.42 <0.1.0" };
+    const scopedPolicy = { ...policy, vibeCodingerRange: ">=0.0.42 <0.1.0" };
     for (const version of ["0.0.42", "0.0.45"]) {
       assert.strictEqual(
         resolveProviderCompatibility([scopedPolicy], driver, "0.9.0", version)?.status,
@@ -195,7 +195,7 @@ describe("provider compatibility", () => {
     assert.strictEqual(supported.status, "error");
     assert.strictEqual(supported.message, "Authentication failed");
     assert.strictEqual(
-      applyProviderCompatibility(supported, [{ ...policy, t3CodeRange: "<0.0.0" }], [policy])
+      applyProviderCompatibility(supported, [{ ...policy, vibeCodingerRange: "<0.0.0" }], [policy])
         .compatibilityAdvisory?.status,
       "broken",
     );
@@ -217,7 +217,7 @@ describe("provider compatibility", () => {
     assert.doesNotThrow(() => decode(policy));
     const prefixed = decode({
       ...policy,
-      t3CodeRange: ">=v0.0.42 <v0.1",
+      vibeCodingerRange: ">=v0.0.42 <v0.1",
       recommendedRange: "^v2",
       ranges: [{ range: ">=v2.0 <v3", status: "supported" }],
     });
@@ -230,7 +230,7 @@ describe("provider compatibility", () => {
       "unknown",
     );
     for (const invalid of [
-      { ...policy, t3CodeRange: "*" },
+      { ...policy, vibeCodingerRange: "*" },
       { ...policy, recommendedVersion: "3.0.0" },
       { ...policy, ranges: [{ range: ">=2.0.0 garbage", status: "supported" }] },
       { ...policy, recommendedVersion: "2.0.0; echo unsafe" },

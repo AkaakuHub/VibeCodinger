@@ -34,7 +34,7 @@ const compilePattern = (pattern: string) => {
 };
 const Policy = Schema.Struct({
   driver: TrimmedNonEmptyString,
-  t3CodeRange: VersionRange,
+  vibeCodingerRange: VersionRange,
   /** Matches a reported version that is not plain `X.Y.Z`; its first group is the version to rate. */
   versionPattern: Schema.optionalKey(
     TrimmedNonEmptyString.pipe(
@@ -74,10 +74,11 @@ export function resolveProviderCompatibility(
   policies: ReadonlyArray<ProviderCompatibilityPolicy> | undefined,
   driver: ProviderDriverKind,
   version: string | null,
-  t3CodeVersion = packageJson.version,
+  vibeCodingerVersion = packageJson.version,
 ): ServerProviderCompatibilityAdvisory | undefined {
   const policy = policies?.find(
-    (entry) => entry.driver === driver && satisfiesSemverRange(t3CodeVersion, entry.t3CodeRange),
+    (entry) =>
+      entry.driver === driver && satisfiesSemverRange(vibeCodingerVersion, entry.vibeCodingerRange),
   );
   if (!policy) return undefined;
   const unprefixed = version?.replace(/^v/, "");
