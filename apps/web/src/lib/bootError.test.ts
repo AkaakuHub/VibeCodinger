@@ -20,29 +20,33 @@ const notOnPath = (launcherPath: string | null): DesktopCliCommandState => ({
 
 describe("resolveTriageCommand", () => {
   it("prefers t3 on PATH, then the desktop launcher", async () => {
-    const onPath = { ...notOnPath("/home/me/.vibecodinger/bin/t3"), onPath: true };
+    const onPath = { ...notOnPath("/home/me/.vibecodinger/bin/vibecodinger"), onPath: true };
     await expect(resolveTriageCommand(desktopWith(async () => onPath))).resolves.toBe("t3 triage");
     await expect(
-      resolveTriageCommand(desktopWith(async () => notOnPath("/home/me/.vibecodinger/bin/t3"))),
-    ).resolves.toBe("/home/me/.vibecodinger/bin/t3 triage");
+      resolveTriageCommand(
+        desktopWith(async () => notOnPath("/home/me/.vibecodinger/bin/vibecodinger")),
+      ),
+    ).resolves.toBe("/home/me/.vibecodinger/bin/vibecodinger triage");
   });
 
   it("quotes launcher paths for the shell that runs them", async () => {
     await expect(
       resolveTriageCommand(
-        desktopWith(async () => notOnPath("/Users/O'Neil/.vibecodinger/bin/t3")),
+        desktopWith(async () => notOnPath("/Users/O'Neil/.vibecodinger/bin/vibecodinger")),
       ),
-    ).resolves.toBe(`'/Users/O'"'"'Neil/.vibecodinger/bin/t3' triage`);
+    ).resolves.toBe(`'/Users/O'"'"'Neil/.vibecodinger/bin/vibecodinger' triage`);
     await expect(
       resolveTriageCommand(
-        desktopWith(async () => notOnPath("C:\\Users\\Me\\.vibecodinger\\bin\\t3.cmd")),
+        desktopWith(async () => notOnPath("C:\\Users\\Me\\.vibecodinger\\bin\\vibecodinger.cmd")),
       ),
-    ).resolves.toBe("C:\\Users\\Me\\.vibecodinger\\bin\\t3.cmd triage");
+    ).resolves.toBe("C:\\Users\\Me\\.vibecodinger\\bin\\vibecodinger.cmd triage");
     await expect(
       resolveTriageCommand(
-        desktopWith(async () => notOnPath("C:\\Users\\Jo O'Neil\\.vibecodinger\\bin\\t3.cmd")),
+        desktopWith(async () =>
+          notOnPath("C:\\Users\\Jo O'Neil\\.vibecodinger\\bin\\vibecodinger.cmd"),
+        ),
       ),
-    ).resolves.toBe("& 'C:\\Users\\Jo O''Neil\\.vibecodinger\\bin\\t3.cmd' triage");
+    ).resolves.toBe("& 'C:\\Users\\Jo O''Neil\\.vibecodinger\\bin\\vibecodinger.cmd' triage");
   });
 
   it("falls back to npx without a usable desktop launcher", async () => {

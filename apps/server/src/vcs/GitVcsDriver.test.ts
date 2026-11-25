@@ -205,7 +205,7 @@ const makeCheckpointFixture = Effect.fn("makeCheckpointFixture")(function* (
   yield* fileSystem.writeFileString(path.join(cwd, "file.txt"), "initial\n");
   yield* git(["add", "."]);
   yield* git(["commit", "-m", "initial"]);
-  const checkpointRef = CheckpointRef.make("refs/t3/checkpoints/test");
+  const checkpointRef = CheckpointRef.make("refs/vibecodinger/checkpoints/test");
   yield* fileSystem.writeFileString(path.join(cwd, "file.txt"), "staged\n");
   yield* git(["add", "."]);
   yield* fileSystem.writeFileString(path.join(cwd, "file.txt"), "unstaged\n");
@@ -308,7 +308,7 @@ it.effect.each(["interrupt", "timeout", "success"] as const)(
       );
       // An overlapping capture publishes the same large blob while the first
       // still owns an unfinished pack. Its objects/ref must survive either exit.
-      const concurrentRef = CheckpointRef.make("refs/t3/checkpoints/concurrent");
+      const concurrentRef = CheckpointRef.make("refs/vibecodinger/checkpoints/concurrent");
       const concurrentDriver = yield* GitVcsDriver.makeVcsDriverShape().pipe(
         Effect.provideService(VcsProcess.VcsProcess, {
           run: (input) =>
@@ -704,7 +704,7 @@ it.effect.skipIf(HostProcess.Platform.defaultValue() === "win32")(
       const git = (args: ReadonlyArray<string>) =>
         driver.execute({ operation: "test.shared", cwd, args });
       yield* git(["init", "--shared=0660"]);
-      const checkpointRef = CheckpointRef.make("refs/t3/checkpoints/shared");
+      const checkpointRef = CheckpointRef.make("refs/vibecodinger/checkpoints/shared");
       yield* fs.writeFileString(path.join(cwd, "shared.txt"), "new shared object\n");
       const blob = (yield* git(["hash-object", "-w", "shared.txt"])).stdout.trim();
       const directory = path.join(cwd, ".git/objects", blob.slice(0, 2));
@@ -862,7 +862,7 @@ it.effect.each([
 
       yield* change({ git, write, checkpointRef });
       yield* driver.checkpoints.captureCheckpoint({ cwd, checkpointRef });
-      const freshRef = CheckpointRef.make("refs/t3/checkpoints/fresh");
+      const freshRef = CheckpointRef.make("refs/vibecodinger/checkpoints/fresh");
       yield* fresh.checkpoints.captureCheckpoint({ cwd, checkpointRef: freshRef });
 
       assert.strictEqual(reused, reuses ? 1 : 0);
@@ -1179,8 +1179,8 @@ it.effect("checkpoint capture skips an ignored project while keeping its allowed
     yield* fs.writeFileString(path.join(ignoredCwd, "secret.txt"), "private\n");
     yield* fs.writeFileString(path.join(keepCwd, "new.txt"), "new\n");
     const originalIndex = yield* fs.readFile(path.join(parent, ".git", "index"));
-    const ignoredRef = CheckpointRef.make("refs/t3/checkpoints/ignored");
-    const keepRef = CheckpointRef.make("refs/t3/checkpoints/keep");
+    const ignoredRef = CheckpointRef.make("refs/vibecodinger/checkpoints/ignored");
+    const keepRef = CheckpointRef.make("refs/vibecodinger/checkpoints/keep");
 
     const ignored = yield* Effect.result(
       driver.checkpoints.captureCheckpoint({ cwd: ignoredCwd, checkpointRef: ignoredRef }),
@@ -1481,7 +1481,7 @@ it.effect.each(
       const originalIndex = yield* fs.readFile(indexPath).pipe(Effect.orElseSucceed(() => null));
       const captureCwd = nested ? path.join(cwd, "scope") : cwd;
       for (const turn of [1, 2]) {
-        const ref = CheckpointRef.make(`refs/t3/checkpoints/sparse/${turn}`);
+        const ref = CheckpointRef.make(`refs/vibecodinger/checkpoints/sparse/${turn}`);
         if (turn === 2) {
           yield* write("scope/in/edit", "second\n");
           yield* fs.remove(path.join(cwd, "scope/out/new file"));
@@ -1647,8 +1647,8 @@ it.effect.each(["local", "mixed", "exit", "non-UTF-8 refs", "pruned ref"] as con
       const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "t3-checkpoint-authorship-" });
       const { git } = yield* makeCheckpointFixture(driver, cwd);
       yield* git(["commit", "-am", "baseline"]);
-      const fromCheckpointRef = CheckpointRef.make("refs/t3/checkpoints/authorship/from");
-      const toCheckpointRef = CheckpointRef.make("refs/t3/checkpoints/authorship/to");
+      const fromCheckpointRef = CheckpointRef.make("refs/vibecodinger/checkpoints/authorship/from");
+      const toCheckpointRef = CheckpointRef.make("refs/vibecodinger/checkpoints/authorship/to");
       yield* driver.checkpoints.captureCheckpoint({ cwd, checkpointRef: fromCheckpointRef });
       if (mode !== "local" && mode !== "exit") {
         yield* fs.writeFileString(path.join(cwd, "imported.txt"), "upstream\n");
@@ -1771,8 +1771,8 @@ it.effect("checkpoint authorship reads only reflogs of refs holding the turn's c
     yield* commitFile(upstream, "base.txt");
     yield* git(root, ["clone", upstream, primary]);
     yield* git(primary, ["worktree", "add", cwd, "-b", "turn"]);
-    const fromCheckpointRef = CheckpointRef.make("refs/t3/checkpoints/imports/from");
-    const toCheckpointRef = CheckpointRef.make("refs/t3/checkpoints/imports/to");
+    const fromCheckpointRef = CheckpointRef.make("refs/vibecodinger/checkpoints/imports/from");
+    const toCheckpointRef = CheckpointRef.make("refs/vibecodinger/checkpoints/imports/to");
     yield* driver.checkpoints.captureCheckpoint({ cwd, checkpointRef: fromCheckpointRef });
 
     // Refs updated during the turn that hold none of its commits.
@@ -1780,7 +1780,7 @@ it.effect("checkpoint authorship reads only reflogs of refs holding the turn's c
     const unrelated = Array.from({ length: 200 }, (_, index) => [
       `create refs/remotes/origin/unrelated-${index} ${base}`,
       `create refs/heads/unrelated-${index} ${base}`,
-      `create refs/t3/checkpoints/unrelated-${index} ${base}`,
+      `create refs/vibecodinger/checkpoints/unrelated-${index} ${base}`,
     ]).flat();
     yield* git(
       cwd,
@@ -1847,8 +1847,8 @@ it.effect("checkpoint authorship works with git that rejects --diff-merges=remer
     const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "t3-checkpoint-old-git-" });
     const { git } = yield* makeCheckpointFixture(driver, cwd);
     yield* git(["commit", "-am", "baseline"]);
-    const fromCheckpointRef = CheckpointRef.make("refs/t3/checkpoints/old-git/from");
-    const toCheckpointRef = CheckpointRef.make("refs/t3/checkpoints/old-git/to");
+    const fromCheckpointRef = CheckpointRef.make("refs/vibecodinger/checkpoints/old-git/from");
+    const toCheckpointRef = CheckpointRef.make("refs/vibecodinger/checkpoints/old-git/to");
     yield* driver.checkpoints.captureCheckpoint({ cwd, checkpointRef: fromCheckpointRef });
     yield* fs.writeFileString(path.join(cwd, "local.txt"), "local\n");
     yield* git(["add", "."]);
@@ -1912,7 +1912,7 @@ it.effect("a branch switch landing after the snapshot belongs to the next checkp
     yield* git(["commit", "-am", "b"]);
     yield* git(["checkout", "-"]);
     const [first, second, third] = ["1", "2", "3"].map((turn) =>
-      CheckpointRef.make(`refs/t3/checkpoints/switch-race/${turn}`),
+      CheckpointRef.make(`refs/vibecodinger/checkpoints/switch-race/${turn}`),
     ) as [CheckpointRef, CheckpointRef, CheckpointRef];
     const racedDriver = yield* GitVcsDriver.makeVcsDriverShape().pipe(
       Effect.provideService(VcsProcess.VcsProcess, {
@@ -1979,7 +1979,7 @@ it.effect.each([{ snapshot: "before the switch" }, { snapshot: "after the switch
       yield* git(["commit", "-m", "a"]);
       const head = (yield* git(["rev-parse", "HEAD"])).stdout.trim();
       const [first, second] = ["1", "2"].map((turn) =>
-        CheckpointRef.make(`refs/t3/checkpoints/clean-switch/${turn}`),
+        CheckpointRef.make(`refs/vibecodinger/checkpoints/clean-switch/${turn}`),
       ) as [CheckpointRef, CheckpointRef];
       const refs = { cwd, fromCheckpointRef: first, toCheckpointRef: second };
 
@@ -2098,8 +2098,8 @@ it.effect.each(
       yield* fileSystem.remove(path.join(cwd, "scope/deleted"));
       yield* fileSystem.remove(path.join(cwd, "scope/new-deleted"));
       const captureCwd = nested ? path.join(cwd, "scope") : cwd;
-      const first = CheckpointRef.make("refs/t3/checkpoints/turns/1");
-      const second = CheckpointRef.make("refs/t3/checkpoints/turns/2");
+      const first = CheckpointRef.make("refs/vibecodinger/checkpoints/turns/1");
+      const second = CheckpointRef.make("refs/vibecodinger/checkpoints/turns/2");
       yield* driver.checkpoints.captureCheckpoint({ cwd: captureCwd, checkpointRef: first });
       for (const name of ["scope/staged", "scope/assumed", "scope/skipped"]) {
         assert.strictEqual((yield* git(["show", `${first}:${name}`])).stdout, "working\n");
@@ -2187,7 +2187,7 @@ it.effect.each(["committed", "unborn"] as const)(
       const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-checkpoint-processes-" });
       const git = (args: ReadonlyArray<string>) =>
         driver.execute({ operation: "checkpoint-test", cwd, args });
-      const checkpointRef = CheckpointRef.make("refs/t3/checkpoints/test");
+      const checkpointRef = CheckpointRef.make("refs/vibecodinger/checkpoints/test");
       if (head === "committed") {
         yield* makeCheckpointFixture(driver, cwd);
       } else {
@@ -2231,7 +2231,7 @@ it.effect("checkpoint capture outside a repository fails with the common dir loo
 
     const error = yield* captureRecordingGitCommands(
       cwd,
-      CheckpointRef.make("refs/t3/checkpoints/test"),
+      CheckpointRef.make("refs/vibecodinger/checkpoints/test"),
     ).pipe(Effect.flip);
 
     assert.instanceOf(error, VcsProcessExitError);
@@ -2299,7 +2299,7 @@ it.effect.skipIf(HostProcess.Platform.defaultValue() === "win32")(
       yield* fileSystem.makeDirectory(library);
       yield* git(library, ["init"]);
       yield* git(library, ["commit", "--allow-empty", "-m", "initial"]);
-      const checkpointRef = CheckpointRef.make("refs/t3/checkpoints/edge-space");
+      const checkpointRef = CheckpointRef.make("refs/vibecodinger/checkpoints/edge-space");
       // The newline name takes the per-path fallback; the other takes the one-spawn answer.
       for (const name of ["repo ", "multi\nline "]) {
         const cwd = path.join(parent, name);
@@ -2341,7 +2341,7 @@ it.effect("restores empty checkpoints without changing paths outside the workspa
       yield* runGit(root, ["commit", "--allow-empty", "-m", "initial"]);
       const cwd = nested ? path.join(root, "nested") : root;
       yield* fileSystem.makeDirectory(cwd, { recursive: true });
-      const checkpointRef = CheckpointRef.make("refs/t3/checkpoints/empty");
+      const checkpointRef = CheckpointRef.make("refs/vibecodinger/checkpoints/empty");
       yield* driver.checkpoints.captureCheckpoint({ cwd, checkpointRef });
       if (nested) {
         yield* fileSystem.writeFileString(path.join(root, "outside.txt"), "changed\n");
@@ -2445,7 +2445,7 @@ it.effect("restores a checkpoint before the first commit without staging its fil
       const cwd = nested ? path.join(root, "nested") : root;
       yield* fileSystem.makeDirectory(cwd, { recursive: true });
       yield* fileSystem.writeFileString(path.join(cwd, "file.txt"), "original\n");
-      const checkpointRef = CheckpointRef.make("refs/t3/checkpoints/unborn");
+      const checkpointRef = CheckpointRef.make("refs/vibecodinger/checkpoints/unborn");
       yield* driver.checkpoints.captureCheckpoint({ cwd, checkpointRef });
       yield* fileSystem.writeFileString(path.join(cwd, "file.txt"), "changed\n");
       yield* fileSystem.writeFileString(path.join(cwd, "added.txt"), "new\n");
@@ -2587,7 +2587,7 @@ it.effect("restores and deletes checkpoints inside populated submodules", () =>
     const files = ["file.txt", "library/file.txt", "library/nested/file.txt"].map((file) =>
       path.join(root, file),
     );
-    const checkpointRef = CheckpointRef.make("refs/t3/checkpoints/submodules");
+    const checkpointRef = CheckpointRef.make("refs/vibecodinger/checkpoints/submodules");
     yield* fileSystem.writeFileString(files[1]!, "captured\n");
     yield* driver.checkpoints.captureCheckpoint({ cwd: root, checkpointRef });
 
@@ -2611,7 +2611,7 @@ it.effect("restores and deletes checkpoints inside populated submodules", () =>
 
     yield* driver.checkpoints.deleteCheckpointRefs({ cwd: root, checkpointRefs: [checkpointRef] });
     for (const cwd of [root, path.join(root, "library"), path.join(root, "library", "nested")]) {
-      const ref = yield* git(cwd, ["for-each-ref", "refs/t3"]);
+      const ref = yield* git(cwd, ["for-each-ref", "refs/vibecodinger"]);
       assert.strictEqual(ref.stdout, "");
     }
   }).pipe(Effect.scoped, Effect.provide(layerGitContract)),
@@ -2715,7 +2715,7 @@ it.effect("GitVcsDriver fails repository probes when git cannot read the reposit
       included: `[include]\n\tpath = ${path.join(includeDir, "included")}\n`,
     };
     const driver = yield* GitVcsDriver.makeVcsDriverShape();
-    const checkpointRef = CheckpointRef.make("refs/t3/checkpoints/bad-config/0");
+    const checkpointRef = CheckpointRef.make("refs/vibecodinger/checkpoints/bad-config/0");
 
     for (const [name, config] of Object.entries(configs)) {
       const cwd = path.join(root, name);
@@ -2800,7 +2800,7 @@ it.effect("GitVcsDriver fails a checkpoint ref lookup when git cannot read its o
       stdout: "",
       stderr: "error: unable to open loose object 0733271782d6: Permission denied\n",
     });
-    const checkpointRef = CheckpointRef.make("refs/t3/checkpoints/unreadable/0");
+    const checkpointRef = CheckpointRef.make("refs/vibecodinger/checkpoints/unreadable/0");
 
     const exit = yield* Effect.exit(
       driver.checkpoints.hasCheckpointRef({ cwd: globalThis.process.cwd(), checkpointRef }),
@@ -2817,7 +2817,7 @@ it.effect("GitVcsDriver reads an absent checkpoint ref as absent despite a Git w
     // Valid legacy config that makes every Git command print a deprecation warning.
     yield* runGit(cwd, ["config", "core.fsyncObjectFiles", "true"]);
     const driver = yield* GitVcsDriver.makeVcsDriverShape();
-    const checkpointRef = CheckpointRef.make("refs/t3/checkpoints/absent/0");
+    const checkpointRef = CheckpointRef.make("refs/vibecodinger/checkpoints/absent/0");
 
     assert.isFalse(yield* driver.checkpoints.hasCheckpointRef({ cwd, checkpointRef }));
   }).pipe(Effect.scoped, Effect.provide(layerGitContract)),

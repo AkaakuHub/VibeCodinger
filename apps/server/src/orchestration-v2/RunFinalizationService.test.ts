@@ -51,7 +51,7 @@ const finalizationLayer = (
     ordinalWithinScope: 1,
     appRunOrdinal: null,
     status: "ready" as const,
-    ref: CheckpointRef.make(`refs/t3/test/${repositoryScopeId}`),
+    ref: CheckpointRef.make(`refs/vibecodinger/test/${repositoryScopeId}`),
   });
   return RunFinalization.layer.pipe(
     Layer.provide(

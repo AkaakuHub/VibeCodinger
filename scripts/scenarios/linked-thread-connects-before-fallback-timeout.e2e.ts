@@ -58,7 +58,7 @@ test(
         const fetchActual = globalThis.fetch;
         globalThis.fetch = (input, init) => {
           const url = new URL(input instanceof Request ? input.url : String(input), location.href);
-          if (url.origin !== fallback || url.pathname !== "/.well-known/t3/environment") {
+          if (url.origin !== fallback || url.pathname !== "/.well-known/vibecodinger/environment") {
             // @effect-diagnostics-next-line globalFetch:off - This interception runs inside the browser.
             return fetchActual(input, init);
           }

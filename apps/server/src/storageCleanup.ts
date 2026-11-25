@@ -1026,7 +1026,7 @@ const make = Effect.gen(function* () {
             "--max-count=1",
             "HEAD",
             // Checkpoint refs hold workspace snapshots, not commits a user could lose.
-            "--exclude=refs/t3/*",
+            "--exclude=refs/vibecodinger/*",
             "--all",
             "--reflog",
             "--not",
@@ -2038,7 +2038,7 @@ const make = Effect.gen(function* () {
     for (const row of rows) {
       // Derive ownership from tombstones, never from absence in this database:
       // another T3 home can own refs in the same Git repository.
-      const prefixes = [`refs/t3/checkpoints/${Base64Url.encode(row.threadId)}/turn/`];
+      const prefixes = [`refs/vibecodinger/checkpoints/${Base64Url.encode(row.threadId)}/turn/`];
       if (row.scopeId !== null) {
         prefixes.push(
           (yield* checkpointRefForScopeOrdinal({
@@ -2085,8 +2085,8 @@ const make = Effect.gen(function* () {
           args: [
             "for-each-ref",
             "--format=%(refname)",
-            "refs/t3/checkpoints/",
-            "refs/t3/orchestration-v2/checkpoints/",
+            "refs/vibecodinger/checkpoints/",
+            "refs/vibecodinger/orchestration-v2/checkpoints/",
           ],
           maxOutputBytes: 16 * 1024 * 1024,
         });

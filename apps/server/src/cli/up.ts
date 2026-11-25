@@ -78,7 +78,7 @@ const formatSetup = (setup: Setup, hints: Hints) => {
       !service.supported
         ? "unavailable"
         : service.installed
-          ? `installed · t3@${service.installedVersion ?? packageJson.version}`
+          ? `installed · vibecodinger@${service.installedVersion ?? packageJson.version}`
           : "not installed",
     ],
     [
@@ -153,7 +153,7 @@ const setUp = Effect.fn("cli.up")(function* (flags: {
     return yield* new CliError.UserError({
       cause: "routes",
       userMessage:
-        "No terminal. Choose access with --lan, or use --yes for the default. See `t3 up --help`.",
+        "No terminal. Choose access with --lan, or use --yes for the default. See `vibecodinger up --help`.",
     });
   }
   if (lan && !before.lan) {
@@ -228,7 +228,7 @@ const setUp = Effect.fn("cli.up")(function* (flags: {
     yield* printServeCommand("Background service unavailable.");
   } else {
     if (newer) {
-      yield* Console.log(`Keeping installed service version t3@${installedVersion}.`);
+      yield* Console.log(`Keeping installed service version vibecodinger@${installedVersion}.`);
     }
     if (update && !interactive) {
       yield* Console.log("Updating VibeCodinger. Running agent turns will stop.");
@@ -262,7 +262,7 @@ const setUp = Effect.fn("cli.up")(function* (flags: {
       }
       if (outcome === "skipped") {
         yield* Console.log(
-          "The installed service was not restarted. Run `t3 service status` to see why.",
+          "The installed service was not restarted. Run `vibecodinger service status` to see why.",
         );
       }
     }
@@ -299,11 +299,11 @@ export const upCommand = Command.make("up", {
     "Set up remote access and the VibeCodinger background service. Access flags skip the question, and routes not named keep their settings. Without a terminal, a needed restart runs without asking and stops running agent turns.",
   ),
   Command.withExamples([
-    { command: "t3 up", description: "Choose remote access." },
-    { command: "t3 up --lan", description: "Allow LAN access with pairing codes." },
-    { command: "t3 up --no-lan", description: "Stop LAN access." },
-    { command: "t3 up --yes", description: "Take the defaults with no questions." },
-    { command: "t3 status --json", description: "Read the settings from a script." },
+    { command: "vibecodinger up", description: "Choose remote access." },
+    { command: "vibecodinger up --lan", description: "Allow LAN access with pairing codes." },
+    { command: "vibecodinger up --no-lan", description: "Stop LAN access." },
+    { command: "vibecodinger up --yes", description: "Take the defaults with no questions." },
+    { command: "vibecodinger status --json", description: "Read the settings from a script." },
   ]),
   Command.withHandler(
     Effect.fn("cli.up.run")(function* (flags) {
@@ -349,8 +349,8 @@ export const statusCommand = Command.make("status", {
 }).pipe(
   Command.withDescription("Show service setup and remote access settings."),
   Command.withExamples([
-    { command: "t3 status", description: "Show the settings." },
-    { command: "t3 status --json", description: "Print them for scripts and agents." },
+    { command: "vibecodinger status", description: "Show the settings." },
+    { command: "vibecodinger status --json", description: "Print them for scripts and agents." },
   ]),
   Command.withHandler(
     Effect.fn("cli.status")(function* (flags) {

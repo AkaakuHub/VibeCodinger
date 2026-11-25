@@ -120,12 +120,12 @@ describe.skipIf(posixShellRunner === null)("WSL runtime install script (executed
       [
         "set -eu",
         "work=$(mktemp -d)",
-        'stage="$work/stage/t3-0.0.0-linux-x64"',
+        'stage="$work/stage/vibecodinger-0.0.0-linux-x64"',
         'mkdir -p "$stage/node_modules/node-pty/build/Release" "$work/home"',
-        `printf '%s' ${sh(serverEntry)} > "$stage/t3"`,
-        'chmod +x "$stage/t3"',
+        `printf '%s' ${sh(serverEntry)} > "$stage/vibecodinger"`,
+        'chmod +x "$stage/vibecodinger"',
         `printf '%s' 'pty-native-payload' > "$stage/node_modules/node-pty/build/Release/pty.node"`,
-        `tar -czf "$work/wsl-runtime.tar.gz" -C "$work/stage" t3-0.0.0-linux-x64`,
+        `tar -czf "$work/wsl-runtime.tar.gz" -C "$work/stage" vibecodinger-0.0.0-linux-x64`,
         `printf 'work:%s\\n' "$work"`,
         `printf 'archiveSha:%s\\n' "$(sha256sum "$work/wsl-runtime.tar.gz" | cut -d ' ' -f 1)"`,
       ].join("\n"),
@@ -151,7 +151,7 @@ describe.skipIf(posixShellRunner === null)("WSL runtime install script (executed
       runtimeId,
       runtimeParent: `${work}/home/.vibecodinger/wsl-runtime`,
       runtimeRoot: `${work}/home/.vibecodinger/wsl-runtime/${runtimeId}`,
-      serverEntry: `${work}/home/.vibecodinger/wsl-runtime/${runtimeId}/t3`,
+      serverEntry: `${work}/home/.vibecodinger/wsl-runtime/${runtimeId}/vibecodinger`,
       installScript,
       install: (archive?: string, sha?: string, t3Home?: string | null) =>
         runShell(installScript(archive, sha, t3Home)),
@@ -202,7 +202,7 @@ describe.skipIf(posixShellRunner === null)("WSL runtime install script (executed
 
   it("stages the runtime under the login shell's T3CODE_HOME and reports it to the launcher", () => {
     const fixture = createFixture();
-    const t3Home = `${fixture.work}/home/.config/t3 home`;
+    const t3Home = `${fixture.work}/home/.config/vibecodinger home`;
     const install = fixture.install(undefined, undefined, t3Home);
     expect(install.status, install.stderr).toBe(0);
     expect(parseWslRuntimeRoot(install.stdout)).toBe(`${t3Home}/wsl-runtime/${fixture.runtimeId}`);
@@ -518,7 +518,7 @@ describe.skipIf(posixShellRunner === null)("WSL runtime install script (executed
         'touch -d "4 minutes ago" "$runtime_parent/sha256-active"',
         'touch -d "3 minutes ago" "$runtime_parent/sha256-old"',
         'touch -d "2 minutes ago" "$runtime_parent/sha256-locked"',
-        holdRuntimeBusy('"$runtime_parent/sha256-active/t3"'),
+        holdRuntimeBusy('"$runtime_parent/sha256-active/vibecodinger"'),
         holdInstallLock('"$runtime_parent/.sha256-locked.install.lock"'),
         `HOME="$home"`,
         "export HOME",

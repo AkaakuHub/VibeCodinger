@@ -12,7 +12,9 @@ export const FEEDBACK_TRACE_TURNS = 5;
 
 const reportFields = {
   kind: AgentFeedbackKind,
-  subject: Schema.String.annotate({ description: "T3 tool name, `t3` command, or `general`." }),
+  subject: Schema.String.annotate({
+    description: "T3 tool name, `vibecodinger` command, or `general`.",
+  }),
   expected: FeedbackText,
   actual: FeedbackText,
   workaround: FeedbackText.annotate({ description: "What you did instead, or empty." }),
@@ -81,7 +83,7 @@ export type FeedbackSource = "mcp" | "cli";
 
 // Requested reports count when their card is shown, unprompted ones when stored.
 export const MAX_REPORTS_PER_TURN = 3;
-// Reports from no turn, such as `t3 feedback`, have no turn to count in.
+// Reports from no turn, such as `vibecodinger feedback`, have no turn to count in.
 export const MAX_REPORTS_OUTSIDE_TURNS_PER_HOUR = 10;
 
 export class FeedbackLimitError extends Schema.TaggedError<FeedbackLimitError>()(
@@ -120,94 +122,95 @@ export class FeedbackStorageError extends Schema.TaggedError<FeedbackStorageErro
   }
 }
 
-/** The MCP client label `t3 feedback` signs in with, so its reports count as `cli`. */
-export const FEEDBACK_CLI_CLIENT_LABEL = "t3 feedback cli";
+/** The MCP client label `vibecodinger feedback` signs in with, so its reports count as `cli`. */
+export const FEEDBACK_CLI_CLIENT_LABEL = "vibecodinger feedback cli";
 
-/** Listed `t3` command paths a report may name. A CLI test keeps this in step with binCli. */
+/** Listed `vibecodinger` command paths a report may name. A CLI test keeps this in step with binCli. */
 export const T3_CLI_COMMANDS: ReadonlyArray<string> = [
-  "t3",
-  "t3 help",
-  "t3 serve",
-  "t3 app",
-  "t3 pair",
-  "t3 auth",
-  "t3 auth connect-device",
-  "t3 auth connect-device approve",
-  "t3 auth connect-device list",
-  "t3 auth connect-device revoke",
-  "t3 auth pairing",
-  "t3 auth pairing create",
-  "t3 auth pairing list",
-  "t3 auth pairing revoke",
-  "t3 auth session",
-  "t3 auth session issue",
-  "t3 auth session list",
-  "t3 auth session revoke",
-  "t3 environment",
-  "t3 environment link",
-  "t3 environment list",
-  "t3 environment unlink",
-  "t3 browser",
-  "t3 browser setup",
-  "t3 project",
-  "t3 project add",
-  "t3 project remove",
-  "t3 project rename",
-  "t3 thread",
-  "t3 thread list",
-  "t3 thread start",
-  "t3 thread send",
-  "t3 thread show",
-  "t3 feedback",
-  "t3 feedback list",
-  "t3 workflow",
-  "t3 workflow start",
-  "t3 workflow list",
-  "t3 workflow show",
-  "t3 workflow resume",
-  "t3 workflow cancel",
-  "t3 workflow signal",
-  "t3 workflow questions",
-  "t3 workflow hooks",
-  "t3 workflow store",
-  "t3 workflow store list",
-  "t3 workflow store set",
-  "t3 workflow store delete",
-  "t3 up",
-  "t3 status",
-  "t3 service",
-  "t3 service install",
-  "t3 service restart",
-  "t3 service uninstall",
-  "t3 service status",
-  "t3 service protect",
-  "t3 update",
-  "t3 install",
-  "t3 uninstall",
-  "t3 theme",
-  "t3 theme set",
-  "t3 theme clear",
-  "t3 theme show",
-  "t3 trace",
-  "t3 trace summary",
-  "t3 doctor",
-  "t3 policy",
-  "t3 policy show",
-  "t3 policy check",
-  "t3 policy templates",
-  "t3 policy settings",
-  "t3 triage",
+  "vibecodinger",
+  "vibecodinger help",
+  "vibecodinger serve",
+  "vibecodinger app",
+  "vibecodinger pair",
+  "vibecodinger auth",
+  "vibecodinger auth connect-device",
+  "vibecodinger auth connect-device approve",
+  "vibecodinger auth connect-device list",
+  "vibecodinger auth connect-device revoke",
+  "vibecodinger auth pairing",
+  "vibecodinger auth pairing create",
+  "vibecodinger auth pairing list",
+  "vibecodinger auth pairing revoke",
+  "vibecodinger auth session",
+  "vibecodinger auth session issue",
+  "vibecodinger auth session list",
+  "vibecodinger auth session revoke",
+  "vibecodinger environment",
+  "vibecodinger environment link",
+  "vibecodinger environment list",
+  "vibecodinger environment unlink",
+  "vibecodinger browser",
+  "vibecodinger browser setup",
+  "vibecodinger project",
+  "vibecodinger project add",
+  "vibecodinger project remove",
+  "vibecodinger project rename",
+  "vibecodinger thread",
+  "vibecodinger thread list",
+  "vibecodinger thread start",
+  "vibecodinger thread send",
+  "vibecodinger thread show",
+  "vibecodinger feedback",
+  "vibecodinger feedback list",
+  "vibecodinger workflow",
+  "vibecodinger workflow start",
+  "vibecodinger workflow list",
+  "vibecodinger workflow show",
+  "vibecodinger workflow resume",
+  "vibecodinger workflow cancel",
+  "vibecodinger workflow signal",
+  "vibecodinger workflow questions",
+  "vibecodinger workflow hooks",
+  "vibecodinger workflow store",
+  "vibecodinger workflow store list",
+  "vibecodinger workflow store set",
+  "vibecodinger workflow store delete",
+  "vibecodinger up",
+  "vibecodinger status",
+  "vibecodinger service",
+  "vibecodinger service install",
+  "vibecodinger service restart",
+  "vibecodinger service uninstall",
+  "vibecodinger service status",
+  "vibecodinger service protect",
+  "vibecodinger update",
+  "vibecodinger install",
+  "vibecodinger uninstall",
+  "vibecodinger theme",
+  "vibecodinger theme set",
+  "vibecodinger theme clear",
+  "vibecodinger theme show",
+  "vibecodinger trace",
+  "vibecodinger trace summary",
+  "vibecodinger doctor",
+  "vibecodinger policy",
+  "vibecodinger policy show",
+  "vibecodinger policy check",
+  "vibecodinger policy templates",
+  "vibecodinger policy settings",
+  "vibecodinger triage",
 ];
 
 export type FeedbackInput = typeof FeedbackInput.Type;
 export type FeedbackReport = typeof FeedbackReport.Type;
 
 export const FEEDBACK_SUBJECT_MESSAGE =
-  "Set subject to the exact T3 tool name, the t3 command, or `general`.";
+  "Set subject to the exact T3 tool name, the vibecodinger command, or `general`.";
 
 // The shared resolver knows the presented tools; the prefix covers the rest, such as these.
 // Codex also registers `t3-code-direct` for T3 tools it keeps out of Code Mode.
-const T3_PREFIX = /^(?:mcp__t3[-_]?code(?:[-_]direct)?__|t3[-_]?code(?:[-_]direct)?[.:/])/iu;
+const T3_PREFIX =
+  /^(?:mcp__t3[-_]?code(?:[-_]direct)?__|vibecodinger[-_]?code(?:[-_]direct)?[.:/])/iu;
 
 /** The bare name of a registered T3 tool however a provider prefixed it, else undefined. */
 export const resolveT3ToolName = (name: string, toolNames: ReadonlyArray<string>) => {
@@ -220,7 +223,7 @@ export const resolveT3ToolName = (name: string, toolNames: ReadonlyArray<string>
     .toSorted((a, b) => b.length - a.length)[0];
 };
 
-/** The stored subject, or undefined when the value names no T3 tool, `t3` command, or `general`. */
+/** The stored subject, or undefined when the value names no T3 tool, `vibecodinger` command, or `general`. */
 export const resolveFeedbackSubject = (value: string, toolNames: ReadonlyArray<string>) => {
   const subject = value.trim();
   if (subject === "general" || T3_CLI_COMMANDS.includes(subject)) return subject;

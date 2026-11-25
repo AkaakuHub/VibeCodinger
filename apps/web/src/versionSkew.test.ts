@@ -37,10 +37,12 @@ describe("versionSkew", () => {
     expect(
       manualServerUpdateCommand("0.0.45", {
         kind: "t3-launcher",
-        launcher: "/opt/maria's bin/t3",
-        baseDir: "/data/t3 home",
+        launcher: "/opt/maria's bin/vibecodinger",
+        baseDir: "/data/vibecodinger home",
       }),
-    ).toBe("'/opt/maria'\\''s bin/t3' update --base-dir '/data/t3 home' 0.0.45");
+    ).toBe(
+      "'/opt/maria'\\''s bin/vibecodinger' update --base-dir '/data/vibecodinger home' 0.0.45",
+    );
   });
   beforeEach(() => {
     branding.APP_VERSION = "0.0.34";

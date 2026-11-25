@@ -102,7 +102,7 @@ export const servePeer = <E, R, E2 = never, R2 = never>(
       (httpEffect) =>
         Effect.gen(function* () {
           const request = yield* HttpServerRequest.HttpServerRequest;
-          if (request.url.startsWith("/.well-known/t3/environment")) {
+          if (request.url.startsWith("/.well-known/vibecodinger/environment")) {
             yield* Ref.update(probes, (count) => count + 1);
             if (yield* Ref.get(asleep)) {
               yield* Queue.offer(unanswered, undefined);

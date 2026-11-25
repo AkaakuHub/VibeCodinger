@@ -175,7 +175,7 @@ test(
       const projectId = /Added project (\S+) /.exec(added.stdout)?.[1];
       if (!projectId) throw new Error("The fixture project was not added.");
       const { environmentId } = await runPromise(
-        HttpClient.get(`${origin}/.well-known/t3/environment`).pipe(
+        HttpClient.get(`${origin}/.well-known/vibecodinger/environment`).pipe(
           Effect.flatMap(HttpClientResponse.filterStatusOk),
           Effect.flatMap(
             HttpClientResponse.schemaBodyJson(Schema.Struct({ environmentId: Schema.String })),

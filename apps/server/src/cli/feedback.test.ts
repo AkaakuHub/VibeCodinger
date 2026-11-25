@@ -51,8 +51,8 @@ const listedPaths = (command: Command.Command.Any, path: string): ReadonlyArray<
   ),
 ];
 
-it("feedback subjects name every listed t3 command", () => {
-  expect([...T3_CLI_COMMANDS].sort()).toEqual([...listedPaths(makeCli(), "t3")].sort());
+it("feedback subjects name every listed vibecodinger command", () => {
+  expect([...T3_CLI_COMMANDS].sort()).toEqual([...listedPaths(makeCli(), "vibecodinger")].sort());
 });
 
 const hidden = (tool: string) =>

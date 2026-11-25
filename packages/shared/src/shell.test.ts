@@ -1801,10 +1801,10 @@ describe("pathSetupCommand", () => {
       `mkdir -p ~/.config/fish && printf '\\n%s\\n' 'fish_add_path --append --path $HOME/.local/bin' >> ~/.config/fish/config.fish`,
     ],
     [
-      "/opt/t3/bin",
+      "/opt/vibecodinger/bin",
       "/bin/zsh",
       "linux",
-      `printf '\\n%s\\n' 'export PATH="$PATH:/opt/t3/bin"' >> ~/.zshrc`,
+      `printf '\\n%s\\n' 'export PATH="$PATH:/opt/vibecodinger/bin"' >> ~/.zshrc`,
     ],
     ["/Users/theo/.local/bin", "/bin/tcsh", "darwin", undefined],
     ["/Users/theo/.local/bin", "/bin/bash", "darwin", undefined],
@@ -1818,7 +1818,11 @@ describe("pathSetupCommand", () => {
   });
 
   it("writes the startup file fish and zsh read, under XDG_CONFIG_HOME or ZDOTDIR", () => {
-    const setup = { directory: "/opt/t3/bin", home: "/home/theo", shell: "/usr/bin/fish" } as const;
+    const setup = {
+      directory: "/opt/vibecodinger/bin",
+      home: "/home/theo",
+      shell: "/usr/bin/fish",
+    } as const;
     expect(pathSetup({ ...setup, platform: "linux", configHome: "/home/theo/cfg" })?.file).toBe(
       "/home/theo/cfg/fish/config.fish",
     );

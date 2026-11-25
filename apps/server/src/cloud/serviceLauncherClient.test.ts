@@ -66,8 +66,9 @@ it.effect.each([3, SERVICE_LAUNCHER_PROTOCOL])(
       const path = yield* Path.Path;
       const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-trial-" });
       const baseDir = path.join(root, ".vibecodinger");
-      const exe = (version: string) => path.join(baseDir, "runtime/versions", version, "t3");
-      const installed = path.join(root, ".local/bin/t3");
+      const exe = (version: string) =>
+        path.join(baseDir, "runtime/versions", version, "vibecodinger");
+      const installed = path.join(root, ".local/bin/vibecodinger");
       for (const file of [exe("1.0.0"), exe("1.1.0")]) {
         yield* fs.makeDirectory(path.dirname(file), { recursive: true });
         yield* fs.writeFileString(file, "");
@@ -249,9 +250,10 @@ it.layer(NodeServices.layer)("self-update launchers", (it) => {
         const path = yield* Path.Path;
         const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-update-" });
         const baseDir = path.join(root, ".vibecodinger");
-        const exe = (version: string) => path.join(baseDir, "runtime/versions", version, "t3");
-        const installed = path.join(root, "custom/bin/t3");
-        const onPath = path.join(root, "bin/t3");
+        const exe = (version: string) =>
+          path.join(baseDir, "runtime/versions", version, "vibecodinger");
+        const installed = path.join(root, "custom/bin/vibecodinger");
+        const onPath = path.join(root, "bin/vibecodinger");
         for (const file of [exe("1.0.0"), exe("1.5.0"), exe("2.0.0")]) {
           yield* fs.makeDirectory(path.dirname(file), { recursive: true });
           yield* fs.writeFileString(file, "");
@@ -281,9 +283,10 @@ it.layer(NodeServices.layer)("self-update launchers", (it) => {
       const path = yield* Path.Path;
       const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-update-" });
       const baseDir = path.join(root, ".vibecodinger");
-      const exe = (version: string) => path.join(baseDir, "runtime/versions", version, "t3");
-      const installed = path.join(root, ".local/bin/t3");
-      const onPath = path.join(root, "bin/t3");
+      const exe = (version: string) =>
+        path.join(baseDir, "runtime/versions", version, "vibecodinger");
+      const installed = path.join(root, ".local/bin/vibecodinger");
+      const onPath = path.join(root, "bin/vibecodinger");
       for (const file of [exe("1.0.0"), exe("2.0.0")]) {
         yield* fs.makeDirectory(path.dirname(file), { recursive: true });
         yield* fs.writeFileString(file, "");
@@ -335,10 +338,10 @@ it.layer(NodeServices.layer)("self-update launchers", (it) => {
       const path = yield* Path.Path;
       const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-update-" });
       const baseDir = path.join(root, ".vibecodinger");
-      const installed = path.join(root, ".local/bin/t3");
-      const onPath = path.join(root, "bin/t3");
-      const foreign = path.join(root, "other-home/runtime/versions/1.0.0/t3");
-      const target = path.join(baseDir, "runtime/versions/2.0.0/t3");
+      const installed = path.join(root, ".local/bin/vibecodinger");
+      const onPath = path.join(root, "bin/vibecodinger");
+      const foreign = path.join(root, "other-home/runtime/versions/1.0.0/vibecodinger");
+      const target = path.join(baseDir, "runtime/versions/2.0.0/vibecodinger");
       for (const file of [installed, foreign, target]) {
         yield* fs.makeDirectory(path.dirname(file), { recursive: true });
         yield* fs.writeFileString(file, "user-owned file");
@@ -359,7 +362,7 @@ it.layer(NodeServices.layer)("self-update launchers", (it) => {
   );
 
   it.effect.each([
-    // The working-directory t3 is checked by its execute bits, which Windows hosts do not set.
+    // The working-directory vibecodinger is checked by its execute bits, which Windows hosts do not set.
     ...(HostProcess.Platform.defaultValue() === "win32"
       ? []
       : [
@@ -373,9 +376,10 @@ it.layer(NodeServices.layer)("self-update launchers", (it) => {
       const path = yield* Path.Path;
       const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-update-" });
       const baseDir = path.join(root, ".vibecodinger");
-      const exe = (version: string) => path.join(baseDir, "runtime/versions", version, "t3");
+      const exe = (version: string) =>
+        path.join(baseDir, "runtime/versions", version, "vibecodinger");
       const cwd = path.join(root, "work");
-      const inCwd = path.join(cwd, "t3");
+      const inCwd = path.join(cwd, "vibecodinger");
       for (const file of [exe("1.0.0"), exe("2.0.0")]) {
         yield* fs.makeDirectory(path.dirname(file), { recursive: true });
         yield* fs.writeFileString(file, "", { mode: 0o755 });
@@ -400,21 +404,22 @@ it.layer(NodeServices.layer)("self-update launchers", (it) => {
     }).pipe(Effect.provideService(HostProcess.Platform, "linux")),
   );
 
-  it.effect("passes over a working-directory t3 the shell cannot run", () =>
+  it.effect("passes over a working-directory vibecodinger the shell cannot run", () =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-update-" });
       const baseDir = path.join(root, ".vibecodinger");
-      const exe = (version: string) => path.join(baseDir, "runtime/versions", version, "t3");
+      const exe = (version: string) =>
+        path.join(baseDir, "runtime/versions", version, "vibecodinger");
       const cwd = path.join(root, "work");
-      const onPath = path.join(root, "bin/t3");
+      const onPath = path.join(root, "bin/vibecodinger");
       for (const file of [exe("1.0.0"), exe("2.0.0")]) {
         yield* fs.makeDirectory(path.dirname(file), { recursive: true });
         yield* fs.writeFileString(file, "", { mode: 0o755 });
       }
-      // A directory named t3 in the working directory, which the shell skips.
-      yield* fs.makeDirectory(path.join(cwd, "t3"), { recursive: true });
+      // A directory named vibecodinger in the working directory, which the shell skips.
+      yield* fs.makeDirectory(path.join(cwd, "vibecodinger"), { recursive: true });
       yield* fs.makeDirectory(path.dirname(onPath), { recursive: true });
       yield* fs.symlink(exe("1.0.0"), onPath);
 

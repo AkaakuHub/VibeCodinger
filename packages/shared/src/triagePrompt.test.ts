@@ -21,9 +21,9 @@ describe("replaceTriagePlaybookLink", () => {
 
   it.each([
     ["spaces", "/Users/a b/My Data/triage-playbook.md"],
-    ["parentheses", "/Users/a/t3 (dev)/triage-playbook.md"],
+    ["parentheses", "/Users/a/vibecodinger (dev)/triage-playbook.md"],
     ["hash and question mark", "/Users/a/#1/what?/triage-playbook.md"],
-    ["a Windows path", "C:\\Users\\a b\\t3 (dev)\\triage-playbook.md"],
+    ["a Windows path", "C:\\Users\\a b\\vibecodinger (dev)\\triage-playbook.md"],
   ])("replaces a link whose path has %s", (_name, path) => {
     expect(replaceTriagePlaybookLink(`${appPrompt(path)}It is slow.`, appPrompt(MACHINE_B))).toBe(
       `${appPrompt(MACHINE_B)}It is slow.`,

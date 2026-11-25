@@ -164,7 +164,7 @@ fi`,
     executable(
       "ps",
       `if [ "$*" = "-ww -o args= -p $TEST_SERVER_PID" ]; then
-  printf '/bin/sh %s/.vibecodinger/ssh-launch/test-target/run-t3.sh serve --host 127.0.0.1 --port 5999\\n' "$HOME"
+  printf '/bin/sh %s/.vibecodinger/ssh-launch/test-target/run-vibecodinger.sh serve --host 127.0.0.1 --port 5999\\n' "$HOME"
   exit 0
 fi
 PATH=/usr/bin:/bin exec ps "$@"`,
@@ -177,7 +177,7 @@ PATH=/usr/bin:/bin exec ps "$@"`,
       NodeFS.writeFileSync(NodePath.join(state, "managed"), options.recordedKind);
       const runner = script.split("cat >\"$RUNNER_NEXT\" <<'SH'\n")[1]?.split("\nSH\n")[0];
       if (!runner) throw new Error("runner missing");
-      NodeFS.writeFileSync(NodePath.join(state, "run-t3.sh"), runner + "\n");
+      NodeFS.writeFileSync(NodePath.join(state, "run-vibecodinger.sh"), runner + "\n");
     }
     if (options.archive) {
       executable("node", 'printf "unexpected host node invocation\\n" >&2; exit 1');
@@ -195,7 +195,7 @@ await Effect.runPromise(Command.runWith(sshHelperCommand, { version: "1.2.3" })(
 `,
       );
       NodeFS.writeFileSync(
-        NodePath.join(version, "t3"),
+        NodePath.join(version, "vibecodinger"),
         `#!/bin/sh
 set -eu
 if [ "$1" = --version ]; then printf 1.2.3; exit; fi

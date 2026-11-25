@@ -34,7 +34,7 @@ export const layerRequireTls = Layer.unwrap(
           // The headless pairing CLI discovers the local listener before minting its link.
           if (
             request.method === "GET" &&
-            request.url === "/.well-known/t3/environment" &&
+            request.url === "/.well-known/vibecodinger/environment" &&
             /^127\.0\.0\.1(?::\d+)?$/.test(request.headers.host ?? "") &&
             request.headers["x-forwarded-proto"] === undefined
           ) {

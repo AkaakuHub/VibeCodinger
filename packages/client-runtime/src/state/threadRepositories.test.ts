@@ -75,7 +75,7 @@ function checkpoint(
     parentCheckpointId: null,
     ordinalWithinScope: ordinal,
     appRunOrdinal: null,
-    ref: CheckpointRef.make(`refs/t3/${id}`),
+    ref: CheckpointRef.make(`refs/vibecodinger/${id}`),
     status: "ready",
     files: [],
     capturedAt: now,

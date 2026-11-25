@@ -54,7 +54,7 @@ const makeRun = (status: WorkflowRun["status"]): WorkflowRun => ({
   endedAt: ["running", "waiting", "paused"].includes(status) ? null : "2026-11-20T00:00:00.000Z",
 });
 
-/** Runs `t3 workflow <args>` against a live-looking server whose t3_workflow is `call`. */
+/** Runs `vibecodinger workflow <args>` against a live-looking server whose t3_workflow is `call`. */
 const runCli = (
   args: ReadonlyArray<string>,
   call: McpBridge.McpToolSession["call"] = () => Effect.die("no tool call expected"),

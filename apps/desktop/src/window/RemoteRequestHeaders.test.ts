@@ -22,7 +22,7 @@ const devPolicy: MainWindowRequestHeaderPolicy = {
 
 describe("RemoteRequestHeaders", () => {
   it.each([
-    "https://remote.example.com/.well-known/t3/environment",
+    "https://remote.example.com/.well-known/vibecodinger/environment",
     "http://127.0.0.1:8080/api/auth/bootstrap",
     "ws://127.0.0.1:8080/ws?ticket=abc",
     "wss://remote.example.com/ws?ticket=abc",

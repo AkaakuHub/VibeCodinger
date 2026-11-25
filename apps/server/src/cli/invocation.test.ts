@@ -35,52 +35,61 @@ it.layer(NodeServices.layer)("root CLI commands", (it) => {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
     const bin = yield* fs.makeTempDirectoryScoped();
-    yield* fs.writeFileString(path.join(bin, "t3"), "#!/bin/sh\n", { mode: 0o755 });
+    yield* fs.writeFileString(path.join(bin, "vibecodinger"), "#!/bin/sh\n", { mode: 0o755 });
     return bin;
   });
 
   it.effect("keeps a user-installed Node reachable when the command runs under sudo", () =>
     Effect.gen(function* () {
-      const npx = "/home/theo/.npm/_npx/abc/node_modules/t3/dist/bin.mjs";
+      const npx = "/home/theo/.npm/_npx/abc/node_modules/vibecodinger/dist/bin.mjs";
       expect(yield* rootCommand({ node: "/usr/bin/node", entry: npx })).toBe(
-        "sudo npx t3 browser setup",
+        "sudo npx vibecodinger browser setup",
       );
       expect(
         yield* rootCommand({ node: "/home/theo/.nvm/versions/node/v24/bin/node", entry: npx }),
-      ).toBe('sudo env "PATH=$PATH" npx t3 browser setup');
+      ).toBe('sudo env "PATH=$PATH" npx vibecodinger browser setup');
       expect(
         yield* rootCommand({
           node: "/home/theo/.local/node/bin/node",
-          entry: "/home/theo/.local/lib/node_modules/t3/dist/bin.mjs",
+          entry: "/home/theo/.local/lib/node_modules/vibecodinger/dist/bin.mjs",
           path: yield* pathWithT3,
         }),
-      ).toBe('sudo env "PATH=$PATH" t3 browser setup');
+      ).toBe('sudo env "PATH=$PATH" vibecodinger browser setup');
     }),
   );
 
   it.effect("keeps the arguments, so root runs setup on the same T3 home", () =>
     Effect.gen(function* () {
-      const args = ["--base-dir", "/srv/t3 home"];
+      const args = ["--base-dir", "/srv/vibecodinger home"];
       expect(
         yield* rootCommand({
           node: "/home/theo/.local/node/bin/node",
-          entry: "/home/theo/.local/lib/node_modules/t3/dist/bin.mjs",
+          entry: "/home/theo/.local/lib/node_modules/vibecodinger/dist/bin.mjs",
           path: yield* pathWithT3,
           args,
         }),
-      ).toBe(`sudo env "PATH=$PATH" t3 browser setup --base-dir '/srv/t3 home'`);
+      ).toBe(
+        `sudo env "PATH=$PATH" vibecodinger browser setup --base-dir '/srv/vibecodinger home'`,
+      );
       expect(
-        yield* rootCommand({ node: "/opt/t3/t3", entry: "/opt/t3/t3", executable: true, args }),
-      ).toBe("sudo /opt/t3/t3 browser setup --base-dir '/srv/t3 home'");
+        yield* rootCommand({
+          node: "/opt/vibecodinger/vibecodinger",
+          entry: "/opt/vibecodinger/vibecodinger",
+          executable: true,
+          args,
+        }),
+      ).toBe(
+        "sudo /opt/vibecodinger/vibecodinger browser setup --base-dir '/srv/vibecodinger home'",
+      );
     }),
   );
 
-  it.effect("names this install's launcher when t3 is not on PATH", () =>
+  it.effect("names this install's launcher when vibecodinger is not on PATH", () =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const home = yield* fs.makeTempDirectoryScoped();
-      const shim = path.join(home, ".local bin", "t3");
+      const shim = path.join(home, ".local bin", "vibecodinger");
       yield* fs.makeDirectory(path.dirname(shim), { recursive: true });
       yield* fs.writeFileString(shim, "#!/bin/sh\n", { mode: 0o755 });
       const desktop = {
@@ -91,60 +100,60 @@ it.layer(NodeServices.layer)("root CLI commands", (it) => {
 
       expect(yield* rootCommand(desktop)).toBe(`sudo '${shim}' browser setup`);
 
-      // An unrelated `t3` on PATH, such as an older npm global, is another install's CLI.
+      // An unrelated `vibecodinger` on PATH, such as an older npm global, is another install's CLI.
       expect(yield* rootCommand({ ...desktop, path: yield* pathWithT3 })).toBe(
         `sudo '${shim}' browser setup`,
       );
 
-      // The link the app installs onto PATH leads to its own launcher, so plain `t3` is right.
+      // The link the app installs onto PATH leads to its own launcher, so plain `vibecodinger` is right.
       const linked = yield* fs.makeTempDirectoryScoped();
-      yield* fs.symlink(shim, path.join(linked, "t3"));
+      yield* fs.symlink(shim, path.join(linked, "vibecodinger"));
       expect(yield* rootCommand({ ...desktop, path: linked })).toBe(
-        'sudo env "PATH=$PATH" t3 browser setup',
+        'sudo env "PATH=$PATH" vibecodinger browser setup',
       );
 
       expect(
         yield* rootCommand({
-          node: "/opt/t3/t3",
-          entry: "/opt/t3/t3",
+          node: "/opt/vibecodinger/vibecodinger",
+          entry: "/opt/vibecodinger/vibecodinger",
           executable: true,
         }),
-      ).toBe("sudo /opt/t3/t3 browser setup");
+      ).toBe("sudo /opt/vibecodinger/vibecodinger browser setup");
 
       // A standalone executable started directly (systemd, no launcher) is still this install.
       expect(
         yield* rootCommand({
-          node: "/opt/t3/t3",
-          entry: "/opt/t3/t3",
+          node: "/opt/vibecodinger/vibecodinger",
+          entry: "/opt/vibecodinger/vibecodinger",
           executable: true,
           path: yield* pathWithT3,
         }),
-      ).toBe("sudo /opt/t3/t3 browser setup");
+      ).toBe("sudo /opt/vibecodinger/vibecodinger browser setup");
 
-      // A global npm launcher runs the downloaded executable; PATH's `t3` is that launcher.
+      // A global npm launcher runs the downloaded executable; PATH's `vibecodinger` is that launcher.
       const prefix = path.join(home, "npm");
-      const npmLauncher = path.join(prefix, "lib/node_modules/t3/bin/t3.mjs");
+      const npmLauncher = path.join(prefix, "lib/node_modules/vibecodinger/bin/vibecodinger.mjs");
       yield* fs.makeDirectory(path.dirname(npmLauncher), { recursive: true });
       yield* fs.makeDirectory(path.join(prefix, "bin"));
       yield* fs.writeFileString(npmLauncher, "", { mode: 0o755 });
       yield* fs.writeFileString(
-        path.join(prefix, "lib/node_modules/t3/package.json"),
-        `{"name":"t3","version":"${packageJson.version}"}`,
+        path.join(prefix, "lib/node_modules/vibecodinger/package.json"),
+        `{"name":"vibecodinger","version":"${packageJson.version}"}`,
       );
-      yield* fs.symlink(npmLauncher, path.join(prefix, "bin/t3"));
+      yield* fs.symlink(npmLauncher, path.join(prefix, "bin/vibecodinger"));
       expect(
         yield* rootCommand({
-          node: "/home/theo/.vibecodinger/runtime/versions/1.0.0/t3",
-          entry: "/home/theo/.vibecodinger/runtime/versions/1.0.0/t3",
+          node: "/home/theo/.vibecodinger/runtime/versions/1.0.0/vibecodinger",
+          entry: "/home/theo/.vibecodinger/runtime/versions/1.0.0/vibecodinger",
           executable: true,
           path: path.join(prefix, "bin"),
           env: { T3CODE_NPM_LAUNCHER_PATH: npmLauncher },
         }),
-      ).toBe('sudo env "PATH=$PATH" t3 browser setup');
+      ).toBe('sudo env "PATH=$PATH" vibecodinger browser setup');
 
       expect(
         yield* rootCommand({ ...desktop, env: { T3CODE_CLI_PATH: path.join(home, "gone") } }),
-      ).toBe('sudo env "PATH=$PATH" t3 browser setup');
+      ).toBe('sudo env "PATH=$PATH" vibecodinger browser setup');
     }),
   );
 });
@@ -155,13 +164,16 @@ it.layer(NodeServices.layer)("host CLI commands", (it) => {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const home = yield* fs.makeTempDirectoryScoped();
-      const shim = path.join(home, "t3.cmd");
+      const shim = path.join(home, "vibecodinger.cmd");
       yield* fs.writeFileString(shim, "@echo off\r\n");
       const hostCommand = (platform: NodeJS.Platform, env: Record<string, string>) =>
         resolveHostCliCommand("doctor", ["--base-dir", "C:\\Users\\Jane Doe\\.vibecodinger"]).pipe(
-          Effect.provideService(HostProcess.ExecutablePath, "C:\\Program Files\\T3 Code\\t3.exe"),
+          Effect.provideService(
+            HostProcess.ExecutablePath,
+            "C:\\Program Files\\T3 Code\\vibecodinger.exe",
+          ),
           Effect.provideService(HostProcess.Arguments, [
-            "C:\\Program Files\\T3 Code\\t3.exe",
+            "C:\\Program Files\\T3 Code\\vibecodinger.exe",
             "C:\\Program Files\\T3 Code\\resources\\app.asar\\apps\\server\\dist\\bin.mjs",
           ]),
           Effect.provideService(HostProcess.IsExecutable, false),
@@ -172,17 +184,17 @@ it.layer(NodeServices.layer)("host CLI commands", (it) => {
         `& "${shim}" doctor "--base-dir" "C:\\Users\\Jane Doe\\.vibecodinger"`,
       );
       expect((yield* hostCommand("win32", {})).command).toBe(
-        't3 doctor "--base-dir" "C:\\Users\\Jane Doe\\.vibecodinger"',
+        'vibecodinger doctor "--base-dir" "C:\\Users\\Jane Doe\\.vibecodinger"',
       );
       expect(
         (yield* resolveHostCliCommand("doctor", ["--base-dir", "C:\\T3\\\u201CArchive\u201D"]).pipe(
           Effect.provideService(HostProcess.Platform, "win32"),
           Effect.provideService(HostProcess.Environment, { PATH: "" }),
-          Effect.provideService(HostProcess.ExecutablePath, "C:\\t3.exe"),
-          Effect.provideService(HostProcess.Arguments, ["C:\\t3.exe", "C:\\bin.mjs"]),
+          Effect.provideService(HostProcess.ExecutablePath, "C:\\vibecodinger.exe"),
+          Effect.provideService(HostProcess.Arguments, ["C:\\vibecodinger.exe", "C:\\bin.mjs"]),
           Effect.provideService(HostProcess.IsExecutable, false),
         )).command,
-      ).toBe('t3 doctor "--base-dir" "C:\\T3\\\u201C\u201CArchive\u201D\u201D"');
+      ).toBe('vibecodinger doctor "--base-dir" "C:\\T3\\\u201C\u201CArchive\u201D\u201D"');
       expect((yield* hostCommand("linux", { T3CODE_CLI_PATH: shim })).command).toMatch(
         / doctor --base-dir 'C:\\Users\\Jane Doe\\\.vibecodinger'$/,
       );
@@ -190,19 +202,19 @@ it.layer(NodeServices.layer)("host CLI commands", (it) => {
   );
 
   it.effect.skipIf(HostProcess.Platform.defaultValue() === "win32")(
-    "names the absolute path of a t3 found through a relative PATH entry",
+    "names the absolute path of a vibecodinger found through a relative PATH entry",
     () =>
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
         const bin = yield* fs.makeTempDirectoryScoped();
-        yield* fs.writeFileString(path.join(bin, "t3"), "#!/bin/sh\n", { mode: 0o755 });
+        yield* fs.writeFileString(path.join(bin, "vibecodinger"), "#!/bin/sh\n", { mode: 0o755 });
         const hostCommand = (searchPath: string) =>
           resolveHostCliCommand("doctor").pipe(
             Effect.provideService(HostProcess.ExecutablePath, "/usr/bin/node"),
             Effect.provideService(HostProcess.Arguments, [
               "/usr/bin/node",
-              "/opt/t3/lib/node_modules/t3/dist/bin.mjs",
+              "/opt/vibecodinger/lib/node_modules/vibecodinger/dist/bin.mjs",
             ]),
             Effect.provideService(HostProcess.IsExecutable, false),
             Effect.provideService(HostProcess.Platform, "linux"),
@@ -211,15 +223,18 @@ it.layer(NodeServices.layer)("host CLI commands", (it) => {
 
         // A relative entry was searched from this process's directory, unlike the user's shell.
         expect(yield* hostCommand(path.relative(process.cwd(), bin))).toEqual({
-          command: `${hostShellWord("linux", path.join(bin, "t3"))} doctor`,
+          command: `${hostShellWord("linux", path.join(bin, "vibecodinger"))} doctor`,
           launcher: false,
         });
         // An empty entry makes the shell search its own directory first, wherever that is.
         expect(yield* hostCommand(`:${bin}`)).toEqual({
-          command: `${hostShellWord("linux", path.join(bin, "t3"))} doctor`,
+          command: `${hostShellWord("linux", path.join(bin, "vibecodinger"))} doctor`,
           launcher: false,
         });
-        expect(yield* hostCommand(bin)).toEqual({ command: "t3 doctor", launcher: false });
+        expect(yield* hostCommand(bin)).toEqual({
+          command: "vibecodinger doctor",
+          launcher: false,
+        });
       }),
   );
 });
@@ -230,23 +245,23 @@ it.layer(NodeServices.layer)("manual server installation ownership", (it) => {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const root = yield* fs.makeTempDirectoryScoped();
-      const executable = path.join(root, ".vibecodinger/runtime/versions/1.0.0/t3");
+      const executable = path.join(root, ".vibecodinger/runtime/versions/1.0.0/vibecodinger");
       yield* fs.makeDirectory(path.dirname(executable), { recursive: true });
       yield* fs.writeFileString(executable, "");
       for (const [relative, kind] of [
-        ["npm/_npx/hash/node_modules/t3/dist/bin.mjs", "npx"],
-        ["npm/_npx/hash/node_modules/t3/bin/t3.mjs", "npx"],
-        ["pnpm/dlx/hash/node_modules/t3/dist/bin.mjs", "pnpm-dlx"],
-        [".bun/install/cache/t3/dist/bin.mjs", "bunx"],
+        ["npm/_npx/hash/node_modules/vibecodinger/dist/bin.mjs", "npx"],
+        ["npm/_npx/hash/node_modules/vibecodinger/bin/vibecodinger.mjs", "npx"],
+        ["pnpm/dlx/hash/node_modules/vibecodinger/dist/bin.mjs", "pnpm-dlx"],
+        [".bun/install/cache/vibecodinger/dist/bin.mjs", "bunx"],
       ] as const) {
         const entry = path.join(root, relative);
         yield* fs.makeDirectory(path.dirname(entry), { recursive: true });
         yield* fs.writeFileString(entry, "");
         yield* fs.writeFileString(
           path.join(path.dirname(entry), "../package.json"),
-          `{"name":"t3","version":"${packageJson.version}","bin":{"t3":"./bin/t3.mjs"}}`,
+          `{"name":"vibecodinger","version":"${packageJson.version}","bin":{"vibecodinger":"./bin/vibecodinger.mjs"}}`,
         );
-        const launchedBy = entry.endsWith("t3.mjs");
+        const launchedBy = entry.endsWith("vibecodinger.mjs");
         const installation = yield* resolveServerInstallation.pipe(
           Effect.provideService(HostProcess.Arguments, [launchedBy ? executable : "node", entry]),
           Effect.provideService(HostProcess.ExecutablePath, executable),
@@ -267,15 +282,15 @@ it.layer(NodeServices.layer)("manual server installation ownership", (it) => {
       const path = yield* Path.Path;
       const root = yield* fs.makeTempDirectoryScoped();
       const prefix = path.join(root, "bunx-tools");
-      const packageRoot = path.join(prefix, "lib/node_modules/t3");
+      const packageRoot = path.join(prefix, "lib/node_modules/vibecodinger");
       const entry = path.join(packageRoot, "dist/bin.mjs");
-      const globalBin = path.join(prefix, "bin/t3");
+      const globalBin = path.join(prefix, "bin/vibecodinger");
       yield* fs.makeDirectory(path.dirname(entry), { recursive: true });
       yield* fs.makeDirectory(path.dirname(globalBin), { recursive: true });
       yield* fs.writeFileString(entry, "");
       yield* fs.writeFileString(
         path.join(packageRoot, "package.json"),
-        '{"name":"t3","version":"0.0.45","bin":{"t3":"./dist/bin.mjs"}}',
+        '{"name":"vibecodinger","version":"0.0.45","bin":{"vibecodinger":"./dist/bin.mjs"}}',
       );
       const resolve = resolveServerInstallation.pipe(
         Effect.provideService(HostProcess.Arguments, ["node", entry]),
@@ -286,7 +301,7 @@ it.layer(NodeServices.layer)("manual server installation ownership", (it) => {
       yield* fs.symlink(entry, globalBin);
       expect(yield* resolve).toEqual({ kind: "npm-global", prefix });
       yield* fs.remove(globalBin);
-      yield* fs.writeFileString(globalBin, "an unrelated t3 command");
+      yield* fs.writeFileString(globalBin, "an unrelated vibecodinger command");
       expect(yield* resolve).toBeNull();
       expect(yield* resolve.pipe(Effect.provideService(HostProcess.Platform, "win32"))).toBeNull();
     }),
@@ -298,15 +313,15 @@ it.layer(NodeServices.layer)("manual server installation ownership", (it) => {
       const path = yield* Path.Path;
       const root = yield* fs.makeTempDirectoryScoped();
       const prefix = path.join(root, "bunx-tools");
-      const packageRoot = path.join(prefix, "lib/node_modules/t3");
-      const launcher = path.join(packageRoot, "bin/t3.mjs");
-      const executable = path.join(root, ".vibecodinger/runtime/versions/1.0.0/t3");
+      const packageRoot = path.join(prefix, "lib/node_modules/vibecodinger");
+      const launcher = path.join(packageRoot, "bin/vibecodinger.mjs");
+      const executable = path.join(root, ".vibecodinger/runtime/versions/1.0.0/vibecodinger");
       yield* fs.makeDirectory(path.dirname(launcher), { recursive: true });
       yield* fs.makeDirectory(path.dirname(executable), { recursive: true });
       yield* fs.makeDirectory(path.join(prefix, "bin"));
       yield* fs.writeFileString(launcher, "");
       yield* fs.writeFileString(executable, "");
-      yield* fs.symlink(launcher, path.join(prefix, "bin/t3"));
+      yield* fs.symlink(launcher, path.join(prefix, "bin/vibecodinger"));
       const resolve = resolveServerInstallation.pipe(
         Effect.provideService(HostProcess.ExecutablePath, executable),
         Effect.provideService(HostProcess.Arguments, [executable, executable]),
@@ -320,7 +335,7 @@ it.layer(NodeServices.layer)("manual server installation ownership", (it) => {
       ] as const) {
         yield* fs.writeFileString(
           path.join(packageRoot, "package.json"),
-          `{"name":"t3","version":"${version}","bin":{"t3":"./bin/t3.mjs"}}`,
+          `{"name":"vibecodinger","version":"${version}","bin":{"vibecodinger":"./bin/vibecodinger.mjs"}}`,
         );
         expect(yield* resolve).toEqual(expected);
       }
@@ -333,19 +348,22 @@ it.layer(NodeServices.layer)("manual server installation ownership", (it) => {
       const path = yield* Path.Path;
       const root = yield* fs.realPath(yield* fs.makeTempDirectoryScoped());
       // The install script's launcher names ~/.vibecodinger, which here links to a home elsewhere.
-      const executable = path.join(root, "data/t3/runtime/versions/1.0.0/t3");
-      const launcher = path.join(root, "bin/t3");
+      const executable = path.join(root, "data/vibecodinger/runtime/versions/1.0.0/vibecodinger");
+      const launcher = path.join(root, "bin/vibecodinger");
       const copy = path.join(root, "bin/t3-copy");
       yield* fs.makeDirectory(path.dirname(executable), { recursive: true });
       yield* fs.makeDirectory(path.dirname(launcher), { recursive: true });
       yield* fs.writeFileString(executable, "", { mode: 0o755 });
       yield* fs.writeFileString(copy, "", { mode: 0o755 });
-      yield* fs.symlink(path.join(root, "data/t3"), path.join(root, ".vibecodinger"));
-      yield* fs.symlink(path.join(root, ".vibecodinger/runtime/versions/1.0.0/t3"), launcher);
+      yield* fs.symlink(path.join(root, "data/vibecodinger"), path.join(root, ".vibecodinger"));
+      yield* fs.symlink(
+        path.join(root, ".vibecodinger/runtime/versions/1.0.0/vibecodinger"),
+        launcher,
+      );
       // Earlier PATH entries hold a directory and a non-executable file named t3.
-      yield* fs.makeDirectory(path.join(root, "shadow-dir/t3"), { recursive: true });
+      yield* fs.makeDirectory(path.join(root, "shadow-dir/vibecodinger"), { recursive: true });
       yield* fs.makeDirectory(path.join(root, "shadow-file"));
-      yield* fs.writeFileString(path.join(root, "shadow-file/t3"), "");
+      yield* fs.writeFileString(path.join(root, "shadow-file/vibecodinger"), "");
       const resolve = (invokedAs: string, PATH = "shadow-dir:shadow-file:bin") =>
         resolveServerInstallation.pipe(
           Effect.provideService(HostProcess.ExecutablePath, executable),
@@ -358,7 +376,7 @@ it.layer(NodeServices.layer)("manual server installation ownership", (it) => {
         );
       const baseDir = path.join(root, ".vibecodinger");
 
-      expect(yield* resolve("t3")).toEqual({ kind: "t3-launcher", launcher, baseDir });
+      expect(yield* resolve("vibecodinger")).toEqual({ kind: "t3-launcher", launcher, baseDir });
       expect(yield* resolve(launcher)).toEqual({ kind: "t3-launcher", launcher, baseDir });
       expect(yield* resolve(executable)).toBeNull();
       expect(yield* resolve(copy)).toBeNull();
@@ -367,7 +385,7 @@ it.layer(NodeServices.layer)("manual server installation ownership", (it) => {
       yield* fs.remove(launcher);
       yield* fs.writeFileString(
         launcher,
-        posixLauncherScript(path.join(root, ".vibecodinger/runtime/versions/1.0.0/t3")),
+        posixLauncherScript(path.join(root, ".vibecodinger/runtime/versions/1.0.0/vibecodinger")),
         { mode: 0o755 },
       );
       expect(yield* resolve(executable, path.join(root, "bin"))).toEqual({
@@ -384,9 +402,9 @@ it.layer(NodeServices.layer)("manual server installation ownership", (it) => {
       const path = yield* Path.Path;
       const root = yield* fs.makeTempDirectoryScoped();
       for (const relative of [
-        "project/node_modules/t3/dist/bin.mjs",
+        "project/node_modules/vibecodinger/dist/bin.mjs",
         "project/apps/server/dist/bin.mjs",
-        ".vibecodinger/runtime/0.0.45/t3",
+        ".vibecodinger/runtime/0.0.45/vibecodinger",
         "missing/dist/bin.mjs",
       ]) {
         const entry = path.join(root, relative);

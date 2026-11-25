@@ -100,7 +100,7 @@ function commandArgs(command: ChildProcess.Command): ReadonlyArray<string> {
 
 const ARCHIVE = { archiveVersion: "1.2.3-preview.20260911.4" } as const;
 
-// Emulates `t3 serve`: it takes the home owner lock at startup, then binds
+// Emulates `vibecodinger serve`: it takes the home owner lock at startup, then binds
 // once a second server has tried the same home (or after 2s), so a concurrent
 // launch always sees the home still unclaimed. Like the real server, it
 // publishes server-runtime.json after it starts answering HTTP, if at all.
@@ -331,7 +331,7 @@ describe("ssh tunnel scripts", () => {
           "#!/bin/sh\necho 'download attempt' >&2\necho 'curl: (6) Could not resolve host: github.com' >&2\nexit 6\n",
           { mode: 0o755 },
         );
-        const runner = NodePath.join(root, "run-t3.sh");
+        const runner = NodePath.join(root, "run-vibecodinger.sh");
         NodeFS.writeFileSync(runner, SshTunnel.buildRemoteT3RunnerScript(ARCHIVE));
         const result = NodeChildProcess.spawnSync("sh", [runner, "--version"], {
           encoding: "utf8",
@@ -340,12 +340,12 @@ describe("ssh tunnel scripts", () => {
         assert.notEqual(result.status, 0);
         if (downloads) {
           assert.include(result.stderr, "download attempt");
-          // A bare curl error does not tell the user that t3 itself could not be downloaded.
+          // A bare curl error does not tell the user that vibecodinger itself could not be downloaded.
           assert.include(result.stderr, ARCHIVE.archiveVersion);
-          assert.include(result.stderr, "https://github.com/pingdotgg/t3code/releases/download");
+          assert.include(result.stderr, "https://github.com/AkaakuHub/t3code/releases/download");
         } else {
           assert.notInclude(result.stderr, "download attempt");
-          assert.include(result.stderr, "has no t3 release archive.");
+          assert.include(result.stderr, "has no vibecodinger release archive.");
         }
       } finally {
         NodeFS.rmSync(root, { recursive: true, force: true });
@@ -358,7 +358,7 @@ describe("ssh tunnel scripts", () => {
     { installed: ARCHIVE.archiveVersion, status: 1, reuses: false },
     { installed: "9.9.9", status: 0, reuses: false },
   ])(
-    "reuses a host t3 only at exactly the requested version: installed $installed, status $status",
+    "reuses a host vibecodinger only at exactly the requested version: installed $installed, status $status",
     ({ installed, status, reuses }) => {
       const root = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-ssh-runner-"));
       try {
@@ -372,11 +372,11 @@ describe("ssh tunnel scripts", () => {
           { mode: 0o755 },
         );
         NodeFS.writeFileSync(
-          NodePath.join(bin, "t3"),
-          `#!/bin/sh\ncase "$1" in --version) echo "t3 v${installed}"; exit ${status} ;; *) echo "host t3 $*" ;; esac\n`,
+          NodePath.join(bin, "vibecodinger"),
+          `#!/bin/sh\ncase "$1" in --version) echo "vibecodinger v${installed}"; exit ${status} ;; *) echo "host vibecodinger $*" ;; esac\n`,
           { mode: 0o755 },
         );
-        const runner = NodePath.join(root, "run-t3.sh");
+        const runner = NodePath.join(root, "run-vibecodinger.sh");
         NodeFS.writeFileSync(runner, SshTunnel.buildRemoteT3RunnerScript(ARCHIVE));
         const result = NodeChildProcess.spawnSync("sh", [runner, "serve"], {
           encoding: "utf8",
@@ -384,10 +384,10 @@ describe("ssh tunnel scripts", () => {
         });
         if (reuses) {
           assert.equal(result.status, 0);
-          assert.equal(result.stdout, "host t3 serve\n");
+          assert.equal(result.stdout, "host vibecodinger serve\n");
         } else {
           assert.notEqual(result.status, 0);
-          assert.include(result.stderr, "has no t3 release archive.");
+          assert.include(result.stderr, "has no vibecodinger release archive.");
         }
       } finally {
         NodeFS.rmSync(root, { recursive: true, force: true });
@@ -406,14 +406,18 @@ describe("ssh tunnel scripts", () => {
       const bin = NodePath.join(root, "bin");
       const release = NodePath.join(root, "release");
       const home = NodePath.join(root, "home\ncache");
-      const archive = `t3-${ARCHIVE.archiveVersion}-linux-x64.tar.gz`;
+      const archive = `vibecodinger-${ARCHIVE.archiveVersion}-linux-x64.tar.gz`;
       NodeFS.mkdirSync(bin);
       NodeFS.mkdirSync(home);
-      NodeFS.mkdirSync(NodePath.join(release, "t3"), { recursive: true });
-      NodeFS.writeFileSync(NodePath.join(release, "t3", "t3"), "#!/bin/sh\necho ok\n", {
-        mode: 0o755,
-      });
-      NodeChildProcess.execFileSync("tar", ["-czf", archive, "t3"], { cwd: release });
+      NodeFS.mkdirSync(NodePath.join(release, "vibecodinger"), { recursive: true });
+      NodeFS.writeFileSync(
+        NodePath.join(release, "vibecodinger", "vibecodinger"),
+        "#!/bin/sh\necho ok\n",
+        {
+          mode: 0o755,
+        },
+      );
+      NodeChildProcess.execFileSync("tar", ["-czf", archive, "vibecodinger"], { cwd: release });
       NodeChildProcess.execFileSync("sh", ["-c", `sha256sum ${archive} > SHA256SUMS`], {
         cwd: release,
       });
@@ -446,7 +450,7 @@ describe("ssh tunnel scripts", () => {
         `#!/bin/sh\nfor last; do :; done\nfor a; do case "$a" in http*) src="${release}/\${a##*/}" ;; esac; done\nexec cat "$src" > "$last"\n`,
         { mode: 0o755 },
       );
-      const runner = NodePath.join(root, "run-t3.sh");
+      const runner = NodePath.join(root, "run-vibecodinger.sh");
       NodeFS.writeFileSync(runner, SshTunnel.buildRemoteT3RunnerScript(ARCHIVE));
       const result = NodeChildProcess.spawnSync(NodePath.join(bin, "sh"), [runner, "--version"], {
         encoding: "utf8",
@@ -485,7 +489,7 @@ describe("ssh tunnel scripts", () => {
         '#!/bin/sh\necho "download attempt" >&2\nexit 1\n',
         { mode: 0o755 },
       );
-      const runner = NodePath.join(root, "run-t3.sh");
+      const runner = NodePath.join(root, "run-vibecodinger.sh");
       NodeFS.writeFileSync(runner, SshTunnel.buildRemoteT3RunnerScript(ARCHIVE));
       const result = NodeChildProcess.spawnSync(NodePath.join(bin, "sh"), [runner, "--version"], {
         encoding: "utf8",
@@ -1703,7 +1707,7 @@ server.listen(Number(flag("--port") ?? 0), "127.0.0.1", () => {
 
 // Reuse decisions live in generated shell, so drive the real launch script in
 // a temporary HOME. Each archive version gets a pre-installed fake runtime
-// whose server writes the default runtime file the way `t3 serve` does.
+// whose server writes the default runtime file the way `vibecodinger serve` does.
 describe("archive launch script", () => {
   const windowsHost = HostProcess.Platform.defaultValue() === "win32";
   const FAKE_T3 = `const fs = require("node:fs");
@@ -1828,10 +1832,10 @@ const canBind = (port) =>
         yield* fs.makeDirectory(runtimeDir, { recursive: true });
         // The runner gets only HOME, so `node` would resolve on sh's default PATH, which may not have it.
         yield* fs.writeFileString(
-          `${runtimeDir}/t3`,
+          `${runtimeDir}/vibecodinger`,
           `#!/bin/sh\nexec '${process.execPath}' '${fakeT3}' '${version}' "$@"\n`,
         );
-        yield* fs.chmod(`${runtimeDir}/t3`, 0o755);
+        yield* fs.chmod(`${runtimeDir}/vibecodinger`, 0o755);
         yield* fs.writeFileString(`${runtimeDir}/.install-complete`, `${version}\n`);
       }
       const readManagedPid = fs
@@ -1892,7 +1896,7 @@ const canBind = (port) =>
         const fs = yield* FileSystem.FileSystem;
         const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-dangling-home-" });
         const home = `${root}/home`;
-        const target = `${root}/shared/t3`;
+        const target = `${root}/shared/vibecodinger`;
         yield* fs.makeDirectory(home, { recursive: true });
         yield* fs.symlink(target, `${home}/.vibecodinger`);
         const launch = `${root}/launch.sh`;

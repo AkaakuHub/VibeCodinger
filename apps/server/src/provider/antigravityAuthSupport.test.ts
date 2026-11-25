@@ -49,10 +49,11 @@ const decodeJson = Schema.decodeUnknownSync(Schema.fromJsonString(Schema.Unknown
 describe("Antigravity process environment", () => {
   const profile: AntigravityProfile = {
     platform: "linux",
-    geminiHome: "/t3/userdata/providers/antigravity/profile",
-    acpDirectory: "/t3/userdata/providers/antigravity/profile/antigravity-acp",
-    tokenPath: "/t3/userdata/providers/antigravity/profile/antigravity-acp/acp_token.json",
-    tempDirectory: "/t3/userdata/providers/antigravity/profile/antigravity-acp/tmp",
+    geminiHome: "/vibecodinger/userdata/providers/antigravity/profile",
+    acpDirectory: "/vibecodinger/userdata/providers/antigravity/profile/antigravity-acp",
+    tokenPath:
+      "/vibecodinger/userdata/providers/antigravity/profile/antigravity-acp/acp_token.json",
+    tempDirectory: "/vibecodinger/userdata/providers/antigravity/profile/antigravity-acp/tmp",
     browserCommand: "managed-browser-helper",
   };
 
@@ -574,11 +575,11 @@ it.layer(NodeServices.layer)("Antigravity profile preparation", (it) => {
         profileDirectory: path.join(directory, "profile"),
         baseEnv: { PATH: path.dirname(process.execPath) },
       });
-      expect(profile.browserCommand).not.toContain("/packaged/t3");
+      expect(profile.browserCommand).not.toContain("/packaged/vibecodinger");
       expect(yield* fs.exists(profile.acpDirectory)).toBe(true);
     }).pipe(
       Effect.provideService(HostProcess.IsExecutable, true),
-      Effect.provideService(HostProcess.ExecutablePath, "/packaged/t3"),
+      Effect.provideService(HostProcess.ExecutablePath, "/packaged/vibecodinger"),
     ),
   );
 

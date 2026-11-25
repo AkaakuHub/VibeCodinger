@@ -158,7 +158,7 @@ export default {
         // Lets a scenario put an image on the clipboard for a real keyboard paste.
         permissions: { "clipboard-write": "grant" },
         // Vite answers before the server does; this path is proxied to the server.
-        readyUrl: `http://${LOOPBACK}:{port}/.well-known/t3/environment`,
+        readyUrl: `http://${LOOPBACK}:{port}/.well-known/vibecodinger/environment`,
         command: {
           executable: resolved.node,
           args: [startApp, "web", T3_HOME, LOOPBACK, "{port}"],

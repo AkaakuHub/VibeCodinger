@@ -20,43 +20,43 @@ On Windows, in PowerShell:
 irm https://t3.codes/install.ps1 | iex
 ```
 
-This installs the `t3` command to `~/.local/bin`. If that folder is not on your
+This installs the `vibecodinger` command to `~/.local/bin`. If that folder is not on your
 `PATH` yet, the installer says so and, for zsh, bash on Linux, and fish, prints
-a command to add it. On Windows, `t3` works in the same PowerShell window right
-away; add the folder to your `PATH` for new windows. If a `t3` that the
+a command to add it. On Windows, `vibecodinger` works in the same PowerShell window right
+away; add the folder to your `PATH` for new windows. If a `vibecodinger` that the
 installer or the desktop app did not create is already there, it leaves that
 one alone and stops. Set `T3CODE_CHANNEL=nightly` to install the nightly train, or
 `T3CODE_VERSION` to pin an exact version.
 
-| Task                                  | Command                                                                 |
-| ------------------------------------- | ----------------------------------------------------------------------- |
-| Start the server and open the web app | `t3`                                                                    |
-| Start the server without a browser    | `t3 serve`                                                              |
-| Use it from your other devices        | `t3 up` ([details](./remote-access.md))                                 |
-| Keep it running in the background     | `t3 service install` ([details](./background-service.md))               |
-| Move to the newest release            | `t3 update`                                                             |
-| Reclaim database space                | `t3 doctor` ([details](./background-service.md#reclaim-database-space)) |
-| Remove it again                       | `t3 uninstall`                                                          |
+| Task                                  | Command                                                                           |
+| ------------------------------------- | --------------------------------------------------------------------------------- |
+| Start the server and open the web app | `vibecodinger`                                                                    |
+| Start the server without a browser    | `vibecodinger serve`                                                              |
+| Use it from your other devices        | `vibecodinger up` ([details](./remote-access.md))                                 |
+| Keep it running in the background     | `vibecodinger service install` ([details](./background-service.md))               |
+| Move to the newest release            | `vibecodinger update`                                                             |
+| Reclaim database space                | `vibecodinger doctor` ([details](./background-service.md#reclaim-database-space)) |
+| Remove it again                       | `vibecodinger uninstall`                                                          |
 
-Run `t3 help` or `t3 --help` for the full reference. To start in a new working
-directory, use an explicit path such as `t3 ./my-project`. A bare directory name
+Run `vibecodinger help` or `vibecodinger --help` for the full reference. To start in a new working
+directory, use an explicit path such as `vibecodinger ./my-project`. A bare directory name
 is accepted only if it already exists.
 
-If `t3` or `t3 start` reports an already running server, run the `t3 pair`
+If `vibecodinger` or `vibecodinger start` reports an already running server, run the `vibecodinger pair`
 command it names and open the pairing URL to connect to that server. Stop it
 before starting a replacement, or use a different `--base-dir` for an
 independent server.
 
-To try T3 Code once without installing it, run `npx t3@latest` instead (needs
-Node.js for `npx`). It offers to install the `t3` command first. If you say no,
-it asks again at the next minor release, and `npx t3 install` installs it later.
-`npx t3` always runs the version npm picked, even when a `t3` is installed. On
-the nightly train, run your installed `t3` (for example `t3 connect`), not
-`npx t3`, which runs the latest stable release.
+To try T3 Code once without installing it, run `npx vibecodinger@latest` instead (needs
+Node.js for `npx`). It offers to install the `vibecodinger` command first. If you say no,
+it asks again at the next minor release, and `npx vibecodinger install` installs it later.
+`npx vibecodinger` always runs the version npm picked, even when a `vibecodinger` is installed. On
+the nightly train, run your installed `vibecodinger` (for example `vibecodinger connect`), not
+`npx vibecodinger`, which runs the latest stable release.
 
 ### Intel Macs
 
-There is no `t3` executable for Intel Macs (the desktop app is available). To
+There is no `vibecodinger` executable for Intel Macs (the desktop app is available). To
 run a server there, build it from source with `vp`, which provides the Node version it needs
 ([Install vp](../operations/00_development.md#first-checkout)):
 
@@ -66,7 +66,7 @@ cd t3code && vp i && vp run build:desktop
 node apps/server/dist/bin.mjs
 ```
 
-`t3 update` and the background service do not apply to a server run this way;
+`vibecodinger update` and the background service do not apply to a server run this way;
 update it with `git pull` and a rebuild.
 
 ## Desktop app
@@ -109,10 +109,10 @@ in-app updater.
 
 ### Nix (nixpkgs)
 
-T3 Code is maintained in [nixpkgs](https://github.com/NixOS/nixpkgs/tree/nixos-unstable/pkgs/by-name/t3/t3code).
+T3 Code is maintained in [nixpkgs](https://github.com/NixOS/nixpkgs/tree/nixos-unstable/pkgs/by-name/vibecodinger/t3code).
 The command above installs from `nixos-unstable` and requires Nix 2.30 or later with
 `nix-command` and `flakes` enabled. Launch the desktop app with `t3code-desktop`;
-the package also includes the `t3` command.
+the package also includes the `vibecodinger` command.
 
 On NixOS, you can instead add the package to your system configuration, using
 a nixpkgs revision that includes `t3code`:
@@ -127,18 +127,18 @@ Apply the change with `sudo nixos-rebuild switch`. For Home Manager, add
 Update a profile installation with `nix profile upgrade t3code`. For NixOS or
 Home Manager, update your configuration's nixpkgs input or channel and rebuild.
 Nix manages both the desktop app and the bundled
-`t3` command; use Nix to update them instead of the in-app updater or `t3 update`.
+`vibecodinger` command; use Nix to update them instead of the in-app updater or `vibecodinger update`.
 
-### The `t3` command
+### The `vibecodinger` command
 
-The desktop app includes the `t3` command-line tool. A new install sets it up
+The desktop app includes the `vibecodinger` command-line tool. A new install sets it up
 on first launch; after an update, or any time, choose **Install** next to
-**t3 command** in **Settings → About**. On macOS and Linux it adds a `t3` link
+**vibecodinger command** in **Settings → About**. On macOS and Linux it adds a `vibecodinger` link
 in `~/.local/bin` (or `~/bin`); on Windows it adds the app's command folder to
 your `PATH`. Open a new terminal afterwards. If the folder is not on your
 `PATH`, **Add to PATH** on the Welcome page or in **Settings → About** adds one
 line to your shell's startup file. **Remove** takes it off, and the app does not
-add it again. If you already have another `t3`, it stays as it is.
+add it again. If you already have another `vibecodinger`, it stays as it is.
 
 ### Windows Subsystem for Linux
 
@@ -152,18 +152,18 @@ take longer.
 With the desktop app already running on the same machine:
 
 ```bash
-t3 app
+vibecodinger app
 ```
 
 This opens a new thread for the current directory, adding the project if needed.
-Pass a path, such as `t3 app ../my-project`, to open another directory. It requires
+Pass a path, such as `vibecodinger app ../my-project`, to open another directory. It requires
 the desktop app, so a standalone server or an SSH session is not enough. If the
 command cannot reach the app, start or update the desktop app and try again.
 
 ### Drop a folder on the sidebar
 
 Drag one or more folders from Finder, Explorer, or your file manager onto the
-sidebar. Each one opens as a project on this computer, the same as `t3 app`.
+sidebar. Each one opens as a project on this computer, the same as `vibecodinger app`.
 Files dropped on a thread still attach to that thread. Browsers do not share
 folder paths, so in the web app use **Add project** instead.
 
@@ -257,7 +257,7 @@ allow more time in the T3 server's environment. For example, give Codex and
 Claude readiness checks 60 seconds:
 
 ```bash
-T3CODE_CODEX_PROBE_TIMEOUT_MS=60000 T3CODE_CLAUDE_PROBE_TIMEOUT_MS=60000 t3 serve
+T3CODE_CODEX_PROBE_TIMEOUT_MS=60000 T3CODE_CLAUDE_PROBE_TIMEOUT_MS=60000 vibecodinger serve
 ```
 
 For a remote environment, set these on the machine running the T3 server.

@@ -259,9 +259,9 @@ describe("OtelEnvironment", () => {
       {
         name: "T3CODE_OTLP_*_URL wins over a signal the OTEL variables turned off",
         otel: withLogs(OtelEnvironment.OtelSignal.Off()),
-        t3Url: "http://t3:4318/v1/logs",
+        t3Url: "http://vibecodinger:4318/v1/logs",
         expected: {
-          url: "http://t3:4318/v1/logs",
+          url: "http://vibecodinger:4318/v1/logs",
           export: t3Export,
           source: "environment" as const,
           variable: "T3CODE_OTLP_LOGS_URL",

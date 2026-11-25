@@ -71,7 +71,7 @@ describe("filesystem read access", () => {
 
 describe("filesystem browse model", () => {
   it("derives the browse target and navigation state", () => {
-    expect(getFilesystemBrowsePath("~/projects/t3")).toEqual({
+    expect(getFilesystemBrowsePath("~/projects/vibecodinger")).toEqual({
       isBrowsing: true,
       directoryPath: "~/projects/",
       filterQuery: "t3",

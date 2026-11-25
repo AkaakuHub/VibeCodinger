@@ -439,7 +439,7 @@ describe("V2 session presentation", () => {
         parentCheckpointId: null,
         ordinalWithinScope: ordinal,
         appRunOrdinal,
-        ref: CheckpointRef.make(`refs/t3/${id}`),
+        ref: CheckpointRef.make(`refs/vibecodinger/${id}`),
         status: "ready" as const,
         files: [],
         capturedAt: now,

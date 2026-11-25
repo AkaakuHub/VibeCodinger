@@ -37,7 +37,7 @@ jobs:
 
       - uses: ./.github/actions/setup-ci-deps
         with:
-          install-args: --frozen-lockfile --filter=t3... --filter=@t3tools/web... --filter=@t3tools/desktop... --filter=@t3tools/scripts...
+          install-args: --frozen-lockfile --filter=vibecodinger... --filter=@t3tools/web... --filter=@t3tools/desktop... --filter=@t3tools/scripts...
 
       - name: Set package version
         id: version

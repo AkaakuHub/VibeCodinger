@@ -2430,7 +2430,7 @@ it.effect.each([
       `;
       const identity = isRepository
         ? ({
-            canonicalKey: "github.com/t3/idle",
+            canonicalKey: "github.com/vibecodinger/idle",
             locator: {
               source: "git-remote",
               remoteName: "origin",

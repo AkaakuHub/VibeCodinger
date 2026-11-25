@@ -108,10 +108,10 @@ function layerProviderHost(input: {
       compatibility: () => Effect.undefined,
       paths: {
         cwd: process.cwd(),
-        baseDir: "/t3",
-        stateDir: "/t3/userdata",
-        providerStatusCacheDir: "/t3/caches",
-        attachmentsDir: "/t3/userdata/attachments",
+        baseDir: "/vibecodinger",
+        stateDir: "/vibecodinger/userdata",
+        providerStatusCacheDir: "/vibecodinger/caches",
+        attachmentsDir: "/vibecodinger/userdata/attachments",
       },
       settings: input.settings ?? {
         get: Effect.succeed(DEFAULT_SERVER_SETTINGS),
@@ -527,7 +527,7 @@ describe("makeManagedServerProvider", () => {
                 : count === 2
                   ? Effect.fail(
                       new ServerSettingsError({
-                        settingsPath: "/t3/userdata/settings.json",
+                        settingsPath: "/vibecodinger/userdata/settings.json",
                         operation: "read-file",
                       }),
                     )

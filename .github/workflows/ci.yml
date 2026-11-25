@@ -108,7 +108,7 @@ jobs:
         run: vp run --filter @t3tools/source-control-github generate --check
 
       - name: Check generated Expo GraphQL operations
-        run: vp run --filter t3 generate --check
+        run: vp run --filter vibecodinger generate --check
 
       - name: Check generated Linear GraphQL operations
         run: vp run --filter @t3tools/issue-tracker-linear generate --check
@@ -211,7 +211,7 @@ jobs:
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         run: |
           node apps/server/scripts/cli.ts build-exe
-          apps/server/dist-exe/t3 --version
+          apps/server/dist-exe/vibecodinger --version
 
       # The release launch check, run unpackaged against the same old-state fixture, for
       # startup and sidebar changes. Packaging and signing stay release-only.

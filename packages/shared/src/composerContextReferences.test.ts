@@ -579,7 +579,7 @@ describe("threadLinkContextReferences", () => {
       [
         "https://app.t3.codes/threads/env-1/t1",
         "<t3-thread://v2/env-1/t2>",
-        "[Written](https://app.t3.codes/threads/env-2/t3)",
+        "[Written](https://app.t3.codes/threads/env-2/vibecodinger)",
       ].join(" "),
       [],
       ({ threadId }) => (threadId === "t3" ? undefined : `Title ${threadId}`),
@@ -616,7 +616,7 @@ describe("threadLinkContextReferences", () => {
     const text = [
       "https://app.t3.codes/threads/elsewhere/t1",
       "[Old](t3-thread://v1/t2)",
-      "`https://app.t3.codes/threads/env-1/t3`",
+      "`https://app.t3.codes/threads/env-1/vibecodinger`",
     ].join(" ");
     const pasted = threadLinkContextReferences(
       text,

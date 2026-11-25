@@ -696,7 +696,7 @@ const runCleanupTest = <A, E>(
 ) => effect.pipe(Effect.provide(cleanupTestLayer));
 
 const legacyCheckpointRef = (threadId: string, turn: number) =>
-  `refs/t3/checkpoints/${Base64Url.encode(threadId)}/turn/${turn}`;
+  `refs/vibecodinger/checkpoints/${Base64Url.encode(threadId)}/turn/${turn}`;
 
 const checkpointCleanupFixture = Effect.fn("test.checkpointCleanupFixture")(function* () {
   const sql = yield* SqlClient.SqlClient;
@@ -760,7 +760,7 @@ const checkpointCleanupFixture = Effect.fn("test.checkpointCleanupFixture")(func
       .execute({
         operation: "cleanup-test.list-checkpoints",
         cwd: repo,
-        args: ["for-each-ref", "--format=%(refname)", "refs/t3/"],
+        args: ["for-each-ref", "--format=%(refname)", "refs/vibecodinger/"],
         maxOutputBytes: 16 * 1024 * 1024,
       })
       .pipe(Effect.map(({ stdout }) => stdout.trim().split("\n").filter(Boolean).sort()));
@@ -837,7 +837,7 @@ describe("checkpoint ref cleanup", () => {
         const refs = yield* addThread("deleted", { deleted: true });
         yield* command(repo, ["symbolic-ref", refs[0]!, "refs/heads/main"]);
         const retained = [
-          "refs/t3/unrelated/0",
+          "refs/vibecodinger/unrelated/0",
           `${refs[1]}-other`,
           refs[1]!.replace(/1$/, "2/nested"),
         ];
@@ -1186,7 +1186,7 @@ it.live("removes clean submodules recursively, including deinitialized repositor
       ])).stdout.trim();
       yield* command(submodule, [
         "update-ref",
-        "refs/t3/orchestration-v2/checkpoints/test",
+        "refs/vibecodinger/orchestration-v2/checkpoints/test",
         checkpoint,
       ]);
       const admin = (yield* command(worktree, ["rev-parse", "--absolute-git-dir"])).stdout.trim();

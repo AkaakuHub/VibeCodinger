@@ -287,7 +287,7 @@ const signIn = Effect.fn("scenario.signIn")(function* (baseUrl: string) {
 
 /** The id every thread link starts with, asked of the server the app talks to. */
 export const environmentId = (baseUrl: string) =>
-  HttpClient.get(`${baseUrl}/.well-known/t3/environment`).pipe(
+  HttpClient.get(`${baseUrl}/.well-known/vibecodinger/environment`).pipe(
     Effect.flatMap(HttpClientResponse.filterStatusOk),
     Effect.flatMap(
       HttpClientResponse.schemaBodyJson(Schema.Struct({ environmentId: Schema.String })),
