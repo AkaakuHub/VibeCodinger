@@ -102,6 +102,7 @@ jobs:
             -archivePath "$archive" \
             -derivedDataPath "$RUNNER_TEMP/vibecodinger-derived-data" \
             -showBuildTimingSummary \
+            COMPILATION_CACHE_CAS_PATH="$RUNNER_TEMP/vibecodinger-derived-data/CompilationCache.noindex" \
             COMPILATION_CACHE_ENABLE_CACHING=YES \
             COMPILATION_CACHE_ENABLE_DIAGNOSTIC_REMARKS=YES \
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
