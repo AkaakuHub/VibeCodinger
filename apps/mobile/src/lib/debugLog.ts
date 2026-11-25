@@ -19,9 +19,9 @@ export function createDebugLogger(namespace: string): DebugLogger {
       return;
     }
     if (data === undefined) {
-      console.log(`[t3-${namespace}] ${event}`);
+      console.log(`[vc-${namespace}] ${event}`);
     } else {
-      console.log(`[t3-${namespace}] ${event}`, data);
+      console.log(`[vc-${namespace}] ${event}`, data);
     }
   };
   return { isEnabled, log };

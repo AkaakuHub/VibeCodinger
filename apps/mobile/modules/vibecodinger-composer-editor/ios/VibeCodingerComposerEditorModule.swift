@@ -6,7 +6,7 @@ enum VibeCodingerComposerClipboard {
 
   // Pasted thread links become chips in JS; packages/shared/src/threadLinks.ts parses them.
   static func hasThreadLink(_ text: String) -> Bool {
-    text.contains("t3-thread://v2/") || text.contains("vibecodinger://threads/")
+    text.contains("vc-thread://v2/") || text.contains("vibecodinger://threads/")
   }
 
   static func write(text: String, fragment: String) {

@@ -354,7 +354,7 @@ describe("mobile context clipboard imports", () => {
   it("pastes a thread link as a chip only where the destination's agent reads its machine", async () => {
     const text = [
       "vibecodinger://threads/destination/local-thread",
-      "<t3-thread://v2/source/foreign-thread>",
+      "<vc-thread://v2/source/foreign-thread>",
     ].join(" ");
     const result = await importComposerContextClipboard(
       { text, fragment: "", html: "" },
@@ -370,7 +370,7 @@ describe("mobile context clipboard imports", () => {
       threadId: "local-thread",
     });
     expect(result!.text).toBe(
-      `[Thread](vc-context://v1/thread/${record!.contextId}) <t3-thread://v2/source/foreign-thread>`,
+      `[Thread](vc-context://v1/thread/${record!.contextId}) <vc-thread://v2/source/foreign-thread>`,
     );
     expect(
       await importComposerContextClipboard(

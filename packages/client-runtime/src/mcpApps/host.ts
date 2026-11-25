@@ -480,7 +480,7 @@ export function makeMcpAppHost(options: McpAppHostOptions): McpAppHost {
           finish();
           return;
         }
-        const id = `t3-host-${nextHostRequestId++}`;
+        const id = `vc-host-${nextHostRequestId++}`;
         hostRequests.set(id, finish);
         timer = setTimeout(() => {
           hostRequests.delete(id);

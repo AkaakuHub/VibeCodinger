@@ -2,13 +2,13 @@ import { EnvironmentId, ThreadId, type ScopedThreadRef } from "@vibecodinger/con
 import * as Option from "effect/Option";
 import * as Schema from "effect/Schema";
 
-export const THREAD_LINK_PROTOCOL = "t3-thread";
+export const THREAD_LINK_PROTOCOL = "vc-thread";
 const V1_PREFIX = `${THREAD_LINK_PROTOCOL}://v1/`;
 const V2_PREFIX = `${THREAD_LINK_PROTOCOL}://v2/`;
 const APP_THREAD_PREFIX = "vibecodinger://threads/";
 const ENCODED_SEGMENT = "[A-Za-z0-9_%-]+";
 const APP_THREAD_LINK = `${APP_THREAD_PREFIX.replace(/[.*+?^${}()|[\]\\/]/g, "\\$&")}${ENCODED_SEGMENT}/${ENCODED_SEGMENT}`;
-const THREAD_HREF = String.raw`t3-thread:\/\/v[12]\/`;
+const THREAD_HREF = String.raw`vc-thread:\/\/v[12]\/`;
 // A label stops at any bracket, so a run of unclosed brackets is scanned once, not once per bracket.
 const LABEL = String.raw`[^[\]\n]*`;
 // Earlier alternatives claim text so later ones cannot match inside it: an escaped character opens

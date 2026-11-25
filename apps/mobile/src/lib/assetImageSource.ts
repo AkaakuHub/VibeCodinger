@@ -18,7 +18,7 @@ export function assetImageCacheKey(
 ): string | undefined {
   switch (resource._tag) {
     case "attachment":
-      return `t3-attachment:${JSON.stringify([environmentId, resource.attachmentId])}`;
+      return `vc-attachment:${JSON.stringify([environmentId, resource.attachmentId])}`;
     case SOURCE_CONTROL_MEDIA_ASSET: {
       const media = sourceControlClients.mediaUrl(resource.url);
       return media?.immutable

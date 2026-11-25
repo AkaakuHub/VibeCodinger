@@ -578,7 +578,7 @@ describe("threadLinkContextReferences", () => {
     const pasted = threadLinkContextReferences(
       [
         "vibecodinger://threads/env-1/t1",
-        "<t3-thread://v2/env-1/t2>",
+        "<vc-thread://v2/env-1/t2>",
         "[Written](vibecodinger://threads/env-2/t4)",
       ].join(" "),
       [],
@@ -614,7 +614,7 @@ describe("threadLinkContextReferences", () => {
   it("keeps links it may not chip, v1 links, and links in code as written", () => {
     const text = [
       "vibecodinger://threads/elsewhere/t1",
-      "[Old](t3-thread://v1/t2)",
+      "[Old](vc-thread://v1/t2)",
       "`vibecodinger://threads/env-1/vibecodinger`",
     ].join(" ");
     const pasted = threadLinkContextReferences(
