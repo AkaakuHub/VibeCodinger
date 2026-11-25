@@ -3,6 +3,10 @@ name: Mobile Showcase Screenshots
 on:
   workflow_dispatch:
     inputs:
+      build_only:
+        description: Build an arm64 Android debug APK without running the showcase
+        type: boolean
+        default: false
       platform:
         description: Device platforms to capture
         required: true
@@ -44,7 +48,7 @@ env:
 jobs:
   ios:
     name: iPhone, iPhone Duo, and iPad 13
-    if: inputs.platform == 'all' || inputs.platform == 'ios'
+    if: ${{ !inputs.build_only && (inputs.platform == 'all' || inputs.platform == 'ios') }}
     runs-on: blacksmith-12vcpu-macos-27
     # Capturing every palette multiplies the device matrix by six, and only the
     # one native build is shared between them.
@@ -124,14 +128,14 @@ jobs:
           retention-days: 14
 
   android:
-    name: Android phone, 7-inch tablet, and 10-inch tablet
-    if: inputs.platform == 'all' || inputs.platform == 'android'
+    name: ${{ inputs.build_only && 'Android debug APK (arm64)' || 'Android phone, 7-inch tablet, and 10-inch tablet' }}
+    if: inputs.build_only || inputs.platform == 'all' || inputs.platform == 'android'
     runs-on: blacksmith-16vcpu-ubuntu-2404
     # Capturing every palette multiplies the device matrix by six, and only the
     # one native build is shared between them.
     timeout-minutes: ${{ inputs.theme == 'all' && 300 || 60 }}
     env:
-      VIBECODINGER_SHOWCASE_ANDROID_ABI: x86_64
+      VIBECODINGER_SHOWCASE_ANDROID_ABI: ${{ inputs.build_only && 'arm64-v8a' || 'x86_64' }}
       CMAKE_C_COMPILER_LAUNCHER: ccache
       CMAKE_CXX_COMPILER_LAUNCHER: ccache
       CCACHE_BASEDIR: ${{ github.workspace }}
@@ -172,6 +176,8 @@ jobs:
 
       - name: Setup Gradle cache
         uses: gradle/actions/setup-gradle@0723195856401067f7a2779048b490ace7a47d7c # v5.0.2
+        with:
+          cache-read-only: false
 
       - name: Set up ccache
         id: ccache
@@ -191,7 +197,33 @@ jobs:
           key: ${{ env.CACHE_PREFIX }}${{ hashFiles('apps/mobile/app.config.ts', 'apps/mobile/plugins/**', 'apps/mobile/modules/**/android/**', 'apps/mobile/modules/**/cpp/**') }}
           restore-keys: ${{ env.CACHE_PREFIX }}
 
+      - name: Generate Android build project
+        if: inputs.build_only
+        working-directory: apps/mobile
+        env:
+          APP_VARIANT: production
+          EXPO_NO_TELEMETRY: "1"
+        run: pnpm exec expo prebuild --clean --platform android --no-install
+
+      - name: Build Android APK
+        if: inputs.build_only
+        working-directory: apps/mobile/android
+        env:
+          APP_VARIANT: production
+          EXPO_NO_TELEMETRY: "1"
+        run: ./gradlew app:assembleDebug --build-cache "-PreactNativeArchitectures=$VIBECODINGER_SHOWCASE_ANDROID_ABI"
+
+      - name: Upload Android APK
+        if: inputs.build_only
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: android-arm64-debug-apk
+          path: apps/mobile/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          compression-level: 0
+
       - name: Enable KVM
+        if: ${{ !inputs.build_only }}
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS="static_node=kvm"' \
             | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -199,6 +231,7 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       - name: Capture Android showcase
+        if: ${{ !inputs.build_only }}
         uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
         with:
           api-level: 36
@@ -216,10 +249,11 @@ jobs:
         run: ccache --show-stats
 
       - name: Validate Google Play assets
+        if: ${{ !inputs.build_only }}
         run: pnpm screenshots:mobile --platform android --appearance "${{ inputs.appearance }}" --theme "${{ inputs.theme }}" --validate-only
 
       - name: Upload Android screenshots
-        if: always()
+        if: ${{ always() && !inputs.build_only }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: google-play-screenshots
