@@ -1,4 +1,4 @@
-import { MCP_APP_DOCUMENT_MESSAGE } from "@t3tools/shared/mcpApp";
+import { MCP_APP_DOCUMENT_MESSAGE, MCP_APP_DOCUMENT_MESSAGE_KEY } from "@t3tools/shared/mcpApp";
 
 const MAX_UNCONFIRMED_MESSAGES = 256;
 
@@ -34,7 +34,9 @@ export function attachMcpAppDocumentLink(
       if (event.source === null || event.source !== frame.contentWindow) return;
       if (current.link === null) {
         const port =
-          event.data?.vibecodinger === MCP_APP_DOCUMENT_MESSAGE ? (event.ports[0] ?? null) : null;
+          event.data?.[MCP_APP_DOCUMENT_MESSAGE_KEY] === MCP_APP_DOCUMENT_MESSAGE
+            ? (event.ports[0] ?? null)
+            : null;
         if (port !== null) {
           current.link = port;
           port.onmessage = (reply: MessageEvent) => {

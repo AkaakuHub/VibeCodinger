@@ -16,6 +16,7 @@ import { squashAtomCommandFailure } from "@t3tools/client-runtime/state/runtime"
 import { CommandId, MessageId } from "@t3tools/contracts";
 import {
   MCP_APP_DOCUMENT_MESSAGE,
+  MCP_APP_DOCUMENT_MESSAGE_KEY,
   mcpAppAllowAttribute,
   mcpAppFileName,
   mcpAppReferencesEqual,
@@ -69,7 +70,7 @@ var send=function(m){var u=navigator.userActivation;window.ReactNativeWebView.po
 frame.addEventListener("load",function(){loads+=1;if(loads>1&&live){live=false;send({t3:"navigated"});}});
 var port=null,plain=false,unconfirmed=Object.create(null),waiting=0,probe=0;
 window.addEventListener("message",function(e){if(!live||e.source!==frame.contentWindow)return;
-if(!port&&!plain){if(e.data&&e.data.t3===${JSON.stringify(MCP_APP_DOCUMENT_MESSAGE)}&&e.ports[0]){port=e.ports[0];
+if(!port&&!plain){if(e.data&&e.data[${JSON.stringify(MCP_APP_DOCUMENT_MESSAGE_KEY)}]===${JSON.stringify(MCP_APP_DOCUMENT_MESSAGE)}&&e.ports[0]){port=e.ports[0];
 port.onmessage=function(r){var k=r.data&&r.data.alive;if(live&&k in unconfirmed){var m=unconfirmed[k];delete unconfirmed[k];waiting-=1;send(m);}};return;}plain=true;}
 if(plain)send(e.data);else if(waiting<256){unconfirmed[probe]=e.data;waiting+=1;port.postMessage({alive:probe++});}});
 window.__t3McpAppReceive=function(m){if(!live)return;if(port)port.postMessage({message:m,origin:location.origin});else if(plain&&frame.contentWindow)frame.contentWindow.postMessage(m,"*");};
