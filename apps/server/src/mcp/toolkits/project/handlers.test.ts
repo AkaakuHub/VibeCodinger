@@ -63,7 +63,7 @@ const clientLaunchHarness = (input: {
   readonly launched: Array<ThreadLaunch.ThreadLaunchInput>;
   readonly workspaceRoot?: string;
   readonly checkWorktreeBase?: ThreadLaunch.ThreadLaunchService["Service"]["checkWorktreeBase"];
-  readonly hostedAppUrl?: string;
+  readonly threadLinkOrigin?: string;
   /** The orchestrator refuses the new thread's mode, as under a managed ceiling. */
   readonly refusedByCeiling?: true;
 }) => {
@@ -114,7 +114,7 @@ const clientLaunchHarness = (input: {
         sessionId: "session-1",
         label: "Claude Code",
         access: input.runtimeModeCeiling,
-        hostedAppUrl: input.hostedAppUrl,
+        threadLinkOrigin: input.threadLinkOrigin,
       },
       issuedAt: 0,
       capabilities: new Set(["orchestration" as const]),
@@ -217,18 +217,18 @@ it.effect(
           readonly runtimeMode?: RuntimeMode;
           readonly targeted?: false;
           readonly overrideModel?: ModelSelection;
-          readonly hostedAppUrl?: string;
+          readonly threadLinkOrigin?: string;
           readonly refusedByCeiling?: true;
         },
       ) {
-        const { targeted, overrideModel, hostedAppUrl, refusedByCeiling, ...input } = params;
+        const { targeted, overrideModel, threadLinkOrigin, refusedByCeiling, ...input } = params;
         const launched: Array<ThreadLaunch.ThreadLaunchInput> = [];
         const { projectId, modelSelection, dependencies } = clientLaunchHarness({
           runtimeModeCeiling,
           defaultRuntimeMode,
           launched,
           ...(overrideModel === undefined ? {} : { overrideModel }),
-          ...(hostedAppUrl === undefined ? {} : { hostedAppUrl }),
+          ...(threadLinkOrigin === undefined ? {} : { threadLinkOrigin }),
           ...(refusedByCeiling === undefined ? {} : { refusedByCeiling }),
         });
         const toolkit = yield* ProjectToolkit.pipe(
@@ -278,11 +278,11 @@ it.effect(
 
       const aboveCeiling = yield* launchWith("auto-accept-edits", "full-access", {
         title: "Fix",
-        hostedAppUrl: "https://t3.example.com",
+        threadLinkOrigin: "https://vibecodinger.example.com",
       });
       expect(aboveCeiling.launched[0]?.runtimeMode).toBe("auto-accept-edits");
       expect(aboveCeiling.result).toMatchObject({
-        link: `https://t3.example.com/threads/environment/${encodeURIComponent(aboveCeiling.launched[0]?.threadId ?? "")}`,
+        link: `https://vibecodinger.example.com/threads/environment/${encodeURIComponent(aboveCeiling.launched[0]?.threadId ?? "")}`,
       });
 
       const requested = yield* launchWith("full-access", "approval-required", {

@@ -54,8 +54,8 @@ export function hostedThreadLink(ref: ScopedThreadRef, origin = DEFAULT_HOSTED_A
 
 const HOSTED_PATH = new RegExp(`^(${HOSTED_SEGMENT})/(${HOSTED_SEGMENT})$`);
 
-function parseHostedThreadLink(href: string): ThreadLink | null {
-  const match = HOSTED_PATH.exec(href.slice(HOSTED_PREFIX.length));
+function parseHostedThreadLink(path: string): ThreadLink | null {
+  const match = HOSTED_PATH.exec(path);
   if (!match) return null;
   try {
     const environmentId = Option.getOrNull(decodeEnvironmentId(decodeURIComponent(match[1]!)));
@@ -70,8 +70,13 @@ function parseHostedThreadLink(href: string): ThreadLink | null {
  * The ids as written. Thread ids can hold percent escapes of their own, so they are not decoded,
  * except in a hosted link, which escapes them itself.
  */
-export function parseThreadLinkHref(href: string): ThreadLink | null {
-  if (href.startsWith(HOSTED_PREFIX)) return parseHostedThreadLink(href);
+export function parseThreadLinkHref(href: string, origin?: string): ThreadLink | null {
+  if (href.startsWith(HOSTED_PREFIX))
+    return parseHostedThreadLink(href.slice(HOSTED_PREFIX.length));
+  if (origin !== undefined) {
+    const prefix = origin + "/threads/";
+    if (href.startsWith(prefix)) return parseHostedThreadLink(href.slice(prefix.length));
+  }
   if (href.startsWith(V1_PREFIX)) {
     const threadId = Option.getOrNull(decodeThreadId(href.slice(V1_PREFIX.length)));
     return threadId === null ? null : { environmentId: null, threadId };

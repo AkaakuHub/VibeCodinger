@@ -42,12 +42,16 @@ const suggestedThreadId = (threadId: ThreadId) => {
 };
 
 // A pasted link (bare, Markdown, or hosted) names its thread; only this environment's can be read here.
-const candidateThreadIds = (threadId: ThreadId, environmentId: EnvironmentId) => {
-  if (!hasThreadLinks(threadId)) {
+const candidateThreadIds = (
+  threadId: ThreadId,
+  environmentId: EnvironmentId,
+  link: ReturnType<typeof parseThreadLinkHref>,
+  containsThreadLink: boolean,
+) => {
+  if (!containsThreadLink) {
     const suggested = suggestedThreadId(threadId);
     return suggested === null ? [] : [suggested];
   }
-  const link = parseThreadLinkHref(threadId);
   const refs =
     link === null
       ? threadLinkRefs(threadId, environmentId)
@@ -68,14 +72,21 @@ export const threadNotFound = Effect.fn("OrchestratorMcpService.threadNotFound")
   message: string,
 ) {
   let suggested: ThreadId | null = null;
-  for (const candidate of candidateThreadIds(threadId, scope.environmentId)) {
+  const link = parseThreadLinkHref(threadId, scope.client?.threadLinkOrigin);
+  const containsThreadLink = link !== null || hasThreadLinks(threadId);
+  for (const candidate of candidateThreadIds(
+    threadId,
+    scope.environmentId,
+    link,
+    containsThreadLink,
+  )) {
     const shell = yield* threads.getThreadShell(candidate).pipe(Effect.orElseSucceed(() => null));
     if (shell !== null && shell.deletedAt === null) {
       suggested = candidate;
       break;
     }
   }
-  if (suggested !== null && hasThreadLinks(threadId)) {
+  if (suggested !== null && containsThreadLink) {
     return yield* new OrchestratorMcpFailure({
       code: "thread_not_found",
       message: `\`${threadId}\` is a thread link, not a thread id. Pass \`${suggested}\` instead.`,

@@ -33,6 +33,7 @@ FORBIDDEN = re.compile(
     rb"t3-task-cache\.pinglabs\.workers\.dev|"
     rb"@clerk/(?:expo|react|electron)|cloudAuthProvider|managedAuthShell|"
     rb"layerCloudDesiredLinkReconcile|managedTunnelStartup|watchManagedTunnelOrigin|hostedApprovalUrl|agentApprovalAppUrlConfig|"
+    rb"Outside MCP clients get app\.t3\.codes|"
     rb"connectSubcommands|writeHeapSnapshot\s*\(",
     re.IGNORECASE,
 )

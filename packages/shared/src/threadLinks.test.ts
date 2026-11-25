@@ -219,9 +219,10 @@ describe("hosted thread links", () => {
     const link = hostedThreadLink(thread);
     expect(link).toBe("https://app.t3.codes/threads/env%2E1/thread%3Adelegated%2Fmcp%253A1%2E");
     expect(parseThreadLinkHref(link)).toEqual(thread);
-    expect(hostedThreadLink(thread, "https://preview.t3.codes/")).toMatch(
-      /^https:\/\/preview\.vibecodinger\.codes\/threads\//,
-    );
+    const origin = "https://env.example.ts.net";
+    const serverLink = hostedThreadLink(thread, origin);
+    expect(parseThreadLinkHref(serverLink, origin)).toEqual(thread);
+    expect(parseThreadLinkHref(serverLink, "https://other.example.ts.net")).toBeNull();
   });
 
   it("reads only a bare thread path on the hosted app", () => {
