@@ -5,6 +5,7 @@ import {
   MessageId,
   type OrchestrationV2Command,
   type OrchestrationV2Run,
+  type OrchestrationV2TurnItem,
   type OrchestrationV2ProviderThread,
   ProviderThreadId,
   ProviderDriverKind,
@@ -15,6 +16,7 @@ import {
   ProviderInstanceId,
   RunId,
   ThreadId,
+  TurnItemId,
 } from "@vibecodinger/contracts";
 import * as Deferred from "effect/Deferred";
 import * as DateTime from "effect/DateTime";
@@ -1231,30 +1233,66 @@ it.effect("previews the completed run's answer without its commentary", () =>
     const threadId = ThreadId.make("thread:answer-preview");
     const runId = RunId.make("run:answer-preview");
     const messageId = MessageId.make("message:answer-preview");
+    const time = DateTime.makeUnsafe(0);
+    const instanceId = ProviderInstanceId.make("codex");
+    const run: OrchestrationV2Run = {
+      id: runId,
+      threadId,
+      ordinal: 1,
+      providerInstanceId: instanceId,
+      modelSelection: { instanceId, model: "gpt-5-codex" },
+      providerThreadId: null,
+      userMessageId: MessageId.make("message:input"),
+      rootNodeId: null,
+      activeAttemptId: null,
+      status: "completed",
+      requestedAt: time,
+      startedAt: time,
+      completedAt: time,
+      checkpointId: null,
+      contextHandoffId: null,
+    };
+    const answer = {
+      id: TurnItemId.make("answer"),
+      type: "assistant_message",
+      threadId,
+      runId,
+      nodeId: null,
+      providerThreadId: null,
+      providerTurnId: null,
+      nativeItemRef: null,
+      parentItemId: null,
+      ordinal: 0,
+      status: "completed",
+      title: null,
+      startedAt: time,
+      completedAt: time,
+      updatedAt: time,
+      phase: "final_answer",
+      text: "修正しました。\n" + "🐈".repeat(250),
+      streaming: false,
+      messageId,
+    } satisfies OrchestrationV2TurnItem;
+    const turnItems: ReadonlyArray<OrchestrationV2TurnItem> = [
+      answer,
+      {
+        ...answer,
+        id: TurnItemId.make("commentary"),
+        ordinal: 1,
+        phase: "commentary",
+        text: "Checking the build",
+      },
+    ];
     const layerTest = ThreadManagementService.layer.pipe(
       Layer.provide(Layer.mock(ProviderSessionManager.ProviderSessionManagerV2)({})),
       Layer.provide(
         Layer.mock(Orchestrator.OrchestratorV2)({
-          getThreadRecords: (_, _fields, filter) =>
-            Effect.succeed({
-              runs: filter?.runIds?.includes(runId) ? [{ id: runId, status: "completed" }] : [],
-              turnItems: [
-                {
-                  type: "assistant_message",
-                  phase: "final_answer",
-                  text: "修正しました。\n" + "🐈".repeat(250),
-                  streaming: false,
-                  messageId,
-                },
-                {
-                  type: "assistant_message",
-                  phase: "commentary",
-                  text: "Checking the build",
-                  streaming: false,
-                  messageId,
-                },
-              ],
-            } as Partial<OrchestrationV2ThreadProjection> as OrchestrationV2ThreadProjection),
+          getThreadRecords: (_, _fields, filter) => {
+            const runs: ReadonlyArray<OrchestrationV2Run> = filter?.runIds?.includes(runId)
+              ? [run]
+              : [];
+            return Effect.succeed({ runs, turnItems } as OrchestrationV2ThreadProjection);
+          },
         }),
       ),
       Layer.provide(ServerSettings.layerTest()),
