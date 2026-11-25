@@ -33,6 +33,7 @@ jobs:
       VIBECODINGER_IOS_PERSONAL_TEAM: "1"
       VIBECODINGER_IOS_PERSONAL_TEAM_BUNDLE_ID: net.akaaku.vibecodinger
       EXPO_NO_GIT_STATUS: "1"
+      EXPO_NO_TELEMETRY: "1"
       NODE_OPTIONS: --max-old-space-size=8192
     steps:
       - name: Checkout build source

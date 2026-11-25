@@ -216,6 +216,7 @@ const command = Effect.fn("nativeClient.command")(function* (
         VIBECODINGER_IOS_PERSONAL_TEAM: "0",
         CI: "1",
         EXPO_NO_GIT_STATUS: "1",
+        EXPO_NO_TELEMETRY: "1",
         // macOS tar otherwise adds AppleDouble entries that change the extracted bundle.
         COPYFILE_DISABLE: "1",
       },
