@@ -438,11 +438,11 @@ setInterval(() => {}, 1_000);
             "PATH=/bad",
             "Path=/bad",
             "VIBECODINGER_HOME=/bad",
-            "t3code_home=/bad",
+            "vibecodinger_home=/bad",
             "VIBECODINGER_BOOT_SERVICE_UNIT=bad",
-            "t3_boot_service_unit=bad",
+            "vibecodinger_boot_service_unit=bad",
             "VIBECODINGER_SERVICE_LAUNCHER_CONTEXT=bad",
-            "t3_service_launcher_context=bad",
+            "vibecodinger_service_launcher_context=bad",
           ].join("\n"),
         );
         assert.deepEqual(yield* Effect.promise(() => readServiceEnvironment(root, inherited)), {
