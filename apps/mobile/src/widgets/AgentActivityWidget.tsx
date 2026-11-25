@@ -117,7 +117,7 @@ export function AgentActivityWidget(
     <HStack
       modifiers={[frame({ width: height * 1.5, height }), foregroundStyle(primaryForeground)]}
     >
-      <Image assetName="T3Mark" modifiers={[resizable()]} />
+      <Image assetName="VCMark" modifiers={[resizable()]} />
     </HStack>
   );
 
