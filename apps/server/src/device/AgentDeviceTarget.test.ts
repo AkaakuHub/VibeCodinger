@@ -103,12 +103,12 @@ exec '${process.execPath.replaceAll("'", "'\"'\"'")}' "$@"
         "--config",
         "/h.json",
         "--session",
-        "t3-a",
+        "vc-a",
       ];
       const command = yield* bindAgentDeviceLauncher({
         entryPath,
         stateDir: dir,
-        session: "t3-a",
+        session: "vc-a",
         targetArgs: target,
       });
       const shared = yield* ensureAgentDeviceShim({ entryPath, stateDir: dir });
@@ -156,12 +156,12 @@ exec '${process.execPath.replaceAll("'", "'\"'\"'")}' "$@"
       }
       expect(
         yield* Effect.promise(() =>
-          launch(shared, ["snapshot", "--config=/h.json", "--session=t3-a"]),
+          launch(shared, ["snapshot", "--config=/h.json", "--session=vc-a"]),
         ),
-      ).toEqual(["snapshot", "--config=/h.json", "--session=t3-a"]);
+      ).toEqual(["snapshot", "--config=/h.json", "--session=vc-a"]);
       yield* Effect.promise(() =>
         expect(
-          launch(shared, ["fill", "@e5", "--", "--config", "/h.json", "--session", "t3-a"]),
+          launch(shared, ["fill", "@e5", "--", "--config", "/h.json", "--session", "vc-a"]),
         ).rejects.toThrow("Call device_open first"),
       );
       for (const args of [["help", "gesture"], ["open", "--help"], ["record", "-h"], []]) {
@@ -190,7 +190,7 @@ exec '${process.execPath.replaceAll("'", "'\"'\"'")}' "$@"
       const command = yield* bindAgentDeviceLauncher({
         entryPath,
         stateDir: dir,
-        session: "t3-a",
+        session: "vc-a",
         targetArgs: [
           "--platform",
           "ios",
@@ -199,7 +199,7 @@ exec '${process.execPath.replaceAll("'", "'\"'\"'")}' "$@"
           "--config",
           "/h.json",
           "--session",
-          "t3-a",
+          "vc-a",
         ],
       });
       const launch = (args: ReadonlyArray<string>) =>
@@ -215,7 +215,7 @@ exec '${process.execPath.replaceAll("'", "'\"'\"'")}' "$@"
         "--config",
         "/h.json",
         "--session",
-        "t3-a",
+        "vc-a",
       ]);
       // The command is found past leading flags and their values, in either form.
       for (const config of [["--config", "/o.json"], ["--config=/o.json"]]) {
@@ -223,7 +223,7 @@ exec '${process.execPath.replaceAll("'", "'\"'\"'")}' "$@"
           ...config,
           "connection",
           "--session",
-          "t3-a",
+          "vc-a",
         ]);
         // device status reads claims on the machine it runs on, which is not the device's host.
         yield* Effect.promise(() =>
@@ -301,8 +301,8 @@ exec '${process.execPath.replaceAll("'", "'\"'\"'")}' "$@"
       const command = yield* bindAgentDeviceLauncher({
         entryPath,
         stateDir: dir,
-        session: "t3-a",
-        targetArgs: ["--config", configPath, "--session", "t3-a"],
+        session: "vc-a",
+        targetArgs: ["--config", configPath, "--session", "vc-a"],
       });
       const launch = (args: ReadonlyArray<string>) =>
         exec(process.execPath, [
@@ -330,7 +330,7 @@ exec '${process.execPath.replaceAll("'", "'\"'\"'")}' "$@"
           "--config",
           configPath,
           "--session",
-          "t3-a",
+          "vc-a",
         ]);
       }
       // cdp talks to Metro, not to T3's connection, so it still runs.
@@ -354,9 +354,9 @@ exec '${process.execPath.replaceAll("'", "'\"'\"'")}' "$@"
       const shared = yield* ensureAgentDeviceShim({ entryPath, stateDir });
       const bind = (session: string) =>
         bindAgentDeviceLauncher({ entryPath, stateDir, session, targetArgs: [] });
-      const kept = yield* bind("t3-open");
-      const ended = yield* bind("t3-closed");
-      yield* pruneAgentDeviceLaunchers({ stateDir, live: new Set(["t3-open"]) });
+      const kept = yield* bind("vc-open");
+      const ended = yield* bind("vc-closed");
+      yield* pruneAgentDeviceLaunchers({ stateDir, live: new Set(["vc-open"]) });
       expect(yield* fs.exists(kept)).toBe(true);
       expect(yield* fs.exists(path.dirname(ended))).toBe(false);
       expect(yield* fs.exists(shared)).toBe(true);
@@ -383,8 +383,8 @@ exec '${process.execPath.replaceAll("'", "'\"'\"'")}' "$@"
         const command = yield* bindAgentDeviceLauncher({
           entryPath: path.join(dir, "cli.mjs"),
           stateDir: dir,
-          session: "t3-a",
-          targetArgs: ["--config", "/h.json", "--session", "t3-a"],
+          session: "vc-a",
+          targetArgs: ["--config", "/h.json", "--session", "vc-a"],
         }).pipe(Effect.provideService(HostProcess.ExecutablePath, runtime));
         yield* fs.remove(runtime);
         yield* Effect.promise(() =>

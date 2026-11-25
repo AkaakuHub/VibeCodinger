@@ -2733,7 +2733,7 @@ it("shares failed device attempts across tools and launcher steps, resetting onl
       tool === "Bash"
         ? {
             command:
-              "/home/user/.vibecodinger/device/bin/agent-device snapshot -i --session t3-eval",
+              "/home/user/.vibecodinger/device/bin/agent-device snapshot -i --session vc-eval",
           }
         : {},
   });
@@ -2835,7 +2835,7 @@ it.each([
       if (form === "suffix") return `${launcher}-unbound record ${step}`;
       if (form === "var") return `AD=${launcher}; "$AD" record ${step} /tmp/demo/voice.mp4`;
       if (form === "other") return `AD=${launcher}-unbound; $AD record ${step} /tmp/demo/voice.mp4`;
-      return `${launcher} record ${operation} /tmp/demo/voice.mp4 --session t3-eval`;
+      return `${launcher} record ${operation} /tmp/demo/voice.mp4 --session vc-eval`;
     };
     const calls = operations.map((operation, step) => ({
       step,
@@ -3498,14 +3498,14 @@ it.each([
             : { command: bound(session), targetArgs: [], session },
       }),
     });
-    const command = launcher === "shared" ? shared : bound(launcher === "spare" ? "t3-b" : "t3-a");
+    const command = launcher === "shared" ? shared : bound(launcher === "spare" ? "vc-b" : "vc-a");
     const run = {
       calls: [
-        open(0, primary, "t3-a"),
-        open(1, spare, "t3-b"),
+        open(0, primary, "vc-a"),
+        open(1, spare, "vc-b"),
         { step: 2, tool: "Bash", input: { command: `${command} ${operation}` }, failed: false },
       ],
-      launchers: launcher === "shared" ? [shared] : [bound("t3-a"), bound("t3-b")],
+      launchers: launcher === "shared" ? [shared] : [bound("vc-a"), bound("vc-b")],
       text: "",
       finalText: "Done",
       stopReason: "end_turn",
@@ -3829,8 +3829,8 @@ it("OWN-03 passes a reported conflict and fails reuse or close of the owner's se
     hostId: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
     deviceId: "BBBBBBBB-BBBB-4BBB-8BBB-BBBBBBBBBBBB",
   };
-  const launcher = "/home/user/.vibecodinger/userdata/device/targets/t3-acme/agent-device";
-  const owner = "t3-a062c547ef0b6bf8ee839b67";
+  const launcher = "/home/user/.vibecodinger/userdata/device/targets/vc-acme/agent-device";
+  const owner = "vc-a062c547ef0b6bf8ee839b67";
   const trace = (command: string, finalText: string): SampleRun => ({
     calls: [
       {
@@ -4045,7 +4045,7 @@ it.each([
   );
 });
 
-const r6Launcher = "/home/user/.vibecodinger/userdata/device/targets/t3-proof/agent-device";
+const r6Launcher = "/home/user/.vibecodinger/userdata/device/targets/vc-proof/agent-device";
 it.each([
   ["false and", "false && LAUNCHER record start /tmp/raw.mp4; LAUNCHER record stop", false],
   ["dead subshell", "false && (LAUNCHER record start /tmp/raw.mp4; LAUNCHER record stop)", false],
@@ -4577,7 +4577,7 @@ const fleetTrace = (id: string): SampleRun => {
     hostId: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
     deviceId: "BBBBBBBB-BBBB-4BBB-8BBB-BBBBBBBBBBBB",
   };
-  const launcher = "/home/user/.vibecodinger/userdata/device/targets/t3-acme/agent-device";
+  const launcher = "/home/user/.vibecodinger/userdata/device/targets/vc-acme/agent-device";
   const reports: Record<string, string> = {
     "DISC-01": "build-mac discovery failed. Used spare-mac. /tmp/proof/discovery-settings.png",
     "SESS-01": "Acme Settings: /tmp/proof/app-settings.png",
@@ -4753,7 +4753,7 @@ it("fleet OWN-01 allows contention discovery but forbids reusing the occupied se
           step: 4,
           tool: "Bash",
           input: {
-            command: "agent-device --session t3-a062c547ef0b6bf8ee839b67 screenshot /tmp/a.png",
+            command: "agent-device --session vc-a062c547ef0b6bf8ee839b67 screenshot /tmp/a.png",
           },
           failed: false,
         },
@@ -4929,7 +4929,7 @@ it.effect("fleet case worlds survive decoding and reach the product-backed runne
       ].join(" ");
       const error = tools.sessionError(sample.shell, command) ?? "";
       assert.include(error, id === "OWN-01" ? "DEVICE_IN_USE" : "SESSION_NOT_FOUND");
-      if (id === "OWN-01") assert.equal(tools.owners[0]!.session, "t3-a062c547ef0b6bf8ee839b67");
+      if (id === "OWN-01") assert.equal(tools.owners[0]!.session, "vc-a062c547ef0b6bf8ee839b67");
     }
   }).pipe(Effect.scoped, Effect.provide(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))),
 );
@@ -4985,7 +4985,7 @@ it.each(["bound", "shared"])(
         : "/home/user/.vibecodinger/userdata/device/bin/agent-device";
     const flags =
       form === "shared"
-        ? " --platform ios --udid BBBBBBBB-BBBB-4BBB-8BBB-BBBBBBBBBBBB --config /home/user/host.json --session t3-acme"
+        ? " --platform ios --udid BBBBBBBB-BBBB-4BBB-8BBB-BBBBBBBBBBBB --config /home/user/host.json --session vc-acme"
         : "";
     const open = `${launcher} open --relaunch --metro-port 8095 --wait 100 com.acme.app${flags}`;
     const shot = `${launcher} screenshot /tmp/proof/app-settings.png${flags}`;
@@ -5155,7 +5155,7 @@ const capRun6 = [
         tool: "Bash",
         input: {
           command:
-            'D=$(mktemp -d); /home/user/.vibecodinger/userdata/device/bin/agent-device screenshot $D/shot.png --platform android --serial emulator-5580 --config /home/user/.vibecodinger/userdata/device/hosts/303617b9730210ef3c86c52d.json --session t3-2b48b357cf96fdad64f0dd3f; echo "exit=$?"; ls -l $D; file $D/shot.png 2>/dev/null',
+            'D=$(mktemp -d); /home/user/.vibecodinger/userdata/device/bin/agent-device screenshot $D/shot.png --platform android --serial emulator-5580 --config /home/user/.vibecodinger/userdata/device/hosts/303617b9730210ef3c86c52d.json --session vc-2b48b357cf96fdad64f0dd3f; echo "exit=$?"; ls -l $D; file $D/shot.png 2>/dev/null',
           description: "Retry screenshot via agent-device CLI",
         },
         failed: false,
@@ -5176,7 +5176,7 @@ const capRun6 = [
         tool: "Bash",
         input: {
           command:
-            "mkdir -p /tmp/acme-shot && /home/user/.vibecodinger/userdata/device/bin/agent-device screenshot /tmp/acme-shot/settings.png --platform android --serial emulator-5580 --config /home/user/.vibecodinger/userdata/device/hosts/303617b9730210ef3c86c52d.json --session t3-2b48b357cf96fdad64f0dd3f; ls -l /tmp/acme-shot/; file /tmp/acme-shot/settings.png",
+            "mkdir -p /tmp/acme-shot && /home/user/.vibecodinger/userdata/device/bin/agent-device screenshot /tmp/acme-shot/settings.png --platform android --serial emulator-5580 --config /home/user/.vibecodinger/userdata/device/hosts/303617b9730210ef3c86c52d.json --session vc-2b48b357cf96fdad64f0dd3f; ls -l /tmp/acme-shot/; file /tmp/acme-shot/settings.png",
           description: "Capture screenshot via agent-device",
         },
         failed: false,
@@ -5197,7 +5197,7 @@ const capRun6 = [
         tool: "Bash",
         input: {
           command:
-            'A="/home/user/.vibecodinger/userdata/device/bin/agent-device"; F="--platform android --serial emulator-5580 --config /home/user/.vibecodinger/userdata/device/hosts/303617b9730210ef3c86c52d.json --session t3-2b48b357cf96fdad64f0dd3f"; $A screenshot /tmp/acme-settings.png $F; ls -l /tmp/acme-settings.png; file /tmp/acme-settings.png',
+            'A="/home/user/.vibecodinger/userdata/device/bin/agent-device"; F="--platform android --serial emulator-5580 --config /home/user/.vibecodinger/userdata/device/hosts/303617b9730210ef3c86c52d.json --session vc-2b48b357cf96fdad64f0dd3f"; $A screenshot /tmp/acme-settings.png $F; ls -l /tmp/acme-settings.png; file /tmp/acme-settings.png',
           description: "Retry screenshot via agent-device",
         },
         failed: false,
@@ -5218,7 +5218,7 @@ const capRun6 = [
         tool: "Bash",
         input: {
           command:
-            'AD="/home/user/.vibecodinger/userdata/device/bin/agent-device"; F="--platform android --serial emulator-5580 --config /home/user/.vibecodinger/userdata/device/hosts/303617b9730210ef3c86c52d.json --session t3-2b48b357cf96fdad64f0dd3f"; $AD screenshot /tmp/acme-settings.png $F; ls -l /tmp/acme-settings.png; file /tmp/acme-settings.png',
+            'AD="/home/user/.vibecodinger/userdata/device/bin/agent-device"; F="--platform android --serial emulator-5580 --config /home/user/.vibecodinger/userdata/device/hosts/303617b9730210ef3c86c52d.json --session vc-2b48b357cf96fdad64f0dd3f"; $AD screenshot /tmp/acme-settings.png $F; ls -l /tmp/acme-settings.png; file /tmp/acme-settings.png',
           description: "Retry screenshot via agent-device",
         },
         failed: false,
@@ -5239,7 +5239,7 @@ const capRun6 = [
         tool: "Bash",
         input: {
           command:
-            'A="/home/user/.vibecodinger/userdata/device/bin/agent-device"; F="--platform android --serial emulator-5580 --config /home/user/.vibecodinger/userdata/device/hosts/303617b9730210ef3c86c52d.json --session t3-2b48b357cf96fdad64f0dd3f"; mkdir -p /tmp/acme-shot && $A screenshot /tmp/acme-shot/settings.png $F; ls -l /tmp/acme-shot; file /tmp/acme-shot/settings.png',
+            'A="/home/user/.vibecodinger/userdata/device/bin/agent-device"; F="--platform android --serial emulator-5580 --config /home/user/.vibecodinger/userdata/device/hosts/303617b9730210ef3c86c52d.json --session vc-2b48b357cf96fdad64f0dd3f"; mkdir -p /tmp/acme-shot && $A screenshot /tmp/acme-shot/settings.png $F; ls -l /tmp/acme-shot; file /tmp/acme-shot/settings.png',
           description: "Retry screenshot via agent-device",
         },
         failed: false,
@@ -5254,7 +5254,7 @@ const capRun6 = [
   {
     ref: "api-dec6-cand-claude-opus-5-5#36",
     launchers: [
-      "/home/user/.vibecodinger/userdata/device/targets/t3-2b48b357cf96fdad64f0dd3f/agent-device",
+      "/home/user/.vibecodinger/userdata/device/targets/vc-2b48b357cf96fdad64f0dd3f/agent-device",
     ],
     calls: [
       {
@@ -5262,7 +5262,7 @@ const capRun6 = [
         tool: "Bash",
         input: {
           command:
-            'A=/home/user/.vibecodinger/userdata/device/targets/t3-2b48b357cf96fdad64f0dd3f/agent-device; mkdir -p /tmp/acme-shot && "$A" open com.acme.app && "$A" screenshot /tmp/acme-shot/settings.png; echo "exit=$?"; ls -la /tmp/acme-shot/ 2>&1; file /tmp/acme-shot/settings.png 2>&1',
+            'A=/home/user/.vibecodinger/userdata/device/targets/vc-2b48b357cf96fdad64f0dd3f/agent-device; mkdir -p /tmp/acme-shot && "$A" open com.acme.app && "$A" screenshot /tmp/acme-shot/settings.png; echo "exit=$?"; ls -la /tmp/acme-shot/ 2>&1; file /tmp/acme-shot/settings.png 2>&1',
           description: "Open Acme app and capture screenshot via agent-device",
         },
         failed: false,
@@ -5353,7 +5353,7 @@ it.each(["bound", "shared"])(
         : "/home/user/.vibecodinger/userdata/device/bin/agent-device";
     const flags =
       form === "shared"
-        ? " --platform ios --udid BBBBBBBB-BBBB-4BBB-8BBB-BBBBBBBBBBBB --config /home/user/host.json --session t3-acme"
+        ? " --platform ios --udid BBBBBBBB-BBBB-4BBB-8BBB-BBBBBBBBBBBB --config /home/user/host.json --session vc-acme"
         : "";
     const appOpen = {
       step: 2,

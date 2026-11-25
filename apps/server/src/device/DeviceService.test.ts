@@ -1289,7 +1289,7 @@ it.effect.each(["shutdown", "close"] as const)(
         stopAgent: Effect.void,
         stop: Effect.void,
       };
-      const launchers = new Set(["t3-from-a-previous-run"]);
+      const launchers = new Set(["vc-from-a-previous-run"]);
       const released: Array<[string, boolean]> = [];
       // Whether the device was still on when each session was released.
       const releasedWhileBooted: Array<boolean> = [];

@@ -216,14 +216,14 @@ it("prints agent-device's own help for a lone help command on a returned launche
       ?.trimEnd();
   // Commands from the paired runs. The simulator once answered the first with a placeholder.
   const launcher = "/home/user/.vibecodinger/userdata/device/bin/agent-device";
-  const target = `--platform ios --udid ${IPHONE} --config /home/user/.vibecodinger/userdata/device/hosts/303617b9730210ef3c86c52d.json --session t3-4c43aa31e607633b85e9ff2f`;
+  const target = `--platform ios --udid ${IPHONE} --config /home/user/.vibecodinger/userdata/device/hosts/303617b9730210ef3c86c52d.json --session vc-4c43aa31e607633b85e9ff2f`;
   const asked = (command: string) => launcherHelp([launcher], command);
   assert.match(help("") ?? "", /^agent-device <command> \[args\] \[--json\]\n/);
   assert.equal(asked(`${launcher} help ${target}`), help(""));
   assert.equal(asked(`${launcher} record --help ${target}`), help("record"));
   assert.equal(asked(`${launcher} help open ${target}`), help("open"));
   assert.equal(asked(`${launcher} --help 2>&1`), help(""));
-  assert.equal(asked(`${launcher} help settings --session=t3-1`), help("settings"));
+  assert.equal(asked(`${launcher} help settings --session=vc-1`), help("settings"));
   // A password reaches fill from stdin, so request_secret's file never enters argv.
   assert.equal(asked(`${launcher} fill --help ${target}`), help("fill"));
   assert.include(help("fill"), "fill <x y|@ref|selector> --text-stdin");
@@ -332,8 +332,8 @@ const shared = (session: string): LauncherTarget => ({
   iosSimulator: true,
 });
 const boundTarget: LauncherTarget = {
-  command: "/home/user/.vibecodinger/userdata/device/targets/t3-bound/agent-device",
-  session: "t3-bound",
+  command: "/home/user/.vibecodinger/userdata/device/targets/vc-bound/agent-device",
+  session: "vc-bound",
   bound: true,
   deviceId: IPHONE,
   ios: true,
@@ -352,22 +352,22 @@ const errorCode = (
 
 it("names the session on either ref: the bound launcher's own, or the shared one's --session", () => {
   const flags = `--platform ios --udid ${IPHONE} --config /home/user/.vibecodinger/userdata/device/hosts/x.json`;
-  const sharedTargets = [shared("t3-a"), shared("t3-b")];
+  const sharedTargets = [shared("vc-a"), shared("vc-b")];
   // The shared launcher answers each session its flags name; without one, its own check (not
   // modelled) refuses before agent-device runs.
-  const opened = [bash(`${sharedTargets[0]!.command} open com.acme.app ${flags} --session t3-a`)];
+  const opened = [bash(`${sharedTargets[0]!.command} open com.acme.app ${flags} --session vc-a`)];
   assert.isUndefined(
     errorCode(
       sharedTargets,
       opened,
-      `${sharedTargets[0]!.command} screenshot ${flags} --session t3-a`,
+      `${sharedTargets[0]!.command} screenshot ${flags} --session vc-a`,
     ),
   );
   assert.equal(
     errorCode(
       sharedTargets,
       opened,
-      `${sharedTargets[0]!.command} screenshot ${flags} --session=t3-b`,
+      `${sharedTargets[0]!.command} screenshot ${flags} --session=vc-b`,
     ),
     "SESSION_NOT_FOUND",
   );
@@ -391,14 +391,14 @@ it("names the session on either ref: the bound launcher's own, or the shared one
   // Without a selector, agent-device's record and close refuse a missing named session with
   // other text; that stays with the simulator.
   assert.isUndefined(
-    errorCode(sharedTargets, [], `${sharedTargets[0]!.command} record start --session t3-a`),
+    errorCode(sharedTargets, [], `${sharedTargets[0]!.command} record start --session vc-a`),
   );
 });
 
 it("follows the session through aliases, compound calls, snapshots and whole-screen recordings", () => {
   const launcher = boundTarget.command;
   const after = (...history: ReadonlyArray<ShellCall>) =>
-    agentDeviceSessions([boundTarget], {}, history).get("t3-bound");
+    agentDeviceSessions([boundTarget], {}, history).get("vc-bound");
   assert.deepEqual(after(bash(`AD=${launcher}; "$AD" open com.acme.app`)), { app: true });
   // A failed lone open starts nothing; an open in a failed compound call still counts.
   assert.isUndefined(after(bash(`${launcher} open com.acme.app`, "Exit code 1\nError (X): no")));
@@ -415,7 +415,7 @@ it("follows the session through aliases, compound calls, snapshots and whole-scr
   assert.isUndefined(after(bash(`${launcher} snapshot -i`)));
   const android = { ...boundTarget, ios: false, iosSimulator: false };
   assert.deepEqual(
-    agentDeviceSessions([android], {}, [bash(`${launcher} snapshot -i`)]).get("t3-bound"),
+    agentDeviceSessions([android], {}, [bash(`${launcher} snapshot -i`)]).get("vc-bound"),
     { app: false },
   );
   // A whole-screen recording holds a session only until it stops.
@@ -436,10 +436,10 @@ it("follows the session through aliases, compound calls, snapshots and whole-scr
 
 it("follows the shared launcher's session through flags held in a variable or an array", () => {
   // Forms Sonnet used with the shared launcher in a live sample.
-  const target = shared("t3-a");
-  const flags = `--platform ios --udid ${IPHONE} --config /home/user/.vibecodinger/userdata/device/hosts/x.json --session t3-a`;
+  const target = shared("vc-a");
+  const flags = `--platform ios --udid ${IPHONE} --config /home/user/.vibecodinger/userdata/device/hosts/x.json --session vc-a`;
   const after = (history: ShellCall, targets = [target]) =>
-    agentDeviceSessions(targets, {}, [history]).get("t3-a");
+    agentDeviceSessions(targets, {}, [history]).get("vc-a");
   const opened = bash(
     `AD=${target.command}; A="${flags}"; $AD open com.acme.app $A 2>&1 | tail -5; sleep 5; $AD snapshot -i $A 2>&1 | head -60`,
     "Opened: com.acme.app",
@@ -448,7 +448,7 @@ it("follows the shared launcher's session through flags held in a variable or an
   const array = bash(`A=(${flags}); ${target.command} open "\${A[@]}" 2>&1 | head -60`);
   assert.deepEqual(after(array), { app: false });
   // With two sessions behind the shared launcher, unread flags name neither.
-  assert.isUndefined(after(array, [target, shared("t3-b")]));
+  assert.isUndefined(after(array, [target, shared("vc-b")]));
   // agent-device still sees no session for a plain command after a failed open in a variable.
   const failed = bash(
     `AD=${target.command}; A="${flags}"; $AD open $A`,
@@ -532,9 +532,9 @@ it.effect(
 
 it("keeps a redirection's descriptor out of the app an open names, on either launcher", () => {
   // Sol R10 B1: `open 2>&1` once read as `open 2`, an app the real shell never passes.
-  const flags = `--platform ios --udid ${IPHONE} --config /home/user/.vibecodinger/userdata/device/hosts/x.json --session t3-a`;
+  const flags = `--platform ios --udid ${IPHONE} --config /home/user/.vibecodinger/userdata/device/hosts/x.json --session vc-a`;
   for (const [target, args] of [
-    [shared("t3-a"), ` ${flags}`],
+    [shared("vc-a"), ` ${flags}`],
     [boundTarget, ""],
   ] as const) {
     for (const redirect of ["2>&1", "2>&1 | tail -5", "2>/dev/null"]) {
@@ -559,7 +559,7 @@ it("follows opens the parser cannot prove ran, in calls that did not fail", () =
   // Opus R10 B1(b): shapes from run 5, where `&&` before `;` leaves an open uncertain.
   const launcher = boundTarget.command;
   const after = (command: string, output = "Opened: com.acme.app") =>
-    agentDeviceSessions([boundTarget], {}, [bash(command, output)]).get("t3-bound");
+    agentDeviceSessions([boundTarget], {}, [bash(command, output)]).get("vc-bound");
   assert.deepEqual(
     after(`mkdir -p /tmp/p && ${launcher} open com.acme.app 2>&1 | tail -3; echo done`),
     { app: true },
@@ -578,7 +578,7 @@ it("follows opens the parser cannot prove ran, in calls that did not fail", () =
     agentDeviceSessions([boundTarget], {}, [
       bash(`cd /tmp && AD=${launcher}; echo ready`),
       bash("$AD open com.acme.app"),
-    ]).get("t3-bound"),
+    ]).get("vc-bound"),
     { app: true },
   );
   // A failed call credits only what certainly ran.
@@ -686,7 +686,7 @@ it.effect("refuses an open on a device another thread's agent-device session hol
   Effect.gen(function* () {
     const tools = yield* deviceTools({ deviceOwners: { [IPHONE]: "acme-design-review" } });
     // T3 names the owner's session as it names every thread's.
-    const owner = "t3-a062c547ef0b6bf8ee839b67";
+    const owner = "vc-a062c547ef0b6bf8ee839b67";
     assert.deepEqual(tools.owners, [
       { deviceId: IPHONE, threadId: "acme-design-review", session: owner },
     ]);
@@ -786,7 +786,7 @@ it.effect(
     Effect.gen(function* () {
       // Opus R11-B3(a): in run 6 the simulator gave the free spare's plain open the owner's
       // DEVICE_IN_USE twice. It could not tell which device a flagless bound launcher drives.
-      const owner = "t3-a062c547ef0b6bf8ee839b67";
+      const owner = "vc-a062c547ef0b6bf8ee839b67";
       const sample = makeSample(
         deviceCase({ world: { ...twoMacs, deviceOwners: { [IPHONE]: "acme-design-review" } } }),
         base,
@@ -909,7 +909,7 @@ it("tells the simulator 0.21.31's --foreground and session list behaviour", () =
     assert.isUndefined(
       agentDeviceSessionError(
         [boundTarget],
-        new Map([["t3-bound", undefined]]),
+        new Map([["vc-bound", undefined]]),
         `${boundTarget.command} ${args}`,
       ),
       args,
