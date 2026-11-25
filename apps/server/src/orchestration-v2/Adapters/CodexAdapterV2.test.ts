@@ -1539,7 +1539,7 @@ describe("CodexAdapterV2 session initialize", () => {
   const requestWritten: CodexReplay.CodexAppServerReplayEntry = {
     type: "emit_inbound",
     label: "request-written",
-    frame: { method: "t3/test/requestWritten", params: {} },
+    frame: { method: "vibecodinger/test/requestWritten", params: {} },
   };
   const awaitRequestWritten =
     (written: Deferred.Deferred<void>) =>

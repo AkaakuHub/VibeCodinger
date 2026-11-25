@@ -201,7 +201,7 @@ export class IssueService extends Context.Service<
       IssueError
     >;
   }
->()("t3/issue/IssueService") {}
+>()("vibecodinger/issue/IssueService") {}
 
 const make = Effect.gen(function* () {
   const registry = yield* IssueTrackerRegistry.IssueTrackerRegistry;

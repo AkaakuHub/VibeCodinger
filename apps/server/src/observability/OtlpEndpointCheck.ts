@@ -8,7 +8,7 @@ export class OtlpEndpointCheck extends Context.Service<
   {
     readonly check: (input: OtlpEndpointCheckInput) => Effect.Effect<OtlpEndpointCheckResult>;
   }
->()("t3/observability/OtlpEndpointCheck") {}
+>()("vibecodinger/observability/OtlpEndpointCheck") {}
 
 export const layer = Layer.succeed(OtlpEndpointCheck, {
   check: Effect.fn("OtlpEndpointCheck.check")(() =>

@@ -381,7 +381,7 @@ export class ProviderTurnAnalytics extends Context.Reference<{
   }) => Effect.Effect<void>;
   readonly turnCompleted: (report: ProviderTurnReport) => Effect.Effect<void>;
   readonly runSettled: (report: RunSettledReport) => Effect.Effect<void>;
-}>("t3/telemetry/ProviderTurnAnalytics", {
+}>("vibecodinger/telemetry/ProviderTurnAnalytics", {
   defaultValue: () => ({
     runStarted: () => Effect.void,
     turnCompleted: () => Effect.void,

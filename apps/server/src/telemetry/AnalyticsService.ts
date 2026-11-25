@@ -11,7 +11,7 @@ export class AnalyticsService extends Context.Service<
       properties?: Readonly<Record<string, unknown>>,
     ) => Effect.Effect<boolean>;
   }
->()("t3/telemetry/AnalyticsService") {}
+>()("vibecodinger/telemetry/AnalyticsService") {}
 
 export const layerDisabled = Layer.succeed(AnalyticsService, {
   record: Effect.fn("AnalyticsService.record")(() => Effect.succeed(false)),

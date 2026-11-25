@@ -8,7 +8,7 @@ import * as ServerSecretStore from "./ServerSecretStore.ts";
 export class ServerE2eeIdentity extends Context.Service<
   ServerE2eeIdentity,
   { readonly keypair: Effect.Effect<E2eeIdentityKeypair, ServerSecretStore.SecretStoreError> }
->()("t3/auth/ServerE2eeIdentity") {}
+>()("vibecodinger/auth/ServerE2eeIdentity") {}
 
 export const layer = Layer.effect(
   ServerE2eeIdentity,
