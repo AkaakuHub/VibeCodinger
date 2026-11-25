@@ -14,7 +14,10 @@ describe("buildRuntimeInstructions", () => {
       pullRequestLinking: false,
     });
 
-    assert.include(instructions, "through the Antigravity harness, as gemini-3.8-flash.");
+    assert.include(
+      instructions,
+      "identify VibeCodinger as the app and Antigravity as the harness, as gemini-3.8-flash.",
+    );
     assert.notInclude(instructions, "<pull_request_linking>");
   });
 

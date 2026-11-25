@@ -9,7 +9,7 @@ export const threadTitleEvaluationCases = [
     messages: [
       {
         role: "user",
-        text: "[xlsx: chart data labels use the cells' number format](t3-context://v1/thread/thread_labels) why could this thread not start up? [Run chart format tests on external target](t3-context://v1/thread/thread_tests) why did i have to say it like this over here to get it working?",
+        text: "[xlsx: chart data labels use the cells' number format](vc-context://v1/thread/thread_labels) why could this thread not start up? [Run chart format tests on external target](vc-context://v1/thread/thread_tests) why did i have to say it like this over here to get it working?",
       },
     ],
     rubric:
@@ -23,7 +23,7 @@ export const threadTitleEvaluationCases = [
     messages: [
       {
         role: "user",
-        text: "Continue [xlsx: chart data labels use the cells' number format](t3-context://v1/thread/thread_labels). Make the chart labels inherit the cells' number formats.",
+        text: "Continue [xlsx: chart data labels use the cells' number format](vc-context://v1/thread/thread_labels). Make the chart labels inherit the cells' number formats.",
       },
     ],
     rubric:

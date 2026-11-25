@@ -709,7 +709,7 @@ it("rebuilds the template from this checkout and sends a child T3's task prompt"
     `Main prompt.\n - Primary working directory: /home/user/app\n\n${t3SystemAppend("claude-sonnet-5-5")}`,
   ]);
   // The eval offers the device tools, so Claude's append carries the device block.
-  assert.include(t3SystemAppend("claude-sonnet-5-5"), "## T3 Code devices");
+  assert.include(t3SystemAppend("claude-sonnet-5-5"), "## VibeCodinger devices");
   assert.equal(base.environment.cwd, "/home/user/app");
   assert.include(system[2], "model named Sonnet 5.5. The exact model ID is claude-sonnet-5-5.");
   const deferred = system[2]?.split("Load them first:\n")[1]?.split("\n\n")[0]?.split("\n") ?? [];
@@ -756,7 +756,7 @@ it("lists link tools only while a case turns the beta on, and sends chips as T3 
   const testCase: McpToolUseCase = {
     ...childCase,
     setup: { role: "top", linkedEnvironments: true },
-    prompt: "Continue [Deploy](t3-context://v1/thread/thread_deploy)",
+    prompt: "Continue [Deploy](vc-context://v1/thread/thread_deploy)",
     promptContext: {
       records: [
         {
