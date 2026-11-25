@@ -248,7 +248,7 @@ describe("DesktopPreReadyPlatform", () => {
         const entry = writeFileSyncMock.mock.calls.find(
           ([path]) => path === "/xdg/applications/net.akaaku.vibecodinger.desktop",
         )?.[1];
-        assert.include(entry, 'Exec="/opt/VibeCodinger/vibecodinger" %U');
+        assert.include(entry, "Exec=/opt/VibeCodinger/vibecodinger %U");
       }),
     ).pipe(Effect.ensuring(Effect.sync(() => vi.unstubAllEnvs())));
   });

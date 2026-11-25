@@ -29,6 +29,7 @@ it("initializes React refresh before a shared UI chunk runs in bundled dev", asy
     for (const file of [
       "index.html",
       "src/bootstrap.ts",
+      "src/branding.logic.ts",
       "src/lib/bootError.ts",
       "src/lib/chunkReloadGuard.ts",
     ]) {

@@ -292,7 +292,7 @@ describe("DesktopLinuxUrlHandler", () => {
         environment: { desktopLauncherPath: Option.some("/opt/VibeCodinger/vibecodinger") },
       });
 
-      assert.include(recorded.files[0]?.content, 'Exec="/opt/VibeCodinger/vibecodinger" %U');
+      assert.include(recorded.files[0]?.content, "Exec=/opt/VibeCodinger/vibecodinger %U");
     });
   });
 
