@@ -136,7 +136,7 @@ export const T3ProjectFile = Schema.Struct({
     trimmedNonEmpty(
       {
         description:
-          'Repository-relative path to a git sparse-checkout pattern file in non-cone syntax (e.g. ".vibecodinger/sparse-checkout"). New worktrees check out only the files it matches. Both files are read from the branch being checked out; a missing pattern file fails the worktree instead of checking out everything.',
+          'Repository-relative path to a non-cone Git sparse-checkout pattern file (e.g. ".vibecodinger/sparse-checkout"). New worktrees check out only the files it matches. Both files are read from the branch being checked out; a missing pattern file fails the worktree instead of checking out everything.',
       },
       T3_PROJECT_FILE_PATH_MAX_LENGTH,
     ),
