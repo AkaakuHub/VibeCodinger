@@ -32,7 +32,7 @@ FORBIDDEN = re.compile(
     rb"tailscale.{0,48}funnel|--allow-funnel|https?://[^\s'\x22]*(?:relay|clerk)\.t3\.codes|"
     rb"t3-task-cache\.pinglabs\.workers\.dev|"
     rb"@clerk/(?:expo|react|electron)|cloudAuthProvider|managedAuthShell|"
-    rb"layerCloudDesiredLinkReconcile|managedTunnelStartup|watchManagedTunnelOrigin|"
+    rb"layerCloudDesiredLinkReconcile|managedTunnelStartup|watchManagedTunnelOrigin|hostedApprovalUrl|agentApprovalAppUrlConfig|"
     rb"connectSubcommands|writeHeapSnapshot\s*\(",
     re.IGNORECASE,
 )
