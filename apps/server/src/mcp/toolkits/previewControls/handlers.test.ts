@@ -53,7 +53,7 @@ it.effect.each([
     const manager = yield* Preview.make.pipe(
       Effect.provide(
         Layer.merge(
-          ServerConfig.layerTest(process.cwd(), { prefix: "t3-preview-controls-" }).pipe(
+          ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-preview-controls-" }).pipe(
             Layer.provide(NodeServices.layer),
           ),
           NodeCrypto.layer,

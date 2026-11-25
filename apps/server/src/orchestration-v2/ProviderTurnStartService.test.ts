@@ -1953,7 +1953,9 @@ effectIt.effect(
       const path = yield* Path.Path;
       const gitWorkflow = yield* GitWorkflow.GitWorkflowService;
       const driver = yield* GitVcsDriver.GitVcsDriver;
-      const root = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-recreate-repo-" });
+      const root = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-recreate-repo-",
+      });
       const workspaceRoot = path.join(root, "project");
       const originRoot = path.join(root, "origin.git");
       const worktreesDir = path.join(root, "worktrees");
@@ -2101,7 +2103,9 @@ effectIt.effect("leaves a managed worktree folder without .git that holds user f
   Effect.gen(function* () {
     const fileSystem = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const worktreesDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-leftover-" });
+    const worktreesDir = yield* fileSystem.makeTempDirectoryScoped({
+      prefix: "vibecodinger-leftover-",
+    });
     const worktreePath = path.join(worktreesDir, "project", "restore");
     yield* fileSystem.makeDirectory(path.join(worktreePath, "node_modules"), { recursive: true });
     yield* fileSystem.writeFileString(path.join(worktreePath, "notes.md"), "keep me");
@@ -2126,7 +2130,9 @@ effectIt.effect.each([
   Effect.gen(function* () {
     const fileSystem = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const worktreesDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-restore-setup-" });
+    const worktreesDir = yield* fileSystem.makeTempDirectoryScoped({
+      prefix: "vibecodinger-restore-setup-",
+    });
     const worktreePath = path.join(worktreesDir, "project", "restore");
     const setupStarted = yield* Deferred.make<void>();
     const setupDone = yield* Deferred.make<ProjectSetupScriptRunner.ProjectSetupScriptCompletion>();
@@ -2188,7 +2194,9 @@ effectIt.effect("runs setup for a worktree a send recreated before dispatch", ()
   Effect.gen(function* () {
     const fileSystem = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const worktreesDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-sent-setup-" });
+    const worktreesDir = yield* fileSystem.makeTempDirectoryScoped({
+      prefix: "vibecodinger-sent-setup-",
+    });
     const worktreePath = path.join(worktreesDir, "project", "restore");
     yield* fileSystem.makeDirectory(path.join(worktreePath, ".git"), { recursive: true });
     const runSetup = vi.fn(() => Effect.succeed({ status: "no-script" as const }));
@@ -2215,7 +2223,7 @@ effectIt.effect(
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const worktreesDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-recreate-failure-",
+        prefix: "vibecodinger-recreate-failure-",
       });
       const worktreePath = path.join(worktreesDir, "project", "restore");
       const harness = makeLocalCommandHarness({
@@ -2931,7 +2939,9 @@ effectIt.effect.each(["cleanup-first", "startup-first"])(
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const workspaceRoot = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-start-" });
+      const workspaceRoot = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-start-",
+      });
       const worktreePath = path.join(workspaceRoot, "project", "worktree");
       yield* fileSystem.makeDirectory(path.join(worktreePath, ".git"), { recursive: true });
       const release = yield* Deferred.make<void>();

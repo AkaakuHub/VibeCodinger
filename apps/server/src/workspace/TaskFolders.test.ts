@@ -27,7 +27,9 @@ const layerFor = (state: TaskFoldersTestState) =>
   layerTaskFoldersWithGit(state).pipe(
     Layer.provideMerge(
       GitVcsDriver.layer.pipe(
-        Layer.provideMerge(ServerConfig.layerTest(process.cwd(), { prefix: "t3-task-folders-" })),
+        Layer.provideMerge(
+          ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-task-folders-" }),
+        ),
         Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
       ),
     ),
@@ -38,7 +40,7 @@ const fixture = Effect.gen(function* () {
   const path = yield* Path.Path;
   const git = yield* GitVcsDriver.GitVcsDriver;
   const tmp = yield* fileSystem.realPath(
-    yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-task-folders-" }),
+    yield* fileSystem.makeTempDirectoryScoped({ prefix: "vibecodinger-task-folders-" }),
   );
   const run = (cwd: string, ...args: ReadonlyArray<string>) =>
     git

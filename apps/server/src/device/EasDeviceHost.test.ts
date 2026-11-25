@@ -255,13 +255,13 @@ const makeSecretResolver = (values: Record<string, string> = {}) =>
 const layerWith = (secrets: Layer.Layer<SecretResolver.SecretResolver>) =>
   Layer.mergeAll(
     ProcessRunner.layer,
-    ServerConfig.layerTest(process.cwd(), { prefix: "t3-eas-host-" }),
+    ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-eas-host-" }),
     secrets,
   ).pipe(Layer.provideMerge(NodeServices.layer));
 
 const layer = Layer.mergeAll(
   ProcessRunner.layer,
-  ServerConfig.layerTest(process.cwd(), { prefix: "t3-eas-host-" }),
+  ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-eas-host-" }),
   makeSecretResolver(),
 ).pipe(Layer.provideMerge(NodeServices.layer));
 
@@ -653,7 +653,7 @@ describe("Expo Simulators host", () => {
   it.effect("reports iOS unavailable on a server with no Expo credential", () =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
-      const home = yield* fs.makeTempDirectoryScoped({ prefix: "t3-expo-home-" });
+      const home = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-expo-home-" });
       const host = yield* makeHost(
         fakeExpo(),
         config({ accessToken: "" }),

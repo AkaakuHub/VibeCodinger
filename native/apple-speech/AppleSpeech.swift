@@ -1,6 +1,6 @@
-// t3-apple-speech available                      -> {"value":"en-US,fr-FR,..."}
-// t3-apple-speech prepare <locale>               -> {"value":"en-US"}  (resolved locale)
-// t3-apple-speech transcribe <locale> <wav-path> -> {"value":"..."}    (transcript)
+// vibecodinger-apple-speech available                      -> {"value":"en-US,fr-FR,..."}
+// vibecodinger-apple-speech prepare <locale>               -> {"value":"en-US"}  (resolved locale)
+// vibecodinger-apple-speech transcribe <locale> <wav-path> -> {"value":"..."}    (transcript)
 // Exit codes are consumed by AppleSpeech.ts; failures print one message line to stderr.
 
 import Foundation

@@ -238,7 +238,9 @@ const makeWorkspaceRescanHarness = Effect.gen(function* () {
           subscribeChanges: PubSub.subscribe(changes),
         }),
       ),
-      Layer.provideMerge(ServerConfig.layerTest(process.cwd(), { prefix: "t3-workspace-rescan-" })),
+      Layer.provideMerge(
+        ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-workspace-rescan-" }),
+      ),
       Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
     ),
   ).pipe(Scope.provide(scope));
@@ -379,7 +381,7 @@ function layerMockSpawner(
 const writeFakeCodexCli = Effect.fn("writeFakeCodexCli")(function* (script: string) {
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
-  const directory = yield* fs.makeTempDirectoryScoped({ prefix: "t3-fake-codex-" });
+  const directory = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-fake-codex-" });
   const binaryPath = path.join(directory, "codex");
   yield* fs.writeFileString(binaryPath, `#!/bin/sh\n${script}\n`);
   yield* fs.chmod(binaryPath, 0o755);
@@ -553,7 +555,9 @@ const buildRegistryOverSnapshot = Effect.fn("buildRegistryOverSnapshot")(functio
       Layer.provide(layerUnusedMutator),
       Layer.provideMerge(layerInstanceRegistry),
       Layer.provideMerge(
-        ServerConfig.layerTest(process.cwd(), { prefix: "t3-provider-registry-update-state-" }),
+        ServerConfig.layerTest(process.cwd(), {
+          prefix: "vibecodinger-provider-registry-update-state-",
+        }),
       ),
       Layer.provideMerge(layerBackgroundPolicyAlwaysRun),
       Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
@@ -831,7 +835,9 @@ it.layer(
       Effect.gen(function* () {
         if ((yield* HostProcess.Platform) === "win32") return;
         const codexHome = yield* FileSystem.FileSystem.pipe(
-          Effect.flatMap((fs) => fs.makeTempDirectoryScoped({ prefix: "t3-codex-home-" })),
+          Effect.flatMap((fs) =>
+            fs.makeTempDirectoryScoped({ prefix: "vibecodinger-codex-home-" }),
+          ),
         );
         const { binaryPath } = yield* writeFakeCodexCli(
           [
@@ -1798,7 +1804,7 @@ it.layer(
           }).pipe(
             Effect.provide(
               ServerConfig.layerTest(process.cwd(), {
-                prefix: "t3-pi-model-cache-",
+                prefix: "vibecodinger-pi-model-cache-",
               }).pipe(Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))),
             ),
           ),
@@ -1968,7 +1974,7 @@ it.layer(
       }).pipe(
         Effect.scoped,
         Effect.provide(
-          ServerConfig.layerTest(process.cwd(), { prefix: "t3-late-path-" }).pipe(
+          ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-late-path-" }).pipe(
             Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
           ),
         ),
@@ -2128,7 +2134,7 @@ it.layer(
         }).pipe(
           Effect.provide(
             ServerConfig.layerTest(process.cwd(), {
-              prefix: "t3-codex-retired-model-cache-",
+              prefix: "vibecodinger-codex-retired-model-cache-",
             }).pipe(Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))),
           ),
         ),
@@ -2206,7 +2212,7 @@ it.layer(
         }).pipe(
           Effect.provide(
             ServerConfig.layerTest(process.cwd(), {
-              prefix: "t3-codex-probed-before-boot-",
+              prefix: "vibecodinger-codex-probed-before-boot-",
             }).pipe(Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))),
           ),
         ),
@@ -2644,7 +2650,7 @@ it.layer(
               Layer.provide(layerUnusedMutator),
               Layer.provideMerge(
                 ServerConfig.layerTest(process.cwd(), {
-                  prefix: "t3-provider-registry-model-cache-",
+                  prefix: "vibecodinger-provider-registry-model-cache-",
                 }),
               ),
               Layer.provideMerge(NodeServices.layer),
@@ -2723,7 +2729,7 @@ it.layer(
               Layer.provideMerge(layerInstanceRegistry),
               Layer.provideMerge(
                 ServerConfig.layerTest(process.cwd(), {
-                  prefix: "t3-provider-registry-shared-workspace-scan-",
+                  prefix: "vibecodinger-provider-registry-shared-workspace-scan-",
                 }),
               ),
               Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
@@ -2752,7 +2758,7 @@ it.layer(
     const withLateLoginShell = <A, E, R>(effect: (shell: string) => Effect.Effect<A, E, R>) =>
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
-        const dir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-login-shell-" });
+        const dir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-login-shell-" });
         const shell = `${dir}/sh`;
         yield* fs.writeFileString(
           shell,
@@ -2840,7 +2846,7 @@ it.layer(
                 ),
                 Layer.provideMerge(
                   ServerConfig.layerTest(process.cwd(), {
-                    prefix: "t3-provider-registry-path-",
+                    prefix: "vibecodinger-provider-registry-path-",
                   }),
                 ),
                 Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
@@ -2920,7 +2926,9 @@ it.layer(
               }),
             ),
             Layer.provideMerge(
-              ServerConfig.layerTest(process.cwd(), { prefix: "t3-provider-registry-label-" }),
+              ServerConfig.layerTest(process.cwd(), {
+                prefix: "vibecodinger-provider-registry-label-",
+              }),
             ),
             Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
           ),
@@ -3165,7 +3173,7 @@ it.layer(
             Layer.provideMerge(layerInstanceRegistry),
             Layer.provideMerge(
               ServerConfig.layerTest(process.cwd(), {
-                prefix: "t3-provider-registry-scan-cwd-",
+                prefix: "vibecodinger-provider-registry-scan-cwd-",
               }),
             ),
             Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
@@ -3262,7 +3270,7 @@ it.layer(
             Layer.provideMerge(layerInstanceRegistry),
             Layer.provideMerge(
               ServerConfig.layerTest(process.cwd(), {
-                prefix: "t3-provider-registry-unhealthy-workspace-",
+                prefix: "vibecodinger-provider-registry-unhealthy-workspace-",
               }),
             ),
             Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
@@ -3390,7 +3398,7 @@ it.layer(
             Layer.provideMerge(layerInstanceRegistry),
             Layer.provideMerge(
               ServerConfig.layerTest(process.cwd(), {
-                prefix: "t3-provider-registry-pending-workspace-models-",
+                prefix: "vibecodinger-provider-registry-pending-workspace-models-",
               }),
             ),
             Layer.provideMerge(NodeServices.layer),
@@ -3500,7 +3508,7 @@ it.layer(
             Layer.provideMerge(instanceRegistryLayer),
             Layer.provideMerge(
               ServerConfig.layerTest(process.cwd(), {
-                prefix: "t3-provider-registry-shared-refresh-",
+                prefix: "vibecodinger-provider-registry-shared-refresh-",
               }),
             ),
             Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
@@ -3613,7 +3621,7 @@ it.layer(
               Layer.provideMerge(instanceRegistryLayer),
               Layer.provideMerge(
                 ServerConfig.layerTest(process.cwd(), {
-                  prefix: "t3-provider-registry-retired-refresh-",
+                  prefix: "vibecodinger-provider-registry-retired-refresh-",
                 }),
               ),
               Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
@@ -3742,7 +3750,7 @@ it.layer(
             Layer.provideMerge(instanceRegistryLayer),
             Layer.provideMerge(
               ServerConfig.layerTest(process.cwd(), {
-                prefix: "t3-provider-registry-enriched-refresh-",
+                prefix: "vibecodinger-provider-registry-enriched-refresh-",
               }),
             ),
             Layer.provideMerge(NodeServices.layer),
@@ -3868,7 +3876,7 @@ it.layer(
             Layer.provideMerge(layerInstanceRegistry),
             Layer.provideMerge(
               ServerConfig.layerTest(process.cwd(), {
-                prefix: "t3-provider-registry-merged-persist-",
+                prefix: "vibecodinger-provider-registry-merged-persist-",
               }),
             ),
             Layer.provideMerge(layerBackgroundPolicyAlwaysRun),
@@ -3995,7 +4003,7 @@ it.layer(
             Layer.provideMerge(layerInstanceRegistry),
             Layer.provideMerge(
               ServerConfig.layerTest(process.cwd(), {
-                prefix: "t3-provider-registry-update-state-race-",
+                prefix: "vibecodinger-provider-registry-update-state-race-",
               }),
             ),
             Layer.provideMerge(layerBackgroundPolicyAlwaysRun),
@@ -4159,7 +4167,7 @@ it.layer(
               Layer.provideMerge(layerInstanceRegistry),
               Layer.provideMerge(
                 ServerConfig.layerTest(process.cwd(), {
-                  prefix: "t3-provider-registry-opencode-authoritative-persist-",
+                  prefix: "vibecodinger-provider-registry-opencode-authoritative-persist-",
                 }),
               ),
               Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
@@ -4263,7 +4271,7 @@ it.layer(
             Layer.provideMerge(layerInstanceRegistry),
             Layer.provideMerge(
               ServerConfig.layerTest(process.cwd(), {
-                prefix: "t3-provider-registry-refresh-failure-",
+                prefix: "vibecodinger-provider-registry-refresh-failure-",
               }),
             ),
             Layer.provideMerge(layerBackgroundPolicyAlwaysRun),
@@ -4399,7 +4407,7 @@ it.layer(
           Layer.provideMerge(ServerSecretStore.layer),
           Layer.provideMerge(
             ServerConfig.layerTest(process.cwd(), {
-              prefix: "t3-provider-registry-",
+              prefix: "vibecodinger-provider-registry-",
             }),
           ),
           Layer.provideMerge(layerTestHttpClient),
@@ -4525,7 +4533,7 @@ it.layer(
           Layer.provideMerge(ServerSecretStore.layer),
           Layer.provideMerge(
             ServerConfig.layerTest(process.cwd(), {
-              prefix: "t3-provider-registry-",
+              prefix: "vibecodinger-provider-registry-",
             }),
           ),
           Layer.provideMerge(layerTestHttpClient),
@@ -4634,7 +4642,7 @@ it.layer(
             Layer.succeed(ServerSettingsModule.ServerSettingsService, serverSettings),
           ),
           Layer.provideMerge(
-            ServerConfig.layerTest(process.cwd(), { prefix: "t3-provider-registry-" }),
+            ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-provider-registry-" }),
           ),
           Layer.provideMerge(layerTestHttpClient),
           Layer.provideMerge(
@@ -4787,7 +4795,9 @@ it.layer(
         if ((yield* HostProcess.Platform) === "win32") return;
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const directory = yield* fs.makeTempDirectoryScoped({ prefix: "t3-fake-mise-claude-" });
+        const directory = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-fake-mise-claude-",
+        });
         const installMarker = path.join(directory, "installed");
         const binaryPath = path.join(directory, "claude");
         // A `lazy = true` mise shim downloads and installs the tool unless MISE_OFFLINE is set.
@@ -5007,7 +5017,7 @@ it.layer(
           const fileSystem = yield* FileSystem.FileSystem;
           const path = yield* Path.Path;
           const configDir = yield* fileSystem.makeTempDirectoryScoped({
-            prefix: "t3-claude-settings-",
+            prefix: "vibecodinger-claude-settings-",
           });
           yield* fileSystem.writeFileString(
             path.join(configDir, "settings.json"),

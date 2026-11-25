@@ -27,7 +27,7 @@ function checkpointRefForThreadTurn(threadId: ThreadId, turnCount: number): Chec
 }
 
 const layerServerConfig = ServerConfig.ServerConfig.layerTest(process.cwd(), {
-  prefix: "t3-checkpoint-store-test-",
+  prefix: "vibecodinger-checkpoint-store-test-",
 });
 const layerVcsProcessTest = VcsProcess.layer.pipe(
   Layer.provide(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),

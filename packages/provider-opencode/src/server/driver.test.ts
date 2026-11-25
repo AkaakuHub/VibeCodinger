@@ -282,7 +282,9 @@ const makeIdlingOpenCode2Instance = Effect.gen(function* () {
 it.live("discovers models through a home-relative OpenCode wrapper", () =>
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
-    const home = yield* fs.makeTempDirectoryScoped({ prefix: "t3-opencode-home with spaces-" });
+    const home = yield* fs.makeTempDirectoryScoped({
+      prefix: "vibecodinger-opencode-home with spaces-",
+    });
     const binaryPath = NodePath.join(home, "opencode");
     const scriptPath = NodePath.join(home, "opencode.cjs");
     yield* fs.writeFileString(
@@ -1385,7 +1387,7 @@ it.effect.skipIf(HostProcess.Platform.defaultValue() === "win32")(
   () =>
     Effect.gen(function* () {
       const root = NodeFS.realpathSync(
-        NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-opencode-update-")),
+        NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "vibecodinger-opencode-update-")),
       );
       const v2Prefix = NodePath.join(root, "v2");
       const v1Prefix = NodePath.join(root, "v1");
@@ -1540,7 +1542,9 @@ it.layer(layerUpdate)("OpenCodeDriver updates", (it) => {
     () =>
       Effect.gen(function* () {
         const root = NodeFS.realpathSync(
-          NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-opencode-driver-update-")),
+          NodeFS.mkdtempSync(
+            NodePath.join(NodeOS.tmpdir(), "vibecodinger-opencode-driver-update-"),
+          ),
         );
         const binaryPath = npmGlobalInstall(NodePath.join(root, "v1"), ["opencode-ai"], "opencode");
         const instance = yield* OpenCodeDriver.create({

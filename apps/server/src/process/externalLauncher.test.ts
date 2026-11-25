@@ -121,7 +121,7 @@ it.effect.skipIf(windowsHost)("opens home-relative targets using the server home
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const bin = yield* fs.makeTempDirectoryScoped({ prefix: "t3-app-open-" });
+    const bin = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-app-open-" });
     for (const name of ["open", "code", "idea"]) {
       yield* fs.writeFileString(path.join(bin, name), "#!/bin/sh\n");
       yield* fs.chmod(path.join(bin, name), 0o755);
@@ -165,7 +165,7 @@ it.effect.skipIf(windowsHost)("reports a Finder reveal that open -R rejects", ()
   Effect.gen(function* () {
     const fileSystem = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const binDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-editors-" });
+    const binDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "vibecodinger-editors-" });
     const open = path.join(binDir, "open");
     yield* fileSystem.writeFileString(open, "#!/bin/sh\n");
     yield* fileSystem.chmod(open, 0o755);
@@ -203,7 +203,7 @@ it.effect.skipIf(windowsHost)(
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const binDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-editors-" });
+      const binDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "vibecodinger-editors-" });
       const codePath = path.join(binDir, "code");
       yield* fileSystem.writeFileString(codePath, "#!/bin/sh\n");
       yield* fileSystem.chmod(codePath, 0o755);
@@ -250,8 +250,10 @@ it.effect.skipIf(windowsHost)(
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const binDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-editors-" });
-      const project = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-project-" });
+      const binDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "vibecodinger-editors-" });
+      const project = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-project-",
+      });
       for (const name of ["code", "zeditor", "idea"]) {
         const executable = path.join(binDir, name);
         yield* fileSystem.writeFileString(executable, "#!/bin/sh\n");
@@ -330,7 +332,7 @@ it.effect.skipIf(windowsHost)(
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const binDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-editors-" });
+      const binDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "vibecodinger-editors-" });
       const codiumPath = path.join(binDir, "codium");
       yield* fileSystem.writeFileString(codiumPath, "#!/bin/sh\n");
       yield* fileSystem.chmod(codiumPath, 0o755);
@@ -403,7 +405,7 @@ it.effect.skipIf(windowsHost)(
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const binDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-editors-" });
+      const binDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "vibecodinger-editors-" });
       for (const name of ["xdg-open", "xdg-mime"]) {
         const filePath = path.join(binDir, name);
         yield* fileSystem.writeFileString(filePath, "#!/bin/sh\n");
@@ -463,7 +465,7 @@ it.effect("launches an installed editor with platform-safe arguments", () =>
   Effect.gen(function* () {
     const fileSystem = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const binDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-editors-" });
+    const binDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "vibecodinger-editors-" });
     yield* fileSystem.writeFileString(path.join(binDir, "code.CMD"), "@echo off\r\n");
 
     let spawned: ChildProcess.StandardCommand | undefined;
@@ -647,7 +649,7 @@ it.effect.skipIf(windowsHost)(
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const binDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-editors-" });
+      const binDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "vibecodinger-editors-" });
       for (const name of ["explorer.exe", "powershell.exe", "xdg-open"]) {
         const filePath = path.join(binDir, name);
         yield* fileSystem.writeFileString(filePath, "#!/bin/sh\n");
@@ -713,7 +715,7 @@ it.effect.each([
   Effect.gen(function* () {
     const fileSystem = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const binDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-editors-" });
+    const binDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "vibecodinger-editors-" });
     yield* fileSystem.writeFileString(path.join(binDir, "explorer.EXE"), "");
     const spawned: ChildProcess.StandardCommand[] = [];
     const verbatim: Array<readonly [string, ReadonlyArray<string>]> = [];
@@ -771,7 +773,7 @@ it.effect("does not ask Explorer to select a file that does not exist", () =>
   Effect.gen(function* () {
     const fileSystem = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const binDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-editors-" });
+    const binDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "vibecodinger-editors-" });
     yield* fileSystem.writeFileString(path.join(binDir, "explorer.EXE"), "");
     const missing = path.join(binDir, "CLAUDE.md");
     const verbatim: Array<readonly [string, ReadonlyArray<string>]> = [];
@@ -805,7 +807,9 @@ for (const wsl of [false, true]) {
       Effect.gen(function* () {
         const fileSystem = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const binDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-editors-" });
+        const binDir = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-editors-",
+        });
         for (const name of ["xdg-open", "xdg-mime", "gdbus", ...(wsl ? ["explorer.exe"] : [])]) {
           const filePath = path.join(binDir, name);
           yield* fileSystem.writeFileString(filePath, "#!/bin/sh\n");
@@ -866,7 +870,7 @@ for (const cwd of ["/workspace with spaces/", "/workspace with spaces/file.ts:12
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const home = yield* fs.makeTempDirectoryScoped({ prefix: "t3-zed-collision-" });
+        const home = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-zed-collision-" });
         const executable = path.join(home, "Applications/Zed.app/Contents/MacOS/cli");
         const binDir = path.join(home, "zfs/bin");
         yield* fs.makeDirectory(path.dirname(executable), { recursive: true });
@@ -916,7 +920,7 @@ for (const [title, id, first, extra, onDarwin, onLinux = onDarwin] of [
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const home = yield* fs.makeTempDirectoryScoped({ prefix: "t3-editor-check-" });
+        const home = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-editor-check-" });
         const commands = {
           cursor: "cursor",
           none: undefined,
@@ -980,7 +984,7 @@ for (const { layout, pathNames, fallbackNames, expected } of [
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const home = yield* fs.makeTempDirectoryScoped({ prefix: "t3-zed-linux-" });
+      const home = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-zed-linux-" });
       const binDir = path.join(home, "bin");
       const fallbackDir = path.join(home, ".local/bin");
       for (const [dir, names] of [
@@ -1038,7 +1042,7 @@ it.effect.skipIf(windowsHost)("prefers zeditor in a later Linux fallback directo
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const home = yield* fs.makeTempDirectoryScoped({ prefix: "t3-zed-fallback-" });
+    const home = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-zed-fallback-" });
     const localBin = path.join(home, ".local/bin");
     const systemBin = path.join(home, "system-bin");
     for (const [dir, name] of [
@@ -1071,7 +1075,7 @@ it.effect.skipIf(windowsHost)("does not offer the OpenZFS zed daemon as Zed on L
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const home = yield* fs.makeTempDirectoryScoped({ prefix: "t3-zed-zfs-" });
+    const home = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-zed-zfs-" });
     const binDir = path.join(home, "bin");
     const systemBin = path.join(home, "system-bin");
     yield* fs.makeDirectory(binDir, { recursive: true });
@@ -1117,7 +1121,7 @@ it.effect.skipIf(windowsHost)("does not open Zed with the OpenZFS zed daemon on 
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const home = yield* fs.makeTempDirectoryScoped({ prefix: "t3-zed-zfs-launch-" });
+    const home = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-zed-zfs-launch-" });
     const binDir = path.join(home, "bin");
     const systemBin = path.join(home, "system-bin");
     yield* fs.makeDirectory(binDir, { recursive: true });
@@ -1162,7 +1166,7 @@ it.effect.each([
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const home = yield* fs.makeTempDirectoryScoped({ prefix: "t3-editor-versioned-" });
+      const home = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-editor-versioned-" });
       const executable = path.join(home, installPath);
       yield* fs.makeDirectory(path.dirname(executable), { recursive: true });
       yield* fs.writeFileString(executable, "#!/bin/sh\n");
@@ -1206,7 +1210,9 @@ it.effect("matches macOS bundles on the name boundary only", () =>
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const unrelatedHome = yield* fs.makeTempDirectoryScoped({ prefix: "t3-editor-unrelated-" });
+    const unrelatedHome = yield* fs.makeTempDirectoryScoped({
+      prefix: "vibecodinger-editor-unrelated-",
+    });
     const unrelated = path.join(
       unrelatedHome,
       "Applications/WebStormHelper.app/Contents/MacOS/webstorm",
@@ -1227,7 +1233,7 @@ it.effect("matches macOS bundles on the name boundary only", () =>
 
     assert.notInclude(yield* editorsFor(unrelatedHome), "webstorm");
 
-    const exactHome = yield* fs.makeTempDirectoryScoped({ prefix: "t3-editor-exact-" });
+    const exactHome = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-editor-exact-" });
     const exact = path.join(exactHome, "Applications/WebStorm.app/Contents/MacOS/webstorm");
     yield* fs.makeDirectory(path.dirname(exact), { recursive: true });
     yield* fs.writeFileString(exact, "#!/bin/sh\n");
@@ -1241,7 +1247,7 @@ it.effect("keeps the macOS VS Code Insiders bundle out of stable VS Code", () =>
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const home = yield* fs.makeTempDirectoryScoped({ prefix: "t3-editor-insiders-" });
+    const home = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-editor-insiders-" });
     // The real Insiders bundle ships both `code-insiders` and `code`.
     const bin = path.join(
       home,
@@ -1297,7 +1303,7 @@ it.effect.each([
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const home = yield* fs.makeTempDirectoryScoped({ prefix: "t3-toolbox-numbered-" });
+      const home = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-toolbox-numbered-" });
       const dir = path.join(home, scripts);
       yield* fs.makeDirectory(dir, { recursive: true });
       for (const name of ["idea10", "idea2"]) {
@@ -1344,7 +1350,7 @@ for (const { platform, installPath, onPath } of [
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const home = yield* fs.makeTempDirectoryScoped({ prefix: "t3-agy-cli-" });
+        const home = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-agy-cli-" });
         const executable = path.join(home, installPath);
         yield* fs.makeDirectory(path.dirname(executable), { recursive: true });
         yield* fs.writeFileString(executable, "#!/bin/sh\n");
@@ -1374,7 +1380,7 @@ it.effect.skipIf(windowsHost)("ignores unusable app bundles and keeps PATH launc
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const home = yield* fs.makeTempDirectoryScoped({ prefix: "t3-editor-priority-" });
+    const home = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-editor-priority-" });
     const executable = path.join(home, "Applications/Cursor.app/Contents/Resources/app/bin/code");
     const env = { HOME: home, PATH: path.join(home, "bin") };
     const discover = Effect.gen(function* () {
@@ -1496,7 +1502,7 @@ it.effect.each(["Zed Nightly", "Zed Preview"])(
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-zed-channels-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-zed-channels-" });
       // A user folder naming Zed and a channel does not mark either install.
       const programs = path.join(root, "Users", "zedpreview", "Programs");
       const prereleaseBin = path.join(programs, channel, "bin");
@@ -1545,7 +1551,7 @@ const launchWindowsShimEditor = (cwd: string) =>
   Effect.gen(function* () {
     const fileSystem = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const binDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-editors-" });
+    const binDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "vibecodinger-editors-" });
     yield* fileSystem.writeFileString(path.join(binDir, "code.CMD"), "@echo off\r\n");
     let spawned: ChildProcess.StandardCommand | undefined;
     const exit = yield* Effect.gen(function* () {

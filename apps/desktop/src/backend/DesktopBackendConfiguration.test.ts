@@ -119,7 +119,7 @@ const withHarness = <A, E, R>(
   Effect.gen(function* () {
     const fileSystem = yield* FileSystem.FileSystem;
     const baseDir = yield* fileSystem.makeTempDirectoryScoped({
-      prefix: "t3-desktop-backend-config-test-",
+      prefix: "vibecodinger-desktop-backend-config-test-",
     });
 
     return yield* effect.pipe(
@@ -166,7 +166,7 @@ const withPackagedWslHarness = <A, E, R>(
     const fileSystem = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
     const baseDir = yield* fileSystem.makeTempDirectoryScoped({
-      prefix: "t3-desktop-backend-config-test-",
+      prefix: "vibecodinger-desktop-backend-config-test-",
     });
     const archivePath = path.join(baseDir, "wsl-runtime.tar.gz");
     const hashPath = `${archivePath}.sha256`;
@@ -284,7 +284,7 @@ describe("DesktopBackendConfiguration", () => {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const baseDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-desktop-backend-config-test-",
+        prefix: "vibecodinger-desktop-backend-config-test-",
       });
       const resourcesPath = path.join(baseDir, "resources");
 
@@ -330,7 +330,7 @@ describe("DesktopBackendConfiguration", () => {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const baseDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-desktop-backend-config-test-",
+        prefix: "vibecodinger-desktop-backend-config-test-",
       });
       const entryPath = path.join(baseDir, "apps/server/dist/bin.mjs");
       yield* fileSystem.makeDirectory(path.dirname(entryPath), { recursive: true });
@@ -624,7 +624,7 @@ describe("DesktopBackendConfiguration", () => {
         const fileSystem = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
         const baseDir = yield* fileSystem.makeTempDirectoryScoped({
-          prefix: "t3-desktop-backend-config-test-",
+          prefix: "vibecodinger-desktop-backend-config-test-",
         });
         const entryPath = path.join(baseDir, "apps/server/dist/bin.mjs");
         yield* fileSystem.makeDirectory(path.dirname(entryPath), { recursive: true });
@@ -746,7 +746,7 @@ describe("DesktopBackendConfiguration", () => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const baseDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-desktop-backend-config-test-",
+        prefix: "vibecodinger-desktop-backend-config-test-",
       });
       const launch = Effect.gen(function* () {
         const configuration = yield* DesktopBackendConfiguration.DesktopBackendConfiguration;
@@ -783,7 +783,7 @@ describe("DesktopBackendConfiguration", () => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const baseDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-desktop-backend-config-test-",
+        prefix: "vibecodinger-desktop-backend-config-test-",
       });
 
       yield* Effect.gen(function* () {
@@ -825,7 +825,7 @@ describe("DesktopBackendConfiguration", () => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const baseDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-desktop-backend-config-test-",
+        prefix: "vibecodinger-desktop-backend-config-test-",
       });
 
       yield* Effect.gen(function* () {
@@ -879,7 +879,7 @@ describe("DesktopBackendConfiguration", () => {
       Effect.gen(function* () {
         const fileSystem = yield* FileSystem.FileSystem;
         const baseDir = yield* fileSystem.makeTempDirectoryScoped({
-          prefix: "t3-desktop-backend-config-test-",
+          prefix: "vibecodinger-desktop-backend-config-test-",
         });
 
         yield* Effect.gen(function* () {
@@ -916,7 +916,7 @@ describe("DesktopBackendConfiguration", () => {
       Effect.gen(function* () {
         const fileSystem = yield* FileSystem.FileSystem;
         const baseDir = yield* fileSystem.makeTempDirectoryScoped({
-          prefix: "t3-desktop-backend-config-test-",
+          prefix: "vibecodinger-desktop-backend-config-test-",
         });
 
         yield* Effect.gen(function* () {
@@ -957,7 +957,7 @@ describe("DesktopBackendConfiguration", () => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const baseDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-desktop-backend-config-test-",
+        prefix: "vibecodinger-desktop-backend-config-test-",
       });
 
       yield* Effect.gen(function* () {
@@ -991,12 +991,15 @@ describe("DesktopBackendConfiguration", () => {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const baseDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-desktop-backend-config-test-",
+        prefix: "vibecodinger-desktop-backend-config-test-",
       });
       const resourcesPath = path.join(baseDir, "resources");
       const dirname = `${resourcesPath}/app.asar/apps/desktop/dist-electron`;
-      const embeddedMonitorPath = `${resourcesPath}/app.asar/apps/desktop/prod-resources/resource-monitor/t3-resource-monitor`;
-      const monitorPath = path.join(resourcesPath, "resource-monitor/t3-resource-monitor");
+      const embeddedMonitorPath = `${resourcesPath}/app.asar/apps/desktop/prod-resources/resource-monitor/vibecodinger-resource-monitor`;
+      const monitorPath = path.join(
+        resourcesPath,
+        "resource-monitor/vibecodinger-resource-monitor",
+      );
       yield* fileSystem.makeDirectory(
         `${resourcesPath}/app.asar/apps/desktop/prod-resources/resource-monitor`,
         { recursive: true },

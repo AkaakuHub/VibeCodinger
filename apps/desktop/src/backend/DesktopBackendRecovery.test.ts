@@ -108,7 +108,7 @@ describe.runIf(NodeProcess.platform === "darwin" || NodeProcess.platform === "li
       async () => {
         await using cleanup = new AsyncDisposableStack();
         const stateDir = await NodeFSP.realpath(
-          await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "t3-record-")),
+          await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "vibecodinger-record-")),
         );
         cleanup.defer(() => NodeFSP.rm(stateDir, { recursive: true, force: true }));
         const directory = NodePath.join(stateDir, "t3code-backend-recovery");
@@ -216,7 +216,7 @@ describe.runIf(NodeProcess.platform === "darwin" || NodeProcess.platform === "li
       async () => {
         await using cleanup = new AsyncDisposableStack();
         const appDataDirectory = await NodeFSP.realpath(
-          await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "t3-appimage-recovery-")),
+          await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "vibecodinger-appimage-recovery-")),
         );
         cleanup.defer(() => NodeFSP.rm(appDataDirectory, { recursive: true, force: true }));
         const stateDir = NodePath.join(appDataDirectory, "home");

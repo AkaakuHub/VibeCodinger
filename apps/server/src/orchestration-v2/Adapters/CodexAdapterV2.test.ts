@@ -5683,7 +5683,7 @@ describe("CodexAdapterV2 post-settle continuation", () => {
 
       if (outcome === "recover") {
         const fs = yield* FileSystem.FileSystem;
-        const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "t3-capacity-retry-" });
+        const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-capacity-retry-" });
         const localTranscript = yield* decodeReplayTranscriptJson(
           (yield* encodeReplayTranscriptJson(
             makeCodexReplayTranscript({ scenario, entries }),
@@ -7720,7 +7720,7 @@ describe("CodexAdapterV2 post-settle continuation", () => {
     const transcript = makeBackgroundStopTranscript(true);
     return Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
-      const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "t3-bg-stop-workspace-" });
+      const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-bg-stop-workspace-" });
       const localTranscript = yield* decodeReplayTranscriptJson(
         (yield* encodeReplayTranscriptJson(transcript)).replaceAll(
           yield* encodeStringJson("/workspace"),
@@ -7847,7 +7847,7 @@ describe("CodexAdapterV2 post-settle continuation", () => {
   it.effect("ends a background command when its Codex process is gone", () =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
-      const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "t3-bg-stale-workspace-" });
+      const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-bg-stale-workspace-" });
       const staleTranscript = makeCodexReplayTranscript({
         scenario: "codex-bg-stop-untracked",
         entries: [
@@ -7947,7 +7947,9 @@ describe("CodexAdapterV2 post-settle continuation", () => {
   it.effect("records a command's late result after its run stopped listening", () =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
-      const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "t3-bg-late-result-workspace-" });
+      const cwd = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-bg-late-result-workspace-",
+      });
       const transcript = makeCodexReplayTranscript({
         scenario: "codex-bg-late-result",
         entries: [

@@ -78,7 +78,7 @@ describe("readEnvironmentFromLoginShell", () => {
     "captures Nushell PATH and multiline values without external tools",
     () => {
       const shell = process.env.T3_TEST_NU_PATH!;
-      const home = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-nu-env-"));
+      const home = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "vibecodinger-nu-env-"));
       try {
         const toolPath = NodePath.join(home, "nu tools", "bin");
         const extraToolPath = NodePath.join(home, "extra-tools", "bin");
@@ -124,7 +124,7 @@ describe("readEnvironmentFromLoginShell", () => {
   it.runIf(NodeFS.existsSync("/bin/bash"))(
     "captures values when the profile replaces PATH and a DEBUG trap echoes commands",
     () => {
-      const home = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-bash-env-"));
+      const home = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "vibecodinger-bash-env-"));
       try {
         const tools = NodePath.join(home, "tools 'quoted $dir");
         NodeFS.mkdirSync(tools);
@@ -562,7 +562,10 @@ effectIt.layer(NodeServices.layer)("resolveCommandPath", (it) => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const cwd = yield* fs.makeTempDirectoryScoped({ directory: ".", prefix: "t3-path-" });
+        const cwd = yield* fs.makeTempDirectoryScoped({
+          directory: ".",
+          prefix: "vibecodinger-path-",
+        });
         const directory = `${cwd}/bin \u00a0"`;
         yield* fs.makeDirectory(directory);
         const executable = `${directory}/audit-command`;
@@ -623,7 +626,9 @@ effectIt.layer(NodeServices.layer)("resolveCommandPath", (it) => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "t3-case-sensitive-path-" });
+        const cwd = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-case-sensitive-path-",
+        });
         const executable = path.join(cwd, "audit-command.cmd");
         yield* fs.writeFileString(executable, "@echo off\n");
 
@@ -816,11 +821,13 @@ console.log(JSON.stringify({ resolved, resolvedGit }));
         const path = yield* Path.Path;
         // Real paths: the child's process.cwd() reports them, and anchored matches start with it.
         const cwd = yield* fs.realPath(
-          yield* fs.makeTempDirectoryScoped({ prefix: "t3-empty-path-cwd-" }),
+          yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-empty-path-cwd-" }),
         );
-        const listed = yield* fs.makeTempDirectoryScoped({ prefix: "t3-empty-path-listed-" });
+        const listed = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-empty-path-listed-",
+        });
         const empty = yield* fs.realPath(
-          yield* fs.makeTempDirectoryScoped({ prefix: "t3-empty-path-absent-" }),
+          yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-empty-path-absent-" }),
         );
         const command = "t3-empty-path-cli";
         const inCwd = path.join(cwd, command);
@@ -1010,8 +1017,12 @@ console.log(JSON.stringify({ ...result, cached: cache.size }));
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const listed = yield* fs.makeTempDirectoryScoped({ prefix: "t3-gone-cwd-listed-" });
-        const parent = yield* fs.makeTempDirectoryScoped({ prefix: "t3-gone-cwd-parent-" });
+        const listed = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-gone-cwd-listed-",
+        });
+        const parent = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-gone-cwd-parent-",
+        });
         const removed = path.join(parent, "removed");
         yield* fs.makeDirectory(removed);
         const command = "t3-gone-cwd-cli";
@@ -1071,9 +1082,9 @@ console.log(JSON.stringify(resolved));
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const parent = yield* fs.makeTempDirectoryScoped({ prefix: "t3-renamed-cwd-" });
+        const parent = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-renamed-cwd-" });
         const cwd = path.join(parent, "before");
-        const command = "t3-renamed-cwd-cli";
+        const command = "vibecodinger-renamed-cwd-cli";
         yield* fs.makeDirectory(path.join(cwd, "bin"), { recursive: true });
         yield* fs.writeFileString(path.join(cwd, "bin", command), "#!/bin/sh\n", { mode: 0o755 });
 
@@ -1321,7 +1332,7 @@ effectIt.layer(NodeServices.layer)("resolveSpawnCommand", (it) => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const directory = yield* fs.makeTempDirectoryScoped({ prefix: "t3-spawn-" });
+        const directory = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-spawn-" });
         const executable = path.join(directory, "tool.EXE");
         yield* fs.writeFileString(executable, "");
         let settled = false;
@@ -1345,7 +1356,7 @@ effectIt.layer(NodeServices.layer)("resolveSpawnCommand", (it) => {
     Effect.scoped(
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
-        const directory = yield* fs.makeTempDirectoryScoped({ prefix: "t3-spawn-" });
+        const directory = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-spawn-" });
         const fixture = NodePath.join(directory, "tool.EXE");
         yield* fs.writeFileString(fixture, "");
         const stat = yield* Effect.promise(() => NodeFS.promises.stat(fixture));
@@ -1406,7 +1417,7 @@ effectIt.layer(NodeServices.layer)("resolveSpawnCommand", (it) => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const prefix = yield* fs.makeTempDirectoryScoped({ prefix: "t3-npm-shim-" });
+        const prefix = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-npm-shim-" });
         const shim = path.join(prefix, "opencode.cmd");
         const executable = path.join(prefix, "node_modules", "opencode-ai", "bin", "opencode.exe");
         yield* fs.makeDirectory(path.dirname(executable), { recursive: true });

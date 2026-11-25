@@ -126,7 +126,7 @@ const layerRuntime = (dbPath: string) => {
     }),
   );
   const layerServerConfig = ServerConfig.layerTest(process.cwd(), {
-    prefix: "t3-project-upgrade-",
+    prefix: "vibecodinger-project-upgrade-",
   });
   const layerCheckpointStore = CheckpointStore.layer.pipe(
     Layer.provide(
@@ -185,7 +185,9 @@ it.live("keeps project settings through the V2 migrations and the first V2 boot"
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const stateDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-project-upgrade-" });
+      const stateDir = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-project-upgrade-",
+      });
       const dbPath = path.join(stateDir, "statev2.sqlite");
 
       yield* seedV1Database.pipe(Effect.provide(NodeSqliteClient.layer({ filename: dbPath })));

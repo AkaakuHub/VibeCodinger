@@ -12,7 +12,9 @@ import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import { afterAll, beforeEach, vi } from "vite-plus/test";
 
-const clerkStateDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-desktop-clerk-"));
+const clerkStateDir = NodeFS.mkdtempSync(
+  NodePath.join(NodeOS.tmpdir(), "vibecodinger-desktop-clerk-"),
+);
 afterAll(() => {
   NodeFS.rmSync(clerkStateDir, { recursive: true, force: true });
 });

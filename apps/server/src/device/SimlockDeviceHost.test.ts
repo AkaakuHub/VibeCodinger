@@ -171,7 +171,7 @@ const makeSecretResolver = (values: Record<string, string> = {}) =>
 
 const layerWith = (secrets: Layer.Layer<SecretResolver.SecretResolver>) =>
   Layer.mergeAll(
-    ServerConfig.layerTest(process.cwd(), { prefix: "t3-simlock-host-" }),
+    ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-simlock-host-" }),
     secrets,
   ).pipe(Layer.provideMerge(NodeServices.layer));
 

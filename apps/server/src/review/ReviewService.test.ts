@@ -109,9 +109,13 @@ describe("ReviewService", () => {
   it.effect("rejects diff preview cwd outside the configured workspace roots", () =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
-      const workspaceRoot = yield* fs.makeTempDirectoryScoped({ prefix: "t3-review-workspace-" });
-      const outsideRoot = yield* fs.makeTempDirectoryScoped({ prefix: "t3-review-outside-" });
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-review-base-" });
+      const workspaceRoot = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-review-workspace-",
+      });
+      const outsideRoot = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-review-outside-",
+      });
+      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-review-base-" });
       const detectCalls: Array<{ readonly cwd: string }> = [];
 
       const error = yield* Effect.gen(function* () {
@@ -132,10 +136,16 @@ describe("ReviewService", () => {
   it.effect("allows previous custom worktree locations but never a filesystem root", () =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
-      const workspaceRoot = yield* fs.makeTempDirectoryScoped({ prefix: "t3-review-workspace-" });
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-review-base-" });
-      const previous = yield* fs.makeTempDirectoryScoped({ prefix: "t3-review-old-worktrees-" });
-      const outsideRoot = yield* fs.makeTempDirectoryScoped({ prefix: "t3-review-outside-" });
+      const workspaceRoot = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-review-workspace-",
+      });
+      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-review-base-" });
+      const previous = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-review-old-worktrees-",
+      });
+      const outsideRoot = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-review-outside-",
+      });
 
       const result = yield* Effect.gen(function* () {
         const review = yield* ReviewService.ReviewService;
@@ -167,9 +177,13 @@ describe("ReviewService", () => {
   it.effect("allows registered project roots outside the server cwd", () =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
-      const workspaceRoot = yield* fs.makeTempDirectoryScoped({ prefix: "t3-review-workspace-" });
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-review-base-" });
-      const projectRoot = yield* fs.makeTempDirectoryScoped({ prefix: "t3-review-project-" });
+      const workspaceRoot = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-review-workspace-",
+      });
+      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-review-base-" });
+      const projectRoot = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-review-project-",
+      });
       const projectChild = `${projectRoot}/packages/app`;
       yield* fs.makeDirectory(projectChild, { recursive: true });
       const sibling = `${projectRoot}-sibling`;
@@ -201,10 +215,14 @@ describe("ReviewService", () => {
   it.effect("allows a project's tracked folders outside the project folder", () =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
-      const workspaceRoot = yield* fs.makeTempDirectoryScoped({ prefix: "t3-review-workspace-" });
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-review-base-" });
-      const projectRoot = yield* fs.makeTempDirectoryScoped({ prefix: "t3-review-project-" });
-      const outside = yield* fs.makeTempDirectoryScoped({ prefix: "t3-review-tracked-" });
+      const workspaceRoot = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-review-workspace-",
+      });
+      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-review-base-" });
+      const projectRoot = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-review-project-",
+      });
+      const outside = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-review-tracked-" });
       const repository = `${outside}/api`;
       const nested = `${repository}/src`;
       const untracked = `${outside}/web`;
@@ -247,13 +265,15 @@ describe("ReviewService", () => {
   it.effect("allows the worktree a thread is bound to, and nothing else outside the project", () =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
-      const workspaceRoot = yield* fs.makeTempDirectoryScoped({ prefix: "t3-review-workspace-" });
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-review-base-" });
-      const project = yield* fs.makeTempDirectoryScoped({ prefix: "t3-review-project-" });
-      const bound = yield* fs.makeTempDirectoryScoped({ prefix: "t3-review-bound-" });
-      const deleted = yield* fs.makeTempDirectoryScoped({ prefix: "t3-review-deleted-" });
-      const unbound = yield* fs.makeTempDirectoryScoped({ prefix: "t3-review-unbound-" });
-      const claimed = yield* fs.makeTempDirectoryScoped({ prefix: "t3-review-claimed-" });
+      const workspaceRoot = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-review-workspace-",
+      });
+      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-review-base-" });
+      const project = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-review-project-" });
+      const bound = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-review-bound-" });
+      const deleted = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-review-deleted-" });
+      const unbound = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-review-unbound-" });
+      const claimed = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-review-claimed-" });
       yield* fs.makeDirectory(`${bound}/sub`);
 
       const review = (cwd: string) =>
@@ -291,12 +311,16 @@ describe("ReviewService", () => {
   it.effect("allows a thread's worktree linked from a managed folder to a checkout elsewhere", () =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
-      const workspaceRoot = yield* fs.makeTempDirectoryScoped({ prefix: "t3-review-workspace-" });
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-review-base-" });
+      const workspaceRoot = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-review-workspace-",
+      });
+      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-review-base-" });
       const managed = yield* fs.realPath(
-        yield* fs.makeTempDirectoryScoped({ prefix: "t3-review-worktrees-" }),
+        yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-review-worktrees-" }),
       );
-      const checkout = yield* fs.makeTempDirectoryScoped({ prefix: "t3-review-checkout-" });
+      const checkout = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-review-checkout-",
+      });
       yield* fs.symlink(checkout, `${managed}/feature`);
 
       const result = yield* Effect.gen(function* () {

@@ -111,7 +111,9 @@ layer("GitLabCli.layer", (it) => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const bodyDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-gitlab-mr-body-" });
+      const bodyDir = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-gitlab-mr-body-",
+      });
       const bodyFile = path.join(bodyDir, "t3code-pr-body.md");
       yield* fileSystem.writeFileString(bodyFile, "## Summary\n\nFixes the thing.\n");
       mockedRun.mockReturnValueOnce(Effect.succeed(processOutput("{}")));
@@ -136,7 +138,9 @@ layer("GitLabCli.layer", (it) => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const bodyDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-gitlab-mr-body-" });
+      const bodyDir = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-gitlab-mr-body-",
+      });
       const glab = yield* GitLabCli.GitLabCli;
       const error = yield* glab
         .createMergeRequest({
@@ -266,7 +270,9 @@ layer("GitLabCli.layer", (it) => {
   it.effect("creates same-project MRs without a repository lookup, drafts by title prefix", () =>
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
-      const bodyFile = yield* fileSystem.makeTempFileScoped({ prefix: "t3-gitlab-mr-body-" });
+      const bodyFile = yield* fileSystem.makeTempFileScoped({
+        prefix: "vibecodinger-gitlab-mr-body-",
+      });
       mockedRun.mockReturnValueOnce(Effect.succeed(processOutput("{}")));
       const glab = yield* GitLabCli.GitLabCli;
       yield* glab.createMergeRequest({

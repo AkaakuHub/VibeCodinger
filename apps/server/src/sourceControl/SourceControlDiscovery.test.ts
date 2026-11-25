@@ -125,7 +125,7 @@ const layerDiscovery = (
     Layer.provideMerge(Layer.mock(VcsDriverRegistry.VcsDriverRegistry)({})),
     Layer.provideMerge(Layer.mock(VcsProcess.VcsProcess)({ run: runProcess })),
     Layer.provideMerge(
-      ServerConfig.layerTest(process.cwd(), { prefix: "t3-source-control-discovery-" }),
+      ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-source-control-discovery-" }),
     ),
     Layer.provideMerge(NodeServices.layer),
   );
@@ -270,7 +270,9 @@ it.live.skipIf(HostProcess.Platform.defaultValue() === "win32")(
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-discovery-login-shell-" });
+      const root = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-discovery-login-shell-",
+      });
       const home = path.join(root, "home");
       const fakebin = path.join(home, "fakebin");
       const loginShell = path.join(root, "loginsh");

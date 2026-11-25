@@ -26,7 +26,7 @@ const completeSdk = async (sdk: string, adb = "echo Android Debug Bridge") => {
 /** Runs the probe through the SSH shell setup, then `after` in that same shell. */
 const probeAndroid = (setup: (home: string) => Promise<Record<string, string>>, after = "true") =>
   Effect.promise(async () => {
-    const home = await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "t3-ssh-sdk-"));
+    const home = await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "vibecodinger-ssh-sdk-"));
     try {
       const env = await setup(home);
       await executable(NodePath.join(home, "bin/npm"), "echo 10.0.0");
@@ -108,7 +108,7 @@ it.effect("finds Android Studio Java for a non-interactive SSH session", () =>
   Effect.gen(function* () {
     if ((yield* HostProcess.Platform) === "win32") return;
     yield* Effect.promise(async () => {
-      const home = await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "t3-ssh-java-"));
+      const home = await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "vibecodinger-ssh-java-"));
       try {
         const javaHome = NodePath.join(home, ".local/opt/android-studio/jbr");
         await NodeFSP.mkdir(NodePath.join(javaHome, "bin"), { recursive: true });
@@ -158,7 +158,7 @@ it.effect("stops a daemon left for its owner when starting without agent tools",
   Effect.gen(function* () {
     if ((yield* HostProcess.Platform) === "win32") return;
     yield* Effect.promise(async () => {
-      const home = await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "t3-ssh-start-"));
+      const home = await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "vibecodinger-ssh-start-"));
       try {
         const state = NodePath.join(home, ".vibecodinger/device/hosts/owner");
         const daemonFile = NodePath.join(state, "daemon.json");
@@ -205,7 +205,7 @@ it.effect("keeps a daemon record its missing agent CLI cannot stop", () =>
   Effect.gen(function* () {
     if ((yield* HostProcess.Platform) === "win32") return;
     yield* Effect.promise(async () => {
-      const home = await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "t3-ssh-start-"));
+      const home = await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "vibecodinger-ssh-start-"));
       try {
         const state = NodePath.join(home, ".vibecodinger/device/hosts/owner");
         const daemonFile = NodePath.join(state, "daemon.json");
@@ -245,7 +245,7 @@ it.effect("starts the hub requiring a session token and reports the one it print
   Effect.gen(function* () {
     if ((yield* HostProcess.Platform) === "win32") return;
     yield* Effect.promise(async () => {
-      const home = await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "t3-ssh-hub-"));
+      const home = await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "vibecodinger-ssh-hub-"));
       const run = (mode: "start" | "stop") =>
         NodeChildProcess.spawnSync(process.execPath, [], {
           input: remoteDeviceScript("owner", mode),

@@ -287,7 +287,7 @@ const createManager = (
   Effect.flatMap(Effect.service(FileSystem.FileSystem), (fs) =>
     Effect.gen(function* () {
       const { join } = yield* Path.Path;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3code-terminal-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-terminal-" });
       const logsDir = join(baseDir, "userdata", "logs", "terminals");
       const ptyAdapter = options.ptyAdapter ?? new FakePtyAdapter();
 
@@ -2337,7 +2337,7 @@ it.layer(
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const { join } = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3code-shell-path-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-shell-path-" });
       const bin = join(root, "Jane -Doe Smith", ".local", "bin");
       yield* fs.makeDirectory(bin, { recursive: true });
       yield* fs.writeFileString(join(bin, "fish"), "");
@@ -2477,7 +2477,7 @@ it.layer(
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-real-shell-" });
+        const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-real-shell-" });
         const nonExecutable = path.join(baseDir, "not-executable");
         yield* fs.writeFileString(nonExecutable, "#!/bin/sh\nexit 0\n");
         yield* fs.chmod(nonExecutable, 0o644);
@@ -2531,7 +2531,7 @@ it.layer(
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const cacheDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-terminal-acp-path-",
+        prefix: "vibecodinger-terminal-acp-path-",
       });
       const installBin = path.join(
         cacheDir,

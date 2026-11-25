@@ -156,7 +156,7 @@ const bundledReplayAgentPath = Deferred.await(bundledAgents).pipe(
 const bundleAgents = Effect.gen(function* () {
   const fileSystem = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
-  const outDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-acp-agents-" });
+  const outDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "vibecodinger-acp-agents-" });
   const input = {
     mock: yield* path.fromFileUrl(new URL("../../../scripts/acp-mock-agent.ts", import.meta.url)),
     replay: yield* path.fromFileUrl(
@@ -1058,7 +1058,7 @@ const runFormElicitation = (input: {
     const path = yield* Path.Path;
     const mockAgentPath = yield* bundledMockAgentPath;
     const directory = yield* fileSystem.makeTempDirectoryScoped({
-      prefix: "t3-acp-form-elicitation-",
+      prefix: "vibecodinger-acp-form-elicitation-",
     });
     const responseLog = path.join(directory, "responses.jsonl");
     const instanceId = ProviderInstanceId.make(`acp-test-form-${input.name}`);
@@ -2308,7 +2308,9 @@ describe("AcpAdapterV2", () => {
     return Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const directory = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-registry-form-" });
+      const directory = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-registry-form-",
+      });
       const statusPath = path.join(directory, "status.json");
       const expectedResult = typeof result === "function" ? result(directory) : result;
       let preparedAnswers: ProviderUserInputAnswers | undefined = answers;
@@ -3206,7 +3208,9 @@ describe("AcpAdapterV2", () => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const directory = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-acp-mode-only-" });
+      const directory = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-acp-mode-only-",
+      });
       const statusPath = path.join(directory, "status.json");
       const sessionId = "mode-only-session";
       const modeOption = (currentValue: string) => ({
@@ -6708,7 +6712,7 @@ describe("AcpAdapterV2", () => {
         const selfInvocation = yield* resolveSelfInvocation();
         const mockAgentPath = yield* bundledMockAgentPath;
         const workspace = yield* fileSystem.makeTempDirectoryScoped({
-          prefix: "t3-acp-no-client-fs-",
+          prefix: "vibecodinger-acp-no-client-fs-",
         });
         const probePath = path.join(workspace, "planted.txt");
         const probeLogPath = path.join(workspace, "fs-probe.jsonl");

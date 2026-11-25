@@ -85,7 +85,9 @@ it.layer(Layer.mergeAll(NodeServices.layer, NetService.layer))("service commands
     ({ command, status: serviceStatus, error: expected }) =>
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
-        const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-cli-test-" });
+        const baseDir = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-service-cli-test-",
+        });
         const { service, installOptions } = makeTestService(serviceStatus);
         vi.spyOn(BootService, "layer").mockReturnValue(
           Layer.succeed(BootService.BootService, service),
@@ -125,7 +127,9 @@ it.layer(Layer.mergeAll(NodeServices.layer, NetService.layer))("service commands
   ])("install keeps $label off the local network only when it is new", (input) =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-cli-test-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-service-cli-test-",
+      });
       yield* fs.writeFileString(`${baseDir}/service.env`, input.env);
       const { service } = makeTestService({
         ...status,
@@ -162,7 +166,9 @@ it.layer(Layer.mergeAll(NodeServices.layer, NetService.layer))("service commands
   it.effect("protect refuses root before creating any T3 directories", () =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
-      const parent = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-cli-test-" });
+      const parent = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-service-cli-test-",
+      });
       const baseDir = `${parent}/vibecodinger`;
       vi.spyOn(BootService, "layer").mockReturnValue(
         Layer.succeed(BootService.BootService, makeTestService(status).service),
@@ -196,7 +202,9 @@ it.layer(Layer.mergeAll(NodeServices.layer, NetService.layer))("service commands
     (command) =>
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
-        const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-cli-test-" });
+        const baseDir = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-service-cli-test-",
+        });
         const { service, installOptions } = makeTestService(status);
         vi.spyOn(BootService, "layer").mockReturnValue(
           Layer.succeed(BootService.BootService, service),
@@ -252,7 +260,9 @@ it.layer(Layer.mergeAll(NodeServices.layer, NetService.layer))("service commands
   ])("status of $label names its next step with --base-dir", (input) =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-cli-test-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-service-cli-test-",
+      });
       vi.spyOn(BootService, "layer").mockReturnValue(
         Layer.succeed(BootService.BootService, makeTestService(input.status).service),
       );
@@ -285,7 +295,9 @@ it.layer(Layer.mergeAll(NodeServices.layer, NetService.layer))("service commands
   ])("uninstall removes only $label", (input) =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-cli-test-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-service-cli-test-",
+      });
       const { service, uninstalls } = makeTestService({
         ...status,
         installedBaseDir: input.otherHome ? "/home/me/.vibecodinger" : baseDir,

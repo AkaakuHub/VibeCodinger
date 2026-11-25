@@ -63,7 +63,7 @@ const makeHarness = Effect.fn("test.make_self_update_harness")(function* (
 ) {
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
-  const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-self-update-test-" });
+  const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-self-update-test-" });
   const order: string[] = [];
   const urls: string[] = [];
   const preflightProtocols: Array<string | undefined> = [];
@@ -459,7 +459,7 @@ it.layer(NodeServices.layer)("pruning runtimes on start", (it) => {
   }) {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const tempDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-prune-on-start-" });
+    const tempDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-prune-on-start-" });
     const realHome = path.join(tempDir, "home");
     const baseDir = input.symlinkedHome ? path.join(tempDir, "linked-home") : realHome;
     const versionsDir = path.join(baseDir, "runtime", "versions");

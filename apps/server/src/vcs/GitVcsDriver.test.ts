@@ -34,7 +34,7 @@ import * as VcsProcess from "./VcsProcess.ts";
 import { runVcsDriverContractSuite } from "./testing/VcsDriverContractHarness.ts";
 
 const layerServerConfig = ServerConfig.layerTest(process.cwd(), {
-  prefix: "t3-git-vcs-contract-",
+  prefix: "vibecodinger-git-vcs-contract-",
 });
 const layerGitContract = Layer.mergeAll(GitVcsDriver.layerVcs, GitVcsDriver.layer).pipe(
   Layer.provide(layerServerConfig),
@@ -123,7 +123,7 @@ it.effect.each([
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const cwd = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-partial-clone-remotes-",
+        prefix: "vibecodinger-partial-clone-remotes-",
       });
       const process = yield* VcsProcess.VcsProcess;
       const driver = yield* GitVcsDriver.makeVcsDriverShape().pipe(
@@ -220,7 +220,9 @@ it.effect.each(["interrupt", "timeout", "success"] as const)(
       const path = yield* Path.Path;
       const driver = yield* GitVcsDriver.makeVcsDriverShape();
       const liveProcess = yield* VcsProcess.VcsProcess;
-      const sandbox = yield* fs.makeTempDirectoryScoped({ prefix: "t3-bulk-checkpoint-" });
+      const sandbox = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-bulk-checkpoint-",
+      });
       const cwd = path.join(sandbox, "repo");
       yield* fs.makeDirectory(cwd);
       const { git, checkpointRef } = yield* makeCheckpointFixture(driver, cwd);
@@ -376,7 +378,7 @@ it.effect.each(["interrupt", "timeout"] as const)(
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const driver = yield* GitVcsDriver.makeVcsDriverShape();
-      const sandbox = yield* fs.makeTempDirectoryScoped({ prefix: "t3-lfs-checkpoint-" });
+      const sandbox = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-lfs-checkpoint-" });
       const cwd = path.join(sandbox, "repo");
       yield* fs.makeDirectory(cwd);
       const { git, checkpointRef } = yield* makeCheckpointFixture(driver, cwd);
@@ -461,7 +463,7 @@ it.effect("checkpoint staging moves Git LFS objects its clean filter wrote into 
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
     const driver = yield* GitVcsDriver.makeVcsDriverShape();
-    const sandbox = yield* fs.makeTempDirectoryScoped({ prefix: "t3-lfs-checkpoint-" });
+    const sandbox = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-lfs-checkpoint-" });
     const cwd = path.join(sandbox, "repo");
     yield* fs.makeDirectory(cwd);
     const { git, checkpointRef } = yield* makeCheckpointFixture(driver, cwd);
@@ -507,7 +509,7 @@ it.effect("checkpoint capture fails instead of dropping Git LFS objects it canno
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
     const driver = yield* GitVcsDriver.makeVcsDriverShape();
-    const sandbox = yield* fs.makeTempDirectoryScoped({ prefix: "t3-lfs-checkpoint-" });
+    const sandbox = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-lfs-checkpoint-" });
     const cwd = path.join(sandbox, "repo");
     yield* fs.makeDirectory(cwd);
     const { git, checkpointRef } = yield* makeCheckpointFixture(driver, cwd);
@@ -557,7 +559,7 @@ it.effect.each(["failure", "interrupt"] as const)(
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const driver = yield* GitVcsDriver.makeVcsDriverShape();
-      const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "t3-checkpoint-publish-" });
+      const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-checkpoint-publish-" });
       const { git, checkpointRef } = yield* makeCheckpointFixture(driver, cwd);
       yield* driver.checkpoints.captureCheckpoint({ cwd, checkpointRef });
       const previous = (yield* git(["show-ref"])).stdout;
@@ -629,7 +631,7 @@ it.effect.each([
       const path = yield* Path.Path;
       const driver = yield* GitVcsDriver.makeVcsDriverShape();
       const liveProcess = yield* VcsProcess.VcsProcess;
-      const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "t3-restore-interrupt-" });
+      const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-restore-interrupt-" });
       const { git, checkpointRef } = yield* makeCheckpointFixture(driver, cwd);
       yield* driver.checkpoints.captureCheckpoint({ cwd, checkpointRef });
       yield* fs.writeFileString(path.join(cwd, "file.txt"), "later\n");
@@ -667,7 +669,7 @@ it.effect("checkpoint publication falls back to rename where hardlinks are unava
     const path = yield* Path.Path;
     const crypto = yield* SecureRandom.SecureRandom;
     const driver = yield* GitVcsDriver.makeVcsDriverShape();
-    const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "t3-publish-no-links-" });
+    const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-publish-no-links-" });
     const { git, checkpointRef } = yield* makeCheckpointFixture(driver, cwd);
     yield* git(["config", "core.bigFileThreshold", "1m"]);
     yield* fs.writeFile(path.join(cwd, "media.bin"), yield* crypto.randomBytes(2 * 1024 * 1024));
@@ -700,7 +702,7 @@ it.effect.skipIf(HostProcess.Platform.defaultValue() === "win32")(
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const driver = yield* GitVcsDriver.makeVcsDriverShape();
-      const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "t3-publish-shared-" });
+      const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-publish-shared-" });
       const git = (args: ReadonlyArray<string>) =>
         driver.execute({ operation: "test.shared", cwd, args });
       yield* git(["init", "--shared=0660"]);
@@ -722,7 +724,9 @@ it.effect("checkpoint capture ignores an inherited object directory", () =>
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
     const driver = yield* GitVcsDriver.makeVcsDriverShape();
-    const sandbox = yield* fs.makeTempDirectoryScoped({ prefix: "t3-inherited-objects-" });
+    const sandbox = yield* fs.makeTempDirectoryScoped({
+      prefix: "vibecodinger-inherited-objects-",
+    });
     const cwd = path.join(sandbox, "repo");
     yield* fs.makeDirectory(cwd);
     const { git, checkpointRef } = yield* makeCheckpointFixture(driver, cwd);
@@ -846,7 +850,7 @@ it.effect.each([
       );
       // A driver that has never captured this workspace hashes every file, as a first capture does.
       const fresh = yield* GitVcsDriver.makeVcsDriverShape();
-      const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "t3-untracked-blobs-" });
+      const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-untracked-blobs-" });
       const { git, checkpointRef } = yield* makeCheckpointFixture(driver, cwd);
       const write = (relativePath: string, contents: string) =>
         fs.writeFileString(path.join(cwd, relativePath), contents);
@@ -881,7 +885,9 @@ it.effect.each(["sha1", "sha256"] as const)(
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const driver = yield* GitVcsDriver.makeVcsDriverShape();
-      const sandbox = yield* fs.makeTempDirectoryScoped({ prefix: "t3-checkpoint-worktree-" });
+      const sandbox = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-checkpoint-worktree-",
+      });
       // A separator must remain part of the alternate's path, not split the list.
       const platform = yield* HostProcess.Platform;
       const cwd = path.join(sandbox, platform === "win32" ? "repo;space" : 'repo:space"\u0001');
@@ -911,7 +917,9 @@ it.effect("checkpoint capture skips untracked nested repositories without a comm
     const fileSystem = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
     const driver = yield* GitVcsDriver.makeVcsDriverShape();
-    const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-checkpoint-unborn-" });
+    const cwd = yield* fileSystem.makeTempDirectoryScoped({
+      prefix: "vibecodinger-checkpoint-unborn-",
+    });
     const { git, checkpointRef } = yield* makeCheckpointFixture(driver, cwd);
     const nested = "scratch/empty [repo]";
     yield* git(["init", nested]);
@@ -962,7 +970,7 @@ it.effect.skipIf(HostProcess.Platform.defaultValue() === "win32" || process.getu
       const path = yield* Path.Path;
       const driver = yield* GitVcsDriver.makeVcsDriverShape();
       const cwd = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-checkpoint-unreadable-",
+        prefix: "vibecodinger-checkpoint-unreadable-",
       });
       const { git, checkpointRef } = yield* makeCheckpointFixture(driver, cwd);
       yield* fileSystem.writeFileString(path.join(cwd, "locked.txt"), "committed\n");
@@ -1016,7 +1024,7 @@ it.effect.skipIf(!symlinksSupported)(
         Effect.provideService(VcsProcess.VcsProcess, captureProcess),
       );
       const sandbox = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-checkpoint-symlink-",
+        prefix: "vibecodinger-checkpoint-symlink-",
       });
       const repo = path.join(sandbox, "repo");
       const subdir = path.join(repo, "sub", "dir");
@@ -1048,7 +1056,9 @@ it.effect("checkpoint capture keeps the shared index a split index still uses", 
     const fileSystem = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
     const driver = yield* GitVcsDriver.makeVcsDriverShape();
-    const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-checkpoint-split-" });
+    const cwd = yield* fileSystem.makeTempDirectoryScoped({
+      prefix: "vibecodinger-checkpoint-split-",
+    });
     const { git, checkpointRef } = yield* makeCheckpointFixture(driver, cwd);
     yield* git(["config", "core.splitIndex", "true"]);
     yield* git(["config", "splitIndex.sharedIndexExpire", "now"]);
@@ -1068,7 +1078,7 @@ it.effect("checkpoint recovery discovers nested HEAD independently of inherited 
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
     const driver = yield* GitVcsDriver.makeVcsDriverShape();
-    const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "t3-checkpoint-git-dir-" });
+    const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-checkpoint-git-dir-" });
     const { git, checkpointRef } = yield* makeCheckpointFixture(driver, cwd);
     yield* git(["init", "empty"]);
     const originalIndex = yield* fs.readFile(path.join(cwd, ".git", "index"));
@@ -1090,7 +1100,7 @@ it.effect("checkpoint capture still fails when a clean filter rejects a file", (
     const path = yield* Path.Path;
     const driver = yield* GitVcsDriver.makeVcsDriverShape();
     const cwd = yield* fileSystem.makeTempDirectoryScoped({
-      prefix: "t3-checkpoint-filter-failure-",
+      prefix: "vibecodinger-checkpoint-filter-failure-",
     });
     const { git, checkpointRef } = yield* makeCheckpointFixture(driver, cwd);
     yield* fileSystem.writeFileString(path.join(cwd, ".gitattributes"), "file.txt filter=reject\n");
@@ -1116,7 +1126,9 @@ it.effect("checkpoint capture keeps LF files that core.safecrlf would refuse to 
     const fileSystem = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
     const driver = yield* GitVcsDriver.makeVcsDriverShape();
-    const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-checkpoint-safecrlf-" });
+    const cwd = yield* fileSystem.makeTempDirectoryScoped({
+      prefix: "vibecodinger-checkpoint-safecrlf-",
+    });
     const { git, checkpointRef } = yield* makeCheckpointFixture(driver, cwd);
     yield* fileSystem.writeFileString(path.join(cwd, ".gitattributes"), "*.txt text eol=crlf\n");
     yield* git(["config", "core.safecrlf", "true"]);
@@ -1136,7 +1148,7 @@ it.effect("checkpoint capture refuses a truncated nested repository listing", ()
     const fs = yield* FileSystem.FileSystem;
     const liveProcess = yield* VcsProcess.VcsProcess;
     const driver = yield* GitVcsDriver.makeVcsDriverShape();
-    const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "t3-checkpoint-truncated-" });
+    const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-checkpoint-truncated-" });
     const { git, checkpointRef } = yield* makeCheckpointFixture(driver, cwd);
     yield* git(["init", "empty"]);
     const captureDriver = yield* GitVcsDriver.makeVcsDriverShape().pipe(
@@ -1166,7 +1178,9 @@ it.effect("checkpoint capture skips an ignored project while keeping its allowed
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
     const driver = yield* GitVcsDriver.makeVcsDriverShape();
-    const parent = yield* fs.makeTempDirectoryScoped({ prefix: "t3-checkpoint-ignored-" });
+    const parent = yield* fs.makeTempDirectoryScoped({
+      prefix: "vibecodinger-checkpoint-ignored-",
+    });
     const { git } = yield* makeCheckpointFixture(driver, parent);
     yield* fs.writeFileString(
       path.join(parent, ".gitignore"),
@@ -1210,7 +1224,9 @@ it.effect.each([
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const driver = yield* GitVcsDriver.makeVcsDriverShape();
-      const parent = yield* fs.makeTempDirectoryScoped({ prefix: "t3-checkpoint-crlf-ignore-" });
+      const parent = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-checkpoint-crlf-ignore-",
+      });
       const { git, checkpointRef } = yield* makeCheckpointFixture(driver, parent);
       yield* fs.writeFileString(path.join(parent, ".gitignore"), "a.txt\r\n\r\nb.txt\r\n");
       const cwd = path.join(parent, subdirectory);
@@ -1238,7 +1254,9 @@ it.effect.each([
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const driver = yield* GitVcsDriver.makeVcsDriverShape();
-      const parent = yield* fs.makeTempDirectoryScoped({ prefix: "t3-checkpoint-ignored-later-" });
+      const parent = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-checkpoint-ignored-later-",
+      });
       const { git, checkpointRef } = yield* makeCheckpointFixture(driver, parent);
       const cwd = path.join(parent, "sub");
       yield* fs.makeDirectory(cwd);
@@ -1294,7 +1312,9 @@ it.effect.each([
       const path = yield* Path.Path;
       const liveRunner = yield* ProcessRunner.ProcessRunner;
       const driver = yield* GitVcsDriver.makeVcsDriverShape();
-      const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "t3-checkpoint-ref-race-" });
+      const cwd = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-checkpoint-ref-race-",
+      });
       const { git, checkpointRef } = yield* makeCheckpointFixture(driver, cwd);
       if (nestedRecovery) yield* git(["init", "empty"]);
       const originalIndex = yield* fs.readFile(path.join(cwd, ".git", "index"));
@@ -1391,7 +1411,9 @@ it.effect("checkpoint recovery preserves interruption and removes the private in
     const fs = yield* FileSystem.FileSystem;
     const liveProcess = yield* VcsProcess.VcsProcess;
     const driver = yield* GitVcsDriver.makeVcsDriverShape();
-    const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "t3-checkpoint-recovery-interrupt-" });
+    const cwd = yield* fs.makeTempDirectoryScoped({
+      prefix: "vibecodinger-checkpoint-recovery-interrupt-",
+    });
     const { git, checkpointRef } = yield* makeCheckpointFixture(driver, cwd);
     yield* git(["init", "empty"]);
     const entered = yield* Deferred.make<void>();
@@ -1443,7 +1465,7 @@ it.effect.each(
           },
         }),
       );
-      const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "t3-checkpoint-sparse-" });
+      const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-checkpoint-sparse-" });
       const { git } = yield* makeCheckpointFixture(driver, cwd);
       const write = Effect.fn(function* (name: string, contents: string) {
         yield* fs.makeDirectory(path.dirname(path.join(cwd, name)), { recursive: true });
@@ -1541,7 +1563,9 @@ it.effect.each(
       const path = yield* Path.Path;
       const liveProcess = yield* VcsProcess.VcsProcess;
       const driver = yield* GitVcsDriver.makeVcsDriverShape();
-      const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "t3-checkpoint-inspection-" });
+      const cwd = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-checkpoint-inspection-",
+      });
       const { git, checkpointRef } = yield* makeCheckpointFixture(driver, cwd);
       yield* fs.writeFileString(path.join(cwd, ".gitattributes"), "stable filter=probe\n");
       yield* fs.writeFileString(path.join(cwd, "stable"), "unchanged\n");
@@ -1613,7 +1637,9 @@ it.effect.each([1_700_000_000, 1_700_000_000.9999])(
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const driver = yield* GitVcsDriver.makeVcsDriverShape();
-      const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-checkpoint-racy-" });
+      const cwd = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-checkpoint-racy-",
+      });
       const { git, checkpointRef } = yield* makeCheckpointFixture(driver, cwd);
       const filePath = path.join(cwd, "file.txt");
       const indexPath = path.join(cwd, ".git", "index");
@@ -1644,7 +1670,9 @@ it.effect.each(["local", "mixed", "exit", "non-UTF-8 refs", "pruned ref"] as con
       const path = yield* Path.Path;
       const driver = yield* GitVcsDriver.makeVcsDriverShape();
       const liveProcess = yield* VcsProcess.VcsProcess;
-      const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "t3-checkpoint-authorship-" });
+      const cwd = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-checkpoint-authorship-",
+      });
       const { git } = yield* makeCheckpointFixture(driver, cwd);
       yield* git(["commit", "-am", "baseline"]);
       const fromCheckpointRef = CheckpointRef.make("refs/vibecodinger/checkpoints/authorship/from");
@@ -1749,7 +1777,7 @@ it.effect("checkpoint authorship reads only reflogs of refs holding the turn's c
     const path = yield* Path.Path;
     const driver = yield* GitVcsDriver.makeVcsDriverShape();
     const liveProcess = yield* VcsProcess.VcsProcess;
-    const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-checkpoint-imports-" });
+    const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-checkpoint-imports-" });
     const upstream = path.join(root, "upstream");
     const primary = path.join(root, "primary");
     const cwd = path.join(root, "turn");
@@ -1844,7 +1872,7 @@ it.effect("checkpoint authorship works with git that rejects --diff-merges=remer
     const path = yield* Path.Path;
     const driver = yield* GitVcsDriver.makeVcsDriverShape();
     const liveProcess = yield* VcsProcess.VcsProcess;
-    const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "t3-checkpoint-old-git-" });
+    const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-checkpoint-old-git-" });
     const { git } = yield* makeCheckpointFixture(driver, cwd);
     yield* git(["commit", "-am", "baseline"]);
     const fromCheckpointRef = CheckpointRef.make("refs/vibecodinger/checkpoints/old-git/from");
@@ -1898,7 +1926,9 @@ it.effect("a branch switch landing after the snapshot belongs to the next checkp
     const path = yield* Path.Path;
     const liveProcess = yield* VcsProcess.VcsProcess;
     const driver = yield* GitVcsDriver.makeVcsDriverShape();
-    const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-checkpoint-switch-race-" });
+    const cwd = yield* fileSystem.makeTempDirectoryScoped({
+      prefix: "vibecodinger-checkpoint-switch-race-",
+    });
     const git = (args: ReadonlyArray<string>) =>
       driver.execute({ operation: "checkpoint-test", cwd, args });
     yield* git(["init"]);
@@ -1957,7 +1987,7 @@ it.effect.each([{ snapshot: "before the switch" }, { snapshot: "after the switch
       const path = yield* Path.Path;
       const driver = yield* GitVcsDriver.makeVcsDriverShape();
       const cwd = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-checkpoint-clean-switch-",
+        prefix: "vibecodinger-checkpoint-clean-switch-",
       });
       const git = (args: ReadonlyArray<string>, at = 1_700_000_000) =>
         driver.execute({
@@ -2015,7 +2045,9 @@ it.effect("checkpoint capture preserves racy edits made after resetting the inde
     const path = yield* Path.Path;
     const liveProcess = yield* VcsProcess.VcsProcess;
     const driver = yield* GitVcsDriver.makeVcsDriverShape();
-    const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-checkpoint-racy-reset-" });
+    const cwd = yield* fileSystem.makeTempDirectoryScoped({
+      prefix: "vibecodinger-checkpoint-racy-reset-",
+    });
     const { git, checkpointRef } = yield* makeCheckpointFixture(driver, cwd);
     const racyPath = path.join(cwd, "racy.txt");
     const indexPath = path.join(cwd, ".git", "index");
@@ -2063,7 +2095,9 @@ it.effect.each(
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const driver = yield* GitVcsDriver.makeVcsDriverShape();
-      const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-checkpoint-turns-" });
+      const cwd = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-checkpoint-turns-",
+      });
       const { git } = yield* makeCheckpointFixture(driver, cwd);
       const write = (name: string, contents: string) =>
         fileSystem.writeFileString(path.join(cwd, name), contents);
@@ -2137,7 +2171,9 @@ it.effect.each(["missing", "invalid"] as const)(
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const driver = yield* GitVcsDriver.makeVcsDriverShape();
-      const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-checkpoint-index-" });
+      const cwd = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-checkpoint-index-",
+      });
       const { git, checkpointRef } = yield* makeCheckpointFixture(driver, cwd);
       const indexPath = path.join(cwd, ".git", "index");
       if (indexState === "missing") {
@@ -2184,7 +2220,9 @@ it.effect.each(["committed", "unborn"] as const)(
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const driver = yield* GitVcsDriver.makeVcsDriverShape();
-      const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-checkpoint-processes-" });
+      const cwd = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-checkpoint-processes-",
+      });
       const git = (args: ReadonlyArray<string>) =>
         driver.execute({ operation: "checkpoint-test", cwd, args });
       const checkpointRef = CheckpointRef.make("refs/vibecodinger/checkpoints/test");
@@ -2227,7 +2265,9 @@ it.effect.each(["committed", "unborn"] as const)(
 it.effect("checkpoint capture outside a repository fails with the common dir lookup error", () =>
   Effect.gen(function* () {
     const fileSystem = yield* FileSystem.FileSystem;
-    const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-checkpoint-no-repo-" });
+    const cwd = yield* fileSystem.makeTempDirectoryScoped({
+      prefix: "vibecodinger-checkpoint-no-repo-",
+    });
 
     const error = yield* captureRecordingGitCommands(
       cwd,
@@ -2247,7 +2287,9 @@ it.effect.skipIf(HostProcess.Platform.defaultValue() === "win32")(
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const driver = yield* GitVcsDriver.makeVcsDriverShape();
-      const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-checkpoint-new\nline-" });
+      const cwd = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-checkpoint-new\nline-",
+      });
       const { git, checkpointRef } = yield* makeCheckpointFixture(driver, cwd);
       const originalIndex = yield* fileSystem.readFile(path.join(cwd, ".git", "index"));
 
@@ -2272,7 +2314,7 @@ it.effect.skipIf(HostProcess.Platform.defaultValue() === "win32")(
       assert.deepEqual(yield* fileSystem.readFile(path.join(cwd, ".git", "index")), originalIndex);
       assert.deepStrictEqual(
         (yield* fileSystem.readDirectory(path.join(cwd, ".git"))).filter((name) =>
-          name.startsWith("t3-checkpoint-index-"),
+          name.startsWith("vibecodinger-checkpoint-index-"),
         ),
         [],
       );
@@ -2286,7 +2328,7 @@ it.effect.skipIf(HostProcess.Platform.defaultValue() === "win32")(
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const parent = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-edge-space-capture-",
+        prefix: "vibecodinger-edge-space-capture-",
       });
       const driver = yield* GitVcsDriver.makeVcsDriverShape();
       const git = (cwd: string, args: ReadonlyArray<string>) =>
@@ -2330,7 +2372,9 @@ it.effect("restores empty checkpoints without changing paths outside the workspa
     const path = yield* Path.Path;
     const driver = yield* GitVcsDriver.makeVcsDriverShape();
     for (const nested of [false, true]) {
-      const root = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-empty-checkpoint-" });
+      const root = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-empty-checkpoint-",
+      });
       yield* runGit(root, ["init"]);
       yield* runGit(root, ["config", "user.email", "test@test.com"]);
       yield* runGit(root, ["config", "user.name", "Test"]);
@@ -2434,7 +2478,9 @@ it.effect("restores a checkpoint before the first commit without staging its fil
     const path = yield* Path.Path;
     const driver = yield* GitVcsDriver.makeVcsDriverShape();
     for (const nested of [false, true]) {
-      const root = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-unborn-restore-" });
+      const root = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-unborn-restore-",
+      });
       yield* runGit(root, ["init"]);
       yield* runGit(root, ["config", "user.email", "test@test.com"]);
       yield* runGit(root, ["config", "user.name", "Test"]);
@@ -2474,7 +2520,9 @@ it.effect("restores edits to skip-worktree files whose checkpoint content matche
     const fileSystem = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
     const driver = yield* GitVcsDriver.makeVcsDriverShape();
-    const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-skip-worktree-restore-" });
+    const cwd = yield* fileSystem.makeTempDirectoryScoped({
+      prefix: "vibecodinger-skip-worktree-restore-",
+    });
     const { git, checkpointRef } = yield* makeCheckpointFixture(driver, cwd);
     const skippedPath = path.join(cwd, "skipped.txt");
     yield* fileSystem.writeFileString(skippedPath, "original\n");
@@ -2516,7 +2564,7 @@ it.effect("sparse restore rewrites manual skip-worktree files and keeps exclusio
         },
       }),
     );
-    const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "t3-sparse-restore-" });
+    const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-sparse-restore-" });
     const { git, checkpointRef } = yield* makeCheckpointFixture(driver, cwd);
     for (const name of ["in/normal", "in/skipped", "in/s space", "out/deep/absent", "out/stray"]) {
       yield* fs.makeDirectory(path.dirname(path.join(cwd, name)), { recursive: true });
@@ -2633,7 +2681,7 @@ it.effect("GitVcsDriver treats a missing git executable as outside any repositor
   Effect.gen(function* () {
     const fileSystem = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-missing-git-" });
+    const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "vibecodinger-missing-git-" });
     const driver = yield* GitVcsDriver.makeVcsDriverShape().pipe(
       Effect.provide(vcsProcessSpawning(path.join(cwd, "git"))),
     );
@@ -2649,7 +2697,9 @@ it.effect.skipIf(HostProcess.Platform.defaultValue() === "win32")(
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const parent = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-newline-repo-" });
+      const parent = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-newline-repo-",
+      });
       const cwd = path.join(parent, "multi\nline");
       yield* fileSystem.makeDirectory(cwd);
       yield* runGit(cwd, ["init"]);
@@ -2667,7 +2717,9 @@ it.effect.skipIf(HostProcess.Platform.defaultValue() === "win32")(
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const parent = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-edge-space-repo-" });
+      const parent = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-edge-space-repo-",
+      });
       const driver = yield* GitVcsDriver.makeVcsDriverShape();
       // The newline name takes the per-path fallback; the others take the one-spawn answer.
       for (const name of ["repo ", "repo\r", "multi\nline "]) {
@@ -2689,7 +2741,7 @@ it.effect.skipIf(HostProcess.Platform.defaultValue() === "win32")(
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       // A file without the execute bit fails to spawn with a permission error.
-      const notExecutable = yield* fileSystem.makeTempFileScoped({ prefix: "t3-git-" });
+      const notExecutable = yield* fileSystem.makeTempFileScoped({ prefix: "vibecodinger-git-" });
       const driver = yield* GitVcsDriver.makeVcsDriverShape().pipe(
         Effect.provide(vcsProcessSpawning(notExecutable)),
       );
@@ -2705,7 +2757,7 @@ it.effect("GitVcsDriver fails repository probes when git cannot read the reposit
   Effect.gen(function* () {
     const fileSystem = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const root = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-bad-config-" });
+    const root = yield* fileSystem.makeTempDirectoryScoped({ prefix: "vibecodinger-bad-config-" });
     // The included file's path appears in Git's message and must not read as "no repository".
     const includeDir = path.join(root, "not a git repository");
     yield* fileSystem.makeDirectory(includeDir);
@@ -2742,7 +2794,9 @@ it.effect("GitVcsDriver reports no repository for a deleted cwd or a bare reposi
   Effect.gen(function* () {
     const fileSystem = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const root = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-no-work-tree-" });
+    const root = yield* fileSystem.makeTempDirectoryScoped({
+      prefix: "vibecodinger-no-work-tree-",
+    });
     const bare = path.join(root, "bare.git");
     yield* fileSystem.makeDirectory(bare);
     yield* runGit(bare, ["init", "--bare"]);
@@ -2812,7 +2866,7 @@ it.effect("GitVcsDriver fails a checkpoint ref lookup when git cannot read its o
 it.effect("GitVcsDriver reads an absent checkpoint ref as absent despite a Git warning", () =>
   Effect.gen(function* () {
     const fileSystem = yield* FileSystem.FileSystem;
-    const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-git-warning-" });
+    const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "vibecodinger-git-warning-" });
     yield* runGit(cwd, ["init"]);
     // Valid legacy config that makes every Git command print a deprecation warning.
     yield* runGit(cwd, ["config", "core.fsyncObjectFiles", "true"]);
@@ -2942,7 +2996,9 @@ it.effect("checkpoint capture meters every git process it starts, including stre
         },
       }),
     );
-    const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-checkpoint-metrics-" });
+    const cwd = yield* fileSystem.makeTempDirectoryScoped({
+      prefix: "vibecodinger-checkpoint-metrics-",
+    });
     const { checkpointRef } = yield* makeCheckpointFixture(driver, cwd);
 
     yield* captureDriver.checkpoints.captureCheckpoint({ cwd, checkpointRef });

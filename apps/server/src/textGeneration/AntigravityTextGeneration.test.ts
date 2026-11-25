@@ -526,7 +526,7 @@ it.layer(NodeServices.layer)("AntigravityTextGeneration", (it) => {
         const path = yield* Path.Path;
         const target =
           kind === "symlink"
-            ? yield* fs.makeTempDirectoryScoped({ prefix: "t3-antigravity-link-test-" })
+            ? yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-antigravity-link-test-" })
             : undefined;
         const fixture = yield* makeFixture({
           startupSkills: true,

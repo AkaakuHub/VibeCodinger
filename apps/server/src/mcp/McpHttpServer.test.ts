@@ -103,7 +103,9 @@ const layerTest = McpHttpServer.layerPreviewToolkit.pipe(
   Layer.provideMerge(McpHttpServer.layerInProcessMcpServer),
   Layer.provideMerge(McpToolAccessTestkit.liveThreadsLayer),
   Layer.provideMerge(PreviewAutomationBroker.layer),
-  Layer.provideMerge(ServerConfig.layerTest(process.cwd(), { prefix: "t3-mcp-http-server-test-" })),
+  Layer.provideMerge(
+    ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-mcp-http-server-test-" }),
+  ),
   Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
 );
 const layerPullRequestsTest = McpHttpServer.layerPullRequestsToolkit.pipe(
@@ -276,7 +278,9 @@ it.effect.each([
             }),
           ),
           Layer.provide(Layer.mock(ProjectService.ProjectService)({})),
-          Layer.provide(ServerConfig.layerTest(process.cwd(), { prefix: "t3-device-mcp-test-" })),
+          Layer.provide(
+            ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-device-mcp-test-" }),
+          ),
           Layer.provide(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
         ),
       ),
@@ -348,7 +352,7 @@ const layerRecordingTools = (calls: Array<unknown>) => {
         Layer.mock(ServerSettings.ServerSettingsService)({}),
         Layer.mock(DocumentText.DocumentText)({}),
         Layer.mock(ProviderRegistry.ProviderRegistry)({}),
-        ServerConfig.layerTest(process.cwd(), { prefix: "t3-mcp-http-server-test-" }),
+        ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-mcp-http-server-test-" }),
         NodeCrypto.layer,
       ),
     ),
@@ -1286,7 +1290,7 @@ it.effect("admits provider and OAuth client credentials and points only clients 
         ),
         Layer.provide(ServerHttp.layerBrowserApiCors),
         Layer.provide(
-          ServerConfig.layerTest(process.cwd(), { prefix: "t3-mcp-origin-test-" }).pipe(
+          ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-mcp-origin-test-" }).pipe(
             Layer.provide(NodeServices.layer),
           ),
         ),
@@ -1413,7 +1417,9 @@ it.effect("accepts case-insensitive MCP bearer schemes and diagnoses rejected cr
     Layer.provide(ServerSecretStore.layer),
     Layer.provide(ManagedPolicy.layerTest()),
     Layer.provideMerge(ServerEnvironment.layerIdentity),
-    Layer.provide(ServerConfig.layerTest(process.cwd(), { prefix: "t3-mcp-auth-header-test-" })),
+    Layer.provide(
+      ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-mcp-auth-header-test-" }),
+    ),
     Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
   );
   return Effect.scoped(
@@ -1534,7 +1540,9 @@ it.effect("gives outside clients an upload URL on the origin their request reach
         Layer.provide(
           AssetSigner.layer.pipe(
             Layer.provideMerge(ServerSecretStore.layer),
-            Layer.provideMerge(ServerConfig.layerTest(process.cwd(), { prefix: "t3-mcp-upload-" })),
+            Layer.provideMerge(
+              ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-mcp-upload-" }),
+            ),
             Layer.provideMerge(DocumentText.layer),
             Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
           ),

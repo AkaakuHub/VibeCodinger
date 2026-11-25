@@ -76,7 +76,7 @@ const runtimeDependencies = (
     relayClientLayer,
     secretStoreLayer,
     RelayClientLedger.layerTest,
-    ServerConfig.layerTest(process.cwd(), { prefix: "t3-managed-endpoint-" }),
+    ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-managed-endpoint-" }),
   ).pipe(Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)));
 
 const buildCloudManagedEndpointRuntime = (
@@ -580,7 +580,9 @@ describe("CloudManagedEndpointRuntime", () => {
       Effect.gen(function* () {
         const context = yield* Layer.build(
           ServerSecretStore.layer.pipe(
-            Layer.provide(ServerConfig.layerTest(process.cwd(), { prefix: "t3-transport-test-" })),
+            Layer.provide(
+              ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-transport-test-" }),
+            ),
             Layer.provide(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
           ),
         );
@@ -644,7 +646,9 @@ describe("CloudManagedEndpointRuntime", () => {
     Effect.gen(function* () {
       const context = yield* Layer.build(
         ServerSecretStore.layer.pipe(
-          Layer.provide(ServerConfig.layerTest(process.cwd(), { prefix: "t3-transport-test-" })),
+          Layer.provide(
+            ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-transport-test-" }),
+          ),
           Layer.provide(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
         ),
       );
@@ -794,7 +798,9 @@ describe("CloudManagedEndpointRuntime", () => {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       for (const rotationBlocked of [false, true]) {
-        const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-relay-client-log-" });
+        const baseDir = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-relay-client-log-",
+        });
         const logPath = path.join(baseDir, "userdata", "logs", "relay-client.ndjson");
         const existingLog = "x".repeat(1024 * 1024);
         if (rotationBlocked) {

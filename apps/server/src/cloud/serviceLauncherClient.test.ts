@@ -64,7 +64,7 @@ it.effect.each([3, SERVICE_LAUNCHER_PROTOCOL])(
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-trial-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-trial-" });
       const baseDir = path.join(root, ".vibecodinger");
       const exe = (version: string) =>
         path.join(baseDir, "runtime/versions", version, "vibecodinger");
@@ -248,7 +248,7 @@ it.layer(NodeServices.layer)("self-update launchers", (it) => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-update-" });
+        const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-update-" });
         const baseDir = path.join(root, ".vibecodinger");
         const exe = (version: string) =>
           path.join(baseDir, "runtime/versions", version, "vibecodinger");
@@ -281,7 +281,7 @@ it.layer(NodeServices.layer)("self-update launchers", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-update-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-update-" });
       const baseDir = path.join(root, ".vibecodinger");
       const exe = (version: string) =>
         path.join(baseDir, "runtime/versions", version, "vibecodinger");
@@ -336,7 +336,7 @@ it.layer(NodeServices.layer)("self-update launchers", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-update-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-update-" });
       const baseDir = path.join(root, ".vibecodinger");
       const installed = path.join(root, ".local/bin/vibecodinger");
       const onPath = path.join(root, "bin/vibecodinger");
@@ -374,7 +374,7 @@ it.layer(NodeServices.layer)("self-update launchers", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-update-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-update-" });
       const baseDir = path.join(root, ".vibecodinger");
       const exe = (version: string) =>
         path.join(baseDir, "runtime/versions", version, "vibecodinger");
@@ -408,7 +408,7 @@ it.layer(NodeServices.layer)("self-update launchers", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-update-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-update-" });
       const baseDir = path.join(root, ".vibecodinger");
       const exe = (version: string) =>
         path.join(baseDir, "runtime/versions", version, "vibecodinger");

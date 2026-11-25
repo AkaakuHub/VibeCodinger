@@ -21,7 +21,7 @@ it.layer(NodeServices.layer)("ManagedPolicy.load", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const dir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-managed-policy-" });
+      const dir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-managed-policy-" });
       const file = path.join(dir, "policy.json");
       if (contents !== undefined) yield* fs.writeFileString(file, contents);
       return yield* ManagedPolicy.load(file);

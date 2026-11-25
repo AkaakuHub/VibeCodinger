@@ -122,7 +122,7 @@ describe("DesktopObservability", () => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const baseDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-desktop-backend-output-log-test-",
+        prefix: "vibecodinger-desktop-backend-output-log-test-",
       });
       const layerEnvironment = layerEnvironmentFor(baseDir, false);
       const logPath = yield* Effect.gen(function* () {
@@ -200,7 +200,7 @@ describe("DesktopObservability", () => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const baseDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-desktop-backend-output-snapshot-test-",
+        prefix: "vibecodinger-desktop-backend-output-snapshot-test-",
       });
       const layerEnvironment = layerEnvironmentFor(baseDir, false);
       const logPath = yield* Effect.gen(function* () {
@@ -240,7 +240,7 @@ describe("DesktopObservability", () => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const baseDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-desktop-backend-output-bound-test-",
+        prefix: "vibecodinger-desktop-backend-output-bound-test-",
       });
       const layerEnvironment = layerEnvironmentFor(baseDir, false);
       const logPath = yield* Effect.gen(function* () {
@@ -284,7 +284,7 @@ describe("DesktopObservability", () => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const directory = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-desktop-rotating-prune-test-",
+        prefix: "vibecodinger-desktop-rotating-prune-test-",
       });
       const filePath = `${directory}/server-child.log`;
       const retained = ["1", "3", "04", "4.0", "4e0", "0x4", "+4", "notes"];
@@ -306,7 +306,7 @@ describe("DesktopObservability", () => {
     return Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const baseDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-desktop-observability-test-",
+        prefix: "vibecodinger-desktop-observability-test-",
       });
       const layerEnvironment = layerEnvironmentFor(baseDir);
       yield* writeObservabilitySettings(layerEnvironment, {

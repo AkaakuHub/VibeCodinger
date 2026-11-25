@@ -37,7 +37,7 @@ const startBesideBootService = Effect.fn("test.startBesideBootService")(function
 }) {
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
-  const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-owner-boot-service-" });
+  const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-owner-boot-service-" });
   const t3Home = path.join(root, ".vibecodinger");
   const serviceHome = input.unitServesOtherHome ? path.join(root, "other") : t3Home;
   for (const home of [t3Home, serviceHome]) {
@@ -156,7 +156,7 @@ describe("server ownership", () => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-owner-race-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-owner-race-" });
       const statePath = path.join(root, "server-runtime.json");
       const attempts = yield* Effect.all(
         [
@@ -175,7 +175,7 @@ describe("server ownership", () => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-owner-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-owner-" });
       const statePath = path.join(root, "server-runtime.json");
       const state = yield* makeState;
       yield* Effect.scoped(
@@ -214,7 +214,7 @@ describe("server ownership", () => {
       return Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-owner-lost-" });
+        const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-owner-lost-" });
         const statePath = path.join(root, "server-runtime.json");
         const lockPath = path.join(root, "server-owner.sqlite");
         const replacement = path.join(root, "replacement.sqlite");
@@ -283,7 +283,7 @@ describe("server ownership", () => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-owner-legacy-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-owner-legacy-" });
       const statePath = path.join(root, "server-runtime.json");
       const state = yield* makeState;
       yield* ServerRuntimeState.persistServerRuntimeState({
@@ -307,7 +307,7 @@ describe("server ownership", () => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-owner-cleanup-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-owner-cleanup-" });
       const statePath = path.join(root, "server-runtime.json");
       const state = yield* makeState;
       yield* Effect.scoped(

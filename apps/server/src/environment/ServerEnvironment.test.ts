@@ -172,7 +172,7 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("ServerEnvironmen
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const baseDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-server-environment-override-test-",
+        prefix: "vibecodinger-server-environment-override-test-",
       });
       const descriptor = yield* Effect.gen(function* () {
         const serverEnvironment = yield* ServerEnvironment.ServerEnvironment;
@@ -207,7 +207,7 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("ServerEnvironmen
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const baseDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-server-environment-speech-test-",
+        prefix: "vibecodinger-server-environment-speech-test-",
       });
       const descriptor = yield* Effect.gen(function* () {
         const serverEnvironment = yield* ServerEnvironment.ServerEnvironment;
@@ -230,7 +230,7 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("ServerEnvironmen
       const fileSystem = yield* FileSystem.FileSystem;
       const random = yield* SecureRandom.SecureRandom;
       const baseDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-server-environment-concurrent-test-",
+        prefix: "vibecodinger-server-environment-concurrent-test-",
       });
       const serverConfig = yield* makeServerConfig(baseDir);
       yield* fileSystem.makeDirectory(serverConfig.stateDir, { recursive: true });
@@ -296,7 +296,7 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("ServerEnvironmen
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const baseDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-server-environment-test-",
+        prefix: "vibecodinger-server-environment-test-",
       });
 
       const first = yield* Effect.gen(function* () {
@@ -331,7 +331,7 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("ServerEnvironmen
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const baseDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-server-environment-publish-test-",
+        prefix: "vibecodinger-server-environment-publish-test-",
       });
       const layerTest = Layer.mergeAll(
         ServerEnvironment.layer.pipe(Layer.provide(ServerSecretStore.layer)),

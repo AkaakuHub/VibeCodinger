@@ -166,7 +166,7 @@ const openFxSession = Effect.fn("openFxSession")(function* (input: {
   const fileSystem = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
   const replayDir = yield* fileSystem.makeTempDirectoryScoped({
-    prefix: `t3-fx-${input.scenario}-`,
+    prefix: `vibecodinger-fx-${input.scenario}-`,
   });
   const statusPath = path.join(replayDir, "status.json");
   const transcript = yield* decodeAcpReplayTranscript(

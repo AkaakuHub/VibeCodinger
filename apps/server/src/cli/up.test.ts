@@ -245,7 +245,7 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer, NetService.layer))
     ])("keeps service changes and access settings consistent: $label", (input) =>
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
-        const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-up-test-" });
+        const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-up-test-" });
         yield* fs.writeFileString(`${baseDir}/service.env`, input.env);
         let installs = 0;
         let restarts = 0;

@@ -14,8 +14,8 @@ import { CaptureSetupRequiredError, readPortalPng } from "./linuxCaptureSession.
 import { startNativeCaptureFeedback } from "./NativeCaptureFeedback.ts";
 export { isKdeCaptureSession } from "./linuxCaptureSession.ts";
 
-export const KDE_CAPTURE_EXECUTABLE = "t3-kde-snap-shot";
-const DESKTOP_FILE = "com.t3tools.T3Code.KdeCapture.desktop";
+export const KDE_CAPTURE_EXECUTABLE = "vibecodinger-kde-snap-shot";
+const DESKTOP_FILE = "net.akaaku.vibecodinger.KdeCapture.desktop";
 const MARKER = "X-T3Code-Capture-Helper=true";
 const decodeCapabilities = Schema.decodeUnknownSync(
   Schema.fromJsonString(Schema.Struct({ feedbackAvailable: Schema.optional(Schema.Boolean) })),

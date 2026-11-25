@@ -2725,9 +2725,9 @@ it.effect("creates a strong provider-thread mapping for an imported native sessi
 
 it.effect("shared intake preserves durable attachment bytes after a lost launch result", () => {
   const harness = makeHarness();
-  const layerFiles = ServerConfig.layerTest(process.cwd(), { prefix: "t3-message-intake-" }).pipe(
-    Layer.provideMerge(DocumentText.layer.pipe(Layer.provideMerge(NodeServices.layer))),
-  );
+  const layerFiles = ServerConfig.layerTest(process.cwd(), {
+    prefix: "vibecodinger-message-intake-",
+  }).pipe(Layer.provideMerge(DocumentText.layer.pipe(Layer.provideMerge(NodeServices.layer))));
   return Effect.gen(function* () {
     const config = yield* ServerConfig.ServerConfig;
     const fs = yield* FileSystem.FileSystem;
@@ -3008,7 +3008,9 @@ it.live(
       thread: null,
     };
     const layerGit = GitVcsDriver.layer.pipe(
-      Layer.provideMerge(ServerConfig.layerTest(process.cwd(), { prefix: "t3-launch-layout-" })),
+      Layer.provideMerge(
+        ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-launch-layout-" }),
+      ),
       Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
     );
     const layerTaskFolders = layerTaskFoldersWithGit(state).pipe(
@@ -3020,7 +3022,7 @@ it.live(
       const path = yield* Path.Path;
       const git = yield* GitVcsDriver.GitVcsDriver;
       const tmp = yield* fileSystem.realPath(
-        yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-launch-layout-" }),
+        yield* fileSystem.makeTempDirectoryScoped({ prefix: "vibecodinger-launch-layout-" }),
       );
       const shop = path.join(tmp, "shop");
       const ran = path.join(tmp, "ran");
@@ -3134,7 +3136,9 @@ it.live(
 it.live("launches into a task folder and leaves nothing behind when its setup is cancelled", () => {
   const state: TaskFoldersTestState = { workspaceRoot: "/unset", trackedFolders: [], thread: null };
   const layerGit = GitVcsDriver.layer.pipe(
-    Layer.provideMerge(ServerConfig.layerTest(process.cwd(), { prefix: "t3-launch-folders-" })),
+    Layer.provideMerge(
+      ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-launch-folders-" }),
+    ),
     Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
   );
   const layerTaskFolders = layerTaskFoldersWithGit(state).pipe(
@@ -3151,7 +3155,7 @@ it.live("launches into a task folder and leaves nothing behind when its setup is
         .pipe(Effect.map((result) => result.stdout.trim()));
     // A project folder that is not a repository, holding two that are.
     const shop = yield* fileSystem.realPath(
-      yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-launch-folders-" }),
+      yield* fileSystem.makeTempDirectoryScoped({ prefix: "vibecodinger-launch-folders-" }),
     );
     const repositories = [path.join(shop, "api"), path.join(shop, "web")];
     for (const folder of repositories) {
@@ -3886,9 +3890,9 @@ it.effect.each([
 
 it.effect("replays an accepted send after the project disables the instance", () => {
   const harness = makeHarness();
-  const layerFiles = ServerConfig.layerTest(process.cwd(), { prefix: "t3-send-retry-" }).pipe(
-    Layer.provideMerge(DocumentText.layer.pipe(Layer.provideMerge(NodeServices.layer))),
-  );
+  const layerFiles = ServerConfig.layerTest(process.cwd(), {
+    prefix: "vibecodinger-send-retry-",
+  }).pipe(Layer.provideMerge(DocumentText.layer.pipe(Layer.provideMerge(NodeServices.layer))));
   return Effect.gen(function* () {
     const launches = yield* ThreadLaunch.ThreadLaunchService;
     const settings = yield* ServerSettings.ServerSettingsService;

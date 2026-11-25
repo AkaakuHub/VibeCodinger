@@ -22,7 +22,7 @@ it.layer(DatabaseMaintenance.layer.pipe(Layer.provideMerge(NodeServices.layer)))
         const path = yield* Path.Path;
         const maintenance = yield* DatabaseMaintenance.DatabaseMaintenance;
         const dbPath = path.join(
-          yield* fs.makeTempDirectoryScoped({ prefix: "t3-inspect-" }),
+          yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-inspect-" }),
           "statev2.sqlite",
         );
         yield* fs.writeFileString(dbPath, "not a database");
@@ -36,7 +36,7 @@ it.layer(DatabaseMaintenance.layer.pipe(Layer.provideMerge(NodeServices.layer)))
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
         const maintenance = yield* DatabaseMaintenance.DatabaseMaintenance;
-        const userdata = yield* fs.makeTempDirectoryScoped({ prefix: "t3-legacy-" });
+        const userdata = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-legacy-" });
         const dbPath = path.join(userdata, "statev2.sqlite");
         const legacy = path.join(userdata, "state.sqlite");
         yield* Effect.gen(function* () {
@@ -129,7 +129,9 @@ it.layer(DatabaseMaintenance.layer.pipe(Layer.provideMerge(NodeServices.layer)))
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-requested-reclaim-" });
+        const baseDir = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-requested-reclaim-",
+        });
         const dbPath = path.join(baseDir, "userdata", "statev2.sqlite");
         const files = DatabaseMaintenance.reclaimFiles(path, dbPath);
         yield* Effect.void.pipe(Effect.provide(Sqlite.layerFromPath(dbPath)));
@@ -185,7 +187,7 @@ it.layer(DatabaseMaintenance.layer.pipe(Layer.provideMerge(NodeServices.layer)))
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
         const dbPath = path.join(
-          yield* fs.makeTempDirectoryScoped({ prefix: "t3-reclaim-space-" }),
+          yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-reclaim-space-" }),
           "statev2.sqlite",
         );
         assert.isNull(yield* DatabaseMaintenance.reclaimSpaceShortfall(dbPath, 1024));
@@ -201,7 +203,7 @@ it.layer(DatabaseMaintenance.layer.pipe(Layer.provideMerge(NodeServices.layer)))
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
         const maintenance = yield* DatabaseMaintenance.DatabaseMaintenance;
-        const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-compact-" });
+        const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-compact-" });
         const dbPath = path.join(baseDir, "userdata", "statev2.sqlite");
         // Opening the database migrates it.
         yield* Effect.void.pipe(Effect.provide(Sqlite.layerFromPath(dbPath)));

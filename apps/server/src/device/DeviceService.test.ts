@@ -483,7 +483,7 @@ describe("device setup consent", () => {
   it.effect("names the missing npm in the host status when device support cannot install", () =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-device-no-npm-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-device-no-npm-" });
       const installError = yield* ensureDeviceHub(baseDir).pipe(
         Effect.provideService(ProcessRunner.ProcessRunner, {
           run: (input) =>
@@ -848,7 +848,7 @@ it.effect.each([
       Layer.mergeAll(
         ServerSettings.layerTest(),
         layerSecretResolver,
-        ServerConfig.layerTest(process.cwd(), { prefix: "t3-device-probe-" }),
+        ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-device-probe-" }),
         NodeCrypto.layer,
         NetService.layer,
       ).pipe(Layer.provideMerge(NodeServices.layer)),
@@ -1835,7 +1835,7 @@ it.effect("failed manual installation leaves lifecycle state unchanged and can b
 it.effect("reconciles SSH host settings without publishing no-op changes", () =>
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
-    const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-device-reconcile-" });
+    const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-device-reconcile-" });
     const settings = yield* ServerSettings.ServerSettingsService;
     // Each change is acknowledged after reconciliation consumed it, so no-ops are observable.
     const changes = yield* Queue.unbounded<{ value: Settings; done: Deferred.Deferred<void> }>();
@@ -2020,7 +2020,7 @@ it.effect.each(["exit", "missing"] as const)(
         Layer.mergeAll(
           ServerSettings.layerTest({ enableDeviceSupport: true }),
           layerSecretResolver,
-          ServerConfig.layerTest(process.cwd(), { prefix: "t3-device-update-" }),
+          ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-device-update-" }),
           NodeCrypto.layer,
           NetService.layer,
         ).pipe(Layer.provideMerge(NodeServices.layer)),

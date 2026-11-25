@@ -165,7 +165,7 @@ describe("materializePiT3McpExtension", () => {
     Effect.gen(function* () {
       const fs = yield* NodeFS.FileSystem;
       const path = yield* NodePath.Path;
-      const directory = yield* fs.makeTempDirectoryScoped({ prefix: "t3-pi-atomic-" });
+      const directory = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-pi-atomic-" });
       const anomalies: Array<string> = [];
       const stopAfter = 120;
       const writer = yield* Effect.forkChild(

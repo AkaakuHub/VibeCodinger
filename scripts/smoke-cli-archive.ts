@@ -66,7 +66,7 @@ const smokeCliArchive = Effect.fn("smokeCliArchive")(function* (input: {
   const path = yield* Path.Path;
   const platform = yield* HostProcess.Platform;
   const spawner = yield* ChildProcessSpawner.ChildProcessSpawner;
-  const scratch = yield* fs.makeTempDirectory({ prefix: "t3-cli-smoke-" });
+  const scratch = yield* fs.makeTempDirectory({ prefix: "vibecodinger-cli-smoke-" });
   // Windows can briefly retain executable locks; cleanup retries but must not fail a successful smoke check.
   yield* Effect.addFinalizer(() =>
     fs.remove(scratch, { recursive: true }).pipe(

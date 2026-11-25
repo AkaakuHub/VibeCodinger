@@ -254,7 +254,7 @@ const serveBox = (seen: Ref.Ref<Seen>, linkSession: Ref.Ref<string>) =>
       Layer.provide(Layer.mock(GitVcsDriver.GitVcsDriver)({})),
       Layer.provide(boxProjects(seen)),
       Layer.provide(
-        ServerConfig.layerTest(process.cwd(), { prefix: "t3-peer-forwarding-box-" }).pipe(
+        ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-peer-forwarding-box-" }).pipe(
           Layer.provide(NodeServices.layer),
         ),
       ),
@@ -308,9 +308,9 @@ const makeLaptop = Effect.gen(function* () {
     Layer.provide(Layer.mock(GitVcsDriver.GitVcsDriver)({})),
     Layer.provide(Layer.mock(SourceControlRepositoryService.SourceControlRepositoryService)({})),
     Layer.provide(
-      ServerConfig.layerTest(process.cwd(), { prefix: "t3-peer-forwarding-laptop-" }).pipe(
-        Layer.provide(NodeServices.layer),
-      ),
+      ServerConfig.layerTest(process.cwd(), {
+        prefix: "vibecodinger-peer-forwarding-laptop-",
+      }).pipe(Layer.provide(NodeServices.layer)),
     ),
     Layer.provide(NodeServices.layer),
     Layer.provide(PeerForwarding.layer),

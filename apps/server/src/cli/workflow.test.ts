@@ -62,7 +62,7 @@ const runCli = (
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-workflow-cli-" });
+    const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-workflow-cli-" });
     yield* persistServerRuntimeState({
       path: path.join(baseDir, "userdata", "server-runtime.json"),
       state: yield* makePersistedServerRuntimeState({

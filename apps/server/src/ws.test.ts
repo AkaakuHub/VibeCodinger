@@ -933,7 +933,9 @@ const layerConfigSources = Layer.mergeAll(
   Layer.provideMerge(Layer.fresh(SqlitePersistence.layerMemory)),
   Layer.provideMerge(
     Layer.fresh(
-      ServerConfigModule.layerTest(process.cwd(), { prefix: "t3-config-subscription-test-" }),
+      ServerConfigModule.layerTest(process.cwd(), {
+        prefix: "vibecodinger-config-subscription-test-",
+      }),
     ),
   ),
   Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
@@ -1771,7 +1773,7 @@ it.effect("a missing thread worktree gets its project's skills in the cwd snapsh
     const instanceId = ProviderInstanceId.make("claudeAgent");
     const projectId = ProjectId.make("project:skills");
     const workspaceRoot = yield* fileSystem.makeTempDirectoryScoped({
-      prefix: "t3-missing-worktree-project-",
+      prefix: "vibecodinger-missing-worktree-project-",
     });
     const skillPath = path.join(workspaceRoot, ".claude", "skills", "finalize", "SKILL.md");
     yield* fileSystem.makeDirectory(path.dirname(skillPath), { recursive: true });

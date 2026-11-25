@@ -70,7 +70,7 @@ const layerPlatformTest = Layer.merge(
 );
 
 const layerServerConfig = ServerConfig.layerTest(process.cwd(), {
-  prefix: "t3-orchestration-v2-delegated-completion-",
+  prefix: "vibecodinger-orchestration-v2-delegated-completion-",
 });
 
 const modelSelection = {

@@ -217,7 +217,7 @@ it.layer(NodeServices.layer)("service state persistence", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-disk-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-service-disk-" });
       const statePath = path.join(root, "runtime", "service-state.json");
       const databasePath = path.join(root, "userdata", "statev2.sqlite");
       let backupPath = path.join(root, "runtime", "db-backup", "disk-update");
@@ -415,7 +415,7 @@ setInterval(() => {}, 1_000);
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-env-" });
+        const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-service-env-" });
         const inherited = Object.freeze({
           PATH: "inherited-path",
           T3CODE_HOME: root,
@@ -459,7 +459,9 @@ setInterval(() => {}, 1_000);
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-launcher-task-" });
+      const root = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-service-launcher-task-",
+      });
       const unitPath = path.join(root, "vibecodinger-task.xml");
       const unit = renderBootServiceTask(unitPlan(root, "1.1.0"), {
         userId: "PC\\theo",
@@ -488,7 +490,9 @@ setInterval(() => {}, 1_000);
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-launcher-unit-" });
+      const root = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-service-launcher-unit-",
+      });
       const home = path.join(root, "home");
       const unitPath = path.join(home, "Library", "LaunchAgents", "t3code.plist");
       const render = (version: string) =>
@@ -532,7 +536,9 @@ setInterval(() => {}, 1_000);
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-launcher-xdg-" });
+        const root = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-service-launcher-xdg-",
+        });
         const home = path.join(root, "home");
         const managerUnitDir = path.join(home, ".config", "systemd", "user");
         const unitPath = path.join(managerUnitDir, "vibecodinger.service");
@@ -594,7 +600,9 @@ setInterval(() => {}, 1_000);
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-launcher-log-" });
+      const root = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-service-launcher-log-",
+      });
       const home = path.join(root, "home");
       const unitPath = path.join(home, "Library", "LaunchAgents", "t3code.plist");
       const plan = unitPlan(root, "1.0.0");
@@ -635,7 +643,9 @@ setInterval(() => {}, 1_000);
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-launcher-migrate-" });
+      const root = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-service-launcher-migrate-",
+      });
       const statePath = path.join(root, "runtime", "service-state.json");
       const activeVersion = "0.0.43-nightly.20260919.1962+build.1";
       const versionDir = path.join(root, "runtime", "versions", activeVersion);
@@ -668,7 +678,9 @@ process.exit(0);
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const parent = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-launcher-space-" });
+      const parent = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-service-launcher-space-",
+      });
       const root = path.join(parent, "T3 data ");
       const versionDir = path.join(root, "runtime", "versions", "1.0.0");
       yield* writeFakeRuntime(
@@ -698,7 +710,9 @@ process.exit(0);
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-launcher-reject-" });
+      const root = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-service-launcher-reject-",
+      });
       const statePath = path.join(root, "runtime", "service-state.json");
       yield* writeFakeRuntime(
         fs,
@@ -740,7 +754,9 @@ process.exit(0);
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-launcher-layout-" });
+      const root = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-service-launcher-layout-",
+      });
       const statePath = path.join(root, "runtime", "service-state.json");
       const contents = '{ "protocol": 2, "activeVersion": "1.0.0" }';
       yield* fs.makeDirectory(path.dirname(statePath), { recursive: true });
@@ -761,7 +777,9 @@ process.exit(0);
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-launcher-restart-" });
+      const root = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-service-launcher-restart-",
+      });
       const statePath = path.join(root, "runtime", "service-state.json");
       const restartPending = path.join(root, "runtime", SERVICE_RESTART_PENDING_FILE);
       yield* writeFakeRuntime(
@@ -806,7 +824,9 @@ process.exit(0);
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-launcher-repoint-" });
+        const root = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-service-launcher-repoint-",
+        });
         const statePath = path.join(root, "runtime", "service-state.json");
         yield* writeFakeRuntime(
           fs,
@@ -900,7 +920,9 @@ process.exit(0);
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-launcher-alias-" });
+      const root = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-service-launcher-alias-",
+      });
       const alias = path.join(root, "alias");
       yield* fs.symlink(root, alias);
       const statePath = path.join(root, "runtime", "service-state.json");
@@ -945,7 +967,7 @@ process.exit(0);
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-reclaim-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-service-reclaim-" });
       const statePath = path.join(root, "runtime", "service-state.json");
       const ownerPath = path.join(root, "userdata", "server-owner.sqlite");
       yield* fs.makeDirectory(path.dirname(ownerPath), { recursive: true });
@@ -1018,7 +1040,9 @@ process.exit(0);
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-reclaim-update-" });
+        const root = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-service-reclaim-update-",
+        });
         const statePath = path.join(root, "runtime", "service-state.json");
         const ownerPath = path.join(root, "userdata", "server-owner.sqlite");
         const databasePath = path.join(root, "userdata", "state.sqlite");
@@ -1111,7 +1135,9 @@ process.exit(0);
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-stale-backup-" });
+      const root = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-service-stale-backup-",
+      });
       const statePath = path.join(root, "runtime", "service-state.json");
       const ownerPath = path.join(root, "userdata", "server-owner.sqlite");
       const databasePath = path.join(root, "userdata", "state.sqlite");
@@ -1171,7 +1197,7 @@ process.exit(0);
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-owned-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-service-owned-" });
       const stateDir = path.join(root, "userdata");
       const recordPath = path.join(stateDir, "server-runtime.json");
       yield* fs.makeDirectory(stateDir, { recursive: true });
@@ -1206,7 +1232,9 @@ process.exit(0);
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service 100% & <test>-" });
+      const root = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-service 100% & <test>-",
+      });
       const statePath = path.join(root, "runtime", "service-state.json");
       const databasePath = path.join(root, "userdata", "state.sqlite");
       const activatedPath = path.join(root, "activated");
@@ -1360,7 +1388,9 @@ if (context.update?.status === "pending") {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-launcher-rollback-" });
+      const root = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-service-launcher-rollback-",
+      });
       const statePath = path.join(root, "runtime", "service-state.json");
       const databasePath = path.join(root, "userdata", "state.sqlite");
       const observationsPath = path.join(root, "environment-observations.jsonl");
@@ -1452,7 +1482,9 @@ if (context.update?.status === "pending") {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-launcher-db-" });
+        const root = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-service-launcher-db-",
+        });
         const statePath = path.join(root, "runtime", "service-state.json");
         const databasePath = path.join(root, "userdata", "state.sqlite");
         const databaseFile =
@@ -1531,7 +1563,9 @@ if (context.update?.status === "pending") {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-launcher-online-" });
+        const root = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-service-launcher-online-",
+        });
         const statePath = path.join(root, "runtime", "service-state.json");
         const databasePath = path.join(root, "userdata", "state.sqlite");
         const observationsPath = path.join(root, "observations.json");
@@ -1648,7 +1682,9 @@ if (context.update?.status === "pending") {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-launcher-space-" });
+      const root = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-service-launcher-space-",
+      });
       const statePath = path.join(root, "runtime", "service-state.json");
       const databasePath = path.join(root, "userdata", "state.sqlite");
       const replyPath = path.join(root, "rejection.txt");
@@ -1745,7 +1781,7 @@ if (context.update?.status === "pending") {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-control-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-service-control-" });
       const statePath = path.join(root, "runtime", "service-state.json");
       const databasePath = path.join(root, "userdata", "state.sqlite");
       const reportPath = path.join(root, "stopped-with-marker");
@@ -1814,7 +1850,9 @@ process.send({ type: "request-update", targetVersion: "1.1.0", dbPath: paths.dat
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-startup-stop-" });
+      const root = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-service-startup-stop-",
+      });
       const statePath = path.join(root, "runtime", "service-state.json");
       // Recovery would roll this back: the target runtime is missing.
       const pending = {
@@ -1846,7 +1884,9 @@ process.send({ type: "request-update", targetVersion: "1.1.0", dbPath: paths.dat
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-backup-stop-" });
+      const root = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-service-backup-stop-",
+      });
       const statePath = path.join(root, "runtime", "service-state.json");
       const childSource = "setInterval(() => {}, 1000);\n";
       for (const version of ["1.0.0", "1.1.0"]) {
@@ -1896,7 +1936,9 @@ process.send({ type: "request-update", targetVersion: "1.1.0", dbPath: paths.dat
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-launcher-exit-" });
+      const root = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-service-launcher-exit-",
+      });
       const statePath = path.join(root, "runtime", "service-state.json");
       const databasePath = path.join(root, "userdata", "state.sqlite");
       yield* fs.makeDirectory(path.dirname(databasePath), { recursive: true });
@@ -1956,7 +1998,9 @@ setInterval(() => {}, 1_000);
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-launcher-orphan-" });
+      const root = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-service-launcher-orphan-",
+      });
       const databasePath = path.join(root, "state.sqlite");
       yield* writeSparseFile(databasePath, 10 * 1024 ** 3);
       const backupRoot = path.join(root, "runtime", "db-backup");
@@ -1985,7 +2029,9 @@ setInterval(() => {}, 1_000);
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-launcher-blocker-" });
+      const root = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-service-launcher-blocker-",
+      });
       const databasePath = path.join(root, "state.sqlite");
       yield* writeSparseFile(databasePath, 10 * 1024 ** 3);
       const check = (free: number, cloneable: boolean) =>

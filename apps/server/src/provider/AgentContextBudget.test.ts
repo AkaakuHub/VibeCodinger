@@ -90,7 +90,7 @@ const toolHandlerServices = Layer.mergeAll(
   Layer.mock(SecretRequests)({}),
   Layer.mock(FeedbackStore)({}),
   NodeSqliteClient.layer({ filename: ":memory:" }),
-  ServerConfig.layerTest(process.cwd(), { prefix: "t3-agent-context-budget-" }),
+  ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-agent-context-budget-" }),
   Layer.mock(ServerEnvironment)({}),
   Layer.mock(ServerSecretStore)({}),
   Layer.mock(ServerSettingsService)({}),

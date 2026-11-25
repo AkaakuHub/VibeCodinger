@@ -18,7 +18,7 @@ const VERSION = packageJson.version;
 const setup = Effect.gen(function* () {
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
-  const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-install-" });
+  const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-install-" });
   const runtimeDir = path.join(root, ".vibecodinger/runtime");
   const executable = path.join(runtimeDir, "versions", VERSION, "vibecodinger");
   yield* fs.makeDirectory(path.dirname(executable), { recursive: true });

@@ -76,7 +76,7 @@ const withFakeSystemd = <A, E>(
   } = {},
 ) =>
   Effect.gen(function* () {
-    const bin = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-agent-scope-"));
+    const bin = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "vibecodinger-agent-scope-"));
     for (const name of ["systemd-run", "systemctl", "agent"]) {
       NodeFS.writeFileSync(NodePath.join(bin, name), "", { mode: 0o755 });
     }
@@ -147,7 +147,7 @@ const withFakeSystemd = <A, E>(
   }).pipe(
     Effect.scoped,
     Effect.provide(
-      ServerConfig.layerTest(process.cwd(), { prefix: "t3-agent-scope-" }).pipe(
+      ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-agent-scope-" }).pipe(
         Layer.provideMerge(NodeServices.layer),
       ),
     ),

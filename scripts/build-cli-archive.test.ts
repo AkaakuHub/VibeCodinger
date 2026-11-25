@@ -61,7 +61,7 @@ const withStubs = <A, E, R>(
 const makeContent = Effect.fn("test.makeContent")(function* () {
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
-  const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-cli-notary-" });
+  const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-cli-notary-" });
   const contentDir = path.join(root, "content");
   yield* fs.makeDirectory(contentDir);
   const executablePath = path.join(contentDir, "vibecodinger");

@@ -219,7 +219,7 @@ function assertMissing(path: string, message: string): void {
   }
 }
 
-const tempRoot = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-release-smoke-"));
+const tempRoot = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "vibecodinger-release-smoke-"));
 
 try {
   NodeChildProcess.execFileSync(

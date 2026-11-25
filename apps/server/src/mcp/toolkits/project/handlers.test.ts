@@ -194,7 +194,7 @@ const clientLaunchHarness = (input: {
     Layer.provideMerge(GitVcsDriver.layer),
     Layer.provideMerge(VcsProcess.layer),
     Layer.provideMerge(
-      ServerConfig.layerTest(process.cwd(), { prefix: "t3-client-launch-" }).pipe(
+      ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-client-launch-" }).pipe(
         Layer.provide(NodeServices.layer),
       ),
     ),
@@ -658,7 +658,7 @@ it.effect("a launch binds only an existing checkout that is one of the project's
     const path = yield* Path.Path;
     // Git registers resolved paths, and a launch keeps the registered one.
     const root = yield* fileSystem.realPath(
-      yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-launch-worktree-" }),
+      yield* fileSystem.makeTempDirectoryScoped({ prefix: "vibecodinger-launch-worktree-" }),
     );
     const repo = path.join(root, "repo");
     const worktree = path.join(root, "feature");
@@ -838,7 +838,9 @@ it.effect("a launch that omits its workspace follows the new-threads-in-a-worktr
   Effect.gen(function* () {
     const fileSystem = yield* FileSystem.FileSystem;
     for (const source of ["setting", "t3.json"] as const) {
-      const repo = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-launch-env-mode-" });
+      const repo = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-launch-env-mode-",
+      });
       const launched: Array<ThreadLaunch.ThreadLaunchInput> = [];
       const { projectId, dependencies } = clientLaunchHarness({
         runtimeModeCeiling: "auto",
@@ -893,7 +895,9 @@ it.effect("a defaulted worktree launch stays shared only when Git says HEAD has 
       ["branch tip object missing", "worktree"],
       ["git refuses the repository", "refused"],
     ] as const) {
-      const repo = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-launch-head-" });
+      const repo = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-launch-head-",
+      });
       const launched: Array<ThreadLaunch.ThreadLaunchInput> = [];
       const { projectId, dependencies } = clientLaunchHarness({
         runtimeModeCeiling: "auto",
@@ -1145,7 +1149,7 @@ it.effect("an agent's clone is not cut off while git is still transferring", () 
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const parent = yield* fs.makeTempDirectoryScoped({ prefix: "t3-mcp-clone-" });
+    const parent = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-mcp-clone-" });
     const destinationPath = path.join(parent, "repo");
     const started = yield* Deferred.make<void>();
     const transferred = yield* Deferred.make<void>();

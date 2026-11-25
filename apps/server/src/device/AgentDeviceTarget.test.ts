@@ -43,7 +43,7 @@ describe("host-bound agent commands", () => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const temp = yield* fs.makeTempDirectoryScoped({ prefix: "t3-device-target-" });
+        const temp = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-device-target-" });
         const dir = path.join(temp, "quotes '\" $HOME `literal`");
         yield* fs.makeDirectory(dir);
         const desktopApp = path.join(dir, "T3 Code");
@@ -92,7 +92,7 @@ exec '${process.execPath.replaceAll("'", "'\"'\"'")}' "$@"
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const dir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-device-bound-" });
+      const dir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-device-bound-" });
       const entryPath = path.join(dir, "cli.mjs");
       yield* fs.writeFileString(entryPath, "console.log(JSON.stringify(process.argv.slice(2)));");
       const target = [
@@ -184,7 +184,7 @@ exec '${process.execPath.replaceAll("'", "'\"'\"'")}' "$@"
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const dir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-device-commands-" });
+      const dir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-device-commands-" });
       const entryPath = path.join(dir, "cli.mjs");
       yield* fs.writeFileString(entryPath, "console.log(JSON.stringify(process.argv.slice(2)));");
       const command = yield* bindAgentDeviceLauncher({
@@ -279,7 +279,7 @@ exec '${process.execPath.replaceAll("'", "'\"'\"'")}' "$@"
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const dir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-device-endpoint-" });
+      const dir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-device-endpoint-" });
       const entryPath = path.join(dir, "cli.mjs");
       yield* fs.writeFileString(entryPath, "console.log(JSON.stringify(process.argv.slice(2)));");
       const configPath = path.join(dir, "host.json");
@@ -349,7 +349,7 @@ exec '${process.execPath.replaceAll("'", "'\"'\"'")}' "$@"
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const stateDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-device-prune-" });
+      const stateDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-device-prune-" });
       const entryPath = path.join(stateDir, "cli.mjs");
       const shared = yield* ensureAgentDeviceShim({ entryPath, stateDir });
       const bind = (session: string) =>
@@ -376,7 +376,7 @@ exec '${process.execPath.replaceAll("'", "'\"'\"'")}' "$@"
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const dir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-device-stale-" });
+        const dir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-device-stale-" });
         const runtime = path.join(dir, "old-node");
         yield* fs.writeFileString(runtime, "#!/bin/sh\nexit 0\n");
         yield* fs.chmod(runtime, 0o755);
@@ -404,7 +404,7 @@ exec '${process.execPath.replaceAll("'", "'\"'\"'")}' "$@"
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const temp = yield* fs.makeTempDirectoryScoped({ prefix: "t3-device-target-" });
+      const temp = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-device-target-" });
       const platform = yield* HostProcess.Platform;
       const dir = path.join(
         temp,

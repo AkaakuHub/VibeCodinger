@@ -173,7 +173,7 @@ const cancelBackgroundOnlyTask = (
       const layerAdapters = ProviderAdapterRegistry.layerSingle(adapter);
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const directory = yield* fs.makeTempDirectoryScoped({ prefix: "t3-task-cancel-" });
+      const directory = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-task-cancel-" });
       const databaseLayer = SqlitePersistence.layerFromPath(
         path.join(directory, "state.sqlite"),
       ).pipe(Layer.provide(NodeServices.layer));

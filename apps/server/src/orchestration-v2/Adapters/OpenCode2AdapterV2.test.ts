@@ -6089,7 +6089,7 @@ it.layer(McpProviderSessions.layer)("OpenCode2 adapter", (it) => {
       Effect.gen(function* () {
         const fileSystem = yield* FileSystem.FileSystem;
         const attachmentsDir = yield* fileSystem.makeTempDirectoryScoped({
-          prefix: "t3-oc2-stopped-image-",
+          prefix: "vibecodinger-oc2-stopped-image-",
         });
         const image = ChatImageAttachment.make({
           type: "image",

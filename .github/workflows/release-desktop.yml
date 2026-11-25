@@ -211,7 +211,7 @@ jobs:
         id: resource_monitor_cache
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: native/resource-monitor/target/${{ inputs.rust_target }}/release/t3-resource-monitor${{ inputs.platform == 'win' && '.exe' || '' }}
+          path: native/resource-monitor/target/${{ inputs.rust_target }}/release/vibecodinger-resource-monitor${{ inputs.platform == 'win' && '.exe' || '' }}
           key: resource-monitor-${{ inputs.rust_target }}-${{ hashFiles('.cargo/config.toml', 'native/resource-monitor/Cargo.lock', 'native/resource-monitor/Cargo.toml', 'native/resource-monitor/src/**') }}
 
       - name: Cache Linux capture helpers
@@ -220,8 +220,8 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
-            native/kde-snap-shot/target/${{ inputs.rust_target }}/release/t3-kde-snap-shot
-            native/hyprland-snap-shot/target/${{ inputs.rust_target }}/release/t3-hyprland-snap-shot
+            native/kde-snap-shot/target/${{ inputs.rust_target }}/release/vibecodinger-kde-snap-shot
+            native/hyprland-snap-shot/target/${{ inputs.rust_target }}/release/vibecodinger-hyprland-snap-shot
           key: linux-capture-helpers-${{ inputs.rust_target }}-${{ hashFiles('native/kde-snap-shot/Cargo.lock', 'native/kde-snap-shot/Cargo.toml', 'native/kde-snap-shot/src/**', 'native/hyprland-snap-shot/Cargo.lock', 'native/hyprland-snap-shot/Cargo.toml', 'native/hyprland-snap-shot/src/**', 'native/hyprland-snap-shot/protocols/**') }}
 
       # Every Linux build makes electron-builder fetch the AppImage runtime, FPM
@@ -425,7 +425,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          binary_name="t3-resource-monitor"
+          binary_name="vibecodinger-resource-monitor"
           if [[ "${{ inputs.platform }}" == "win" ]]; then
             binary_name="${binary_name}.exe"
           fi
@@ -464,7 +464,7 @@ jobs:
           extra_args=()
           if [[ "${{ inputs.platform }}" == "mac" ]]; then
             if [[ -n "${APPLE_API_KEY:-}" ]]; then
-              key_dir="$(mktemp -d "$RUNNER_TEMP/t3-cli-notary.XXXXXXXX")"
+              key_dir="$(mktemp -d "$RUNNER_TEMP/vibecodinger-cli-notary.XXXXXXXX")"
               trap 'rm -rf "$key_dir"' EXIT
               key_path="$key_dir/AuthKey.p8"
               (umask 077 && printf '%s' "$APPLE_API_KEY" > "$key_path")
@@ -473,7 +473,7 @@ jobs:
             # Older release refs lack deferred notarization and still wait here.
             cli_help="$(node scripts/build-cli-archive.ts --help)"
             if [[ "$cli_help" == *--notary-submission-file* ]]; then
-              extra_args=(--notary-submission-file "$RUNNER_TEMP/t3-cli-notary-submission")
+              extra_args=(--notary-submission-file "$RUNNER_TEMP/vibecodinger-cli-notary-submission")
               echo "deferred_notarization=true" >> "$GITHUB_OUTPUT"
             fi
           fi
@@ -684,14 +684,14 @@ jobs:
         run: |
           set -euo pipefail
           if [[ -n "${APPLE_API_KEY:-}" ]]; then
-            key_dir="$(mktemp -d "$RUNNER_TEMP/t3-cli-notary.XXXXXXXX")"
+            key_dir="$(mktemp -d "$RUNNER_TEMP/vibecodinger-cli-notary.XXXXXXXX")"
             trap 'rm -rf "$key_dir"' EXIT
             key_path="$key_dir/AuthKey.p8"
             (umask 077 && printf '%s' "$APPLE_API_KEY" > "$key_path")
             export APPLE_API_KEY="$key_path"
           fi
           node scripts/build-cli-archive.ts await-notarization \
-            --submission-file "$RUNNER_TEMP/t3-cli-notary-submission"
+            --submission-file "$RUNNER_TEMP/vibecodinger-cli-notary-submission"
 
       - name: Upload notarized CLI archive
         if: inputs.cli_archive && inputs.platform == 'mac'
@@ -831,7 +831,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          binary_name="t3-resource-monitor"
+          binary_name="vibecodinger-resource-monitor"
           if [[ "${{ inputs.platform }}" == "win" ]]; then
             binary_name="${binary_name}.exe"
           fi
@@ -897,7 +897,7 @@ jobs:
       - name: Smoke-test resource monitor
         shell: bash
         env:
-          MONITOR: verify/${{ env.UNPACKED_DIR }}/resources/resource-monitor/t3-resource-monitor.exe
+          MONITOR: verify/${{ env.UNPACKED_DIR }}/resources/resource-monitor/vibecodinger-resource-monitor.exe
           EXPECTED_ARCH: ${{ inputs.arch == 'arm64' && 'aarch64' || 'x86_64' }}
         run: |
           node --input-type=module <<'EOF'

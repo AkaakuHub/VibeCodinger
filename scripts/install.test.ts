@@ -19,7 +19,7 @@ const nightlies = Array.from({ length: 100 }, (_, index) => ({
 describe.skipIf(HostProcess.Platform.defaultValue() !== "linux")("installer home", () => {
   it("installs a relative home from a directory ending in a newline", async () => {
     const temporaryRoot = await NodeFSP.realpath(
-      await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "t3-install-home-")),
+      await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "vibecodinger-install-home-")),
     );
     const root = NodePath.join(temporaryRoot, "cwd\n");
     const homeName = "-custom home\\home\n";
@@ -78,7 +78,9 @@ describe.skipIf(HostProcess.Platform.defaultValue() !== "linux")("installer chan
     ["stable", "1.2.3", 1],
     ["preview", "1.2.4-preview.20261019.50", 0],
   ])("finds %s %s behind nightlies and %i HTTP 504s", async (channel, version, failures) => {
-    const root = await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "t3-install-index-"));
+    const root = await NodeFSP.mkdtemp(
+      NodePath.join(NodeOS.tmpdir(), "vibecodinger-install-index-"),
+    );
     const target = NodePath.join(root, "home/runtime/versions", version);
     const server = NodeHttp.createServer((request, response) => {
       if (failures-- > 0) return response.writeHead(504).end();
@@ -146,7 +148,9 @@ describe.skipIf(HostProcess.Platform.defaultValue() !== "linux")(
   "installer archive download",
   () => {
     it("names the archive when it returns 404", async () => {
-      const root = await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "t3-install-archive-"));
+      const root = await NodeFSP.mkdtemp(
+        NodePath.join(NodeOS.tmpdir(), "vibecodinger-install-archive-"),
+      );
       const arch = HostProcess.Architecture.defaultValue() === "arm64" ? "arm64" : "x64";
       const archive = `vibecodinger-1.2.3-linux-${arch}.tar.gz`;
       const server = NodeHttp.createServer((request, response) => {
@@ -231,7 +235,9 @@ describe.skipIf(HostProcess.Platform.defaultValue() !== "linux")(
   "install.sh vibecodinger command",
   () => {
     it("replaces only this home's own launchers and prints a PATH command", async () => {
-      const root = await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "t3-install-link-"));
+      const root = await NodeFSP.mkdtemp(
+        NodePath.join(NodeOS.tmpdir(), "vibecodinger-install-link-"),
+      );
       try {
         const home = NodePath.join(root, "home");
         const binDir = NodePath.join(root, "bin");
@@ -351,7 +357,9 @@ describe.skipIf(HostProcess.Platform.defaultValue() !== "win32")(
   "install.ps1 vibecodinger command",
   () => {
     it("replaces only its own vibecodinger.cmd, also in non-ASCII and bracketed paths", async () => {
-      const root = await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "t3-install-ps1-"));
+      const root = await NodeFSP.mkdtemp(
+        NodePath.join(NodeOS.tmpdir(), "vibecodinger-install-ps1-"),
+      );
       try {
         // Windows PowerShell 5.1 reads files as ANSI by default and expands wildcards in paths.
         const home = NodePath.join(root, "José", ".vibecodinger");
@@ -448,7 +456,9 @@ describe.skipIf(HostProcess.Platform.defaultValue() !== "linux")("installer chec
       );
       expect(availableTools.length).toBeGreaterThan(0);
       for (const checksumTool of availableTools) {
-        const root = await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "t3-install-checksum-"));
+        const root = await NodeFSP.mkdtemp(
+          NodePath.join(NodeOS.tmpdir(), "vibecodinger-install-checksum-"),
+        );
         const home = NodePath.join(root, homeName);
         const version = "1.2.3";
         const stem = `vibecodinger-${version}-linux-${HostProcess.Architecture.defaultValue()}`;
@@ -559,7 +569,9 @@ describe.skipIf(HostProcess.Platform.defaultValue() !== "linux")("installer chec
 // regression: #38234
 describe.skipIf(HostProcess.Platform.defaultValue() !== "linux")("concurrent installers", () => {
   it("publishes one runtime without nesting the other install's staging directory", async () => {
-    const root = await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "t3-install-concurrent-"));
+    const root = await NodeFSP.mkdtemp(
+      NodePath.join(NodeOS.tmpdir(), "vibecodinger-install-concurrent-"),
+    );
     const version = "1.2.3";
     const stem = `vibecodinger-${version}-linux-${HostProcess.Architecture.defaultValue()}`;
     const archiveName = `${stem}.tar.gz`;

@@ -20,7 +20,7 @@ import { makeWorktreeCheckoutCache } from "./worktreeCheckoutCache.ts";
 
 // Tests close their own scope first, so background cache builds finish before the temp folder goes.
 const layerTest = ServerConfig.layerTest(process.cwd(), {
-  prefix: "t3-worktree-checkout-cache-test-",
+  prefix: "vibecodinger-worktree-checkout-cache-test-",
 }).pipe(Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)));
 
 // macOS clones for real; elsewhere `cp -a` stands in, keeping mtimes like a clone does.

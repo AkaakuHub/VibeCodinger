@@ -83,7 +83,7 @@ it.effect("points to Labs only when the server hides the feedback tool", () =>
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-feedback-cli-" });
+    const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-feedback-cli-" });
     const runtimeStatePath = path.join(baseDir, "userdata", "server-runtime.json");
     const runtimeState = yield* makePersistedServerRuntimeState({
       config: { host: "127.0.0.1", devUrl: undefined },
@@ -145,7 +145,7 @@ it.effect("points to Labs only when the server hides the feedback tool", () =>
       );
 
     // A file the server rejects reads as the defaults, so Off, as the server would read it.
-    const rejected = yield* fs.makeTempDirectoryScoped({ prefix: "t3-feedback-cli-" });
+    const rejected = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-feedback-cli-" });
     yield* fs.makeDirectory(path.join(rejected, "userdata"), { recursive: true });
     yield* fs.writeFileString(
       path.join(rejected, "userdata", "settings.json"),
@@ -154,14 +154,14 @@ it.effect("points to Labs only when the server hides the feedback tool", () =>
     yield* expectOneLine(["list"], rejected, FEEDBACK_OFF_MESSAGE);
 
     // On, a damaged database is one line too.
-    const damaged = yield* fs.makeTempDirectoryScoped({ prefix: "t3-feedback-cli-" });
+    const damaged = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-feedback-cli-" });
     yield* fs.makeDirectory(path.join(damaged, "userdata"), { recursive: true });
     yield* turnOn(damaged);
     yield* fs.writeFileString(path.join(damaged, "userdata", "statev2.sqlite"), "not a database");
     yield* expectOneLine(["list"], damaged, "Could not read this machine's feedback reports: ");
 
     // A database from before agent feedback, with no table for it, lists nothing.
-    const older = yield* fs.makeTempDirectoryScoped({ prefix: "t3-feedback-cli-" });
+    const older = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-feedback-cli-" });
     yield* fs.makeDirectory(path.join(older, "userdata"), { recursive: true });
     yield* turnOn(older);
     const olderDatabase = new NodeSqlite.DatabaseSync(

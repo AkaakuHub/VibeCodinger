@@ -47,7 +47,7 @@ const agentFixture = Effect.fn("agentFixture")(function* (
 ) {
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
-  const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-device-agent-start-" });
+  const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-device-agent-start-" });
   const hub = {
     running: true,
     spawnFails: false,
@@ -273,7 +273,7 @@ describe("AgentDevice startup", () => {
   it.effect("uses the SDK a later shell environment selects", () =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
-      const home = yield* fs.makeTempDirectoryScoped({ prefix: "t3-device-sdk-" });
+      const home = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-device-sdk-" });
       const standard = `${home}/Library/Android/sdk`;
       const profile = `${home}/profile-sdk`;
       for (const root of [standard, profile]) {
@@ -325,7 +325,9 @@ describe("AgentDevice startup", () => {
     () =>
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
-        const sdk = yield* fs.makeTempDirectoryScoped({ prefix: "t3-device-camera-sdk-" });
+        const sdk = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-device-camera-sdk-",
+        });
         for (const tool of ["platform-tools/adb", "emulator/emulator"]) {
           yield* fs.makeDirectory(`${sdk}/${tool.split("/")[0]}`, { recursive: true });
           yield* fs.writeFileString(`${sdk}/${tool}`, "");
@@ -854,7 +856,7 @@ it.effect.each([
 it.effect("keeps local Android and iOS available without ffmpeg", () =>
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
-    const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-device-ffmpeg-" });
+    const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-device-ffmpeg-" });
     yield* fs.makeDirectory(`${baseDir}/bin`);
     yield* fs.writeFileString(`${baseDir}/bin/xcrun`, "#!/bin/sh\nexit 0\n");
     yield* fs.chmod(`${baseDir}/bin/xcrun`, 0o755);
@@ -906,7 +908,7 @@ it.effect(
   () =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-device-consent-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-device-consent-" });
       const host = yield* LocalDeviceHost.make().pipe(
         Effect.provide(Layer.mergeAll(ServerConfig.layerTest(baseDir, baseDir), NetService.layer)),
         Effect.provideService(HostProcess.Environment, { HOME: baseDir, PATH: "" }),

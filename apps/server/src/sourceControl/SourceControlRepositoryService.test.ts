@@ -95,7 +95,9 @@ function layer(input: {
     Layer.provide(
       ServerConfig.layerTest(
         process.cwd(),
-        input.fileSystem ? "/tmp/t3-source-control-repos" : { prefix: "t3-source-control-repos-" },
+        input.fileSystem
+          ? "/tmp/vibecodinger-source-control-repos"
+          : { prefix: "vibecodinger-source-control-repos-" },
       ),
     ),
   );
@@ -158,7 +160,7 @@ it.effect("clones a looked-up repository after creating missing parent directori
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
     const temporaryDirectory = yield* fs.makeTempDirectoryScoped({
-      prefix: "t3-source-control-clone-parent-",
+      prefix: "vibecodinger-source-control-clone-parent-",
     });
     const parent = path.join(temporaryDirectory, "missing", "nested");
     const destinationPath = path.join(parent, "t3code");
@@ -208,7 +210,7 @@ it.effect.each(["--bare", "source.git"])(
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const git = yield* GitVcsDriver.GitVcsDriver;
-      const parent = yield* fs.makeTempDirectoryScoped({ prefix: "t3-clone-options-" });
+      const parent = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-clone-options-" });
       yield* git.execute({
         operation: "test.init",
         cwd: parent,
@@ -229,7 +231,7 @@ it.effect.each(["--bare", "source.git"])(
         GitVcsDriver.layer.pipe(
           Layer.provide(
             ServerConfig.layerTest(process.cwd(), {
-              prefix: "t3-clone-options-config-",
+              prefix: "vibecodinger-clone-options-config-",
             }),
           ),
           Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
@@ -246,7 +248,7 @@ it.effect.each([
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
     const git = yield* GitVcsDriver.GitVcsDriver;
-    const parent = yield* fs.makeTempDirectoryScoped({ prefix: "t3-clone-refs-" });
+    const parent = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-clone-refs-" });
     const source = path.join(parent, "source");
     const destinationPath = path.join(parent, "checkout");
     const run = (cwd: string, args: ReadonlyArray<string>) =>
@@ -295,7 +297,7 @@ it.effect.each([
       GitVcsDriver.layer.pipe(
         Layer.provide(
           ServerConfig.layerTest(process.cwd(), {
-            prefix: "t3-clone-refs-config-",
+            prefix: "vibecodinger-clone-refs-config-",
           }),
         ),
         Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
@@ -309,7 +311,7 @@ it.effect("reports clone progress from git's stderr and keeps its error text on 
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
     const parent = yield* fs.makeTempDirectoryScoped({
-      prefix: "t3-source-control-clone-progress-",
+      prefix: "vibecodinger-source-control-clone-progress-",
     });
     const destinationPath = path.join(parent, "t3code");
     const progress: Array<{ stage: string; percent: number | null; detail: string | null }> = [];
@@ -368,7 +370,9 @@ it.effect("reports a Git LFS download as progress only while its partial files c
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const parent = yield* fs.makeTempDirectoryScoped({ prefix: "t3-source-control-clone-lfs-" });
+    const parent = yield* fs.makeTempDirectoryScoped({
+      prefix: "vibecodinger-source-control-clone-lfs-",
+    });
     const destinationPath = path.join(parent, "t3code");
     const incomplete = path.join(destinationPath, ".git", "lfs", "incomplete");
     const progress = yield* Queue.unbounded<GitCloneProgressLine>();
@@ -447,7 +451,7 @@ it.effect("says a clone that ran out of time timed out, not git's last remote li
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
     const parent = yield* fs.makeTempDirectoryScoped({
-      prefix: "t3-source-control-clone-timeout-",
+      prefix: "vibecodinger-source-control-clone-timeout-",
     });
     const started = yield* Deferred.make<void>();
     const clone = yield* Effect.gen(function* () {
@@ -538,7 +542,7 @@ const cloneInTemporaryDirectory = (
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
     const parent = yield* fs
-      .makeTempDirectoryScoped({ prefix: "t3-clone-fallback-" })
+      .makeTempDirectoryScoped({ prefix: "vibecodinger-clone-fallback-" })
       .pipe(Effect.orDie);
     return yield* Effect.gen(function* () {
       const service = yield* SourceControlRepositoryService.SourceControlRepositoryService;
@@ -672,7 +676,9 @@ it.effect("strips embedded credentials from the remote URL it reports", () =>
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const parent = yield* fs.makeTempDirectoryScoped({ prefix: "t3-source-control-redact-" });
+    const parent = yield* fs.makeTempDirectoryScoped({
+      prefix: "vibecodinger-source-control-redact-",
+    });
     const destinationPath = path.join(parent, "t3code");
     const cloneArgs: Array<ReadonlyArray<string>> = [];
     const result = yield* Effect.gen(function* () {
@@ -703,7 +709,9 @@ it.effect("discards only a directory git wrote to", () =>
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const parent = yield* fs.makeTempDirectoryScoped({ prefix: "t3-source-control-discard-" });
+    const parent = yield* fs.makeTempDirectoryScoped({
+      prefix: "vibecodinger-source-control-discard-",
+    });
     const partial = path.join(parent, "partial");
     yield* fs.makeDirectory(path.join(partial, ".git"), { recursive: true });
     yield* fs.writeFileString(path.join(partial, "README.md"), "half");
@@ -734,7 +742,9 @@ it.effect("redacts query tokens and userinfo containing '@' from reported URLs",
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const parent = yield* fs.makeTempDirectoryScoped({ prefix: "t3-source-control-redact2-" });
+    const parent = yield* fs.makeTempDirectoryScoped({
+      prefix: "vibecodinger-source-control-redact2-",
+    });
     yield* Effect.gen(function* () {
       const service = yield* SourceControlRepositoryService.SourceControlRepositoryService;
       const query = yield* service.prepareClone({

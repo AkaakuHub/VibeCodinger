@@ -432,7 +432,7 @@ export const signMacArchiveContents = Effect.fn("signMacArchiveContents")(functi
         entry.endsWith(".node") ||
         entry.endsWith(".dylib") ||
         entry.endsWith("spawn-helper") ||
-        entry.endsWith("t3-resource-monitor"),
+        entry.endsWith("vibecodinger-resource-monitor"),
     )
     .map((entry) => path.join(input.contentDir, entry));
 
@@ -460,7 +460,7 @@ export const signMacArchiveContents = Effect.fn("signMacArchiveContents")(functi
     return;
   }
   // notarytool requires an archive; bare executables rely on online tickets because they cannot be stapled.
-  const notarizeZip = path.join(path.dirname(input.executablePath), ".notarize-t3.zip");
+  const notarizeZip = path.join(path.dirname(input.executablePath), ".notarize-vibecodinger.zip");
   yield* runCommand(
     ChildProcess.make("ditto", ["-c", "-k", "--keepParent", input.executablePath, notarizeZip]),
     "ditto (notarization zip)",
@@ -631,7 +631,7 @@ const buildCliArchive = Effect.fn("buildCliArchive")(function* (input: {
   );
 
   const stem = cliArchiveStem(input.version, input.platform, input.arch);
-  const stageRoot = yield* fs.makeTempDirectoryScoped({ prefix: "t3-cli-archive-" });
+  const stageRoot = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-cli-archive-" });
   const contentDir = path.join(stageRoot, stem);
   yield* fs.makeDirectory(contentDir, { recursive: true });
 

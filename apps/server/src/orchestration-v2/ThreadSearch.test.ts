@@ -1490,7 +1490,9 @@ it.effect("searches on the reader worker while the writer is busy", () =>
   Effect.gen(function* () {
     const fileSystem = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const directory = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-thread-search-" });
+    const directory = yield* fileSystem.makeTempDirectoryScoped({
+      prefix: "vibecodinger-thread-search-",
+    });
     const layerFile = Layer.mergeAll(
       ThreadSearch.layer,
       ProjectionStore.layer,

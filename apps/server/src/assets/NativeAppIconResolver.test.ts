@@ -17,7 +17,7 @@ it.effect("resolves the exact bundle path without Spotlight and caches the conve
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-bundle-icon-" });
+    const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-bundle-icon-" });
     const bundle = path.join(root, "Build Output", "My App.app");
     const resources = path.join(bundle, "Contents", "Resources");
     yield* fs.makeDirectory(resources, { recursive: true });
@@ -70,7 +70,7 @@ it.effect("resolves the exact bundle path without Spotlight and caches the conve
       Effect.provide(
         Layer.mergeAll(
           spawner,
-          ServerConfig.ServerConfig.layerTest(root, { prefix: "t3-native-icon-config-" }),
+          ServerConfig.ServerConfig.layerTest(root, { prefix: "vibecodinger-native-icon-config-" }),
         ),
       ),
       Effect.provideService(HostProcess.Platform, "darwin"),

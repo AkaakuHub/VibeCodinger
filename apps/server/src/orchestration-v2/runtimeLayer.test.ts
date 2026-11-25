@@ -120,7 +120,7 @@ const layerPlatformTest = Layer.mergeAll(
 );
 
 const layerServerConfig = ServerConfig.layerTest(process.cwd(), {
-  prefix: "t3-orchestration-v2-runtime-layer-",
+  prefix: "vibecodinger-orchestration-v2-runtime-layer-",
 });
 
 const modelSelection = {
@@ -1510,7 +1510,9 @@ it.layer(layerTest)("OrchestrationV2LayerLive", (it) => {
       const worker = yield* EffectWorker.OrchestrationEffectWorkerV2;
       const sessions = yield* ProviderSessionManager.ProviderSessionManagerV2;
       const fileSystem = yield* FileSystem.FileSystem;
-      const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-non-git-rewind-" });
+      const cwd = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-non-git-rewind-",
+      });
       const threadId = ThreadId.make("runtime-non-git-rewind");
       const rollbackThread = vi.fn(
         ({ providerThread }: ProviderAdapter.ProviderAdapterV2RollbackThreadInput) =>

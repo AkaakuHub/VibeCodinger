@@ -388,7 +388,7 @@ it.effect("resolves the identity of a project whose remote was added during the 
     const fileSystem = yield* FileSystem.FileSystem;
     const processRunner = yield* ProcessRunner.ProcessRunner;
     const workspaceRoot = yield* fileSystem.makeTempDirectoryScoped({
-      prefix: "t3-run-finalization-identity-test-",
+      prefix: "vibecodinger-run-finalization-identity-test-",
     });
     const git = (args: ReadonlyArray<string>) =>
       processRunner.run({ command: "git", args: ["-C", workspaceRoot, ...args] });

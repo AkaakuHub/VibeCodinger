@@ -63,7 +63,9 @@ it.layer(NodeServices.layer)("EventNdjsonLogger", (it) => {
     const secret = "secret-circular-event-value";
 
     return Effect.gen(function* () {
-      const tempDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-provider-log-"));
+      const tempDir = NodeFS.mkdtempSync(
+        NodePath.join(NodeOS.tmpdir(), "vibecodinger-provider-log-"),
+      );
       const basePath = NodePath.join(tempDir, "provider-native.ndjson");
       const circular: Record<string, unknown> = { secret };
       circular.self = circular;
@@ -90,7 +92,9 @@ it.layer(NodeServices.layer)("EventNdjsonLogger", (it) => {
     "falls back to a global segment when orchestration thread id is missing or invalid",
     () =>
       Effect.gen(function* () {
-        const tempDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-provider-log-"));
+        const tempDir = NodeFS.mkdtempSync(
+          NodePath.join(NodeOS.tmpdir(), "vibecodinger-provider-log-"),
+        );
         const basePath = NodePath.join(tempDir, "provider-canonical.ndjson");
 
         try {
@@ -122,7 +126,9 @@ it.layer(NodeServices.layer)("EventNdjsonLogger", (it) => {
 
   it.effect("keeps long thread ids that share a prefix in separate files", () =>
     Effect.gen(function* () {
-      const tempDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-provider-log-"));
+      const tempDir = NodeFS.mkdtempSync(
+        NodePath.join(NodeOS.tmpdir(), "vibecodinger-provider-log-"),
+      );
       const basePath = NodePath.join(tempDir, "events.log");
       const prefix =
         "thread:delegated-task:command%3Amcp%3A00000000-0000-4000-8000-000000000000%3Adelegate-task%3A";
@@ -155,7 +161,9 @@ it.layer(NodeServices.layer)("EventNdjsonLogger", (it) => {
 
   it.effect("keeps shared store views non-owning when one adapter closes", () =>
     Effect.gen(function* () {
-      const tempDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-provider-log-"));
+      const tempDir = NodeFS.mkdtempSync(
+        NodePath.join(NodeOS.tmpdir(), "vibecodinger-provider-log-"),
+      );
       const basePath = NodePath.join(tempDir, "events.log");
 
       try {
@@ -192,7 +200,9 @@ it.layer(NodeServices.layer)("EventNdjsonLogger", (it) => {
 
   it.effect("does not strand a later batch after an interrupted write", () =>
     Effect.gen(function* () {
-      const tempDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-provider-log-"));
+      const tempDir = NodeFS.mkdtempSync(
+        NodePath.join(NodeOS.tmpdir(), "vibecodinger-provider-log-"),
+      );
       const basePath = NodePath.join(tempDir, "events.log");
       const threadPath = ownedLogPath(basePath, "thread-interrupted");
 
@@ -219,7 +229,9 @@ it.layer(NodeServices.layer)("EventNdjsonLogger", (it) => {
 
   it.effect("summarizes large histories without reading their items", () =>
     Effect.gen(function* () {
-      const tempDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-provider-log-"));
+      const tempDir = NodeFS.mkdtempSync(
+        NodePath.join(NodeOS.tmpdir(), "vibecodinger-provider-log-"),
+      );
       const basePath = NodePath.join(tempDir, "events.log");
       const turns = Array.from({ length: 10_000 });
       Object.defineProperty(turns, 0, {
@@ -257,7 +269,9 @@ it.layer(NodeServices.layer)("EventNdjsonLogger", (it) => {
 
   it.effect("drops Cursor streaming deltas while keeping its lifecycle updates", () =>
     Effect.gen(function* () {
-      const tempDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-provider-log-"));
+      const tempDir = NodeFS.mkdtempSync(
+        NodePath.join(NodeOS.tmpdir(), "vibecodinger-provider-log-"),
+      );
       const basePath = NodePath.join(tempDir, "events.log");
       const threadId = ThreadId.make("cursor-deltas");
       const cursorUpdate = (update: object) => ({
@@ -316,7 +330,9 @@ it.layer(NodeServices.layer)("EventNdjsonLogger", (it) => {
 
   it.effect("bounds oversized records while retaining failure details", () =>
     Effect.gen(function* () {
-      const tempDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-provider-log-"));
+      const tempDir = NodeFS.mkdtempSync(
+        NodePath.join(NodeOS.tmpdir(), "vibecodinger-provider-log-"),
+      );
       const basePath = NodePath.join(tempDir, "events.log");
 
       try {
@@ -360,7 +376,9 @@ it.layer(NodeServices.layer)("EventNdjsonLogger", (it) => {
 
   it.effect("bounds canonical diff snapshots before serializing their duplicate payloads", () =>
     Effect.gen(function* () {
-      const tempDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-provider-log-"));
+      const tempDir = NodeFS.mkdtempSync(
+        NodePath.join(NodeOS.tmpdir(), "vibecodinger-provider-log-"),
+      );
       const basePath = NodePath.join(tempDir, "events.log");
       const threadId = ThreadId.make("large-diff");
       const diff = "diff-payload".repeat(128 * 1_024);
@@ -391,7 +409,9 @@ it.layer(NodeServices.layer)("EventNdjsonLogger", (it) => {
 
   it.effect("serializes concurrent first writes for the same segment", () =>
     Effect.gen(function* () {
-      const tempDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-provider-log-"));
+      const tempDir = NodeFS.mkdtempSync(
+        NodePath.join(NodeOS.tmpdir(), "vibecodinger-provider-log-"),
+      );
       const basePath = NodePath.join(tempDir, "provider-canonical.ndjson");
 
       try {
@@ -427,7 +447,9 @@ it.layer(NodeServices.layer)("EventNdjsonLogger", (it) => {
 
   it.effect("rotates per-thread files when max size is exceeded", () =>
     Effect.gen(function* () {
-      const tempDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-provider-log-"));
+      const tempDir = NodeFS.mkdtempSync(
+        NodePath.join(NodeOS.tmpdir(), "vibecodinger-provider-log-"),
+      );
       const basePath = NodePath.join(tempDir, "provider-native.ndjson");
 
       try {
@@ -478,7 +500,9 @@ it.layer(NodeServices.layer)("EventNdjsonLogger", (it) => {
 
   it.effect("retires a thread log once a retention interval passes without writes", () =>
     Effect.gen(function* () {
-      const tempDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-provider-log-"));
+      const tempDir = NodeFS.mkdtempSync(
+        NodePath.join(NodeOS.tmpdir(), "vibecodinger-provider-log-"),
+      );
       const basePath = NodePath.join(tempDir, "events.log");
       const finishedPath = ownedLogPath(basePath, "finished");
       const activePath = ownedLogPath(basePath, "active");
@@ -562,7 +586,9 @@ it.layer(NodeServices.layer)("EventNdjsonLogger", (it) => {
     "keeps unrelated work responsive and drains before close while a disk write is held",
     () =>
       Effect.gen(function* () {
-        const tempDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-provider-log-"));
+        const tempDir = NodeFS.mkdtempSync(
+          NodePath.join(NodeOS.tmpdir(), "vibecodinger-provider-log-"),
+        );
         const basePath = NodePath.join(tempDir, "events.log");
         const fs = yield* FileSystem.FileSystem;
         const started = yield* Deferred.make<void>();

@@ -118,7 +118,7 @@ describe("seedDevReplayInstance", () => {
     }).pipe(
       Effect.provide(
         Layer.mergeAll(
-          ServerConfig.layerTest(process.cwd(), { prefix: "t3-dev-replay-seed-" }),
+          ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-dev-replay-seed-" }),
           ServerSettingsService.layerTest({
             providerInstances: {
               [DEV_REPLAY_INSTANCE_ID]: {

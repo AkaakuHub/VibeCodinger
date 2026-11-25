@@ -793,7 +793,7 @@ const prepareSeed = Effect.fn("serverMetrics.prepareSeed")(function* (
 ) {
   const fs = yield* FileSystem.FileSystem;
   const node = yield* HostProcess.ExecutablePath;
-  const dir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-server-metrics-seed-" });
+  const dir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-server-metrics-seed-" });
   yield* Console.error(`seeding ${checkout} from the real database (read-only)...`);
   // Its output names the kept projects, so it stays out of ours.
   const seeded = yield* run(
@@ -1673,7 +1673,7 @@ const runOnce = Effect.fn("serverMetrics.runOnce")(function* (options: RunOption
   const platform = yield* HostProcess.Platform;
   const path = yield* Path.Path;
   const machine = yield* watchMachine;
-  const home = yield* fs.makeTempDirectoryScoped({ prefix: "t3-server-metrics-" });
+  const home = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-server-metrics-" });
   const api = yield* serveFakeAnthropic();
   const environment: Environment = {
     home,

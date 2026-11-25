@@ -42,7 +42,9 @@ const runWithTempDirectory = <A, E, R>(
   Effect.scoped(
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
-      const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-pr-template-" });
+      const cwd = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-pr-template-",
+      });
       yield* runGit(cwd, ["init", "--initial-branch=main"]);
       yield* runGit(cwd, ["config", "user.email", "test@example.com"]);
       yield* runGit(cwd, ["config", "user.name", "Test User"]);
@@ -164,7 +166,7 @@ it.effect.skipIf(!symlinksSupported)(
         const fileSystem = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
         const outsideDirectory = yield* fileSystem.makeTempDirectoryScoped({
-          prefix: "t3-pr-template-outside-",
+          prefix: "vibecodinger-pr-template-outside-",
         });
         const outsideTemplate = path.join(outsideDirectory, "secret.md");
         yield* fileSystem.writeFileString(outsideTemplate, "LOCAL_SECRET_SENTINEL");
@@ -192,7 +194,7 @@ it.effect.skipIf(!symlinksSupported)(
         const fileSystem = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
         const outsideDirectory = yield* fileSystem.makeTempDirectoryScoped({
-          prefix: "t3-pr-template-outside-",
+          prefix: "vibecodinger-pr-template-outside-",
         });
         const templatePath = yield* writeTemplate(
           cwd,

@@ -388,7 +388,9 @@ it.effect("returns an HTML render reference that Codex and Claude tool rows both
         Layer.provideMerge(McpHttpServer.layerInProcessMcpServer),
         Layer.provide(McpProviderSessions.layer),
         Layer.provide(PreviewBrowser.layer),
-        Layer.provide(ServerConfig.layerTest(process.cwd(), { prefix: "t3-mcp-html-render-" })),
+        Layer.provide(
+          ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-mcp-html-render-" }),
+        ),
         Layer.provide(
           DocumentText.layer.pipe(
             Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
@@ -1454,7 +1456,9 @@ it.effect("only the caller that prepared a pending upload can discard it", () =>
         Layer.provideMerge(McpHttpServer.layerInProcessMcpServer),
         Layer.provide(McpToolAccessTestkit.liveThreadsLayer),
         Layer.provide(AssetSigner.layer.pipe(Layer.provideMerge(ServerSecretStore.layer))),
-        Layer.provide(ServerConfig.layerTest(process.cwd(), { prefix: "t3-mcp-attachment-" })),
+        Layer.provide(
+          ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-mcp-attachment-" }),
+        ),
         Layer.provide(
           DocumentText.layer.pipe(
             Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
@@ -1548,7 +1552,9 @@ it.effect.each([
           }),
         ),
         Layer.provide(AssetSigner.layer.pipe(Layer.provideMerge(ServerSecretStore.layer))),
-        Layer.provide(ServerConfig.layerTest(process.cwd(), { prefix: "t3-mcp-attachment-" })),
+        Layer.provide(
+          ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-mcp-attachment-" }),
+        ),
         Layer.provide(
           DocumentText.layer.pipe(
             Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),

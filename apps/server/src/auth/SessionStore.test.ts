@@ -33,7 +33,11 @@ const layerServerConfig = (overrides?: Partial<ServerConfig.ServerConfig["Servic
         ...overrides,
       } satisfies ServerConfig.ServerConfig["Service"];
     }),
-  ).pipe(Layer.provide(ServerConfig.layerTest(process.cwd(), { prefix: "t3-auth-session-test-" })));
+  ).pipe(
+    Layer.provide(
+      ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-auth-session-test-" }),
+    ),
+  );
 
 const layerServerEnvironment = (environmentId: EnvironmentId) =>
   Layer.succeed(ServerEnvironment.ServerEnvironmentIdentity, {
@@ -298,8 +302,8 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("SessionStore.lay
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const token = "reusable-dev-auth-token-that-is-long-enough";
-      const baseA = yield* fs.makeTempDirectoryScoped({ prefix: "t3-dev-auth-a-" });
-      const baseB = yield* fs.makeTempDirectoryScoped({ prefix: "t3-dev-auth-b-" });
+      const baseA = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-dev-auth-a-" });
+      const baseB = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-dev-auth-b-" });
       const layerA = yield* makeDiskSessionStoreLayer(baseA, token);
       const fromA = yield* Effect.gen(function* () {
         const sessions = yield* SessionStore.SessionStore;
@@ -343,7 +347,9 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("SessionStore.lay
   it.effect("invalidates old dev credentials and tickets after rotation or removal", () =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-dev-auth-rotation-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-dev-auth-rotation-",
+      });
       const oldToken = "old-reusable-dev-auth-token-that-is-long-enough";
       const newToken = "new-reusable-dev-auth-token-that-is-long-enough";
       const layerInitial = yield* makeDiskSessionStoreLayer(baseDir, oldToken);

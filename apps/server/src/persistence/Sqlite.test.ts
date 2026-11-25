@@ -51,7 +51,7 @@ const openDeletedTempFiles = () =>
 it.effect.skipIf(HostProcess.Platform.defaultValue() !== "linux")(
   "keeps a write transaction's statement journal off the temp directory",
   () => {
-    const tempDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-sqlite-temp-"));
+    const tempDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "vibecodinger-sqlite-temp-"));
     const persistence = SqlitePersistence.layerFromPath(
       NodePath.join(tempDir, "state.sqlite"),
     ).pipe(Layer.provide(NodeServices.layer));
@@ -80,7 +80,7 @@ it.effect.skipIf(HostProcess.Platform.defaultValue() !== "linux")(
 );
 
 it.effect("drops planner statistics a database already has", () => {
-  const tempDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-sqlite-stats-"));
+  const tempDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "vibecodinger-sqlite-stats-"));
   const dbPath = NodePath.join(tempDir, "state.sqlite");
   const persistence = () =>
     SqlitePersistence.layerFromPath(dbPath).pipe(Layer.provide(NodeServices.layer));
@@ -121,7 +121,9 @@ it.effect("drops planner statistics a database already has", () => {
 });
 
 it.effect("upgrades an existing database on a read-write worker connection", () => {
-  const tempDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-sqlite-upgrade-"));
+  const tempDir = NodeFS.mkdtempSync(
+    NodePath.join(NodeOS.tmpdir(), "vibecodinger-sqlite-upgrade-"),
+  );
   const dbPath = NodePath.join(tempDir, "state.sqlite");
 
   return Effect.gen(function* () {
@@ -159,7 +161,7 @@ it.effect("upgrades an existing database on a read-write worker connection", () 
 });
 
 it.effect("names a database file that is not SQLite", () => {
-  const tempDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-sqlite-notadb-"));
+  const tempDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "vibecodinger-sqlite-notadb-"));
   const dbPath = NodePath.join(tempDir, "state.sqlite");
   NodeFS.writeFileSync(dbPath, "not a db\n");
 
@@ -211,7 +213,7 @@ const latestRecordedMigrationId = Effect.gen(function* () {
   return rows[0]?.id;
 });
 
-const layerT3Home = ServerConfig.layerTest(process.cwd(), { prefix: "t3-sqlite-cli-" });
+const layerT3Home = ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-sqlite-cli-" });
 
 it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("layerCliConfig", (it) => {
   it.effect("does not migrate a T3 home a running server owns", () =>

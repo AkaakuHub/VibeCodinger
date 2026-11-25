@@ -266,7 +266,7 @@ describe("CursorAgentSdkProcessRunner", () => {
   const writeFakeWorker = Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const dir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-cursor-worker-test-" });
+    const dir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-cursor-worker-test-" });
     const scriptPath = path.join(dir, "fake-worker.cjs");
     yield* fs.writeFileString(scriptPath, FAKE_WORKER_SCRIPT);
     return scriptPath;

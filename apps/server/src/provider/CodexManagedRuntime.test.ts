@@ -272,7 +272,7 @@ it.live.each(
       Effect.scoped,
       Effect.provide(
         ServerConfig.layerTest(process.cwd(), {
-          prefix: "t3-managed-runtime-",
+          prefix: "vibecodinger-managed-runtime-",
         }).pipe(Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))),
       ),
     ),

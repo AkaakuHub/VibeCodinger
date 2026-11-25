@@ -188,7 +188,7 @@ const setup = Effect.fn("SecretCheckTest.setup")(function* (
 });
 
 const layerTest = Layer.mergeAll(
-  ServerConfig.layerTest(process.cwd(), { prefix: "t3-secret-check-" }),
+  ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-secret-check-" }),
   ModelManifest.layerTest,
   ProviderLatestVersions.layer,
   Layer.succeed(

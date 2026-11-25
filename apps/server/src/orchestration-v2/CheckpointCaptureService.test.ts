@@ -1518,7 +1518,9 @@ it.layer(layerProjectionStoreTest)("CheckpointCaptureServiceV2", (it) => {
         ),
       ).pipe(
         Layer.provide(
-          ServerConfig.ServerConfig.layerTest(process.cwd(), { prefix: "t3-capture-test-" }),
+          ServerConfig.ServerConfig.layerTest(process.cwd(), {
+            prefix: "vibecodinger-capture-test-",
+          }),
         ),
         Layer.provide(layerNode),
       );

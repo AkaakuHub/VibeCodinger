@@ -62,7 +62,7 @@ const git = (cwd: string, args: ReadonlyArray<string>) =>
 
 const makeRepositories = Effect.gen(function* () {
   const fs = yield* FileSystem.FileSystem;
-  const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-review-guide-" });
+  const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-review-guide-" });
   const remote = `${root}/remote`;
   const workspace = `${root}/workspace`;
   yield* fs.makeDirectory(remote);
@@ -215,12 +215,16 @@ const makeLayer = (input: {
       } as unknown as TextGeneration.TextGeneration["Service"]),
     ),
     Layer.provide(ServerSettings.layerTest({ reviewGuidesEnabled: input.enabled ?? true })),
-    Layer.provide(ServerConfig.layerTest(input.root, { prefix: "t3-review-guide-config-" })),
+    Layer.provide(
+      ServerConfig.layerTest(input.root, { prefix: "vibecodinger-review-guide-config-" }),
+    ),
   );
 
 const layerBase = Layer.mergeAll(
   GitVcsDriver.layer.pipe(
-    Layer.provide(ServerConfig.layerTest(process.cwd(), { prefix: "t3-review-guide-git-" })),
+    Layer.provide(
+      ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-review-guide-git-" }),
+    ),
     Layer.provideMerge(VcsProcess.layer),
   ),
   SqlitePersistence.layerMemory,

@@ -70,7 +70,7 @@ export const MODE_LIMIT_HEADER = "t3-mode-limit";
  * `T3-Link-Expires-At: <ISO time>` answers a peer link's request with when its
  * session now ends. Using a link renews it, so the linking side keeps this.
  */
-export const LINK_EXPIRES_AT_HEADER = "t3-link-expires-at";
+export const LINK_EXPIRES_AT_HEADER = "vibecodinger-link-expires-at";
 
 /**
  * `T3-Sender-Thread: <environmentId>/<threadId>/<title>`, each URI-encoded: the

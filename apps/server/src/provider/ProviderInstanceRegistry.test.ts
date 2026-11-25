@@ -125,7 +125,7 @@ const makeTildeProviderFixtures = Effect.fn(
   const homePath = yield* HostProcess.HomeDirectory;
   const fixtureDir = yield* fileSystem.makeTempDirectoryScoped({
     directory: homePath,
-    prefix: ".t3-provider-path-test-",
+    prefix: ".vibecodinger-provider-path-test-",
   });
   yield* fileSystem.writeFileString(
     path.join(fixtureDir, "package.json"),

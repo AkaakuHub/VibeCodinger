@@ -20,7 +20,7 @@ describe("snapshotCookieDatabase", () => {
         const fileSystem = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
         const sourceDirectory = yield* fileSystem.makeTempDirectoryScoped({
-          prefix: "t3code-cookie-source-",
+          prefix: "vibecodinger-cookie-source-",
         });
         const source = path.join(sourceDirectory, "Cookies");
         const snapshot = yield* Effect.gen(function* () {
@@ -47,7 +47,7 @@ describe("snapshotCookieDatabase", () => {
         const fileSystem = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
         const sourceDirectory = yield* fileSystem.makeTempDirectoryScoped({
-          prefix: "t3code-cookie-invalid-source-",
+          prefix: "vibecodinger-cookie-invalid-source-",
         });
         const source = path.join(sourceDirectory, "Cookies");
         yield* fileSystem.writeFileString(source, "not a sqlite database");

@@ -48,7 +48,7 @@ import * as RuntimePolicy from "./RuntimePolicy.ts";
 import { layerNoTaskFolders } from "./ProviderTurnStartService.testkit.ts";
 
 const unrelatedProject = Option.some({
-  workspaceRoot: "/nonexistent/t3-rollback-project",
+  workspaceRoot: "/nonexistent/vibecodinger-rollback-project",
 } as never);
 const layerCheckpointRollbackService = CheckpointRollbackService.layer.pipe(
   Layer.provide(
@@ -190,7 +190,7 @@ it.effect.each([
     const fileSystem = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
     const workspaceRoot = yield* fileSystem.realPath(
-      yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-rollback-" }),
+      yield* fileSystem.makeTempDirectoryScoped({ prefix: "vibecodinger-rollback-" }),
     );
     const worktreesDir = path.join(workspaceRoot, "worktrees");
     const worktreePath = unmanaged
@@ -415,7 +415,7 @@ it.effect.each([
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const workspaceRoot = yield* fileSystem.realPath(
-        yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-rollback-reservation-" }),
+        yield* fileSystem.makeTempDirectoryScoped({ prefix: "vibecodinger-rollback-reservation-" }),
       );
       const worktreesDir = path.join(workspaceRoot, "worktrees");
       const worktreePath = path.join(worktreesDir, "repo", "feature");

@@ -487,7 +487,7 @@ const isolateDeepSeekProbeHistory = Effect.fn("AcpRegistryProbe.isolateDeepSeekP
     // DeepSeek persists session/new before any prompt and does not advertise session/delete.
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const directory = yield* fs.makeTempDirectoryScoped({ prefix: "t3-dsh-acp-probe-" });
+    const directory = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-dsh-acp-probe-" });
     const patchPath = path.join(directory, "probe.json");
     const patch = yield* encodeJson([
       { id: "session-persistence-jsonl", config: { root: path.join(directory, "sessions") } },

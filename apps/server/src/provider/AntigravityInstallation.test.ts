@@ -118,7 +118,7 @@ const makeHarness = Effect.fn("test.makeAntigravityInstallation")(function* (
   const path = yield* Path.Path;
   const digest = yield* Digest.Digest;
   const baseDir =
-    options.baseDir ?? (yield* fs.makeTempDirectoryScoped({ prefix: "t3-agy-test-" }));
+    options.baseDir ?? (yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-agy-test-" }));
   const platform = options.platform ?? hostPlatform;
   const arch = options.arch ?? "x64";
   const archive = options.archive ?? completeArchive;
@@ -965,7 +965,7 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("Antigravity inst
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
         const baseDir = yield* fs
-          .makeTempDirectoryScoped({ prefix: "t3-agy-cli-test-" })
+          .makeTempDirectoryScoped({ prefix: "vibecodinger-agy-cli-test-" })
           .pipe(Effect.flatMap((directory) => fs.realPath(directory)));
         const cliDirectory = path.join(baseDir, 'cli" ');
         yield* fs.makeDirectory(cliDirectory);
@@ -1030,7 +1030,7 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("Antigravity inst
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
         const baseDir = yield* fs
-          .makeTempDirectoryScoped({ prefix: "t3-agy-path-test-" })
+          .makeTempDirectoryScoped({ prefix: "vibecodinger-agy-path-test-" })
           .pipe(Effect.flatMap((directory) => fs.realPath(directory)));
         const externalDirectory = path.join(baseDir, "external");
         const externalExecutable = path.join(externalDirectory, "agy");

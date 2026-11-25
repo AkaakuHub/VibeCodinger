@@ -60,7 +60,7 @@ const withReaderClient = <A, E>(
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const directory = yield* fs.makeTempDirectoryScoped({ prefix: "t3-sqlite-reader-" });
+    const directory = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-sqlite-reader-" });
     const filename = path.join(directory, "state.sqlite");
     return yield* Effect.gen(function* () {
       const sql = yield* SqlClient.SqlClient;
@@ -181,7 +181,9 @@ it.effect("reads integers on the values path as the caller asked, cached or not"
 const makeTempDatabase = Effect.gen(function* () {
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
-  const directory = yield* fs.makeTempDirectoryScoped({ prefix: "t3-sqlite-transaction-" });
+  const directory = yield* fs.makeTempDirectoryScoped({
+    prefix: "vibecodinger-sqlite-transaction-",
+  });
   const filename = path.join(directory, "state.sqlite");
   const other = yield* Effect.acquireRelease(
     Effect.sync(() => new NodeSqlite.DatabaseSync(filename)),
@@ -367,7 +369,7 @@ it.effect("waits for another process's lock while the database opens", () =>
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const directory = yield* fs.makeTempDirectoryScoped({ prefix: "t3-sqlite-open-" });
+    const directory = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-sqlite-open-" });
     const filename = path.join(directory, "state.sqlite");
     const seed = new NodeSqlite.DatabaseSync(filename);
     seed.exec("PRAGMA journal_mode = WAL; CREATE TABLE entries(name TEXT NOT NULL)");
@@ -655,7 +657,9 @@ const withFileClient = <A, E>(
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const directory = yield* fs.makeTempDirectoryScoped({ prefix: "t3-sqlite-reader-off-" });
+    const directory = yield* fs.makeTempDirectoryScoped({
+      prefix: "vibecodinger-sqlite-reader-off-",
+    });
     const filename = path.join(directory, "state.sqlite");
     return yield* Effect.gen(function* () {
       return yield* setup(yield* SqlClient.SqlClient, filename);
@@ -892,7 +896,7 @@ it.effect("fails with a typed SqlError when the database file is not SQLite", ()
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const directory = yield* fs.makeTempDirectoryScoped({ prefix: "t3-sqlite-notadb-" });
+    const directory = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-sqlite-notadb-" });
     const filename = path.join(directory, "state.sqlite");
     yield* fs.writeFileString(filename, "not a db\n");
 
@@ -994,7 +998,9 @@ it.effect("keeps writes moving while an outside reader pins the WAL, then trims 
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const directory = yield* fs.makeTempDirectoryScoped({ prefix: "t3-sqlite-pinned-wal-" });
+    const directory = yield* fs.makeTempDirectoryScoped({
+      prefix: "vibecodinger-sqlite-pinned-wal-",
+    });
     const filename = path.join(directory, "state.sqlite");
     // Stands in for `sqlite3 statev2.sqlite` or a backup script reading the database.
     const outside = yield* Effect.acquireRelease(

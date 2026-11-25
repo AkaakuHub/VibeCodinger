@@ -123,7 +123,10 @@ describe("readHtmlRenderLinkRequest", () => {
       }),
     ).toBeUndefined();
     expect(
-      readHtmlRenderLinkRequest({ type: "t3-html-render-link", url: "https://example.com" }),
+      readHtmlRenderLinkRequest({
+        type: "vibecodinger-html-render-link",
+        url: "https://example.com",
+      }),
     ).toBeUndefined();
   });
 });

@@ -47,7 +47,7 @@ function layerFxProviderAdapterRegistryReplay(
       const replayGate = options.replayGate;
       const replayDir = yield* fileSystem
         .makeTempDirectoryScoped({
-          prefix: `t3-orchestration-v2-fx-replay-${transcript.scenario}-`,
+          prefix: `vibecodinger-orchestration-v2-fx-replay-${transcript.scenario}-`,
         })
         .pipe(Effect.orDie);
       const statusPath = path.join(replayDir, "status.json");

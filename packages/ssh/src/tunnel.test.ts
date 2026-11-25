@@ -176,7 +176,7 @@ describe("ssh tunnel scripts", () => {
   it.live("distinguishes an incompatible remote Node from a missing executable", () =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
-      const home = yield* fs.makeTempDirectoryScoped({ prefix: "t3-ssh-node-" });
+      const home = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-ssh-node-" });
       const spawner = yield* ChildProcessSpawner.ChildProcessSpawner;
       for (const missing of [false, true]) {
         const nodeFixture = missing
@@ -226,7 +226,7 @@ describe("ssh tunnel scripts", () => {
   it.live("reports only the failed launch's own output, not an earlier launch's log", () =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
-      const home = yield* fs.makeTempDirectoryScoped({ prefix: "t3-ssh-launch-log-" });
+      const home = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-ssh-launch-log-" });
       const target = { alias: "devbox", hostname: "devbox", username: null, port: null };
       const stateDir = NodePath.join(
         home,
@@ -316,7 +316,7 @@ describe("ssh tunnel scripts", () => {
   ])(
     "only downloads a release archive the host can run: $host",
     ({ system, machine, downloads }) => {
-      const root = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-ssh-runner-"));
+      const root = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "vibecodinger-ssh-runner-"));
       try {
         const bin = NodePath.join(root, "bin");
         NodeFS.mkdirSync(bin);
@@ -360,7 +360,7 @@ describe("ssh tunnel scripts", () => {
   ])(
     "reuses a host vibecodinger only at exactly the requested version: installed $installed, status $status",
     ({ installed, status, reuses }) => {
-      const root = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-ssh-runner-"));
+      const root = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "vibecodinger-ssh-runner-"));
       try {
         const bin = NodePath.join(root, "bin");
         NodeFS.mkdirSync(bin);
@@ -401,7 +401,7 @@ describe("ssh tunnel scripts", () => {
       ? ["sha256sum", "shasum"]
       : ["sha256sum"];
   it.each(checksumTools)("names missing gzip after verifying with %s", (checksum) => {
-    const root = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-ssh-runner-"));
+    const root = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "vibecodinger-ssh-runner-"));
     try {
       const bin = NodePath.join(root, "bin");
       const release = NodePath.join(root, "release");
@@ -465,7 +465,7 @@ describe("ssh tunnel scripts", () => {
   });
 
   it("names missing tar before downloading the release archive", () => {
-    const root = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-ssh-runner-"));
+    const root = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "vibecodinger-ssh-runner-"));
     try {
       const bin = NodePath.join(root, "bin");
       const home = NodePath.join(root, "home");
@@ -530,7 +530,7 @@ describe("ssh tunnel scripts", () => {
     () =>
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
-        const directory = yield* fs.makeTempDirectoryScoped({ prefix: "t3-ssh-login-" });
+        const directory = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-ssh-login-" });
         const startupFile = `${directory}/bash-env`;
         const bash = `${directory}/bash`;
         // System profiles can reset HOME. Suppress profile reads while BASH_ENV
@@ -1301,7 +1301,7 @@ describe("ssh tunnel scripts", () => {
         const publishDelayMs = variant === "wrapper" ? 0 : variant;
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const home = yield* fs.makeTempDirectoryScoped({ prefix: "t3-ssh-launch-" });
+        const home = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-ssh-launch-" });
         const serversFile = path.join(home, "servers");
         yield* Effect.addFinalizer(() =>
           fs.readFileString(serversFile).pipe(
@@ -1414,7 +1414,7 @@ server.listen(Number(flag("--port") ?? 0), "127.0.0.1", () => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const realSpawner = yield* ChildProcessSpawner.ChildProcessSpawner;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-stale-pid-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-stale-pid-" });
       const home = `${root}/home`;
       const fakeServer = `${root}/fake-t3.cjs`;
       yield* fs.makeDirectory(home, { recursive: true });
@@ -1820,7 +1820,7 @@ const canBind = (port) =>
   const prepareLaunch = (versions: ReadonlyArray<string>) =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-archive-launch-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-archive-launch-" });
       const home = `${root}/home`;
       const stateDir = `${home}/.vibecodinger/ssh-launch/test-state`;
       const fakeT3 = `${root}/fake-t3.cjs`;
@@ -1894,7 +1894,7 @@ const canBind = (port) =>
     () =>
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
-        const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-dangling-home-" });
+        const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-dangling-home-" });
         const home = `${root}/home`;
         const target = `${root}/shared/vibecodinger`;
         yield* fs.makeDirectory(home, { recursive: true });

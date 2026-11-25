@@ -44,7 +44,7 @@ it.layer(maintenanceLayer)("fx maintenance", (it) => {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const prefix = yield* fs
-        .makeTempDirectoryScoped({ prefix: "t3-fx-brew-" })
+        .makeTempDirectoryScoped({ prefix: "vibecodinger-fx-brew-" })
         .pipe(Effect.flatMap((directory) => fs.realPath(directory)));
       const brewPath = path.join(prefix, "bin", "brew");
       yield* fs.makeDirectory(path.dirname(brewPath), { recursive: true });
@@ -152,7 +152,7 @@ it.layer(maintenanceLayer)("fx maintenance", (it) => {
       const resolver = makeFxMaintenance(Effect.succeed("0.0.15"));
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const directory = yield* fs.makeTempDirectoryScoped({ prefix: "t3-fx-mise-" });
+      const directory = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-fx-mise-" });
       const wrapperPath = path.join(directory, "fx");
       for (const { managedPath, env } of [
         { managedPath: "/home/fx/.local/share/mise/installs/fx/0.0.15/bin/fx", env: {} },

@@ -239,7 +239,7 @@ describe("check:changed", () => {
 // ~/.config/git/ignore can ignore or sign fixture files.
 // Git for Windows rejects the null device as a config path, so use an empty file.
 const emptyConfigDir = NodeFS.mkdtempSync(
-  NodePath.join(NodeOS.tmpdir(), "t3-check-changed-config-"),
+  NodePath.join(NodeOS.tmpdir(), "vibecodinger-check-changed-config-"),
 );
 const emptyConfig = NodePath.join(emptyConfigDir, "empty.gitconfig");
 NodeFS.writeFileSync(emptyConfig, "");
@@ -265,7 +265,7 @@ const env = {
 // History A -> B -> C, with HEAD at C. Each remote's main points at A or B.
 function fixture(remotes: Record<string, "A" | "B">) {
   const root = NodeFS.realpathSync(
-    NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-check-changed-")),
+    NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "vibecodinger-check-changed-")),
   );
   const commits: Record<string, string> = {};
   try {

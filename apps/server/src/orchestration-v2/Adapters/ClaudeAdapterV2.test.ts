@@ -1229,7 +1229,7 @@ describe("ClaudeAdapterV2 Auto-accept edits", () => {
       const fileSystem = yield* FileSystem.FileSystem;
       const idAllocator = yield* IdAllocator.IdAllocatorV2;
       const attachmentsDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-claude-accept-edits-",
+        prefix: "vibecodinger-claude-accept-edits-",
       });
       let openedOptions: ClaudeAdapterV2.ClaudeAgentSdkQueryOptions | undefined;
       const adapter = yield* ClaudeAdapterV2.makeClaudeAdapterV2({
@@ -1358,7 +1358,7 @@ describe("ClaudeAdapterV2 Auto-accept edits", () => {
       const fileSystem = yield* FileSystem.FileSystem;
       const idAllocator = yield* IdAllocator.IdAllocatorV2;
       const attachmentsDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-claude-approval-unicode-",
+        prefix: "vibecodinger-claude-approval-unicode-",
       });
       let openedOptions: ClaudeAdapterV2.ClaudeAgentSdkQueryOptions | undefined;
       const adapter = yield* ClaudeAdapterV2.makeClaudeAdapterV2({
@@ -1495,7 +1495,9 @@ describe("ClaudeAdapterV2 append-system-prompt-file launch argument", () => {
       instanceId: ClaudeAdapterV2.CLAUDE_DEFAULT_INSTANCE_ID,
       settings: { ...DEFAULT_CLAUDE_SETTINGS, launchArgs },
       environment: {},
-      attachmentsDir: yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-claude-append-" }),
+      attachmentsDir: yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-claude-append-",
+      }),
       fileSystem,
       path: yield* Path.Path,
       random: yield* SecureRandom.SecureRandom,
@@ -1572,7 +1574,9 @@ describe("ClaudeAdapterV2 append-system-prompt-file launch argument", () => {
     Effect.scoped(
       Effect.gen(function* () {
         const fileSystem = yield* FileSystem.FileSystem;
-        const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-claude-append-cwd-" });
+        const cwd = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-claude-append-cwd-",
+        });
         const plain = yield* startTurnWithLaunchArgs("", cwd);
         const { exit, opened } = yield* startTurnWithLaunchArgs(
           '--append-system-prompt "-- Always answer in English"',
@@ -1600,7 +1604,9 @@ describe("ClaudeAdapterV2 append-system-prompt-file launch argument", () => {
   it.effect("sends append launch arguments to Claude after the T3 instructions", () =>
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
-      const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-claude-append-cwd-" });
+      const cwd = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-claude-append-cwd-",
+      });
       yield* fileSystem.writeFileString(NodePath.join(cwd, "rules.md"), "File sentinel\n");
       const plain = yield* startTurnWithLaunchArgs("", cwd);
       const { exit, opened } = yield* startTurnWithLaunchArgs(
@@ -1635,7 +1641,9 @@ describe("ClaudeAdapterV2 append-system-prompt-file launch argument", () => {
   ])("merges %s beneath T3's settings", (launchArgs) =>
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
-      const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-claude-settings-" });
+      const cwd = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-claude-settings-",
+      });
       yield* fileSystem.writeFileString(
         NodePath.join(cwd, "user-settings.json"),
         '{"skillOverrides":{"lint":"off"},"showThinkingSummaries":false}',
@@ -1674,8 +1682,12 @@ describe("ClaudeAdapterV2 append-system-prompt-file launch argument", () => {
   ] as const)("reads %s from the home directory", ([launchArgs, assertOptions]) =>
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
-      const home = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-claude-home-" });
-      const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-claude-home-cwd-" });
+      const home = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-claude-home-",
+      });
+      const cwd = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-claude-home-cwd-",
+      });
       yield* fileSystem.makeDirectory(NodePath.join(home, ".claude"));
       yield* fileSystem.writeFileString(
         NodePath.join(home, ".claude", "settings.json"),
@@ -1747,7 +1759,9 @@ describe("ClaudeAdapterV2 append-system-prompt-file launch argument", () => {
   ] as const)("fails the turn before opening Claude for %s", ([launchArgs, expectedMessage]) =>
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
-      const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-claude-append-cwd-" });
+      const cwd = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-claude-append-cwd-",
+      });
       const { exit, opened } = yield* startTurnWithLaunchArgs(launchArgs, cwd);
       assert.lengthOf(opened, 0);
       assert.isTrue(Exit.isFailure(exit));
@@ -1779,7 +1793,9 @@ describe("ClaudeAdapterV2 provider installation gate", () => {
         instanceId,
         settings: DEFAULT_CLAUDE_SETTINGS,
         environment: {},
-        attachmentsDir: yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-claude-gate-" }),
+        attachmentsDir: yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-claude-gate-",
+        }),
         fileSystem,
         path: yield* Path.Path,
         random: yield* SecureRandom.SecureRandom,
@@ -1827,7 +1843,7 @@ describe("ClaudeAdapterV2 provider installation gate", () => {
       const runtimePolicy = ProviderAdapter.ProviderAdapterV2RuntimePolicy.make({
         runtimeMode: "full-access",
         interactionMode: "default",
-        cwd: yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-claude-gate-cwd-" }),
+        cwd: yield* fileSystem.makeTempDirectoryScoped({ prefix: "vibecodinger-claude-gate-cwd-" }),
       });
       const threadId = ThreadId.make("thread-claude-gate");
       const runtime = yield* adapter.openSession({
@@ -1999,7 +2015,7 @@ const captureSdkExecutablePaths = Effect.fn("captureSdkExecutablePaths")(functio
   ).pipe(
     Effect.provide(
       ServerConfig.layerTest(process.cwd(), {
-        prefix: "t3-claude-binary-path-",
+        prefix: "vibecodinger-claude-binary-path-",
       }),
     ),
     Effect.provideService(ClaudeAdapterV2.ClaudeAgentSdkQueryRunner, {
@@ -2094,7 +2110,7 @@ describe("ClaudeAdapterV2 resumeThread", () => {
         const fileSystem = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
         const configDir = yield* fileSystem.makeTempDirectoryScoped({
-          prefix: "t3-claude-empty-session-",
+          prefix: "vibecodinger-claude-empty-session-",
         });
         const projectDir = path.join(configDir, "projects", "-workspace");
         yield* fileSystem.makeDirectory(projectDir, { recursive: true });
@@ -2197,7 +2213,7 @@ describe("ClaudeAdapterV2 resume compaction", () => {
       const fileSystem = yield* FileSystem.FileSystem;
       const idAllocator = yield* IdAllocator.IdAllocatorV2;
       const attachmentsDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-claude-resume-",
+        prefix: "vibecodinger-claude-resume-",
       });
       let openedOptions: ClaudeAdapterV2.ClaudeAgentSdkQueryOptions | undefined;
       const adapter = yield* ClaudeAdapterV2.makeClaudeAdapterV2({
@@ -2544,7 +2560,7 @@ describe("ClaudeAdapterV2 attachments", () => {
         const idAllocator = yield* IdAllocator.IdAllocatorV2;
         const path = yield* Path.Path;
         const claudeHome = yield* fileSystem.makeTempDirectoryScoped({
-          prefix: "t3-claude-v2-skills-home-",
+          prefix: "vibecodinger-claude-v2-skills-home-",
         });
         yield* fileSystem.makeDirectory(path.join(claudeHome, "skills", "implement"), {
           recursive: true,
@@ -2558,7 +2574,7 @@ describe("ClaudeAdapterV2 attachments", () => {
           options: ultrathink ? CLAUDE_TEST_MODEL_SELECTION.options : [],
         };
         const attachmentsDir = yield* fileSystem.makeTempDirectoryScoped({
-          prefix: "t3-claude-v2-attachments-",
+          prefix: "vibecodinger-claude-v2-attachments-",
         });
         const offeredMessages: Array<SDKUserMessage> = [];
         let failOpen = false;
@@ -3092,10 +3108,10 @@ describe("ClaudeAdapterV2 native fork", () => {
       const fileSystem = yield* FileSystem.FileSystem;
       const idAllocator = yield* IdAllocator.IdAllocatorV2;
       const attachmentsDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-claude-v2-fork-attachments-",
+        prefix: "vibecodinger-claude-v2-fork-attachments-",
       });
       const configDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-claude-root-change-",
+        prefix: "vibecodinger-claude-root-change-",
       });
       const sourceSessionId = "11111111-1111-4111-8111-111111111111";
       const sourceCursor = "aaaaaaaa-0000-4000-8000-000000000002";
@@ -3474,7 +3490,7 @@ describe("ClaudeAdapterV2 native session identity", () => {
         const idAllocator = yield* IdAllocator.IdAllocatorV2;
         const path = yield* Path.Path;
         const attachmentsDir = yield* fileSystem.makeTempDirectoryScoped({
-          prefix: "t3-claude-v2-session-identity-",
+          prefix: "vibecodinger-claude-v2-session-identity-",
         });
         if (importedNativeThreadId !== undefined) {
           // An unreadable copy in another project must not hide the readable one.
@@ -3881,7 +3897,7 @@ describe("ClaudeAdapterV2 background wake turns", () => {
       const fileSystem = yield* FileSystem.FileSystem;
       const idAllocator = yield* IdAllocator.IdAllocatorV2;
       const attachmentsDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-claude-v2-wake-",
+        prefix: "vibecodinger-claude-v2-wake-",
       });
       const sdkMessages = yield* Queue.unbounded<SDKMessage>();
       const processQueues: Array<Queue.Queue<SDKMessage>> = [];
@@ -5089,8 +5105,12 @@ describe("ClaudeAdapterV2 background wake turns", () => {
       Effect.gen(function* () {
         const fileSystem = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const home = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-claude-remote-" });
-        const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-claude-remote-cwd-" });
+        const home = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-claude-remote-",
+        });
+        const cwd = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-claude-remote-cwd-",
+        });
         const remoteFile = path.join(home, "remote-settings.json");
         const sdk = yield* Effect.promise(() =>
           vi.importActual<typeof ClaudeSdk>("@anthropic-ai/claude-agent-sdk"),
@@ -5185,8 +5205,12 @@ describe("ClaudeAdapterV2 background wake turns", () => {
     it.effect("drops false bypass switches from --settings before they reach the SDK", () =>
       Effect.gen(function* () {
         const fileSystem = yield* FileSystem.FileSystem;
-        const home = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-claude-launch-" });
-        const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-claude-launch-cwd-" });
+        const home = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-claude-launch-",
+        });
+        const cwd = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-claude-launch-cwd-",
+        });
         const sdk = yield* Effect.promise(() =>
           vi.importActual<typeof ClaudeSdk>("@anthropic-ai/claude-agent-sdk"),
         );
@@ -5559,7 +5583,7 @@ describe("ClaudeAdapterV2 background wake turns", () => {
           const fileSystem = yield* FileSystem.FileSystem;
           const path = yield* Path.Path;
           const home = yield* fileSystem.makeTempDirectoryScoped({
-            prefix: "t3-claude-policy-home-",
+            prefix: "vibecodinger-claude-policy-home-",
           });
           yield* fileSystem.makeDirectory(path.join(home, "profile"));
           yield* fileSystem.writeFileString(
@@ -5613,7 +5637,7 @@ describe("ClaudeAdapterV2 background wake turns", () => {
           const fileSystem = yield* FileSystem.FileSystem;
           const path = yield* Path.Path;
           const home = yield* fileSystem.makeTempDirectoryScoped({
-            prefix: "t3-claude-policy-failure-",
+            prefix: "vibecodinger-claude-policy-failure-",
           });
           const settingsFile = path.join(home, "settings.json");
           const open = Effect.scoped(
@@ -5701,7 +5725,7 @@ describe("ClaudeAdapterV2 background wake turns", () => {
         const fileSystem = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
         const home = yield* fileSystem.makeTempDirectoryScoped({
-          prefix: "t3-claude-tool-search-",
+          prefix: "vibecodinger-claude-tool-search-",
         });
         const openedToolSearch = (
           settingsJson: string,
@@ -5750,8 +5774,12 @@ describe("ClaudeAdapterV2 background wake turns", () => {
 
         // POSIX resolves local settings at the repository root; Windows uses cwd.
         // Local settings beat user settings wherever they are found.
-        const repo = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-claude-repo-" });
-        const worktree = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-claude-wt-" });
+        const repo = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-claude-repo-",
+        });
+        const worktree = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-claude-wt-",
+        });
         const worktreeGitDir = path.join(repo, ".git", "worktrees", "wt");
         yield* fileSystem.makeDirectory(worktreeGitDir, { recursive: true });
         yield* fileSystem.writeFileString(path.join(worktreeGitDir, "commondir"), "../..\n");
@@ -5786,7 +5814,9 @@ describe("ClaudeAdapterV2 background wake turns", () => {
         );
 
         // Project settings beat user settings, and the process env applies only when no file sets it.
-        const project = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-claude-project-" });
+        const project = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-claude-project-",
+        });
         yield* fileSystem.makeDirectory(path.join(project, ".claude"));
         yield* fileSystem.writeFileString(
           path.join(project, ".claude", "settings.json"),
@@ -6044,7 +6074,9 @@ describe("ClaudeAdapterV2 background wake turns", () => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const homePath = yield* fs.makeTempDirectoryScoped({ prefix: "t3-claude-skill-dispatch-" });
+        const homePath = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-claude-skill-dispatch-",
+        });
         for (const [name, userOnly] of [
           ["interrogate", true],
           ["implement", true],
@@ -6683,7 +6715,9 @@ describe("ClaudeAdapterV2 background wake turns", () => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const homePath = yield* fs.makeTempDirectoryScoped({ prefix: "t3-claude-skill-handoff-" });
+      const homePath = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-claude-skill-handoff-",
+      });
       const directory = path.join(homePath, "skills", "review");
       yield* fs.makeDirectory(directory, { recursive: true });
       yield* fs.writeFileString(
@@ -7945,10 +7979,14 @@ describe("ClaudeAdapterV2 background wake turns", () => {
           vi.importActual<typeof ClaudeSdk>("@anthropic-ai/claude-agent-sdk"),
         );
         vi.mocked(ClaudeSdk.resolveSettings).mockImplementation(sdk.resolveSettings);
-        const probeCwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-claude-probe-" });
-        const project = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-claude-project-" });
+        const probeCwd = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-claude-probe-",
+        });
+        const project = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-claude-project-",
+        });
         const overridden = yield* fileSystem.makeTempDirectoryScoped({
-          prefix: "t3-claude-local-",
+          prefix: "vibecodinger-claude-local-",
         });
         yield* fileSystem.makeDirectory(path.join(overridden, ".claude"));
         yield* fileSystem.writeFileString(
@@ -8017,8 +8055,12 @@ describe("ClaudeAdapterV2 background wake turns", () => {
         assert.equal(yield* openedModel(overridden), "claude-haiku-4-5");
 
         // A linked worktree and a repository subdirectory read the main checkout's local file.
-        const repo = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-claude-repo-" });
-        const worktree = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-claude-wt-" });
+        const repo = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-claude-repo-",
+        });
+        const worktree = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-claude-wt-",
+        });
         const worktreeGitDir = path.join(repo, ".git", "worktrees", "wt");
         yield* fileSystem.makeDirectory(worktreeGitDir, { recursive: true });
         yield* fileSystem.writeFileString(path.join(worktreeGitDir, "commondir"), "../..\n");
@@ -11359,8 +11401,12 @@ describe("ClaudeAdapterV2 background wake turns", () => {
       Effect.gen(function* () {
         const fileSystem = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const home = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-claude-compact-" });
-        const project = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-claude-compact-" });
+        const home = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-claude-compact-",
+        });
+        const project = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-claude-compact-",
+        });
         if (userSettings !== undefined) {
           yield* fileSystem.writeFileString(path.join(home, "settings.json"), userSettings);
         }
@@ -11529,9 +11575,15 @@ describe("ClaudeAdapterV2 background wake turns", () => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const home = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-claude-home-" });
-      const first = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-claude-first-" });
-      const second = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-claude-second-" });
+      const home = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-claude-home-",
+      });
+      const first = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-claude-first-",
+      });
+      const second = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-claude-second-",
+      });
       for (const [directory, window] of [
         [first, 150_000],
         [second, 180_000],
@@ -11640,7 +11692,9 @@ describe("ClaudeAdapterV2 background wake turns", () => {
     }) {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const configDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-claude-stale-" });
+      const configDir = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-claude-stale-",
+      });
       const projectDir = path.join(configDir, "projects", "-workspace");
       yield* fileSystem.makeDirectory(projectDir, { recursive: true });
       const transcriptOpened = yield* Deferred.make<void>();
@@ -12982,7 +13036,7 @@ describe("ClaudeAdapterV2 background wake turns", () => {
   const makeTaskToolHarnessWithOptions = (environment: NodeJS.ProcessEnv = {}) =>
     Effect.gen(function* () {
       const configDir = yield* (yield* FileSystem.FileSystem).makeTempDirectoryScoped({
-        prefix: "t3-claude-tasks-",
+        prefix: "vibecodinger-claude-tasks-",
       });
       const path = yield* Path.Path;
       const harness = yield* makeWakeHarnessWithOptions({
@@ -15233,7 +15287,7 @@ describe("ClaudeAdapterV2 background wake turns", () => {
         const fileSystem = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
         const root = yield* fileSystem.makeTempDirectoryScoped({
-          prefix: "t3-claude-task-output-cwd-",
+          prefix: "vibecodinger-claude-task-output-cwd-",
         });
         const physicalCwd = path.join(root, "real", "project");
         const launchCwd = path.join(root, "link");
@@ -15700,7 +15754,7 @@ describe("ClaudeAdapterV2 background wake turns", () => {
       const fileSystem = yield* FileSystem.FileSystem;
       const idAllocator = yield* IdAllocator.IdAllocatorV2;
       const attachmentsDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-claude-v2-settled-stop-replaced-",
+        prefix: "vibecodinger-claude-v2-settled-stop-replaced-",
       });
       const processQueues: Array<Queue.Queue<SDKMessage>> = [];
       const firstCloseRequested = yield* Deferred.make<void>();
@@ -15898,7 +15952,7 @@ describe("ClaudeAdapterV2 background wake turns", () => {
     const fileSystem = yield* FileSystem.FileSystem;
     const idAllocator = yield* IdAllocator.IdAllocatorV2;
     const attachmentsDir = yield* fileSystem.makeTempDirectoryScoped({
-      prefix: `t3-claude-v2-${name}-`,
+      prefix: `vibecodinger-claude-v2-${name}-`,
     });
     const deadStreamEnded = yield* Deferred.make<void>();
     let opened = 0;
@@ -16112,7 +16166,7 @@ describe("ClaudeAdapterV2 background wake turns", () => {
         const fileSystem = yield* FileSystem.FileSystem;
         const idAllocator = yield* IdAllocator.IdAllocatorV2;
         const attachmentsDir = yield* fileSystem.makeTempDirectoryScoped({
-          prefix: "t3-claude-v2-sibling-replace-",
+          prefix: "vibecodinger-claude-v2-sibling-replace-",
         });
         const nativeIds = ["native-thread-roster-a", "native-thread-roster-b"] as const;
         let allocateIndex = 0;
@@ -19597,7 +19651,7 @@ describe("ClaudeAdapterV2 background wake turns", () => {
       const changes = yield* makeChangeSignal;
       const fileSystem = yield* FileSystem.FileSystem;
       const attachmentsDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: `t3-claude-v2-${label}-`,
+        prefix: `vibecodinger-claude-v2-${label}-`,
       });
       const processQueues: Array<Queue.Queue<SDKMessage>> = [];
       // The first two processes exit only when the test ends their streams.
@@ -22380,7 +22434,7 @@ describe("ClaudeAdapterV2 background wake turns", () => {
       const OVERRIDING_TOOL_USE_ID = "toolu-effort-nested-overriding";
       const fileSystem = yield* FileSystem.FileSystem;
       const configDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-claude-effort-",
+        prefix: "vibecodinger-claude-effort-",
       });
       // Claude names the folder after the resolved cwd, here as if /workspace were a symlink.
       const subagentsDir = NodePath.join(
@@ -23128,7 +23182,7 @@ describe("ClaudeAdapterV2 background wake turns", () => {
       const fileSystem = yield* FileSystem.FileSystem;
       const idAllocator = yield* IdAllocator.IdAllocatorV2;
       const attachmentsDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-claude-v2-process-reset-",
+        prefix: "vibecodinger-claude-v2-process-reset-",
       });
       const processQueues: Array<Queue.Queue<SDKMessage>> = [];
       const events: Array<ProviderAdapter.ProviderAdapterV2Event> = [];
@@ -23309,7 +23363,7 @@ describe("ClaudeAdapterV2 background wake turns", () => {
         const fileSystem = yield* FileSystem.FileSystem;
         const idAllocator = yield* IdAllocator.IdAllocatorV2;
         const attachmentsDir = yield* fileSystem.makeTempDirectoryScoped({
-          prefix: "t3-claude-v2-buffer-replace-",
+          prefix: "vibecodinger-claude-v2-buffer-replace-",
         });
         const processQueues: Array<Queue.Queue<SDKMessage>> = [];
         const events: Array<ProviderAdapter.ProviderAdapterV2Event> = [];
@@ -23497,7 +23551,7 @@ describe("ClaudeAdapterV2 background wake turns", () => {
       const fileSystem = yield* FileSystem.FileSystem;
       const idAllocator = yield* IdAllocator.IdAllocatorV2;
       const attachmentsDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-claude-v2-model-change-running-subagent-",
+        prefix: "vibecodinger-claude-v2-model-change-running-subagent-",
       });
       const processQueues: Array<Queue.Queue<SDKMessage>> = [];
       const events: Array<ProviderAdapter.ProviderAdapterV2Event> = [];
@@ -23691,7 +23745,7 @@ describe("ClaudeAdapterV2 background wake turns", () => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const cwd = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-claude-append-replacement-",
+        prefix: "vibecodinger-claude-append-replacement-",
       });
       const appendFile = NodePath.join(cwd, "rules.md");
       yield* fileSystem.writeFileString(appendFile, "File sentinel\n");
@@ -23706,7 +23760,7 @@ describe("ClaudeAdapterV2 background wake turns", () => {
         },
         environment: {},
         attachmentsDir: yield* fileSystem.makeTempDirectoryScoped({
-          prefix: "t3-claude-append-replacement-attachments-",
+          prefix: "vibecodinger-claude-append-replacement-attachments-",
         }),
         fileSystem,
         path: yield* Path.Path,
@@ -23837,7 +23891,7 @@ describe("ClaudeAdapterV2 background wake turns", () => {
         const fileSystem = yield* FileSystem.FileSystem;
         const idAllocator = yield* IdAllocator.IdAllocatorV2;
         const attachmentsDir = yield* fileSystem.makeTempDirectoryScoped({
-          prefix: "t3-claude-v2-replace-open-fail-",
+          prefix: "vibecodinger-claude-v2-replace-open-fail-",
         });
         let openCount = 0;
         const processQueues: Array<Queue.Queue<SDKMessage>> = [];
@@ -23975,7 +24029,7 @@ describe("ClaudeAdapterV2 background wake turns", () => {
       const fileSystem = yield* FileSystem.FileSystem;
       const idAllocator = yield* IdAllocator.IdAllocatorV2;
       const attachmentsDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-claude-v2-process-signal-",
+        prefix: "vibecodinger-claude-v2-process-signal-",
       });
       const sdkMessages = yield* Queue.unbounded<
         SDKMessage,
@@ -24101,7 +24155,9 @@ describe("ClaudeAdapterV2 background wake turns", () => {
   ) =>
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
-      const configDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-claude-wf-" });
+      const configDir = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-claude-wf-",
+      });
       const transcriptDir = NodePath.join(configDir, "projects", "workflow");
       yield* fileSystem.makeDirectory(transcriptDir, { recursive: true });
       yield* fileSystem.writeFileString(

@@ -179,7 +179,7 @@ const makeLaptopWith = (
       Layer.provide(Layer.mock(ThreadLaunch.ThreadLaunchService)({})),
       Layer.provide(Layer.mock(GitVcsDriver.GitVcsDriver)({})),
       Layer.provide(
-        ServerConfig.layerTest(process.cwd(), { prefix: "t3-peer-link-requests-" }).pipe(
+        ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-peer-link-requests-" }).pipe(
           Layer.provide(NodeServices.layer),
         ),
       ),

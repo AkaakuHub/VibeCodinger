@@ -62,7 +62,7 @@ const decodeVcsRef = Schema.decodeUnknownSync(VcsRef);
 const decodeVcsListRefsResult = Schema.decodeUnknownSync(VcsListRefsResult);
 
 const layerServerConfig = ServerConfig.layerTest(process.cwd(), {
-  prefix: "t3-git-vcs-driver-test-",
+  prefix: "vibecodinger-git-vcs-driver-test-",
 });
 const layerTest = GitVcsDriver.layer.pipe(
   Layer.provideMerge(layerServerConfig),

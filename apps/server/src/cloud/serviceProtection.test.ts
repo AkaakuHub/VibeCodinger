@@ -18,7 +18,7 @@ import * as ProcessRunner from "../processRunner.ts";
 import * as ServiceProtection from "./serviceProtection.ts";
 
 const temporaryDirectory = () =>
-  NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-service-protection-"));
+  NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "vibecodinger-service-protection-"));
 
 describe.skipIf(HostProcess.Platform.defaultValue() !== "linux")("renderPrivilegedScript", () => {
   it("writes and removes only its drop-ins and gives running main processes their score", () => {

@@ -65,7 +65,7 @@ const makeDesktopBootstrap = (
   mode: "desktop",
   noBrowser: true,
   port: 4888,
-  t3Home: "/tmp/t3-bootstrap-home",
+  t3Home: "/tmp/vibecodinger-bootstrap-home",
   host: "127.0.0.1",
   desktopBootstrapToken: "desktop-bootstrap-token",
   tailscaleServeEnabled: false,
@@ -108,7 +108,10 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
 
   const openBootstrapFd = Effect.fn(function* (payload: DesktopBackendBootstrapValue) {
     const fs = yield* FileSystem.FileSystem;
-    const filePath = yield* fs.makeTempFileScoped({ prefix: "t3-bootstrap-", suffix: ".ndjson" });
+    const filePath = yield* fs.makeTempFileScoped({
+      prefix: "vibecodinger-bootstrap-",
+      suffix: ".ndjson",
+    });
     const encoded = yield* encodeDesktopBootstrap(payload);
     yield* fs.writeFileString(filePath, `${encoded}\n`);
     return yield* Effect.acquireRelease(
@@ -129,7 +132,7 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-cli-preflight-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-cli-preflight-" });
       const child = yield* liveProcess;
       assert(child.pid !== undefined);
       for (const [name, pid, mode, rejectRunningServer] of [
@@ -199,7 +202,9 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-cli-preflight-live-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-cli-preflight-live-",
+      });
       const child = yield* liveProcess;
       assert(child.pid !== undefined);
       const owner = yield* acquireOwnership(baseDir);
@@ -223,7 +228,9 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-cli-preflight-legacy-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-cli-preflight-legacy-",
+      });
       const child = yield* liveProcess;
       assert(child.pid !== undefined);
       const stateDir = path.join(baseDir, "userdata");
@@ -252,7 +259,9 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-cli-preflight-reused-" });
+        const baseDir = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-cli-preflight-reused-",
+        });
         const child = yield* liveProcess;
         assert(child.pid !== undefined);
         // The killed server's lock file stays behind, released.
@@ -281,7 +290,9 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
       const child = yield* liveProcess;
       assert(child.pid !== undefined);
       for (const source of ["flag", "T3CODE_HOME", "default"] as const) {
-        const home = yield* fs.makeTempDirectoryScoped({ prefix: "t3-cli-preflight-pair-" });
+        const home = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-cli-preflight-pair-",
+        });
         const baseDir = source === "default" ? path.join(home, ".vibecodinger") : home;
         const stateDir = path.join(baseDir, "userdata");
         yield* fs.makeDirectory(stateDir, { recursive: true });
@@ -330,7 +341,9 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
   it.effect("enables a trimmed reusable auth token only for web dev mode", () =>
     Effect.gen(function* () {
       const baseDir = yield* FileSystem.FileSystem.pipe(
-        Effect.flatMap((fs) => fs.makeTempDirectoryScoped({ prefix: "t3-cli-dev-auth-" })),
+        Effect.flatMap((fs) =>
+          fs.makeTempDirectoryScoped({ prefix: "vibecodinger-cli-dev-auth-" }),
+        ),
       );
       const flags = {
         mode: Option.some("web" as const),
@@ -375,7 +388,9 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
     Effect.gen(function* () {
       const secret = "short-secret";
       const baseDir = yield* FileSystem.FileSystem.pipe(
-        Effect.flatMap((fs) => fs.makeTempDirectoryScoped({ prefix: "t3-cli-dev-auth-invalid-" })),
+        Effect.flatMap((fs) =>
+          fs.makeTempDirectoryScoped({ prefix: "vibecodinger-cli-dev-auth-invalid-" }),
+        ),
       );
       const flags = {
         mode: Option.some("web" as const),
@@ -497,7 +512,7 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
         makeDesktopBootstrap({
           port: 4888,
           host: "127.0.0.2",
-          t3Home: "/tmp/t3-bootstrap-home",
+          t3Home: "/tmp/vibecodinger-bootstrap-home",
           noBrowser: false,
           desktopBootstrapToken: "desktop-token",
           tailscaleServeEnabled: false,
@@ -572,7 +587,7 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const baseDir = yield* fs.makeTempDirectoryScoped({
-        prefix: "t3-cli-config-otlp-bootstrap-",
+        prefix: "vibecodinger-cli-config-otlp-bootstrap-",
       });
       const fd = yield* openBootstrapFd(
         makeDesktopBootstrap({
@@ -604,7 +619,9 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-cli-config-otlp-settings-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-cli-config-otlp-settings-",
+      });
       const derivedPaths = yield* deriveExplicitServerPaths(baseDir, undefined);
       yield* fs.makeDirectory(path.dirname(derivedPaths.settingsPath), { recursive: true });
       yield* fs.writeFileString(
@@ -637,7 +654,9 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-cli-config-otel-off-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-cli-config-otel-off-",
+      });
       const derivedPaths = yield* deriveExplicitServerPaths(baseDir, undefined);
       yield* fs.makeDirectory(path.dirname(derivedPaths.settingsPath), { recursive: true });
       yield* fs.writeFileString(
@@ -688,7 +707,9 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-cli-config-otel-on-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-cli-config-otel-on-",
+      });
       const derivedPaths = yield* deriveExplicitServerPaths(baseDir, undefined);
       yield* fs.makeDirectory(path.dirname(derivedPaths.settingsPath), { recursive: true });
       yield* fs.writeFileString(
@@ -864,7 +885,9 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
   it.effect("uses the automatic port selector only when no port is configured", () =>
     Effect.gen(function* () {
       const baseDir = yield* FileSystem.FileSystem.pipe(
-        Effect.flatMap((fs) => fs.makeTempDirectoryScoped({ prefix: "t3-cli-auto-port-" })),
+        Effect.flatMap((fs) =>
+          fs.makeTempDirectoryScoped({ prefix: "vibecodinger-cli-auto-port-" }),
+        ),
       );
       const selected: Array<readonly [number, string | undefined]> = [];
       const selectAutomaticPort = (preferred: number, host: string | undefined) =>
@@ -910,7 +933,7 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const baseDir = yield* fs.makeTempDirectoryScoped({
-        prefix: "t3-cli-config-otel-precedence-",
+        prefix: "vibecodinger-cli-config-otel-precedence-",
       });
       const derivedPaths = yield* deriveExplicitServerPaths(baseDir, undefined);
       yield* fs.makeDirectory(path.dirname(derivedPaths.settingsPath), { recursive: true });
@@ -966,7 +989,7 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
         const baseDir = yield* fs.makeTempDirectoryScoped({
-          prefix: "t3-cli-config-otel-off-",
+          prefix: "vibecodinger-cli-config-otel-off-",
         });
         const derivedPaths = yield* deriveExplicitServerPaths(baseDir, undefined);
         yield* fs.makeDirectory(path.dirname(derivedPaths.settingsPath), { recursive: true });

@@ -26,7 +26,7 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))((it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const statePath = (yield* Path.Path).join(
-        yield* fs.makeTempDirectoryScoped({ prefix: "t3-policy-show-" }),
+        yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-policy-show-" }),
         "server-runtime.json",
       );
       const loaded = (organization: string) =>
@@ -64,8 +64,10 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))((it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const home = yield* fs.makeTempDirectoryScoped({ prefix: "t3-policy-templates-" });
-      const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "t3-policy-templates-cwd-" });
+      const home = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-policy-templates-" });
+      const cwd = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-policy-templates-cwd-",
+      });
       yield* Effect.acquireRelease(
         Effect.sync(() => {
           const previous = process.cwd();
@@ -100,7 +102,7 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))((it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const home = yield* fs.makeTempDirectoryScoped({ prefix: "t3-policy-check-" });
+      const home = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-policy-check-" });
       const file = path.join(home, "policy.json");
       yield* fs.writeFileString(
         file,

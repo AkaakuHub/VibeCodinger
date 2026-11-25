@@ -557,7 +557,7 @@ it.effect.skipIf(HostProcess.Platform.defaultValue() === "win32")(
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const home = yield* fs.makeTempDirectoryScoped({ prefix: "t3-remote-editors-" });
+      const home = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-remote-editors-" });
       for (const app of ["Cursor", "Visual Studio Code", "WebStorm"]) {
         const executable = path.join(
           home,
@@ -590,7 +590,7 @@ describe("probeRemoteEditors PATH scan", () => {
   const makeFakePath = Effect.fnUntraced(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-probe-path-" });
+    const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-probe-path-" });
     const dirs = ["a", "b", "c", "d"].map((name) => path.join(root, name));
     for (const dir of dirs) yield* fs.makeDirectory(dir, { recursive: true });
     // Launchers in different PATH directories, deliberately not in REMOTE_CAPABLE_EDITOR_IDS order.

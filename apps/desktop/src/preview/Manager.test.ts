@@ -648,7 +648,7 @@ describe("PreviewManager", () => {
     (existing) =>
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
-        const dir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-download-test-" });
+        const dir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-download-test-" });
         const downloads = `${dir}/downloads`;
         yield* fs.makeDirectory(downloads);
         using _downloads = vi.spyOn(app, "getPath").mockReturnValue(downloads);

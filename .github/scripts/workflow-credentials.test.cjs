@@ -99,7 +99,7 @@ const recordScript = read("actions/record-build-tag/action.yml")
   .replace(/^remote=.*$/m, 'remote="$TEST_REMOTE"');
 
 function recordTag(commitOf, failedFetches = 0) {
-  const directory = mkdtempSync(join(tmpdir(), "t3-record-tag-"));
+  const directory = mkdtempSync(join(tmpdir(), "vibecodinger-record-tag-"));
   const git = (cwd, ...args) => execFileSync("git", args, { cwd, encoding: "utf8" }).trim();
   try {
     const remote = join(directory, "remote.git");

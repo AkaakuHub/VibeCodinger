@@ -125,9 +125,9 @@ const makeLayerTest = (runBackgroundWork: boolean) =>
     Layer.provideMerge(ServerSettings.layerTest()),
     Layer.provideMerge(ServerSecretStore.layer),
     Layer.provide(
-      ServerConfig.layerTest(process.cwd(), { prefix: "t3-antigravity-provider-test-" }).pipe(
-        Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
-      ),
+      ServerConfig.layerTest(process.cwd(), {
+        prefix: "vibecodinger-antigravity-provider-test-",
+      }).pipe(Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))),
     ),
   );
 const layerTest = makeLayerTest(false);

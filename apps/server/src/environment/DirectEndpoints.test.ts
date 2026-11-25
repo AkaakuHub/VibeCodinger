@@ -282,7 +282,7 @@ describe("readIsolatedLinuxBridges", () => {
   effectIt.effect("finds bridges whose ports never reach a NIC, under any name", () =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-sysfs-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-sysfs-" });
       const dirs = [
         "eth0/device",
         "eth1/device",
@@ -362,7 +362,7 @@ const layerServeConfig = (host = "127.0.0.1") =>
       tailscaleServePort: 443,
     })),
   ).pipe(
-    Layer.provide(ServerConfig.layerTest(process.cwd(), { prefix: "t3-direct-" })),
+    Layer.provide(ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-direct-" })),
     Layer.provide(NodeServices.layer),
     Layer.merge(
       Layer.succeed(ServerEnvironment.ServerEnvironment, {

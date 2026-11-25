@@ -700,7 +700,9 @@ const fakeForge = () => {
 const harness = Effect.fnUntraced(function* (store?: typeof WorkflowStore.layer) {
   const fileSystem = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
-  const directory = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-workflows-" });
+  const directory = yield* fileSystem.makeTempDirectoryScoped({
+    prefix: "vibecodinger-workflows-",
+  });
   const database = NodeSqliteClient.layer({ filename: path.join(directory, "state.sqlite") });
   yield* Effect.provide(WorkflowsMigration, database);
   const counts = yield* Ref.make<Record<string, number>>({});

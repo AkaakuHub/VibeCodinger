@@ -190,7 +190,9 @@ describe("AntigravityAdapterV2 compaction", () => {
         const mockAgentPath = yield* path.fromFileUrl(
           new URL("../../../scripts/acp-mock-agent.ts", import.meta.url),
         );
-        const logs = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-ag-compact-" });
+        const logs = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-ag-compact-",
+        });
         const requestLog = path.join(logs, "requests.ndjson");
         const instanceId = ProviderInstanceId.make("antigravity-compaction-test");
         const goalSupport = yield* Ref.make(false);
@@ -384,7 +386,9 @@ describe("AntigravityAdapterV2 client file system", () => {
       // effect-acp keeps the last handler registered per method; so does this.
       let readTextFile: Parameters<RuntimeService["handleReadTextFile"]>[0] | undefined;
       let writeTextFile: Parameters<RuntimeService["handleWriteTextFile"]>[0] | undefined;
-      const logs = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-antigravity-log-" });
+      const logs = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-antigravity-log-",
+      });
       const requestLog = path.join(logs, "requests.ndjson");
       const crypto = yield* SecureRandom.SecureRandom;
       const instanceId = ProviderInstanceId.make("antigravity-containment-test");
@@ -419,10 +423,10 @@ describe("AntigravityAdapterV2 client file system", () => {
         defaultModel: Effect.undefined,
       });
       const workspace = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-antigravity-workspace-",
+        prefix: "vibecodinger-antigravity-workspace-",
       });
       const outside = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-antigravity-outside-",
+        prefix: "vibecodinger-antigravity-outside-",
       });
       const outsideFile = path.join(outside, "secret.txt");
       yield* fileSystem.writeFileString(outsideFile, "secret");
@@ -592,8 +596,12 @@ describe("AntigravityAdapterV2 workspace changes", () => {
         withProcess: (_stop, task) => task,
         defaultModel: Effect.undefined,
       });
-      const workspaceA = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-ag-a-" });
-      const workspaceB = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-ag-b-" });
+      const workspaceA = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-ag-a-",
+      });
+      const workspaceB = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-ag-b-",
+      });
       yield* fileSystem.writeFileString(path.join(workspaceA, "a.txt"), "from a");
       yield* fileSystem.writeFileString(path.join(workspaceB, "b.txt"), "from b");
       const policyFor = (cwd: string) =>
@@ -1809,7 +1817,9 @@ describe("AntigravityAdapterV2 work after the prompt ends", () => {
       Effect.gen(function* () {
         const fileSystem = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const profile = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-agy-race-" });
+        const profile = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-agy-race-",
+        });
         const generated = (kind: string) =>
           path.join(
             profile,
@@ -2030,7 +2040,9 @@ describe("AntigravityAdapterV2 work after the prompt ends", () => {
       Effect.gen(function* () {
         const fileSystem = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const profile = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-agy-pre-settle-" });
+        const profile = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-agy-pre-settle-",
+        });
         const generated = (kind: string) =>
           path.join(
             profile,
@@ -2273,7 +2285,9 @@ describe("AntigravityAdapterV2 work after the prompt ends", () => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const profile = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-antigravity-kids-" });
+      const profile = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-antigravity-kids-",
+      });
       const records = (conversationId: string, kind: string) =>
         path.join(profile, "antigravity-acp", "brain", conversationId, ".system_generated", kind);
       const write = (directory: string, name: string, value: unknown) =>
@@ -2345,7 +2359,9 @@ describe("AntigravityAdapterV2 work after the prompt ends", () => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const profile = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-antigravity-kids-" });
+      const profile = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-antigravity-kids-",
+      });
       const records = (conversationId: string, kind: string) =>
         path.join(profile, "antigravity-acp", "brain", conversationId, ".system_generated", kind);
       const write = (directory: string, name: string, value: unknown) =>
@@ -2402,7 +2418,9 @@ describe("AntigravityAdapterV2 work after the prompt ends", () => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       // No records: nothing proves a child is at work, so none may hold a run open.
-      const profile = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-antigravity-kids-" });
+      const profile = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-antigravity-kids-",
+      });
       const { usage, offers, send, startTurn, throughTerminal } =
         yield* openSessionWithRunningCommand({}, profile);
       yield* startTurn(1, false);
@@ -2470,10 +2488,10 @@ describe("AntigravityAdapterV2 subagent reads", () => {
         new URL("../../../scripts/acp-mock-agent.ts", import.meta.url),
       );
       const workspace = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-antigravity-reads-",
+        prefix: "vibecodinger-antigravity-reads-",
       });
       const outside = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-antigravity-reads-outside-",
+        prefix: "vibecodinger-antigravity-reads-outside-",
       });
       const served = path.join(workspace, "served.ts");
       yield* fileSystem.writeFileString(served, "export {};");
@@ -2839,7 +2857,9 @@ describe("AntigravityAdapterV2 session system prompt", () => {
         const mockAgentPath = yield* path.fromFileUrl(
           new URL("../../../scripts/acp-mock-agent.ts", import.meta.url),
         );
-        const logs = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-antigravity-log-" });
+        const logs = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-antigravity-log-",
+        });
         const requestLog = path.join(logs, "requests.ndjson");
         type RuntimeService = AcpSessionRuntime.AcpSessionRuntime["Service"];
         const promptReceived = yield* Deferred.make<Parameters<RuntimeService["prompt"]>[0]>();
@@ -2875,7 +2895,9 @@ describe("AntigravityAdapterV2 session system prompt", () => {
           withProcess: (_stop, task) => task,
           defaultModel: Effect.undefined,
         });
-        const workspace = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-ag-sp-" });
+        const workspace = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-ag-sp-",
+        });
         const runtimePolicy = ProviderAdapter.ProviderAdapterV2RuntimePolicy.make({
           runtimeMode: "full-access",
           interactionMode: "default",

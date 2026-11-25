@@ -33,7 +33,9 @@ it.live(
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-uninstall-shell-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-uninstall-shell-",
+      });
       const runtimeDir = path.join(baseDir, "runtime");
       yield* fs.makeDirectory(runtimeDir);
       vi.spyOn(BootService, "layer").mockReturnValue(
@@ -122,7 +124,9 @@ it.layer(Layer.mergeAll(NodeServices.layer, NetService.layer))(
     ])("$label", (input) =>
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
-        const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-uninstall-cli-test-" });
+        const baseDir = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-uninstall-cli-test-",
+        });
         const uninstalls: Array<true> = [];
         let reads = 0;
         vi.spyOn(BootService, "layer").mockReturnValue(
@@ -181,7 +185,7 @@ it.layer(NodeServices.layer)("vibecodinger uninstall launcher", (it) => {
       const path = yield* Path.Path;
       // macOS spells the temp folder /var but resolves it to /private/var.
       const root = yield* fs
-        .makeTempDirectoryScoped({ prefix: "t3-uninstall-" })
+        .makeTempDirectoryScoped({ prefix: "vibecodinger-uninstall-" })
         .pipe(Effect.flatMap(fs.realPath));
       const versionsDir = path.join(root, "runtime/versions");
       const exe = path.join(versionsDir, "1.0.0/vibecodinger");
@@ -302,7 +306,7 @@ it.live.runIf(HostProcess.Platform.defaultValue() === "win32")(
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-uninstall-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-uninstall-" });
       const runtimeDir = path.join(root, "vibecodinger home %COMSPEC% !COMSPEC! & data", "runtime");
       yield* fs.makeDirectory(path.join(runtimeDir, "versions", "1.0.0"), { recursive: true });
       yield* fs.writeFileString(path.join(runtimeDir, "versions", "1.0.0", "vibecodinger.exe"), "");

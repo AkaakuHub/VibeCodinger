@@ -155,7 +155,7 @@ export function resolveResourceMonitorRustTargets(
 }
 
 export function resourceMonitorExecutableName(platform: typeof BuildPlatform.Type): string {
-  return platform === "win" ? "t3-resource-monitor.exe" : "t3-resource-monitor";
+  return platform === "win" ? "vibecodinger-resource-monitor.exe" : "vibecodinger-resource-monitor";
 }
 
 const PLATFORM_CONFIG: Record<typeof BuildPlatform.Type, PlatformConfig> = {
@@ -2318,7 +2318,7 @@ export const stageLinuxCaptureHelper = Effect.fn("stageLinuxCaptureHelper")(func
     input.repoRoot,
     `native/${input.backend}-snap-shot/target`,
     rustTarget!,
-    `release/t3-${input.backend}-snap-shot`,
+    `release/vibecodinger-${input.backend}-snap-shot`,
   );
   if (!reuseHelpers) {
     const spawnCommand = yield* resolveSpawnCommand("cargo", [
@@ -2350,7 +2350,7 @@ export const stageLinuxCaptureHelper = Effect.fn("stageLinuxCaptureHelper")(func
   }
   const destination = path.join(input.stageResourcesDir, `${input.backend}-capture`);
   yield* fs.makeDirectory(destination, { recursive: true });
-  const executable = path.join(destination, `t3-${input.backend}-snap-shot`);
+  const executable = path.join(destination, `vibecodinger-${input.backend}-snap-shot`);
   yield* fs.copyFile(binaryPath, executable);
   yield* fs.chmod(executable, 0o755);
   if (input.backend === "hyprland") {
@@ -2467,7 +2467,7 @@ export const stageBrowserSecret = Effect.fn("stageBrowserSecret")(function* (inp
         "--arch",
         input.arch === "arm64" ? "arm64" : "x64",
         "--output",
-        path.join(input.stageResourcesDir, "browser-secret", "t3-browser-secret"),
+        path.join(input.stageResourcesDir, "browser-secret", "vibecodinger-browser-secret"),
       ],
       { cwd: input.repoRoot },
     ),
@@ -2492,7 +2492,7 @@ export const stageAppleSpeech = Effect.fn("stageAppleSpeech")(function* (input: 
         "--arch",
         input.arch,
         "--output",
-        path.join(input.stageResourcesDir, "apple-speech", "t3-apple-speech"),
+        path.join(input.stageResourcesDir, "apple-speech", "vibecodinger-apple-speech"),
       ],
       { cwd: input.repoRoot },
     ),
@@ -3468,7 +3468,7 @@ export const validateWindowsPackagedPayload = Effect.fn(
     return yield* new WindowsPackagedPayloadValidationError({
       reason: "resource-monitor-missing",
       packagedAppDir,
-      missingFiles: ["resource-monitor/t3-resource-monitor.exe"],
+      missingFiles: ["resource-monitor/vibecodinger-resource-monitor.exe"],
     });
   }
 

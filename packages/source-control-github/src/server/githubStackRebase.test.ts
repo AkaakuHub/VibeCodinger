@@ -21,7 +21,7 @@ const layer = Layer.mergeAll(
 const setup = Effect.gen(function* () {
   const fs = yield* FileSystem.FileSystem;
   const { process } = yield* SourceControlHost.SourceControlHost;
-  const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-cascade-test-" });
+  const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-cascade-test-" });
   const remote = `${root}/remote.git`;
   const work = `${root}/work`;
   const git = (cwd: string, ...args: string[]) =>
@@ -97,7 +97,7 @@ it.layer(layer)("cascadeRebaseStack", (it) => {
       const repo = yield* setup;
       const fs = yield* FileSystem.FileSystem;
       const { process } = yield* SourceControlHost.SourceControlHost;
-      const scratch = yield* fs.makeTempDirectoryScoped({ prefix: "t3-cascade-squash-" });
+      const scratch = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-cascade-squash-" });
       const run = (...args: string[]) =>
         process
           .run({
@@ -168,7 +168,9 @@ it.layer(layer)("cascadeRebaseStack", (it) => {
       const repo = yield* setup;
       const fs = yield* FileSystem.FileSystem;
       const { process } = yield* SourceControlHost.SourceControlHost;
-      const scratch = yield* fs.makeTempDirectoryScoped({ prefix: "t3-cascade-conflict-" });
+      const scratch = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-cascade-conflict-",
+      });
       const run = (...args: string[]) =>
         process.run({
           operation: "test",

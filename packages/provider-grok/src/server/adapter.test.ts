@@ -90,7 +90,9 @@ const writesPerSelection = (
   Effect.gen(function* () {
     const fileSystem = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const directory = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-grok-effort-" });
+    const directory = yield* fileSystem.makeTempDirectoryScoped({
+      prefix: "vibecodinger-grok-effort-",
+    });
     const requestLogPath = path.join(directory, "requests.ndjson");
     yield* fileSystem.writeFileString(requestLogPath, "");
     const agentPath = yield* path.fromFileUrl(

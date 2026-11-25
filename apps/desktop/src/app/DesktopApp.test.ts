@@ -332,7 +332,7 @@ it.effect(
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-desktop-app-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-desktop-app-" });
       const launcher = DesktopCliShim.launcherPath({
         path,
         baseDir,

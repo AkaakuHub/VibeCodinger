@@ -220,7 +220,9 @@ export const layerLinkingEnvironment = <E = never>(
         getDescriptor: Effect.succeed(descriptor),
       }),
     ),
-    Layer.provide(ServerConfig.layerTest(process.cwd(), { prefix: "t3-peer-link-here-" })),
+    Layer.provide(
+      ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-peer-link-here-" }),
+    ),
     Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
     Layer.fresh,
   );

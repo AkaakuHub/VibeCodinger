@@ -217,7 +217,9 @@ const openClaudeReplaySession = Effect.fn("openClaudeReplaySession")(function* (
   const fileSystem = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
   const childProcessSpawner = yield* ChildProcessSpawner.ChildProcessSpawner;
-  const replayDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-claude-lifecycle-" });
+  const replayDir = yield* fileSystem.makeTempDirectoryScoped({
+    prefix: "vibecodinger-claude-lifecycle-",
+  });
   const scriptPath = yield* path.fromFileUrl(
     new URL("../../../scripts/acp-replay-agent.ts", import.meta.url),
   );
@@ -718,7 +720,7 @@ describe("AcpRegistryAdapterV2", () => {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const replayDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-acp-registry-stored-picks-",
+        prefix: "vibecodinger-acp-registry-stored-picks-",
       });
       const statusPath = path.join(replayDir, "status.json");
       const transcript = yield* decodeAcpReplayTranscript(
@@ -3833,7 +3835,9 @@ describe("AcpRegistryAdapterV2", () => {
       const childProcessSpawner = yield* ChildProcessSpawner.ChildProcessSpawner;
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const replayDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-copilot-lost-" });
+      const replayDir = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-copilot-lost-",
+      });
       const scriptPath = yield* path.fromFileUrl(
         new URL("../../../scripts/acp-replay-agent.ts", import.meta.url),
       );

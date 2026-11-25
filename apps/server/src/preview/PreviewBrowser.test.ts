@@ -85,7 +85,9 @@ const makeHarness = Effect.fn("test.makePreviewBrowser")(function* (
 ) {
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
-  const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-preview-browser-test-" });
+  const baseDir = yield* fs.makeTempDirectoryScoped({
+    prefix: "vibecodinger-preview-browser-test-",
+  });
   const archive = options.archive ?? browserArchive;
   const digest = yield* Digest.Digest;
   const sha256 =

@@ -31,7 +31,7 @@ import { isExactServiceVersion, parseServiceState, SERVICE_STATE_FILE } from "./
 const PINNED_RUNTIME_DIR = "runtime";
 const PINNED_RUNTIME_INSTALL_TIMEOUT = Duration.minutes(10);
 const PINNED_RUNTIME_DOWNLOAD_STALL_TIMEOUT = Duration.minutes(1);
-const PINNED_RUNTIME_ARCHIVE_FILE = "t3-runtime-archive";
+const PINNED_RUNTIME_ARCHIVE_FILE = "vibecodinger-runtime-archive";
 // Separate layers share one install lock across this process.
 const pinnedRuntimeInstallLock = Semaphore.makeUnsafe(1);
 

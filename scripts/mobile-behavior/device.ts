@@ -228,7 +228,7 @@ export function makeDevice(options: DeviceOptions) {
 
   const screenSize = run([
     "screenshot",
-    NodePath.join(NodeOS.tmpdir(), "t3-mobile-behavior-screen.png"),
+    NodePath.join(NodeOS.tmpdir(), "vibecodinger-mobile-behavior-screen.png"),
     "--json",
   ]).pipe(
     Effect.map((out) => {

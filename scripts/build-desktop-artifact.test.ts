@@ -145,7 +145,7 @@ const makeWindowsPayloadFixture = Effect.fn("test.makeWindowsPayloadFixture")(fu
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
   const tempDir = yield* fs.makeTempDirectoryScoped({
-    prefix: "t3-windows-payload-test-",
+    prefix: "vibecodinger-windows-payload-test-",
   });
   const sourceDir = path.join(tempDir, "server-source");
   const serverEntryPath = path.join(sourceDir, "apps/server/dist/bin.mjs");
@@ -170,7 +170,7 @@ const makeWindowsPayloadFixture = Effect.fn("test.makeWindowsPayloadFixture")(fu
     );
   }
   yield* fs.writeFileString(
-    path.join(resourcesDir, "resource-monitor/t3-resource-monitor.exe"),
+    path.join(resourcesDir, "resource-monitor/vibecodinger-resource-monitor.exe"),
     "monitor",
   );
   const appExecutableName = "t3code.exe";
@@ -224,7 +224,7 @@ const makePackagedAppFixture = Effect.fn("test.makePackagedAppFixture")(function
 }) {
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
-  const tempDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-mac-payload-test-" });
+  const tempDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-mac-payload-test-" });
   const sourceDir = path.join(tempDir, "app-source");
   const serverEntryPath = path.join(sourceDir, "apps/server/dist/bin.mjs");
   yield* fs.makeDirectory(path.dirname(serverEntryPath), { recursive: true });
@@ -247,7 +247,7 @@ it.layer(NodeServices.layer)("build-desktop-artifact", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-concurrent-build-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-concurrent-build-" });
       yield* fs.writeFileString(
         path.join(root, "package.json"),
         '{ "scripts": { "build:desktop": "node build.cjs" } }',
@@ -324,7 +324,7 @@ it.layer(NodeServices.layer)("build-desktop-artifact", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-interrupted-build-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-interrupted-build-" });
       const original = '{ "version": "0.0.42", "private": true }\n';
       for (const relativePath of releasePackageFiles) {
         const filePath = path.join(root, relativePath);
@@ -389,7 +389,9 @@ it.layer(NodeServices.layer)("build-desktop-artifact", (it) => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-desktop-build-version-" });
+        const root = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-desktop-build-version-",
+        });
         const packageJson = `{
           "name": "desktop-version-fixture",
           "version": "0.0.42",
@@ -466,7 +468,9 @@ it.layer(NodeServices.layer)("build-desktop-artifact", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-manifest-restore-failure-" });
+      const root = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-manifest-restore-failure-",
+      });
       yield* fs.writeFileString(
         path.join(root, "package.json"),
         `{
@@ -695,7 +699,7 @@ it.layer(NodeServices.layer)("build-desktop-artifact", (it) => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-cursor-helpers-" });
+        const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-cursor-helpers-" });
         const nodeModules = path.join(root, "node_modules");
         const destination = path.join(root, "resources/node_modules/@cursor");
         const cursorDirectory = symlinksSupported
@@ -772,7 +776,7 @@ it.layer(NodeServices.layer)("build-desktop-artifact", (it) => {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
         const tempDir = yield* fs.makeTempDirectoryScoped({
-          prefix: "t3-windows-architecture-test-",
+          prefix: "vibecodinger-windows-architecture-test-",
         });
         const sourceDir = path.join(tempDir, "server");
         const nativeFiles = [
@@ -834,7 +838,9 @@ it.layer(NodeServices.layer)("build-desktop-artifact", (it) => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const tempDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-windows-preflight-" });
+        const tempDir = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-windows-preflight-",
+        });
         const pythonPath = path.join(tempDir, "python.exe");
         yield* fs.writeFileString(pythonPath, "python");
         const spawner = Layer.succeed(
@@ -876,7 +882,9 @@ it.layer(NodeServices.layer)("build-desktop-artifact", (it) => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const tempDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-windows-preflight-" });
+        const tempDir = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-windows-preflight-",
+        });
         const pythonPath = path.join(tempDir, "python.exe");
         yield* fs.writeFileString(pythonPath, "python");
         const commands: string[] = [];
@@ -918,7 +926,9 @@ it.layer(NodeServices.layer)("build-desktop-artifact", (it) => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const tempDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-python2-preflight-" });
+        const tempDir = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-python2-preflight-",
+        });
         const pythonPath = path.join(tempDir, "python");
         yield* fs.writeFileString(pythonPath, "python2");
         const spawner = Layer.succeed(
@@ -1353,7 +1363,7 @@ it.layer(NodeServices.layer)("build-desktop-artifact", (it) => {
         yield* fs.writeFileString(nativePath, "native-binary");
         const resourceMonitorPath = path.join(
           fixture.packagedAppDir,
-          "resources/resource-monitor/t3-resource-monitor.exe",
+          "resources/resource-monitor/vibecodinger-resource-monitor.exe",
         );
         yield* fs.remove(resourceMonitorPath);
         yield* fs.makeDirectory(resourceMonitorPath);
@@ -1367,7 +1377,7 @@ it.layer(NodeServices.layer)("build-desktop-artifact", (it) => {
         assert.instanceOf(resourceMonitorError, WindowsPackagedPayloadValidationError);
         assert.equal(resourceMonitorError.reason, "resource-monitor-missing");
         assert.deepStrictEqual(resourceMonitorError.missingFiles, [
-          "resource-monitor/t3-resource-monitor.exe",
+          "resource-monitor/vibecodinger-resource-monitor.exe",
         ]);
       }),
     ),
@@ -1491,7 +1501,9 @@ it.layer(NodeServices.layer)("build-desktop-artifact", (it) => {
     Effect.scoped(
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
-        const stageDistDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-mac-payload-test-" });
+        const stageDistDir = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-mac-payload-test-",
+        });
         const error = yield* validateMacPackagedPayload({ stageDistDir }).pipe(Effect.flip);
 
         assert.instanceOf(error, MacPackagedAppMissingError);
@@ -1503,7 +1515,9 @@ it.layer(NodeServices.layer)("build-desktop-artifact", (it) => {
     Effect.scoped(
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
-        const stageDistDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-mac-payload-test-" });
+        const stageDistDir = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-mac-payload-test-",
+        });
         yield* fs.makeDirectory(`${stageDistDir}/mac-arm64/T3 Code.app/Contents/Resources`, {
           recursive: true,
         });
@@ -1528,7 +1542,9 @@ it.layer(NodeServices.layer)("build-desktop-artifact", (it) => {
         assert.instanceOf(error, BundleNotSelfContainedError);
         assert.include(error.output, "t3code-deliberately-missing-package");
 
-        const emptyStage = yield* fs.makeTempDirectoryScoped({ prefix: "t3-linux-payload-test-" });
+        const emptyStage = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-linux-payload-test-",
+        });
         const missing = yield* validateLinuxPackagedPayload({ stageDistDir: emptyStage }).pipe(
           Effect.flip,
         );
@@ -1791,7 +1807,9 @@ it.layer(NodeServices.layer)("build-desktop-artifact", (it) => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-wsl-runtime-stage-" });
+        const root = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-wsl-runtime-stage-",
+        });
         const sourceArchivePath = yield* makeLinuxCliArchiveFixture({
           root,
           stem: "vibecodinger-1.2.3-linux-x64",
@@ -1891,7 +1909,7 @@ it.effect.skipIf(!symlinksSupported)("rebases packaged links into the isolated t
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3code-copy-symlinks-" });
+    const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-copy-symlinks-" });
     const source = path.join(root, "source");
     const destination = path.join(root, "destination");
     const packageDir = path.join(source, "node_modules/.pnpm/example@1/node_modules/example");
@@ -1936,7 +1954,7 @@ it.effect("preserves packaged app directories from the dir target", () =>
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-dir-artifact-" });
+    const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-dir-artifact-" });
     const stage = path.join(root, "stage");
     const output = path.join(root, "output");
     const app = path.join("mac-arm64", "T3 Code.app", "Contents");
@@ -1966,7 +1984,7 @@ it.effect.skipIf(!symlinksSupported)("preserves relative links when replacing di
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-dir-artifact-links-" });
+    const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-dir-artifact-links-" });
     const stage = path.join(root, "stage");
     const output = path.join(root, "output");
     const app = path.join("mac-arm64", "T3 Code.app", "Contents");

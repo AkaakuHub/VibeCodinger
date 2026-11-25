@@ -77,7 +77,7 @@ const layerFor = (state: State, options: Options) => {
       const path = yield* Path.Path;
       const config = yield* ServerConfig.ServerConfig;
       const base = yield* fileSystem.realPath(
-        yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-rewind-worktrees-" }),
+        yield* fileSystem.makeTempDirectoryScoped({ prefix: "vibecodinger-rewind-worktrees-" }),
       );
       const real = path.join(base, "real");
       yield* fileSystem.makeDirectory(real);
@@ -86,7 +86,7 @@ const layerFor = (state: State, options: Options) => {
       return { ...config, worktreesDir: path.join(base, "linked") };
     }),
   ).pipe(
-    Layer.provide(ServerConfig.layerTest(process.cwd(), { prefix: "t3-rewind-" })),
+    Layer.provide(ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-rewind-" })),
     Layer.provide(layerNode),
   );
   const layerGit = GitVcsDriver.layer.pipe(
@@ -207,7 +207,7 @@ const taskFolderThread = Effect.fn(function* (state: State, options: Options) {
   const { committed } = state;
   const now = yield* DateTime.now;
   const tmp = yield* fileSystem.realPath(
-    yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-rewind-" }),
+    yield* fileSystem.makeTempDirectoryScoped({ prefix: "vibecodinger-rewind-" }),
   );
   const run = (cwd: string, ...args: ReadonlyArray<string>) =>
     git.execute({ operation: "rewind-test", cwd, args }).pipe(

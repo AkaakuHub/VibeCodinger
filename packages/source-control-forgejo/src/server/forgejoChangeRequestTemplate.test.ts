@@ -15,7 +15,7 @@ const templateRepository = Effect.gen(function* () {
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
   const { git } = yield* SourceControlHost.SourceControlHost;
-  const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "t3-forgejo-pr-template-" });
+  const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-forgejo-pr-template-" });
   const runGit = (args: ReadonlyArray<string>) =>
     git.execute({ operation: "forgejoChangeRequestTemplate.test.git", cwd, args });
   yield* runGit(["init", "--initial-branch=main", "--template="]);

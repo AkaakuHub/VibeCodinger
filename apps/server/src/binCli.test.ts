@@ -20,7 +20,7 @@ import {
 it.live("keeps migration warnings out of JSON thread output", () =>
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
-    const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-cli-json-" });
+    const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-cli-json-" });
     const stateDir = `${root}/userdata`;
     yield* fs.makeDirectory(stateDir);
     yield* Effect.gen(function* () {

@@ -81,7 +81,7 @@ it.layer(NodeServices.layer)("ensurePinnedRuntimeInstalled", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-pinned-archive-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-pinned-archive-" });
       const requests: string[] = [];
       const commands: string[] = [];
       const paths = yield* ensurePinnedRuntimeInstalled({
@@ -108,7 +108,7 @@ it.layer(NodeServices.layer)("ensurePinnedRuntimeInstalled", (it) => {
       ]);
       assert.deepEqual(commands, ["tar"]);
       assert.equal(yield* fs.readFileString(paths.sentinelPath), `${version}\n`);
-      assert.isFalse(yield* fs.exists(path.join(paths.versionDir, "t3-runtime-archive")));
+      assert.isFalse(yield* fs.exists(path.join(paths.versionDir, "vibecodinger-runtime-archive")));
     }),
   );
 
@@ -116,7 +116,9 @@ it.layer(NodeServices.layer)("ensurePinnedRuntimeInstalled", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-pinned-progress-failed-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-pinned-progress-failed-",
+      });
       const checksums = yield* validChecksums;
       const progress: PinnedRuntimeProgress[] = [];
       let cancelled = false;
@@ -171,7 +173,9 @@ it.layer(NodeServices.layer)("ensurePinnedRuntimeInstalled", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-pinned-archive-missing-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-pinned-archive-missing-",
+      });
       const checksums = yield* validChecksums;
       const failsWith = (status: number) =>
         ensurePinnedRuntimeInstalled({
@@ -205,7 +209,7 @@ it.layer(NodeServices.layer)("ensurePinnedRuntimeInstalled", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-pinned-retry-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-pinned-retry-" });
       const checksums = yield* validChecksums;
       const requests: string[] = [];
       const gatewayTimeoutServed = yield* Deferred.make<void>();
@@ -265,7 +269,9 @@ it.layer(NodeServices.layer)("ensurePinnedRuntimeInstalled", (it) => {
       const shortResume = "shortResume" in row;
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-pinned-retry-body-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-pinned-retry-body-",
+      });
       const checksums = yield* validChecksums;
       const ranges: Array<string | undefined> = [];
       const checksumRanges: Array<string | undefined> = [];
@@ -393,7 +399,7 @@ it.layer(NodeServices.layer)("ensurePinnedRuntimeInstalled", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-pinned-offline-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-pinned-offline-" });
       let requests = 0;
       const error = yield* ensurePinnedRuntimeInstalled({
         baseDir,
@@ -422,7 +428,9 @@ it.layer(NodeServices.layer)("ensurePinnedRuntimeInstalled", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-pinned-archive-bad-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-pinned-archive-bad-",
+      });
       const commands: string[] = [];
       const error = yield* ensurePinnedRuntimeInstalled({
         baseDir,
@@ -446,7 +454,9 @@ it.layer(NodeServices.layer)("ensurePinnedRuntimeInstalled", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-pinned-runtime-test-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-pinned-runtime-test-",
+      });
       const finalPaths = pinnedRuntimePaths(path, baseDir, version, "linux");
       let validatedDirectory = "";
 
@@ -478,7 +488,9 @@ it.layer(NodeServices.layer)("ensurePinnedRuntimeInstalled", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-pinned-runtime-test-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-pinned-runtime-test-",
+      });
       const finalPaths = pinnedRuntimePaths(path, baseDir, version, "linux");
 
       yield* ensurePinnedRuntimeInstalled({
@@ -508,7 +520,9 @@ it.layer(NodeServices.layer)("ensurePinnedRuntimeInstalled", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-pinned-runtime-repair-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-pinned-runtime-repair-",
+      });
       const finalPaths = pinnedRuntimePaths(path, baseDir, version, "linux");
       yield* fs.makeDirectory(finalPaths.versionDir, { recursive: true });
       yield* fs.writeFileString(path.join(finalPaths.versionDir, "partial"), "incomplete\n");
@@ -534,7 +548,9 @@ it.layer(NodeServices.layer)("ensurePinnedRuntimeInstalled", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-pinned-runtime-mirror-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-pinned-runtime-mirror-",
+      });
       const cached = pinnedRuntimePaths(path, baseDir, version, "linux");
       yield* fs.makeDirectory(path.dirname(cached.entryPath), { recursive: true });
       yield* fs.writeFileString(cached.entryPath, "#!/bin/sh\n");
@@ -573,7 +589,9 @@ it.layer(NodeServices.layer)("ensurePinnedRuntimeInstalled", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-pinned-runtime-repair-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-pinned-runtime-repair-",
+      });
       const finalPaths = pinnedRuntimePaths(path, baseDir, version, "linux");
       yield* fs.makeDirectory(path.dirname(finalPaths.entryPath), { recursive: true });
       yield* fs.writeFileString(finalPaths.entryPath, "broken\n");
@@ -645,7 +663,7 @@ it.layer(NodeServices.layer)("prunePinnedRuntimes", (it) => {
   const setup = Effect.fn(function* (versions: ReadonlyArray<string>) {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-pinned-prune-" });
+    const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-pinned-prune-" });
     const versionsDir = path.join(baseDir, "runtime", "versions");
     const now = Duration.toMillis(Duration.days(1));
     yield* TestClock.setTime(now);
@@ -831,7 +849,10 @@ it.layer(NodeServices.layer)("prunePinnedRuntimes", (it) => {
       }
 
       const home = linkedHome
-        ? path.join(yield* fs.makeTempDirectoryScoped({ prefix: "t3-pinned-link-" }), "home")
+        ? path.join(
+            yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-pinned-link-" }),
+            "home",
+          )
         : baseDir;
       if (linkedHome) yield* fs.symlink(baseDir, home);
 
@@ -1033,7 +1054,7 @@ it.layer(NodeServices.layer)("launcher lookup on PATH", (it) => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-launcher-path-" });
+        const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-launcher-path-" });
         const launcher = path.join(root, "vibecodinger");
         yield* fs.writeFileString(launcher, "", { mode: 0o755 });
         const missing = path.join(root, "missing");
@@ -1058,7 +1079,7 @@ it.layer(NodeServices.layer)("launcher lookup on PATH", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-launcher-path-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-launcher-path-" });
       const versionsDir = path.join(root, ".vibecodinger", "runtime", "versions");
       const executable = path.join(versionsDir, "1.0.0", "vibecodinger");
       yield* fs.makeDirectory(path.dirname(executable), { recursive: true });

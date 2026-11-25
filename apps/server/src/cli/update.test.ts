@@ -205,7 +205,7 @@ it.layer(NodeServices.layer)("vibecodinger update launcher", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-update-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-update-" });
       const oldExe = path.join(root, "runtime/versions/1.0.0/vibecodinger");
       const newExe = path.join(root, "runtime/versions/2.0.0/vibecodinger");
       const launcher = path.join(root, "bin/vibecodinger");
@@ -263,7 +263,7 @@ it.layer(NodeServices.layer)("vibecodinger update launcher", (it) => {
         const path = yield* Path.Path;
         const spawner = yield* ChildProcessSpawner.ChildProcessSpawner;
         const root = yield* fs.realPath(
-          yield* fs.makeTempDirectoryScoped({ prefix: "t3-update-" }),
+          yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-update-" }),
         );
         // A quote and a space in the home path exercise the script's quoting.
         const home = path.join(root, "it's home");
@@ -340,7 +340,7 @@ it.layer(NodeServices.layer)("vibecodinger update launcher", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-update-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-update-" });
       yield* TestClock.setTime(Duration.toMillis(Duration.days(1)));
       for (const version of ["1.0.0", "2.0.0"]) {
         const directory = path.join(root, "runtime/versions", version);
@@ -395,7 +395,7 @@ it.layer(NodeServices.layer)("vibecodinger update launcher", (it) => {
   const launcherFixture = Effect.fnUntraced(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-update-" });
+    const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-update-" });
     const oldExe = path.join(root, "runtime/versions/1.0.0/vibecodinger");
     const newExe = path.join(root, "runtime/versions/2.0.0/vibecodinger");
     const launcher = path.join(root, "vibecodinger");
@@ -481,7 +481,7 @@ it.layer(NodeServices.layer)("vibecodinger update launcher", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-update-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-update-" });
       const newExe = path.join(root, "runtime/versions/2.0.0/vibecodinger");
       const copy = path.join(root, "copy/vibecodinger");
       const foreign = path.join(root, "foreign/vibecodinger");
@@ -515,7 +515,7 @@ it.layer(NodeServices.layer)("vibecodinger update launcher", (it) => {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const delimiter = (yield* HostProcess.Platform) === "win32" ? ";" : ":";
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-update-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-update-" });
       const launcher = path.join(root, "bin/vibecodinger");
       yield* fs.makeDirectory(path.dirname(launcher), { recursive: true });
       yield* fs.writeFileString(launcher, "", { mode: 0o755 });
@@ -569,7 +569,7 @@ it.layer(NodeServices.layer)("vibecodinger update with a background service", (i
       yield* withoutTerminals;
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-update-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-update-" });
       const version = packageJson.version;
       const runtime = pinnedRuntimePaths(path, baseDir, version, "linux");
       yield* fs.makeDirectory(runtime.versionDir, { recursive: true });
@@ -704,7 +704,7 @@ it.layer(NodeServices.layer)("vibecodinger update checks the database before swi
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-update-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-update-" });
       const databasePath = path.join(baseDir, "userdata", "statev2.sqlite");
       const runtime = pinnedRuntimePaths(path, baseDir, targetVersion, "linux");
       yield* fs.makeDirectory(runtime.versionDir, { recursive: true });

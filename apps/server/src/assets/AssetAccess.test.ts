@@ -51,7 +51,7 @@ vi.mock("node:fs/promises", async (importOriginal) => {
 });
 
 const layerConfig = ServerConfig.ServerConfig.layerTest(process.cwd(), {
-  prefix: "t3-asset-access-test-",
+  prefix: "vibecodinger-asset-access-test-",
 });
 const screenshotPng = new Uint8Array(24);
 screenshotPng.set([
@@ -135,7 +135,9 @@ describe("AssetAccess", () => {
       Effect.gen(function* () {
         const fileSystem = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const directory = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-mcp-html-" });
+        const directory = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-mcp-html-",
+        });
         const file = path.join(directory, "app.html");
         const limit = MCP_APP_MAX_HTML_BYTES + 128 * 1024;
         yield* fileSystem.writeFile(file, new Uint8Array(limit).fill(120));
@@ -150,7 +152,9 @@ describe("AssetAccess", () => {
       Effect.gen(function* () {
         const fileSystem = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const directory = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-mcp-html-" });
+        const directory = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-mcp-html-",
+        });
         const file = path.join(directory, "app.html");
         const limit = MCP_APP_MAX_HTML_BYTES + 128 * 1024;
         for (const size of [limit + 1, limit * 2]) {
@@ -164,7 +168,9 @@ describe("AssetAccess", () => {
       Effect.gen(function* () {
         const fileSystem = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const directory = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-mcp-html-" });
+        const directory = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-mcp-html-",
+        });
         const file = path.join(directory, "app.html");
         for (const html of ["", "<body>" + "☃".repeat(100_000) + "</body>"]) {
           const expected = new TextEncoder().encode(html);
@@ -181,7 +187,9 @@ describe("AssetAccess", () => {
       Effect.gen(function* () {
         const fileSystem = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const directory = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-mcp-html-" });
+        const directory = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-mcp-html-",
+        });
         const error = yield* readMcpAppHtml(path.join(directory, "missing.html")).pipe(Effect.flip);
         expect(error._tag).toBe("PlatformError");
         expect(error.reason._tag).toBe("NotFound");
@@ -245,8 +253,8 @@ describe("AssetAccess", () => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-media-root-" });
-      const outside = yield* fs.makeTempDirectoryScoped({ prefix: "t3-media-outside-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-media-root-" });
+      const outside = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-media-outside-" });
       for (const [name, mimeType] of [
         ["screenshot.png", "image/png"],
         ["recording.mp4", "video/mp4"],
@@ -297,8 +305,10 @@ describe("AssetAccess", () => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-download-root-" });
-      const outside = yield* fs.makeTempDirectoryScoped({ prefix: "t3-download-outside-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-download-root-" });
+      const outside = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-download-outside-",
+      });
       for (const name of [
         "data.csv",
         "report.docx",
@@ -369,7 +379,9 @@ describe("AssetAccess", () => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const directory = yield* fs.makeTempDirectoryScoped({ prefix: "t3-media-relative-" });
+      const directory = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-media-relative-",
+      });
       const root = path.join(directory, "workspace");
       yield* fs.makeDirectory(root);
       for (const relativePath of ["screenshot.png", "../recording.mp4"]) {
@@ -395,7 +407,7 @@ describe("AssetAccess", () => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-draft-media-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-draft-media-" });
       for (const [name, mimeType] of [
         ["video.mp4", "video/mp4"],
         ["audio.wav", "audio/wav"],
@@ -443,7 +455,9 @@ describe("AssetAccess", () => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const directory = yield* fs.makeTempDirectoryScoped({ prefix: "t3-draft-boundary-" });
+        const directory = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-draft-boundary-",
+        });
         const root = path.join(directory, "workspace");
         yield* fs.makeDirectory(root);
         for (const name of ["video.mp4", "audio.wav", "secret.txt"]) {
@@ -477,7 +491,9 @@ describe("AssetAccess", () => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const directory = yield* fs.makeTempDirectoryScoped({ prefix: "t3-draft-symlink-" });
+        const directory = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-draft-symlink-",
+        });
         const root = path.join(directory, "workspace");
         yield* fs.makeDirectory(root);
         const outside = path.join(directory, "outside.mp4");
@@ -506,7 +522,7 @@ describe("AssetAccess", () => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-draft-absolute-" });
+        const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-draft-absolute-" });
         for (const extension of ["png", "mp4", "wav"]) {
           const target = path.join(root, `target.${extension}`);
           const alias = path.join(root, `alias.${extension}`);
@@ -531,7 +547,7 @@ describe("AssetAccess", () => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const directory = yield* fs.makeTempDirectoryScoped({ prefix: "t3-draft-swap-" });
+        const directory = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-draft-swap-" });
         const root = path.join(directory, "workspace");
         yield* fs.makeDirectory(root);
         const filePath = path.join(root, "video.mp4");
@@ -570,7 +586,7 @@ describe("AssetAccess", () => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const directory = yield* fs.makeTempDirectoryScoped({ prefix: "t3-media-home-" });
+        const directory = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-media-home-" });
         const home = path.join(directory, "var", "home", "alice");
         const filePath = path.join(home, "Downloads", "repro.mp4");
         yield* fs.makeDirectory(path.dirname(filePath), { recursive: true });
@@ -620,7 +636,9 @@ describe("AssetAccess", () => {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
         const { mountRoot, underWsl } = yield* makeFakeWslHost;
-        const workspaceRoot = yield* fs.makeTempDirectoryScoped({ prefix: "t3-media-wsl-root-" });
+        const workspaceRoot = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-media-wsl-root-",
+        });
         const filePath = path.join(mountRoot, "c", "Users", "me", "Pictures", "shot.png");
         yield* fs.makeDirectory(path.dirname(filePath), { recursive: true });
         yield* fs.writeFile(filePath, screenshotPng);
@@ -649,7 +667,9 @@ describe("AssetAccess", () => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const workspaceRoot = yield* fs.makeTempDirectoryScoped({ prefix: "t3-media-gitbash-" });
+        const workspaceRoot = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-media-gitbash-",
+        });
         const canonicalFile = path.join(yield* fs.realPath(workspaceRoot), "shot.png");
         yield* fs.writeFile(canonicalFile, screenshotPng);
         const gitBashPath = `/${canonicalFile[0]!.toLowerCase()}${canonicalFile.slice(2).replaceAll("\\", "/")}`;
@@ -716,7 +736,9 @@ describe("AssetAccess", () => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-media-validation-" });
+        const root = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-media-validation-",
+        });
         for (const name of ["report.md", "secret.txt", "secret.%70ng", "secret.png#private.txt"]) {
           const filePath = path.join(root, name);
           yield* fs.writeFileString(filePath, "not media");
@@ -754,7 +776,9 @@ describe("AssetAccess", () => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const root = yield* fs.realPath(yield* fs.makeTempDirectoryScoped({ prefix: "t3-link-" }));
+        const root = yield* fs.realPath(
+          yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-link-" }),
+        );
         yield* fs.writeFileString(path.join(root, "page.xhtml"), "<html/>");
         yield* fs.writeFileString(path.join(root, "real.pdf"), "%PDF-1.4");
         const link = path.join(root, "report.pdf");
@@ -797,7 +821,7 @@ describe("AssetAccess", () => {
       yield* fs.makeDirectory(config.secretsDir, { recursive: true });
       yield* fs.writeFile(stateFile, new Uint8Array(32).fill(7));
       yield* fs.writeFileString(config.dbPath, "SQLite format 3");
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-media-state-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-media-state-" });
       const alias = path.join(root, "alias");
       yield* fs.symlink(stateFile, alias);
       const threadId = ThreadId.make("thread-1");
@@ -845,7 +869,7 @@ describe("AssetAccess", () => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-media-symlink-" });
+        const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-media-symlink-" });
         const filePath = path.join(root, "actual.svg");
         const aliasPath = path.join(root, "alias.png");
         const replacementPath = path.join(root, "other.svg");
@@ -877,7 +901,7 @@ describe("AssetAccess", () => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-media-open-file-" });
+        const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-media-open-file-" });
         const filePath = path.join(root, "recording.mp4");
         const savedPath = path.join(root, "saved.mp4");
         const secretPath = path.join(root, "secret.txt");
@@ -916,7 +940,7 @@ describe("AssetAccess", () => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-media-open-race-" });
+        const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-media-open-race-" });
         const filePath = path.join(root, "recording.mp4");
         const secretPath = path.join(root, "secret.txt");
         yield* fs.writeFileString(filePath, "video");
@@ -952,7 +976,9 @@ describe("AssetAccess", () => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-media-parent-race-" });
+        const root = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-media-parent-race-",
+        });
         const publicDirectory = path.join(root, "public");
         const privateDirectory = path.join(root, "private");
         yield* fs.makeDirectory(publicDirectory);
@@ -1006,7 +1032,7 @@ describe("AssetAccess", () => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-media-revision-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-media-revision-" });
       const filePath = path.join(root, "recording.mp4");
       yield* fs.writeFileString(filePath, "original");
       yield* Effect.promise(() => NodeFSP.utimes(filePath, 1_000, 1_000));
@@ -1043,7 +1069,7 @@ describe("AssetAccess", () => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-media-replacement-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-media-replacement-" });
       const filePath = path.join(root, "recording.mp4");
       yield* fs.writeFileString(filePath, "original");
       const input = {
@@ -1168,7 +1194,7 @@ describe("AssetAccess", () => {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const root = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-asset-workspace-",
+        prefix: "vibecodinger-asset-workspace-",
       });
       const htmlPath = path.join(root, "report.html");
       const cssPath = path.join(root, "report.css");
@@ -1303,7 +1329,9 @@ describe("AssetAccess", () => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-asset-revision-" });
+      const root = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-asset-revision-",
+      });
       const pages = path.join(root, "pages");
       yield* fileSystem.makeDirectory(pages);
       // Coarse kernel clocks can stamp two quick same-size writes alike, so each edit gets its own mtime.
@@ -1400,10 +1428,10 @@ describe("AssetAccess", () => {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const root = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-asset-root-",
+        prefix: "vibecodinger-asset-root-",
       });
       const outside = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-asset-outside-",
+        prefix: "vibecodinger-asset-outside-",
       });
       const htmlPath = path.join(outside, "report.html");
       yield* fileSystem.writeFileString(htmlPath, "<p>outside</p>");
@@ -1434,7 +1462,7 @@ describe("AssetAccess", () => {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const root = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-asset-image-workspace-",
+        prefix: "vibecodinger-asset-image-workspace-",
       });
       const assetsDirectory = path.join(root, "assets");
       yield* fileSystem.makeDirectory(assetsDirectory, { recursive: true });
@@ -1504,7 +1532,9 @@ describe("AssetAccess", () => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-preview-literal-" });
+      const root = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-preview-literal-",
+      });
       const directory = path.join(root, "assets#archive");
       yield* fileSystem.makeDirectory(directory);
 
@@ -1612,7 +1642,9 @@ describe("AssetAccess", () => {
         const config = yield* ServerConfig.ServerConfig;
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-attachments-link-" });
+        const root = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-attachments-link-",
+        });
         const realAttachmentsDir = path.join(root, "real");
         const linkedAttachmentsDir = path.join(root, "linked");
         yield* fs.makeDirectory(realAttachmentsDir);
@@ -1716,7 +1748,7 @@ describe("AssetAccess", () => {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const root = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-asset-favicon-",
+        prefix: "vibecodinger-asset-favicon-",
       });
       const faviconPath = path.join(root, "favicon.svg");
       const initialFavicon = "<svg>a</svg>";
@@ -1774,10 +1806,10 @@ describe("AssetAccess", () => {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const root = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-asset-favicon-workspace-",
+        prefix: "vibecodinger-asset-favicon-workspace-",
       });
       const pictures = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-asset-favicon-pictures-",
+        prefix: "vibecodinger-asset-favicon-pictures-",
       });
       const externalPath = path.join(pictures, "custom.png");
       const siblingPath = path.join(pictures, "sibling.png");
@@ -1812,10 +1844,10 @@ describe("AssetAccess", () => {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const root = yield* fs.realPath(
-        yield* fs.makeTempDirectoryScoped({ prefix: "t3-asset-favicon-link-" }),
+        yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-asset-favicon-link-" }),
       );
       const pictures = yield* fs.realPath(
-        yield* fs.makeTempDirectoryScoped({ prefix: "t3-asset-favicon-link-pictures-" }),
+        yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-asset-favicon-link-pictures-" }),
       );
       yield* fs.writeFileString(path.join(root, "page.xhtml"), "<html/>");
       yield* fs.writeFileString(path.join(root, "real.svg"), "<svg/>");
@@ -1857,7 +1889,7 @@ describe("AssetAccess", () => {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const root = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-asset-favicon-hint-",
+        prefix: "vibecodinger-asset-favicon-hint-",
       });
       yield* fileSystem.makeDirectory(path.join(root, "brand"));
       yield* fileSystem.writeFileString(path.join(root, "brand", "hint.svg"), "<svg>hint</svg>");

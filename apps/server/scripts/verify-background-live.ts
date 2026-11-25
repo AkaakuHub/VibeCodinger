@@ -105,7 +105,9 @@ if (values.scenario === "all" || repeat > 1) {
   console.log(JSON.stringify(outcomes, null, 2));
   process.exit(outcomes.some((outcome) => outcome.status === "failed") ? 1 : 0);
 }
-const evidence = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-background-live-"));
+const evidence = NodeFS.mkdtempSync(
+  NodePath.join(NodeOS.tmpdir(), "vibecodinger-background-live-"),
+);
 const home = NodePath.join(evidence, "home");
 const project = NodePath.join(evidence, "project");
 NodeFS.mkdirSync(project);

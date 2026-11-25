@@ -39,7 +39,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const cwd = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-repository-identity-test-",
+        prefix: "vibecodinger-repository-identity-test-",
       });
 
       yield* git(cwd, ["init"]);
@@ -67,7 +67,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const cwd = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-repository-identity-userless-remote-test-",
+        prefix: "vibecodinger-repository-identity-userless-remote-test-",
       });
 
       yield* git(cwd, ["init"]);
@@ -86,10 +86,10 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const aliasDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-repository-identity-ssh-alias-test-",
+        prefix: "vibecodinger-repository-identity-ssh-alias-test-",
       });
       const plainDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-repository-identity-ssh-plain-test-",
+        prefix: "vibecodinger-repository-identity-ssh-plain-test-",
       });
 
       yield* git(aliasDir, ["init"]);
@@ -132,7 +132,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const cwd = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-repository-identity-instead-of-test-",
+        prefix: "vibecodinger-repository-identity-instead-of-test-",
       });
 
       yield* git(cwd, ["init"]);
@@ -155,7 +155,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
       });
 
       const shorthandCwd = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-repository-identity-instead-of-shorthand-test-",
+        prefix: "vibecodinger-repository-identity-instead-of-shorthand-test-",
       });
       yield* git(shorthandCwd, ["init"]);
       yield* git(shorthandCwd, ["remote", "add", "origin", "gh:T3Tools/t3code.git"]);
@@ -173,7 +173,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const cwd = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-repository-identity-azure-git-suffix-test-",
+        prefix: "vibecodinger-repository-identity-azure-git-suffix-test-",
       });
 
       yield* git(cwd, ["init"]);
@@ -197,7 +197,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const cwd = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-repository-identity-partial-clone-test-",
+        prefix: "vibecodinger-repository-identity-partial-clone-test-",
       });
 
       yield* git(cwd, ["init"]);
@@ -221,7 +221,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const cwd = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-repository-identity-spaced-url-test-",
+        prefix: "vibecodinger-repository-identity-spaced-url-test-",
       });
 
       yield* git(cwd, ["init"]);
@@ -238,7 +238,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const cwd = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-repository-identity-credentials-test-",
+        prefix: "vibecodinger-repository-identity-credentials-test-",
       });
 
       yield* git(cwd, ["init"]);
@@ -270,7 +270,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
         const fileSystem = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
         const tempDir = yield* fileSystem.makeTempDirectoryScoped({
-          prefix: "t3-repository-identity-nested-root-test-",
+          prefix: "vibecodinger-repository-identity-nested-root-test-",
         });
         const repoRoot = path.join(tempDir, rootName);
         const nestedWorkspace = path.join(repoRoot, "packages", "web");
@@ -300,10 +300,10 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
         const fileSystem = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
         const checkout = yield* fileSystem.makeTempDirectoryScoped({
-          prefix: "t3-repository-identity-checkout-",
+          prefix: "vibecodinger-repository-identity-checkout-",
         });
         const parent = yield* fileSystem.makeTempDirectoryScoped({
-          prefix: "t3-repository-identity-bare-",
+          prefix: "vibecodinger-repository-identity-bare-",
         });
         const root = path.join(parent, layout);
         yield* fileSystem.makeDirectory(root);
@@ -356,10 +356,10 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
         const fileSystem = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
         const nonGitDir = yield* fileSystem.makeTempDirectoryScoped({
-          prefix: "t3-repository-identity-non-git-",
+          prefix: "vibecodinger-repository-identity-non-git-",
         });
         const gitDir = yield* fileSystem.makeTempDirectoryScoped({
-          prefix: "t3-repository-identity-no-remote-",
+          prefix: "vibecodinger-repository-identity-no-remote-",
         });
 
         yield* git(gitDir, ["init"]);
@@ -392,10 +392,10 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const localOnlyDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-repository-identity-local-remote-",
+        prefix: "vibecodinger-repository-identity-local-remote-",
       });
       const mixedDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-repository-identity-mixed-remote-",
+        prefix: "vibecodinger-repository-identity-mixed-remote-",
       });
 
       yield* git(localOnlyDir, ["init"]);
@@ -421,7 +421,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
       Effect.gen(function* () {
         const fileSystem = yield* FileSystem.FileSystem;
         const cwd = yield* fileSystem.makeTempDirectoryScoped({
-          prefix: "t3-repository-identity-upstream-test-",
+          prefix: "vibecodinger-repository-identity-upstream-test-",
         });
 
         yield* git(cwd, ["init"]);
@@ -457,7 +457,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const cwd = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-repository-identity-fork-test-",
+        prefix: "vibecodinger-repository-identity-fork-test-",
       });
 
       yield* git(cwd, ["init"]);
@@ -481,7 +481,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const cwd = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-repository-identity-gh-default-test-",
+        prefix: "vibecodinger-repository-identity-gh-default-test-",
       });
 
       yield* git(cwd, ["init"]);
@@ -501,7 +501,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const cwd = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-repository-identity-gh-parent-test-",
+        prefix: "vibecodinger-repository-identity-gh-parent-test-",
       });
       const resolver = yield* RepositoryIdentityResolver.RepositoryIdentityResolver;
       const resolveFresh = () => resolver.resolve(cwd, { refresh: true });
@@ -542,10 +542,10 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const cwd = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-repository-identity-gh-default-git-dir-",
+        prefix: "vibecodinger-repository-identity-gh-default-git-dir-",
       });
       const other = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-repository-identity-inherited-git-dir-",
+        prefix: "vibecodinger-repository-identity-inherited-git-dir-",
       });
 
       yield* git(cwd, ["init"]);
@@ -570,7 +570,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const cwd = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-repository-identity-nested-group-test-",
+        prefix: "vibecodinger-repository-identity-nested-group-test-",
       });
 
       yield* git(cwd, ["init"]);

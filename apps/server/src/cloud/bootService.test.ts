@@ -195,7 +195,7 @@ const makeHarness = Effect.fn("test.make_boot_service_harness")(function* (
 ) {
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
-  const home = yield* fs.makeTempDirectoryScoped({ prefix: "t3-boot-service-test-" });
+  const home = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-boot-service-test-" });
   const managerUnitDir = path.join(
     managerXdgConfigHome !== undefined && path.isAbsolute(managerXdgConfigHome)
       ? managerXdgConfigHome
@@ -606,7 +606,9 @@ it.layer(NodeServices.layer)("boot service install", (it) => {
     Effect.gen(function* () {
       const path = yield* Path.Path;
       const fs = yield* FileSystem.FileSystem;
-      const shellConfigHome = yield* fs.makeTempDirectoryScoped({ prefix: "t3-xdg-config-" });
+      const shellConfigHome = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-xdg-config-",
+      });
       const { makeService, home, control } = yield* makeHarness(
         "linux",
         undefined,
@@ -777,7 +779,7 @@ it.layer(NodeServices.layer)("boot service install", (it) => {
     Effect.gen(function* () {
       const path = yield* Path.Path;
       const fs = yield* FileSystem.FileSystem;
-      const configRoot = yield* fs.makeTempDirectoryScoped({ prefix: "t3-xdg-config-" });
+      const configRoot = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-xdg-config-" });
       const xdgConfigHome = {
         unset: undefined,
         empty: "",
@@ -1278,7 +1280,7 @@ process.disconnect();
       control.active = true;
 
       const fs = yield* FileSystem.FileSystem;
-      const otherHome = yield* fs.makeTempDirectoryScoped({ prefix: "t3-doctor-other-" });
+      const otherHome = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-doctor-other-" });
       const other = yield* makeService(undefined, "1.2.3", otherHome);
       commands.length = 0;
       expect(yield* other.withStopped(Effect.sync(() => control.active))).toBe(true);
@@ -1292,7 +1294,7 @@ process.disconnect();
       const plan = yield* service.install();
       const unit = yield* fs.readFileString(plan.unitPath);
       const path = yield* Path.Path;
-      const otherHome = yield* fs.makeTempDirectoryScoped({ prefix: "t3-other-home-" });
+      const otherHome = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-other-home-" });
 
       const other = yield* makeService(undefined, "1.2.3", path.join(otherHome, ".vibecodinger"));
       commands.length = 0;
@@ -1320,7 +1322,7 @@ process.disconnect();
       const { service, fs, baseDir, commands, makeService } = yield* makeHarness();
       yield* service.install();
       const path = yield* Path.Path;
-      const linkDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-symlink-home-" });
+      const linkDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-symlink-home-" });
       const aliasDir = path.join(linkDir, "a$$b");
       yield* fs.symlink(baseDir, aliasDir);
 
@@ -1341,7 +1343,7 @@ process.disconnect();
     Effect.gen(function* () {
       const { fs, commands, invocations, control, makeService } = yield* makeHarness();
       const path = yield* Path.Path;
-      const home = yield* fs.makeTempDirectoryScoped({ prefix: "t3-handoff-" });
+      const home = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-handoff-" });
       const baseDir = path.join(home, "T3 Data 100%", "${UNSET}", "$literal");
       const outside = yield* makeService(undefined, "1.2.3", baseDir);
       const plan = yield* outside.install();

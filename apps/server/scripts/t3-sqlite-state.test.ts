@@ -29,7 +29,9 @@ it.layer(NodeServices.layer)("t3-sqlite-state", (it) => {
   it.effect("enables checkpoint_fullfsync on its direct connection", () =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-sqlite-state-fsync-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-sqlite-state-fsync-",
+      });
       yield* createFixtureDatabase(baseDir);
 
       const result = yield* runSqliteState({
@@ -51,7 +53,9 @@ it.layer(NodeServices.layer)("t3-sqlite-state", (it) => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-sqlite-state-exec-" });
+        const baseDir = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-sqlite-state-exec-",
+        });
         yield* createFixtureDatabase(baseDir);
 
         const mutation = yield* runSqliteState({
@@ -75,7 +79,7 @@ it.layer(NodeServices.layer)("t3-sqlite-state", (it) => {
         assert.equal(error._tag, "SqliteStateSharedHomeMutationError");
 
         const aliasParent = yield* fs.makeTempDirectoryScoped({
-          prefix: "t3-sqlite-state-alias-",
+          prefix: "vibecodinger-sqlite-state-alias-",
         });
         const aliasBaseDir = path.join(aliasParent, "shared-home-alias");
         yield* fs.symlink(baseDir, aliasBaseDir);

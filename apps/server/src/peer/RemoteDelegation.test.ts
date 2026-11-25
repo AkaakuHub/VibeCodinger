@@ -587,7 +587,7 @@ const boxToolkitLayer = (thread: BoxThread) => {
     Layer.provide(Layer.mock(GitVcsDriver.GitVcsDriver)({})),
     Layer.provide(Layer.mock(SourceControlRepositoryService.SourceControlRepositoryService)({})),
     Layer.provide(
-      ServerConfig.layerTest(process.cwd(), { prefix: "t3-remote-delegation-box-" }).pipe(
+      ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-remote-delegation-box-" }).pipe(
         Layer.provide(NodeServices.layer),
       ),
     ),

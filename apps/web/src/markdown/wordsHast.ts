@@ -464,7 +464,7 @@ function codexDirective(node: Element, walk: Walk, inLink: boolean): ElementCont
   };
 }
 
-const INLINE_PREFIX = "t3-markdown-inline-prefix:";
+const INLINE_PREFIX = "vibecodinger-markdown-inline-prefix:";
 
 function stripPositions(node: ElementContent) {
   delete node.position;

@@ -128,7 +128,7 @@ const buildExeCmd = Command.make(
         (yield* HostProcess.Platform) === "linux" &&
         (yield* HostProcess.Architecture) === "arm64";
       const spawnCommand = yield* resolveSpawnCommand("vp", ["pack"]);
-      const cliAssetDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-cli-asset-" });
+      const cliAssetDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-cli-asset-" });
       const pack = (packMode: "bundle" | "bootstrap" | "1") =>
         runCommand(
           ChildProcess.make(spawnCommand.command, spawnCommand.args, {

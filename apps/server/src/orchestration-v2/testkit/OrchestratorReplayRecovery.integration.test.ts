@@ -187,7 +187,7 @@ const runCursorRecovery = Effect.fn("runCursorRecovery")(function* (input: {
   const path = yield* Path.Path;
   const tempDir = yield* Effect.acquireRelease(
     fs.makeTempDirectory({
-      prefix: "t3-orchestration-v2-cursor-recovery-",
+      prefix: "vibecodinger-orchestration-v2-cursor-recovery-",
     }),
     (directory) => fs.remove(directory, { recursive: true, force: true }).pipe(Effect.orDie),
   );
@@ -283,7 +283,7 @@ describe("orchestrator replay recovery", () => {
         const path = yield* Path.Path;
         const tempDir = yield* Effect.acquireRelease(
           fs.makeTempDirectory({
-            prefix: "t3-orchestration-v2-recovery-",
+            prefix: "vibecodinger-orchestration-v2-recovery-",
           }),
           (directory) => fs.remove(directory, { recursive: true, force: true }).pipe(Effect.orDie),
         );
@@ -390,7 +390,7 @@ describe("orchestrator replay recovery", () => {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const tempDir = yield* Effect.acquireRelease(
-        fs.makeTempDirectory({ prefix: "t3-orchestration-v2-claude-recovery-" }),
+        fs.makeTempDirectory({ prefix: "vibecodinger-orchestration-v2-claude-recovery-" }),
         (directory) => fs.remove(directory, { recursive: true, force: true }).pipe(Effect.orDie),
       );
       const materialized = yield* materializeFixtureInput({
@@ -500,7 +500,7 @@ describe("orchestrator replay recovery", () => {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const tempDir = yield* Effect.acquireRelease(
-        fs.makeTempDirectory({ prefix: "t3-orchestration-v2-claude-recovery-" }),
+        fs.makeTempDirectory({ prefix: "vibecodinger-orchestration-v2-claude-recovery-" }),
         (directory) => fs.remove(directory, { recursive: true, force: true }).pipe(Effect.orDie),
       );
       const materialized = yield* materializeFixtureInput({

@@ -83,7 +83,7 @@ it.effect("forks a session stored under the instance's own CLAUDE_CONFIG_DIR", (
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const configDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-claude-fork-config-",
+        prefix: "vibecodinger-claude-fork-config-",
       });
       const projectDir = yield* writeClaudeSession(configDir);
       const hostConfigDir = (yield* HostProcess.Environment).CLAUDE_CONFIG_DIR;
@@ -123,7 +123,7 @@ it.effect("forked Claude sessions keep their compaction chain", () =>
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const configDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-claude-fork-compact-",
+        prefix: "vibecodinger-claude-fork-compact-",
       });
       const uuid = (n: number) => `bbbbbbbb-0000-4000-8000-00000000000${n}`;
       const turn = (id: number, parent: string | null, role: "user" | "assistant") => ({
@@ -237,7 +237,7 @@ it.effect("resumes a session whose history exceeds the status-probe output limit
   Effect.gen(function* () {
     const fileSystem = yield* FileSystem.FileSystem;
     const configDir = yield* fileSystem.makeTempDirectoryScoped({
-      prefix: "t3-claude-large-history-",
+      prefix: "vibecodinger-claude-large-history-",
     });
     yield* writeClaudeSession(configDir, [
       sessionEntry("aaaaaaaa-0000-4000-8000-000000000001", null, {
@@ -625,7 +625,7 @@ it.effect.each([
 );
 
 function fakeClaudeCli(script: string): string {
-  const dir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-claude-cli-"));
+  const dir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "vibecodinger-claude-cli-"));
   const cli = NodePath.join(dir, "claude");
   NodeFS.writeFileSync(cli, `#!/bin/sh\n${script}\n`, { mode: 0o755 });
   return cli;

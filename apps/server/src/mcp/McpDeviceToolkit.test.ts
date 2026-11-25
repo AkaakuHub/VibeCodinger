@@ -151,7 +151,9 @@ const layerTest = McpHttpServer.layerDeviceToolkit.pipe(
   Layer.provideMerge(McpToolAccessTestkit.liveThreadsLayer),
   Layer.provideMerge(layerDeviceServiceMock),
   Layer.provide(layerProjectsMock),
-  Layer.provide(ServerConfig.layerTest(process.cwd(), { prefix: "t3-mcp-device-toolkit-test-" })),
+  Layer.provide(
+    ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-mcp-device-toolkit-test-" }),
+  ),
   Layer.provide(NodeServices.layer),
 );
 
@@ -277,7 +279,9 @@ it.effect("rejects unavailable agent access before booting or opening a device",
         Layer.provide(layerUnavailable),
         Layer.provide(layerProjectsMock),
         Layer.provide(
-          ServerConfig.layerTest(process.cwd(), { prefix: "t3-mcp-device-toolkit-test-" }),
+          ServerConfig.layerTest(process.cwd(), {
+            prefix: "vibecodinger-mcp-device-toolkit-test-",
+          }),
         ),
         Layer.provide(NodeServices.layer),
       ),
@@ -329,7 +333,9 @@ it.effect("device_open reports a failed host's setup error instead of no devices
         Layer.provide(layerFailed),
         Layer.provide(layerProjectsMock),
         Layer.provide(
-          ServerConfig.layerTest(process.cwd(), { prefix: "t3-mcp-device-toolkit-test-" }),
+          ServerConfig.layerTest(process.cwd(), {
+            prefix: "vibecodinger-mcp-device-toolkit-test-",
+          }),
         ),
         Layer.provide(NodeServices.layer),
       ),
@@ -469,7 +475,9 @@ describe("device targeting across hosts", () => {
           Layer.provide(layerDevices),
           Layer.provide(layerProjectsMock),
           Layer.provide(
-            ServerConfig.layerTest(process.cwd(), { prefix: "t3-mcp-device-toolkit-test-" }),
+            ServerConfig.layerTest(process.cwd(), {
+              prefix: "vibecodinger-mcp-device-toolkit-test-",
+            }),
           ),
           Layer.provide(NodeServices.layer),
         ),

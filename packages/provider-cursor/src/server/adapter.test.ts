@@ -3731,7 +3731,7 @@ describe("CursorAdapterV2", () => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const workspace = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3code-cursor-dead-worker-",
+        prefix: "vibecodinger-cursor-dead-worker-",
       });
       const instanceId = ProviderInstanceId.make("cursor");
       const threadId = ThreadId.make("cursor-dead-worker-thread");

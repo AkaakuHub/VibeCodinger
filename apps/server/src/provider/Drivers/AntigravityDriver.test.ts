@@ -74,7 +74,7 @@ const makeHarness = Effect.fn("makeAntigravityDriverHarness")(function* (
   const spawner = yield* ChildProcessSpawner.ChildProcessSpawner;
   const nodePath = yield* HostProcess.ExecutablePath;
   const baseEnv = yield* HostProcess.Environment;
-  const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-antigravity-driver-" });
+  const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-antigravity-driver-" });
   const instanceId = ProviderInstanceId.make("antigravity");
   const mockAgentPath = yield* path.fromFileUrl(
     new URL("../../../scripts/acp-mock-agent.ts", import.meta.url),
@@ -281,7 +281,7 @@ const makeHarness = Effect.fn("makeAntigravityDriverHarness")(function* (
 });
 
 const layerDeps = ServerConfig.layerTest(process.cwd(), {
-  prefix: "t3-antigravity-driver-config-",
+  prefix: "vibecodinger-antigravity-driver-config-",
 }).pipe(
   Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
   Layer.provideMerge(
@@ -382,7 +382,7 @@ it.layer(layerTest)("AntigravityDriver", (it) => {
             modelSelection: { instanceId: h.instance.instanceId, model: "gemini-test-low" },
           })
           .pipe(Effect.ignore);
-        const workspace = yield* h.fs.makeTempDirectoryScoped({ prefix: "t3-ag-chat-" });
+        const workspace = yield* h.fs.makeTempDirectoryScoped({ prefix: "vibecodinger-ag-chat-" });
         const threadId = ThreadId.make("thread-antigravity-capabilities");
         const runtimePolicy = ProviderAdapter.ProviderAdapterV2RuntimePolicy.make({
           runtimeMode: "approval-required",
@@ -491,7 +491,9 @@ it.layer(layerTest)("AntigravityDriver", (it) => {
         const entrypoint = h.path.resolve(process.argv[1]!);
         yield* Effect.scoped(
           Effect.gen(function* () {
-            const workspace = yield* h.fs.makeTempDirectoryScoped({ prefix: "t3-ag-environment-" });
+            const workspace = yield* h.fs.makeTempDirectoryScoped({
+              prefix: "vibecodinger-ag-environment-",
+            });
             const runtimePolicy = ProviderAdapter.ProviderAdapterV2RuntimePolicy.make({
               runtimeMode: "approval-required",
               interactionMode: "default",
@@ -546,7 +548,9 @@ it.layer(layerTest)("AntigravityDriver", (it) => {
         const modelSelection = { instanceId: h.instance.instanceId, model: "gemini-test-low" };
         const error = yield* Effect.scoped(
           Effect.gen(function* () {
-            const workspace = yield* h.fs.makeTempDirectoryScoped({ prefix: "t3-ag-old-runtime-" });
+            const workspace = yield* h.fs.makeTempDirectoryScoped({
+              prefix: "vibecodinger-ag-old-runtime-",
+            });
             const runtimePolicy = ProviderAdapter.ProviderAdapterV2RuntimePolicy.make({
               runtimeMode: "approval-required",
               interactionMode: "default",

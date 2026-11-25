@@ -35,7 +35,7 @@ it.effect(
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const stateDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-doctor-" });
+      const stateDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-doctor-" });
       const serverRuntimeStatePath = path.join(stateDir, "server-runtime.json");
       const calls: string[] = [];
       const services =

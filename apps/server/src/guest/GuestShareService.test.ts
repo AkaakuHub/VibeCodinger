@@ -90,7 +90,7 @@ const layerConnect = Layer.mock(CloudManagedEndpointRuntime)({
 const layerProviders = Layer.mock(ProviderRegistry.ProviderRegistry)({
   getProviders: Effect.succeed([]),
 });
-const layerConfig = ServerConfig.layerTest(process.cwd(), { prefix: "t3-guest-share-" });
+const layerConfig = ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-guest-share-" });
 // The real cleanup also closes terminals, previews and devices; these tests only need the files gone.
 const layerCleanup = Layer.effect(
   ResourceCleanupService.ResourceCleanupService,

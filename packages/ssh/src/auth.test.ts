@@ -70,7 +70,9 @@ describe("ssh auth", () => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const directory = yield* fs.makeTempDirectoryScoped({ prefix: "t3-ssh-askpass-test-" });
+      const directory = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-ssh-askpass-test-",
+      });
       const env = yield* buildSshChildEnvironment({
         authSecret: "super-secret",
         interactiveAuth: true,
@@ -94,7 +96,7 @@ describe("ssh auth", () => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const temp = yield* fs.makeTempDirectoryScoped({ prefix: "t3-ssh-askpass-test-" });
+      const temp = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-ssh-askpass-test-" });
       const dir = path.join(temp, "askpass");
       const cases = [
         {
@@ -229,7 +231,9 @@ describe("ssh auth", () => {
         const runtimeDirectoryOf = (askpass: string) => path.dirname(path.dirname(askpass));
 
         const first = yield* askpassPath();
-        const ownedTarget = yield* fs.makeTempDirectory({ prefix: "t3code-ssh-symlink-target-" });
+        const ownedTarget = yield* fs.makeTempDirectory({
+          prefix: "vibecodinger-ssh-symlink-target-",
+        });
         yield* fs.remove(runtimeDirectoryOf(first), { recursive: true });
         yield* fs.symlink(ownedTarget, runtimeDirectoryOf(first));
 

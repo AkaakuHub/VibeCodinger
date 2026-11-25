@@ -335,7 +335,7 @@ const runKiroScript = Effect.fn("runKiroScript")(function* (input: {
   const fileSystem = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
   const replayDir = yield* fileSystem.makeTempDirectoryScoped({
-    prefix: `t3-kiro-${input.scenario}-`,
+    prefix: `vibecodinger-kiro-${input.scenario}-`,
   });
   const statusPath = path.join(replayDir, "status.json");
   const transcript = yield* decodeAcpReplayTranscript(

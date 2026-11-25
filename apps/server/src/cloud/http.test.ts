@@ -73,7 +73,9 @@ const layerConfig = Layer.effect(
       desktopBootstrapToken: DESKTOP_BOOTSTRAP_TOKEN,
     };
   }),
-).pipe(Layer.provide(ServerConfig.layerTest(process.cwd(), { prefix: "t3-link-proof-test-" })));
+).pipe(
+  Layer.provide(ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-link-proof-test-" })),
+);
 
 // Real credential issuance, verification, origin checks and signing; no relay or tunnel is started.
 const layerLinkProofRoutes = HttpApiBuilder.layer(LinkProofTestApi).pipe(

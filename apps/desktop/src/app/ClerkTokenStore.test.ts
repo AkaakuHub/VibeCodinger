@@ -17,7 +17,7 @@ function writeLoose(path: string, contents: string): void {
 }
 
 async function withStateDir(run: (stateDir: string) => Promise<void> | void): Promise<void> {
-  const stateDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-clerk-tokens-"));
+  const stateDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "vibecodinger-clerk-tokens-"));
   try {
     await run(stateDir);
   } finally {

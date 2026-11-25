@@ -89,7 +89,7 @@ function runGit(
 const makeCheckpointWorkspace = Effect.gen(function* () {
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
-  const cwd = yield* fs.makeTempDirectory({ prefix: "t3-orchestrator-v2-thread-fork-" });
+  const cwd = yield* fs.makeTempDirectory({ prefix: "vibecodinger-orchestrator-v2-thread-fork-" });
   yield* runGit(cwd, ["init"]);
   yield* runGit(cwd, ["config", "user.name", "T3 Code Test"]);
   yield* runGit(cwd, ["config", "user.email", "t3code-test@example.com"]);

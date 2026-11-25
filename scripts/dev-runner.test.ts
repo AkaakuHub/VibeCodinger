@@ -479,7 +479,7 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
             Effect.provideService(FileSystem.FileSystem, {
               ...fs,
               exists: (file) =>
-                NodePath.basename(file) === "t3-resource-monitor"
+                NodePath.basename(file) === "vibecodinger-resource-monitor"
                   ? Effect.succeed(
                       built !== undefined && NodePath.basename(NodePath.dirname(file)) === built,
                     )
@@ -764,7 +764,9 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
     describe("t3 home precedence", () => {
       const makeWorktree = Effect.acquireRelease(
         Effect.sync(() => {
-          const root = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-devrunner-"));
+          const root = NodeFS.mkdtempSync(
+            NodePath.join(NodeOS.tmpdir(), "vibecodinger-devrunner-"),
+          );
           NodeFS.writeFileSync(
             NodePath.join(root, ".git"),
             "gitdir: /elsewhere/.git/worktrees/x\n",

@@ -23,7 +23,9 @@ it.effect.each([
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const userDataPath = yield* fs.makeTempDirectoryScoped({ prefix: "t3-v2-gpu-cache-" });
+    const userDataPath = yield* fs.makeTempDirectoryScoped({
+      prefix: "vibecodinger-v2-gpu-cache-",
+    });
     for (const name of gpuCacheDirectories) {
       yield* fs.makeDirectory(path.join(userDataPath, name), { recursive: true });
       yield* fs.writeFileString(path.join(userDataPath, name, "data_0"), "44.10.0 shaders");
@@ -62,7 +64,7 @@ it.effect("keeps GPU caches built on the first launch of a fresh install", () =>
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const appData = yield* fs.makeTempDirectoryScoped({ prefix: "t3-v2-fresh-" });
+    const appData = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-v2-fresh-" });
     const userDataPath = path.join(appData, "vibecodinger");
 
     yield* clearStaleGpuCaches({ userDataPath, electronVersion: "44.10.1" });

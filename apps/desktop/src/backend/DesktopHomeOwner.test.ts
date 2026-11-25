@@ -25,7 +25,7 @@ const withTempHome = <A, E>(
 ) =>
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
-    const home = yield* fs.makeTempDirectoryScoped({ prefix: "t3-desktop-home-owner-" });
+    const home = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-desktop-home-owner-" });
     yield* fs.makeDirectory(`${home}/userdata`, { recursive: true });
     return yield* run(`${home}/userdata`).pipe(
       Effect.provide(

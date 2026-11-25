@@ -16,7 +16,7 @@ afterEach(() => {
 });
 
 const tempRoot = () => {
-  const root = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-cli-shim-"));
+  const root = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "vibecodinger-cli-shim-"));
   directories.push(root);
   return root;
 };

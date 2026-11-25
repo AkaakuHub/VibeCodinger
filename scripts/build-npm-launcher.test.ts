@@ -121,7 +121,7 @@ it.layer(NodeServices.layer)("build-npm-launcher", (it) => {
         // macOS temp directories sit under /var, a link to /private/var, and the launcher
         // reports the resolved path it runs from.
         const root = yield* fs.realPath(
-          yield* fs.makeTempDirectoryScoped({ prefix: "t3-npm-launcher-test-" }),
+          yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-npm-launcher-test-" }),
         );
         const output = yield* buildNpmLauncher({
           version: VERSION,
@@ -376,7 +376,9 @@ fs.readFileSync = (file, ...rest) => {
           "#!/bin/sh\nkill -TERM $$\n",
           '#!/bin/sh\ntrap \'echo caught > "$T3CODE_TEST_TERM"; exit 42\' TERM\necho ready > "$T3CODE_TEST_READY"\nwhile :; do :; done\n',
         ]) {
-          const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-npm-validation-test-" });
+          const root = yield* fs.makeTempDirectoryScoped({
+            prefix: "vibecodinger-npm-validation-test-",
+          });
           const output = yield* buildNpmLauncher({
             version: VERSION,
             outputDir: path.join(root, "out"),
@@ -432,7 +434,9 @@ syncBuiltinESMExports();
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-npm-launcher-test-" });
+        const root = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-npm-launcher-test-",
+        });
         const output = yield* buildNpmLauncher({
           version: VERSION,
           outputDir: path.join(root, "out"),

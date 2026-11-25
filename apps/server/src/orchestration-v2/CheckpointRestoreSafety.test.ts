@@ -39,7 +39,7 @@ it.effect.each([
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const parent = yield* fs.makeTempDirectoryScoped({ prefix: "t3-v2-restore-" });
+    const parent = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-v2-restore-" });
     const cwd = path.join(parent, "worktree");
     const nested = path.join(cwd, "nested");
     const sibling = path.join(parent, "worktree2");
@@ -190,7 +190,9 @@ it.effect("lets rollback recreate a worktree storage cleanup removed", () =>
   Effect.gen(function* () {
     const fileSystem = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const parent = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-v2-restore-removed-" });
+    const parent = yield* fileSystem.makeTempDirectoryScoped({
+      prefix: "vibecodinger-v2-restore-removed-",
+    });
     const worktreePath = path.join(parent, "worktree");
     const isolated = yield* isCheckpointRestoreIsolated(
       { id: ThreadId.make("restore-removed"), worktreePath },
@@ -214,7 +216,7 @@ it.effect("counts a task folder's repository worktrees as part of what a restore
     const fileSystem = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
     const parent = yield* fileSystem.realPath(
-      yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-v2-restore-task-folder-" }),
+      yield* fileSystem.makeTempDirectoryScoped({ prefix: "vibecodinger-v2-restore-task-folder-" }),
     );
     // The worktrees directory is reached through a symlink; the other thread holds the real path.
     const real = path.join(parent, "real", "task");
@@ -270,7 +272,7 @@ it.effect.each([
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const worktreePath = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-v2-restore-side-chat-",
+        prefix: "vibecodinger-v2-restore-side-chat-",
       });
       const parentId = ThreadId.make("restore-side-chat-parent");
       const sideChat = {
@@ -331,7 +333,9 @@ it.effect.each([
   Effect.gen(function* () {
     const fileSystem = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const worktreePath = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-restore-child-" });
+    const worktreePath = yield* fileSystem.makeTempDirectoryScoped({
+      prefix: "vibecodinger-restore-child-",
+    });
     const parentId = ThreadId.make("restore-parent");
     const childId = ThreadId.make("restore-child");
     const ancestorId = ThreadId.make("restore-ancestor");

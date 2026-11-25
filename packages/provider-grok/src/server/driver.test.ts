@@ -131,7 +131,9 @@ it.layer(layerTest)("GrokDriver", (it) => {
       return Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        prefix = yield* fs.realPath(yield* fs.makeTempDirectoryScoped({ prefix: "t3-grok-brew-" }));
+        prefix = yield* fs.realPath(
+          yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-grok-brew-" }),
+        );
         const brewPath = path.join(prefix, "bin", "brew");
         const binaryPath = path.join(prefix, ...testCase.binary);
         for (const executable of [brewPath, binaryPath]) {
@@ -190,7 +192,7 @@ it.layer(layerTest)("GrokDriver", (it) => {
           const fs = yield* FileSystem.FileSystem;
           const path = yield* Path.Path;
           const home = yield* fs.realPath(
-            yield* fs.makeTempDirectoryScoped({ prefix: "t3-grok-home-" }),
+            yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-grok-home-" }),
           );
           const scriptHome = path.join(home, ".grok");
           const binaryPath = path.join(scriptHome, "bin", "grok");
@@ -230,7 +232,9 @@ it.layer(layerTest)("GrokDriver", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const home = yield* fs.realPath(yield* fs.makeTempDirectoryScoped({ prefix: "t3-grok-" }));
+      const home = yield* fs.realPath(
+        yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-grok-" }),
+      );
       const downloaded = path.join(home, ".grok", "downloads", "grok-linux-x86_64");
       const binaryPath = path.join(home, ".grok", "bin", "grok");
       yield* fs.makeDirectory(path.dirname(downloaded), { recursive: true });
@@ -268,7 +272,7 @@ it.layer(layerTest)("GrokDriver", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const tempDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-grok-missing-" });
+      const tempDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-grok-missing-" });
       const instance = yield* GrokDriver.create({
         instanceId: ProviderInstanceId.make("grok-missing"),
         displayName: "Grok test",

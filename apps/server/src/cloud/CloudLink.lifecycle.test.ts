@@ -259,7 +259,7 @@ describe("releaseManagedTunnelOnShutdown", () => {
         ),
 
         Effect.provide([
-          ServerConfigModule.layerTest("/", { prefix: "t3-http-release-test-" }).pipe(
+          ServerConfigModule.layerTest("/", { prefix: "vibecodinger-http-release-test-" }).pipe(
             Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
           ),
           ConfigProvider.layer(
@@ -285,7 +285,7 @@ describe("releaseManagedTunnelOnShutdown", () => {
         );
         const challenge = yield* signRelayJwt({
           privateKey: relayKeys.privateKey,
-          typ: "t3-link-challenge+jwt",
+          typ: "vibecodinger-link-challenge+jwt",
           payload: {
             kind: "environment_link_challenge",
             iss: relayIssuer,

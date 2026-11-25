@@ -30,7 +30,7 @@ const helium = BROWSER_IMPORT_SOURCES.find((source) => source.id === "helium")!;
 
 const withSourceHome = Effect.fnUntraced(function* () {
   const fileSystem = yield* FileSystem.FileSystem;
-  const home = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3code-sources-" });
+  const home = yield* fileSystem.makeTempDirectoryScoped({ prefix: "vibecodinger-sources-" });
   const context = yield* sourcePathContext.pipe(
     Effect.provideService(HostProcess.Environment, { HOME: home }),
     Effect.provideService(HostProcess.Platform, "darwin"),
@@ -82,7 +82,7 @@ describe("isSourceRunning", () => {
       Effect.gen(function* () {
         const fileSystem = yield* FileSystem.FileSystem;
         const home = yield* fileSystem.makeTempDirectoryScoped({
-          prefix: "t3code-helium-windows-lock-",
+          prefix: "vibecodinger-helium-windows-lock-",
         });
         const context = yield* sourcePathContext.pipe(
           Effect.provideService(HostProcess.Environment, {
@@ -206,7 +206,9 @@ describe("isSourceInstalled", () => {
         Effect.gen(function* () {
           const fileSystem = yield* FileSystem.FileSystem;
           const path = yield* Path.Path;
-          const home = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3code-sources-xdg-" });
+          const home = yield* fileSystem.makeTempDirectoryScoped({
+            prefix: "vibecodinger-sources-xdg-",
+          });
           const xdgConfigHome =
             configHome === "relocated" || configHome === "chrome-override"
               ? path.join(home, "config")
@@ -435,7 +437,7 @@ describe("Zen", () => {
     run(
       Effect.gen(function* () {
         const fileSystem = yield* FileSystem.FileSystem;
-        const home = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3code-zen-" });
+        const home = yield* fileSystem.makeTempDirectoryScoped({ prefix: "vibecodinger-zen-" });
         const context = yield* sourcePathContext.pipe(
           Effect.provideService(HostProcess.Environment, { HOME: home }),
           Effect.provideService(HostProcess.Platform, "darwin"),
@@ -487,7 +489,9 @@ describe("Zen", () => {
     run(
       Effect.gen(function* () {
         const fileSystem = yield* FileSystem.FileSystem;
-        const home = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3code-zen-linux-" });
+        const home = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-zen-linux-",
+        });
         const context = yield* sourcePathContext.pipe(
           Effect.provideService(HostProcess.Environment, {
             HOME: home,
@@ -548,7 +552,9 @@ describe("Zen", () => {
     run(
       Effect.gen(function* () {
         const fileSystem = yield* FileSystem.FileSystem;
-        const home = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3code-zen-flatpak-" });
+        const home = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-zen-flatpak-",
+        });
         const context = yield* sourcePathContext.pipe(
           Effect.provideService(HostProcess.Environment, { HOME: home }),
           Effect.provideService(HostProcess.Platform, "linux"),
@@ -578,7 +584,9 @@ describe("Zen", () => {
     run(
       Effect.gen(function* () {
         const fileSystem = yield* FileSystem.FileSystem;
-        const home = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3code-zen-snap-" });
+        const home = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-zen-snap-",
+        });
         const context = yield* sourcePathContext.pipe(
           Effect.provideService(HostProcess.Environment, { HOME: home }),
           Effect.provideService(HostProcess.Platform, "linux"),
@@ -628,7 +636,7 @@ describe("Firefox Snap profiles", () => {
         Effect.gen(function* () {
           const fileSystem = yield* FileSystem.FileSystem;
           const home = yield* fileSystem.makeTempDirectoryScoped({
-            prefix: "t3code-firefox-snap-",
+            prefix: "vibecodinger-firefox-snap-",
           });
           const context = yield* sourcePathContext.pipe(
             Effect.provideService(HostProcess.Environment, { HOME: home }),
@@ -669,7 +677,9 @@ describe("Firefox Snap profiles", () => {
     run(
       Effect.gen(function* () {
         const fileSystem = yield* FileSystem.FileSystem;
-        const home = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3code-firefox-snap-" });
+        const home = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-firefox-snap-",
+        });
         const context = yield* sourcePathContext.pipe(
           Effect.provideService(HostProcess.Environment, { HOME: home }),
           Effect.provideService(HostProcess.Platform, "linux"),
@@ -718,7 +728,7 @@ describe("listSourceProfiles Firefox fallback", () => {
           const fileSystem = yield* FileSystem.FileSystem;
           const path = yield* Path.Path;
           const home = yield* fileSystem.makeTempDirectoryScoped({
-            prefix: `t3code-firefox-${platform}-`,
+            prefix: `vibecodinger-firefox-${platform}-`,
           });
           const appData = path.join(home, "AppData", "Roaming");
           const context = yield* sourcePathContext.pipe(
@@ -756,7 +766,7 @@ describe("listSourceProfiles Firefox fallback", () => {
         const fileSystem = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
         const home = yield* fileSystem.makeTempDirectoryScoped({
-          prefix: "t3code-firefox-stale-ini-",
+          prefix: "vibecodinger-firefox-stale-ini-",
         });
         const context = yield* sourcePathContext.pipe(
           Effect.provideService(HostProcess.Environment, { HOME: home }),
@@ -792,7 +802,7 @@ describe("listSourceProfiles Firefox fallback", () => {
         const fileSystem = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
         const home = yield* fileSystem.makeTempDirectoryScoped({
-          prefix: "t3code-firefox-counts-",
+          prefix: "vibecodinger-firefox-counts-",
         });
         const context = yield* sourcePathContext.pipe(
           Effect.provideService(HostProcess.Environment, { HOME: home }),
@@ -844,7 +854,7 @@ describe("isSourceRunning for Firefox", () => {
     run(
       Effect.gen(function* () {
         const fileSystem = yield* FileSystem.FileSystem;
-        const home = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3code-firefox-" });
+        const home = yield* fileSystem.makeTempDirectoryScoped({ prefix: "vibecodinger-firefox-" });
         const context = yield* sourcePathContext.pipe(
           Effect.provideService(HostProcess.Environment, { HOME: home }),
           Effect.provideService(HostProcess.Platform, "darwin"),
@@ -886,7 +896,7 @@ describe("isSourceRunning for Firefox", () => {
     run(
       Effect.gen(function* () {
         const fileSystem = yield* FileSystem.FileSystem;
-        const home = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3code-firefox-" });
+        const home = yield* fileSystem.makeTempDirectoryScoped({ prefix: "vibecodinger-firefox-" });
         const context = yield* sourcePathContext.pipe(
           // Without APPDATA, the Windows Firefox fixture would escape into the repo.
           Effect.provideService(HostProcess.Environment, {

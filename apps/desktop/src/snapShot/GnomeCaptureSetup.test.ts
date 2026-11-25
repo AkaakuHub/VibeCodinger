@@ -12,7 +12,9 @@ let dataHome: string;
 const bundle = NodePath.resolve(import.meta.dirname, "../../gnome-extension");
 const installedPath = () => NodePath.join(dataHome, "gnome-shell/extensions", GNOME_CAPTURE_UUID);
 beforeEach(async () => {
-  dataHome = await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "t3-gnome-setup-test-"));
+  dataHome = await NodeFSP.mkdtemp(
+    NodePath.join(NodeOS.tmpdir(), "vibecodinger-gnome-setup-test-"),
+  );
 });
 afterEach(async () => {
   await NodeFSP.rm(dataHome, { recursive: true, force: true });

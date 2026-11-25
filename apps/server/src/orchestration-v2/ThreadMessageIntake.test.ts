@@ -40,7 +40,7 @@ const dispatchCommand = (command: OrchestrationV2Command, sender = { managesProv
   ThreadMessageIntake.dispatchCommand(command, sender);
 
 const layerIntakeTest = ServerConfig.layerTest(process.cwd(), {
-  prefix: "t3-question-intake-",
+  prefix: "vibecodinger-question-intake-",
 }).pipe(
   Layer.provideMerge(DocumentText.layer.pipe(Layer.provideMerge(NodeServices.layer))),
   Layer.provideMerge(ServerSettings.layerTest()),
