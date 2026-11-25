@@ -63,7 +63,7 @@ import { sourceControlDefinitions } from "../sourceControl/sourceControlDefiniti
 
 const DEFAULT_TIMEOUT_MS = 30_000;
 /** T3's record of the branch, named as on the host, that a branch was cut from. */
-const branchBaseConfigKey = (branch: string) => `branch.${branch}.t3-merge-base`;
+const branchBaseConfigKey = (branch: string) => `branch.${branch}.vibecodinger-merge-base`;
 /**
  * Where T3 kept that record before it had a key of its own, for every host alike: the GitHub
  * CLI's key, which branches cut before then still carry instead.
@@ -2364,7 +2364,10 @@ export const makeGitVcsDriverCore = Effect.fn("makeGitVcsDriverCore")(function* 
     options?: { readonly allowRemoteOfCurrent?: boolean },
     trace?: { dependsOnRemoteOfCurrent: boolean; degraded: boolean },
   ) {
-    const configuredBaseRef = yield* readConfigValue(cwd, `branch.${refName}.t3-merge-base-ref`);
+    const configuredBaseRef = yield* readConfigValue(
+      cwd,
+      `branch.${refName}.vibecodinger-merge-base-ref`,
+    );
     if (
       configuredBaseRef?.startsWith("refs/heads/") ||
       configuredBaseRef?.startsWith("refs/remotes/")
@@ -3910,10 +3913,10 @@ export const makeGitVcsDriverCore = Effect.fn("makeGitVcsDriverCore")(function* 
           key: branchBaseConfigKey(branch),
           value: upstream.branchName,
         });
-        if (!(yield* readConfigValue(cwd, `branch.${branch}.t3-merge-base-ref`))) {
+        if (!(yield* readConfigValue(cwd, `branch.${branch}.vibecodinger-merge-base-ref`))) {
           yield* writeConfigValue({
             cwd,
-            key: `branch.${branch}.t3-merge-base-ref`,
+            key: `branch.${branch}.vibecodinger-merge-base-ref`,
             value:
               upstream.remoteName === "."
                 ? `refs/heads/${upstream.branchName}`
@@ -5852,7 +5855,7 @@ export const makeGitVcsDriverCore = Effect.fn("makeGitVcsDriverCore")(function* 
     // Waiting here would hold up the thread's agent, and refreshing in place later would hold the
     // index lock while its setup script and agent run Git. So refresh a copy in the background and
     // take the lock only to swap it in, unless Git holds it or the index changed since the copy.
-    const copyPath = `${indexPath}.t3-refresh`;
+    const copyPath = `${indexPath}.vibecodinger-refresh`;
     const lockPath = `${indexPath}.lock`;
     const stamp = (info: FileSystem.File.Info) =>
       `${info.size}:${Option.getOrUndefined(info.ino)}:${Option.getOrUndefined(info.mtime)?.getTime()}`;
@@ -5978,7 +5981,7 @@ export const makeGitVcsDriverCore = Effect.fn("makeGitVcsDriverCore")(function* 
       : null;
     const lockReason =
       addHelp && `${addHelp.stdout}\n${addHelp.stderr}`.includes("--reason")
-        ? `t3-create-${yield* random.uuidV4()}`
+        ? `vibecodinger-create-${yield* random.uuidV4()}`
         : undefined;
 
     if (newRefName) {
@@ -6303,7 +6306,7 @@ export const makeGitVcsDriverCore = Effect.fn("makeGitVcsDriverCore")(function* 
           // The base key names a branch on the host; this one keeps the remote it came from.
           yield* writeConfigValue({
             cwd: input.cwd,
-            key: `branch.${newRefName}.t3-merge-base-ref`,
+            key: `branch.${newRefName}.vibecodinger-merge-base-ref`,
             value: base.baseRef,
           });
         }

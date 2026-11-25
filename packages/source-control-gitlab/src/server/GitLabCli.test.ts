@@ -114,7 +114,7 @@ layer("GitLabCli.layer", (it) => {
       const bodyDir = yield* fileSystem.makeTempDirectoryScoped({
         prefix: "vibecodinger-gitlab-mr-body-",
       });
-      const bodyFile = path.join(bodyDir, "t3code-pr-body.md");
+      const bodyFile = path.join(bodyDir, "vibecodinger-pr-body.md");
       yield* fileSystem.writeFileString(bodyFile, "## Summary\n\nFixes the thing.\n");
       mockedRun.mockReturnValueOnce(Effect.succeed(processOutput("{}")));
 

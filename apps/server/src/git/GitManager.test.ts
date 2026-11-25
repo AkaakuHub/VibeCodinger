@@ -2878,7 +2878,7 @@ it.layer(layerGitManagerTest)("GitManager", (it) => {
       yield* runGit(repoDir, ["add", "fork-pr.txt"]);
       yield* runGit(repoDir, ["commit", "-m", "Fork PR branch"]);
       yield* runGit(repoDir, ["push", "-u", "fork-seed", "statemachine"]);
-      yield* runGit(repoDir, ["checkout", "-b", "t3code/pr-488/statemachine"]);
+      yield* runGit(repoDir, ["checkout", "-b", "vibecodinger/pr-488/statemachine"]);
       yield* runGit(repoDir, ["branch", "--set-upstream-to", "fork-seed/statemachine"]);
       yield* configureVisibleRemoteUrlWithLocalRewrite(
         repoDir,
@@ -2909,7 +2909,7 @@ it.layer(layerGitManagerTest)("GitManager", (it) => {
       });
 
       const status = yield* manager.status({ cwd: repoDir });
-      expect(status.refName).toBe("t3code/pr-488/statemachine");
+      expect(status.refName).toBe("vibecodinger/pr-488/statemachine");
       expect(status.pr).toEqual({
         number: 488,
         title: "Rebase this PR on latest main",
@@ -2939,7 +2939,7 @@ it.layer(layerGitManagerTest)("GitManager", (it) => {
       yield* runGit(repoDir, ["remote", "set-head", "origin", "main"]);
       yield* runGit(repoDir, ["remote", "add", "fork-seed", forkDir]);
       yield* runGit(repoDir, ["push", "fork-seed", "main"]);
-      yield* runGit(repoDir, ["checkout", "-b", "t3code/pr-777/main"]);
+      yield* runGit(repoDir, ["checkout", "-b", "vibecodinger/pr-777/main"]);
       yield* runGit(repoDir, ["branch", "--set-upstream-to", "fork-seed/main"]);
       yield* configureVisibleRemoteUrlWithLocalRewrite(
         repoDir,
@@ -2970,7 +2970,7 @@ it.layer(layerGitManagerTest)("GitManager", (it) => {
       });
 
       const status = yield* manager.status({ cwd: repoDir });
-      expect(status.refName).toBe("t3code/pr-777/main");
+      expect(status.refName).toBe("vibecodinger/pr-777/main");
       expect(status.pr).toEqual({
         number: 777,
         title: "Fork PR from main",
@@ -3154,7 +3154,7 @@ it.layer(layerGitManagerTest)("GitManager", (it) => {
       // What a new worktree thread gets: its start point as upstream, nothing published.
       yield* runGit(repoDir, ["branch", "--track", "t3code/new-thread", "origin/main"]);
       yield* runGit(repoDir, ["branch", "--track", "feature/published", "origin/main"]);
-      yield* runGit(repoDir, ["branch", "--track", "t3code/pr-300/main", "origin/main"]);
+      yield* runGit(repoDir, ["branch", "--track", "vibecodinger/pr-300/main", "origin/main"]);
       yield* runGit(repoDir, ["branch", "--track", "feature/fork-merged", "origin/main"]);
       yield* runGit(repoDir, ["branch", "--track", "feature/fork-open", "origin/main"]);
       yield* runGit(repoDir, [
@@ -3250,7 +3250,7 @@ it.layer(layerGitManagerTest)("GitManager", (it) => {
 
       const pullRequestWorktree = yield* manager.branchPullRequest({
         cwd: repoDir,
-        branch: "t3code/pr-300/main",
+        branch: "vibecodinger/pr-300/main",
       });
       expect(pullRequestWorktree?.number).toBe(300);
 
@@ -3346,7 +3346,11 @@ it.layer(layerGitManagerTest)("GitManager", (it) => {
         yield* runGit(repoDir, ["fetch", "origin"]);
         yield* runGit(repoDir, ["remote", "set-head", "origin", "main"]);
         yield* runGit(repoDir, ["checkout", "-b", "feature/from-dev", "origin/dev"]);
-        yield* runGit(repoDir, ["config", "branch.feature/from-dev.t3-merge-base", "dev"]);
+        yield* runGit(repoDir, [
+          "config",
+          "branch.feature/from-dev.vibecodinger-merge-base",
+          "dev",
+        ]);
 
         const { manager, providerCalls } = yield* makeManager({
           providerScenario: {
@@ -5950,7 +5954,7 @@ it.layer(layerGitManagerTest)("GitManager", (it) => {
         yield* runGit(repoDir, ["add", "changes.txt"]);
         yield* runGit(repoDir, ["commit", "-m", "Feature commit"]);
         yield* runGit(repoDir, ["push", "-u", "fork-seed", "statemachine"]);
-        yield* runGit(repoDir, ["checkout", "-b", "t3code/pr-91/statemachine"]);
+        yield* runGit(repoDir, ["checkout", "-b", "vibecodinger/pr-91/statemachine"]);
         yield* runGit(repoDir, ["branch", "--set-upstream-to", "fork-seed/statemachine"]);
         yield* configureVisibleRemoteUrlWithLocalRewrite(
           repoDir,
@@ -6594,7 +6598,8 @@ it.layer(layerGitManagerTest)("GitManager", (it) => {
           "keep me\n",
         );
         expect(
-          (yield* runGit(repoDir, ["config", "branch.feature/pr-safe.t3-pull-request"])).stdout,
+          (yield* runGit(repoDir, ["config", "branch.feature/pr-safe.vibecodinger-pull-request"]))
+            .stdout,
         ).toBe("https://github.com/pingdotgg/codething-mvp/pull/91\n");
       }),
   );
@@ -6870,7 +6875,11 @@ it.layer(layerGitManagerTest)("GitManager", (it) => {
     }),
   );
 
-  it.effect.each([{ blocker: null }, { blocker: "t3code" }, { blocker: "t3code/pr-81" }])(
+  it.effect.each([
+    { blocker: null },
+    { blocker: "vibecodinger" },
+    { blocker: "vibecodinger/pr-81" },
+  ])(
     "preserves fork upstream tracking when preparing a worktree PR thread (local branch $blocker)",
     ({ blocker }) =>
       Effect.gen(function* () {
@@ -6888,7 +6897,7 @@ it.layer(layerGitManagerTest)("GitManager", (it) => {
         yield* runGit(repoDir, ["push", "-u", "fork-seed", "feature/pr-fork"]);
         yield* runGit(repoDir, ["checkout", "main"]);
         const mainHead = (yield* runGit(repoDir, ["rev-parse", "main"])).stdout.trim();
-        // A local branch owning a parent of the generated `t3code/pr-<n>/<head>` ref must not block checkout.
+        // A local branch owning a parent of the generated `vibecodinger/pr-<n>/<head>` ref must not block checkout.
         if (blocker !== null) yield* runGit(repoDir, ["branch", blocker]);
 
         const { manager } = yield* makeManager({
@@ -7447,7 +7456,7 @@ it.layer(layerGitManagerTest)("GitManager", (it) => {
           yield* runGit(repoDir, ["push", "fork-seed", "main:pr-pagination"]);
         }
         const headBranch = "pr-pagination";
-        const localBranch = isCrossRepository ? "t3code/pr-78/pr-pagination" : headBranch;
+        const localBranch = isCrossRepository ? "vibecodinger/pr-78/pr-pagination" : headBranch;
         yield* runGit(repoDir, ["branch", localBranch]);
         yield* runGit(repoDir, ["push", "origin", `${localBranch}:refs/pull/78/head`]);
         const worktreePath = NodePath.join(repoDir, "existing-pr");
@@ -7690,7 +7699,7 @@ it.layer(layerGitManagerTest)("GitManager", (it) => {
           "@{upstream}",
         ])).stdout.trim(),
       ).toBe("origin/main");
-      expect(result.branch).toBe("t3code/pr-94/main");
+      expect(result.branch).toBe("vibecodinger/pr-94/main");
       expect(result.worktreePath && NodeFS.realpathSync.native(result.worktreePath)).toBe(
         NodeFS.realpathSync.native(mainWorktreePath),
       );
@@ -7738,7 +7747,7 @@ it.layer(layerGitManagerTest)("GitManager", (it) => {
         "worktree",
         "add",
         "-b",
-        "t3code/pr-83/feature/pr-reused-fork",
+        "vibecodinger/pr-83/feature/pr-reused-fork",
         worktreePath,
         "feature/pr-reused-fork",
       ]);
@@ -7775,7 +7784,7 @@ it.layer(layerGitManagerTest)("GitManager", (it) => {
       expect(result.worktreePath && NodeFS.realpathSync.native(result.worktreePath)).toBe(
         NodeFS.realpathSync.native(worktreePath),
       );
-      expect(result.branch).toBe("t3code/pr-83/feature/pr-reused-fork");
+      expect(result.branch).toBe("vibecodinger/pr-83/feature/pr-reused-fork");
       expect((yield* runGit(worktreePath, ["branch", "--show-current"])).stdout.trim()).toBe(
         result.branch,
       );

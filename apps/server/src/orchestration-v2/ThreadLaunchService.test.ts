@@ -1265,7 +1265,7 @@ it.effect(
       );
       const projection = yield* preparationSettled(launched.threadId);
       assert.equal(projection.runs[0]?.status, "starting");
-      assert.match(projection.thread.branch!, /^t3\/[0-9a-f]{8}$/);
+      assert.match(projection.thread.branch!, /^vibecodinger\/[0-9a-f]{8}$/);
       assert.equal(harness.createWorktree.mock.calls[0]?.[0]?.newRefName, projection.thread.branch);
       assert.equal(harness.runSetup.mock.calls.length, 1);
       assert.equal(harness.renameBranch.mock.calls.length, 0);
@@ -3791,7 +3791,7 @@ it.effect("refuses a new worktree whose explicit branch already exists", () =>
     const git = yield* GitVcsDriver.GitVcsDriver;
     const directory = yield* fs.makeTempDirectoryScoped({ prefix: "launch-branch-exists-" });
     const cwd = `${directory}/repo`;
-    const temporaryBranch = "t3code/0b5e7a1c-3f2d-4e8a-9b6c-1d2e3f4a5b6c";
+    const temporaryBranch = "vibecodinger/0b5e7a1c";
     yield* fs.makeDirectory(cwd);
     const command = (args: string[]) => git.execute({ operation: "launch-test", cwd, args });
     yield* command(["init", "-b", "main"]);

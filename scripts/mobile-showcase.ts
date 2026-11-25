@@ -1082,7 +1082,7 @@ async function presentIosLockScreen(udid: string): Promise<void> {
 
 /** Press home only if a screenshot proves the lock screen is dark; a lit display would unlock instead. */
 async function wakeIosLockScreen(udid: string): Promise<void> {
-  const probe = NodePath.join(NodeOS.tmpdir(), `t3-showcase-wake-${udid}.png`);
+  const probe = NodePath.join(NodeOS.tmpdir(), `vibecodinger-showcase-wake-${udid}.png`);
   try {
     for (let attempt = 0; attempt < 5; attempt += 1) {
       await delay(2_000);
@@ -1562,7 +1562,7 @@ async function main(): Promise<void> {
   }
 
   const showcaseRootDir = await NodeFSP.mkdtemp(
-    NodePath.join(NodeOS.tmpdir(), "t3-mobile-showcase-"),
+    NodePath.join(NodeOS.tmpdir(), "vibecodinger-mobile-showcase-"),
   );
   const showcaseServers: NodeChildProcess.ChildProcess[] = [];
   const showcaseEnvironments: ShowcaseEnvironment[] = [];

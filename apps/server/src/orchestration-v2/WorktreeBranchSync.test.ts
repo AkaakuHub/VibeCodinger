@@ -29,12 +29,12 @@ it.effect.each([false, true])(
       snapshotSequence: 0,
       threads: [
         thread("generated", "t3/unify-converter-branches", "/worktree"),
-        thread("shared", "t3/bfc349ae", "/link/worktree"),
+        thread("shared", "vibecodinger/bfc349ae", "/link/worktree"),
         thread("current", "union", "/worktree"),
         thread("root", "main", null),
         thread("other", "feature", "/other"),
       ],
-      archivedThreads: [thread("archived", "t3/bfc349ae", "/worktree")],
+      archivedThreads: [thread("archived", "vibecodinger/bfc349ae", "/worktree")],
     };
     return Effect.gen(function* () {
       yield* Layer.build(WorktreeBranchSync.layer);
@@ -52,8 +52,8 @@ it.effect.each([false, true])(
         }),
         [
           ["generated", "union", "t3/unify-converter-branches", "/worktree"],
-          ["shared", "union", "t3/bfc349ae", "/link/worktree"],
-          ["archived", "union", "t3/bfc349ae", "/worktree"],
+          ["shared", "union", "vibecodinger/bfc349ae", "/link/worktree"],
+          ["archived", "union", "vibecodinger/bfc349ae", "/worktree"],
         ],
       );
     }).pipe(
@@ -73,7 +73,7 @@ it.effect.each([false, true])(
               ),
           }),
           Layer.mock(VcsStatusBroadcaster.VcsStatusBroadcaster)({
-            streamBranchChanges: Stream.fromIterable([null, "t3/bfc349ae", "union"]).pipe(
+            streamBranchChanges: Stream.fromIterable([null, "vibecodinger/bfc349ae", "union"]).pipe(
               Stream.map((refName) => ({
                 cwd: "/worktree",
                 refName,

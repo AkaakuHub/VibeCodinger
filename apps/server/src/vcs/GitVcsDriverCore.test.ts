@@ -962,7 +962,7 @@ it.effect("resolves a branch's base once while its refs and branch config are un
       yield* git(cwd, ["commit", "-m", "feature"]);
       const lookups = () => {
         const count = spawnedArgs.filter((args) =>
-          args.includes("branch.feature/x.t3-merge-base-ref"),
+          args.includes("branch.feature/x.vibecodinger-merge-base-ref"),
         ).length;
         spawnedArgs.length = 0;
         return count;
@@ -1012,7 +1012,11 @@ it.effect("resolves a branch's base once while its refs and branch config are un
       yield* driver.statusDetailsLocal(cwd);
       assert.equal(lookups(), 0);
 
-      yield* git(cwd, ["config", "branch.feature/x.t3-merge-base-ref", "refs/heads/main"]);
+      yield* git(cwd, [
+        "config",
+        "branch.feature/x.vibecodinger-merge-base-ref",
+        "refs/heads/main",
+      ]);
       yield* driver.statusDetailsLocal(cwd);
       assert.equal(lookups(), 1);
 
@@ -1025,7 +1029,7 @@ it.effect("resolves a branch's base once while its refs and branch config are un
         "config",
         "--file",
         includedConfig,
-        "branch.feature/x.t3-merge-base",
+        "branch.feature/x.vibecodinger-merge-base",
         "main",
       ]);
       yield* driver.statusDetailsLocal(cwd);
@@ -1037,9 +1041,9 @@ it.effect("resolves a branch's base once while its refs and branch config are un
         "--file",
         includedConfig,
         "--unset",
-        "branch.feature/x.t3-merge-base",
+        "branch.feature/x.vibecodinger-merge-base",
       ]);
-      yield* git(cwd, ["config", "--unset", "branch.feature/x.t3-merge-base-ref"]);
+      yield* git(cwd, ["config", "--unset", "branch.feature/x.vibecodinger-merge-base-ref"]);
       failRemoteLookup = true;
       yield* driver.getReviewDiffPreview({ cwd });
       failRemoteLookup = false;
@@ -1079,7 +1083,7 @@ it.effect("keeps a branch's base cached while only other refs' commits move", ()
       yield* git(cwd, ["pack-refs", "--all"]);
       const lookups = () => {
         const count = spawnedArgs.filter((args) =>
-          args.includes("branch.feature/x.t3-merge-base-ref"),
+          args.includes("branch.feature/x.vibecodinger-merge-base-ref"),
         ).length;
         spawnedArgs.length = 0;
         return count;
@@ -1107,7 +1111,7 @@ it.effect("keeps a branch's base cached while only other refs' commits move", ()
       yield* git(cwd, ["update-ref", "-d", "refs/remotes/origin/develop"]);
       yield* driver.statusDetailsLocal(cwd);
       assert.equal(lookups(), 1);
-      yield* git(cwd, ["config", "branch.feature/x.t3-merge-base", "other"]);
+      yield* git(cwd, ["config", "branch.feature/x.vibecodinger-merge-base", "other"]);
       yield* driver.statusDetailsLocal(cwd);
       assert.equal(lookups(), 1);
     }),
@@ -1139,7 +1143,7 @@ it.effect("rereads the base after a nested remote's HEAD is retargeted", () =>
       yield* git(cwd, ["checkout", "-b", "feature/x"]);
       const lookups = () => {
         const count = spawnedArgs.filter((args) =>
-          args.includes("branch.feature/x.t3-merge-base-ref"),
+          args.includes("branch.feature/x.vibecodinger-merge-base-ref"),
         ).length;
         spawnedArgs.length = 0;
         return count;
@@ -1181,7 +1185,7 @@ it.effect("keeps the base cached when a remote branch has a HEAD path component"
       yield* git(cwd, ["checkout", "-b", "feature/x"]);
       const lookups = () => {
         const count = spawnedArgs.filter((args) =>
-          args.includes("branch.feature/x.t3-merge-base-ref"),
+          args.includes("branch.feature/x.vibecodinger-merge-base-ref"),
         ).length;
         spawnedArgs.length = 0;
         return count;
@@ -1202,7 +1206,7 @@ it.effect("keeps one cached base per branch however often its refs change", () =
       const spawner = ChildProcessSpawner.make((command) => {
         if (
           ChildProcess.isStandardCommand(command) &&
-          command.args.map(String).includes("branch.feature/x.t3-merge-base-ref")
+          command.args.map(String).includes("branch.feature/x.vibecodinger-merge-base-ref")
         ) {
           lookupCount++;
         }
@@ -1224,7 +1228,7 @@ it.effect("keeps one cached base per branch however often its refs change", () =
         return { lookups: lookupCount, aheadCount: status.aheadCount };
       });
       const useBase = (base: string) =>
-        git(cwd, ["config", "branch.feature/x.t3-merge-base", base]);
+        git(cwd, ["config", "branch.feature/x.vibecodinger-merge-base", base]);
 
       yield* useBase(initialBranch);
       assert.deepStrictEqual(yield* read(), { lookups: 1, aheadCount: 1 });
@@ -5200,7 +5204,11 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
         yield* git(cwd, ["commit", "-m", "upstream work"]);
         yield* git(cwd, ["push", "-u", "upstream", "main"]);
         yield* git(cwd, ["checkout", "-b", "feature/from-local-main"]);
-        yield* git(cwd, ["config", "branch.feature/from-local-main.t3-merge-base", "main"]);
+        yield* git(cwd, [
+          "config",
+          "branch.feature/from-local-main.vibecodinger-merge-base",
+          "main",
+        ]);
         yield* writeTextFile(cwd, "feature.txt", "intended branch change\n");
         yield* git(cwd, ["add", "feature.txt"]);
         yield* git(cwd, ["commit", "-m", "feature work"]);
@@ -5241,10 +5249,10 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
         yield* git(cwd, ["fetch", "origin"]);
         yield* git(cwd, ["fetch", "upstream"]);
         yield* git(cwd, ["checkout", "-b", "t3/temporary"]);
-        yield* git(cwd, ["config", "branch.t3/temporary.t3-merge-base", "main"]);
+        yield* git(cwd, ["config", "branch.t3/temporary.vibecodinger-merge-base", "main"]);
         yield* git(cwd, [
           "config",
-          "branch.t3/temporary.t3-merge-base-ref",
+          "branch.t3/temporary.vibecodinger-merge-base-ref",
           "refs/remotes/upstream/main",
         ]);
         yield* writeTextFile(cwd, "feature.txt", "thread work\n");
@@ -6796,47 +6804,51 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
       }),
     );
 
-    it.effect.each(["t3", "T3"])("flattens a generated name when parent %s blocks it", (parent) =>
-      Effect.gen(function* () {
-        const cwd = yield* makeTmpDir();
-        yield* initRepoWithCommit(cwd);
-        const driver = yield* GitVcsDriver.GitVcsDriver;
-        // A local `t3` branch is why launches start on the flat `t3-<hex>` temporary branch.
-        yield* git(cwd, ["branch", parent]);
-        yield* git(cwd, ["checkout", "-b", "t3-abcd1234"]);
-        yield* git(cwd, ["branch", "t3-fix-login"]);
-
-        const renamed = yield* driver.renameBranch({
-          cwd,
-          oldBranch: "t3-abcd1234",
-          newBranch: "t3/fix-login",
-        });
-
-        assert.equal(renamed.branch, "t3-fix-login-1");
-        assert.equal(yield* git(cwd, ["branch", "--show-current"]), "t3-fix-login-1");
-      }),
-    );
-
-    it.effect.each(["t3-fix-login/child", "T3-Fix-Login/child", "T3-FIX-LOGIN"])(
-      "skips a flattened name blocked by %s",
-      (occupied) =>
+    it.effect.each(["vibecodinger", "VIBECODINGER"])(
+      "flattens a generated name when parent %s blocks it",
+      (parent) =>
         Effect.gen(function* () {
           const cwd = yield* makeTmpDir();
           yield* initRepoWithCommit(cwd);
           const driver = yield* GitVcsDriver.GitVcsDriver;
-          yield* git(cwd, ["branch", "t3"]);
-          yield* git(cwd, ["checkout", "-b", "t3-abcd1234"]);
-          yield* git(cwd, ["branch", occupied]);
+          // A local namespace branch is why launches start on the flat flattened temporary branch.
+          yield* git(cwd, ["branch", parent]);
+          yield* git(cwd, ["checkout", "-b", "vibecodinger-abcd1234"]);
+          yield* git(cwd, ["branch", "vibecodinger-fix-login"]);
 
           const renamed = yield* driver.renameBranch({
             cwd,
-            oldBranch: "t3-abcd1234",
-            newBranch: "t3/fix-login",
+            oldBranch: "vibecodinger-abcd1234",
+            newBranch: "vibecodinger/fix-login",
           });
 
-          assert.equal(renamed.branch, "t3-fix-login-1");
-          assert.equal(yield* git(cwd, ["branch", "--show-current"]), "t3-fix-login-1");
+          assert.equal(renamed.branch, "vibecodinger-fix-login-1");
+          assert.equal(yield* git(cwd, ["branch", "--show-current"]), "vibecodinger-fix-login-1");
         }),
+    );
+
+    it.effect.each([
+      "vibecodinger-fix-login/child",
+      "VIBECODINGER-Fix-Login/child",
+      "VIBECODINGER-FIX-LOGIN",
+    ])("skips a flattened name blocked by %s", (occupied) =>
+      Effect.gen(function* () {
+        const cwd = yield* makeTmpDir();
+        yield* initRepoWithCommit(cwd);
+        const driver = yield* GitVcsDriver.GitVcsDriver;
+        yield* git(cwd, ["branch", "vibecodinger"]);
+        yield* git(cwd, ["checkout", "-b", "vibecodinger-abcd1234"]);
+        yield* git(cwd, ["branch", occupied]);
+
+        const renamed = yield* driver.renameBranch({
+          cwd,
+          oldBranch: "vibecodinger-abcd1234",
+          newBranch: "vibecodinger/fix-login",
+        });
+
+        assert.equal(renamed.branch, "vibecodinger-fix-login-1");
+        assert.equal(yield* git(cwd, ["branch", "--show-current"]), "vibecodinger-fix-login-1");
+      }),
     );
 
     it.effect("refuses exhausted automatic suffixes without changing existing branches", () =>
@@ -7347,7 +7359,7 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
           yield* git(cwd, ["rev-parse", "HEAD"]),
         );
         assert.equal(
-          yield* git(cwd, ["config", "branch.feature/parallel.t3-merge-base"]),
+          yield* git(cwd, ["config", "branch.feature/parallel.vibecodinger-merge-base"]),
           initialBranch,
         );
         for (const [configured, expected] of [
@@ -7496,7 +7508,10 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
           assert.equal(entrySeconds.length, 51);
           return entrySeconds.filter((seconds) => seconds >= indexSecond);
         });
-        while ((yield* racyEntries).length > 0 || (yield* fs.exists(`${indexPath}.t3-refresh`))) {
+        while (
+          (yield* racyEntries).length > 0 ||
+          (yield* fs.exists(`${indexPath}.vibecodinger-refresh`))
+        ) {
           yield* Queue.take(indexChanges);
         }
         assert.isFalse(yield* fs.exists(`${indexPath}.lock`));
@@ -7562,7 +7577,7 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
 
           assert.equal(yield* git(worktreePath, ["rev-parse", "HEAD"]), commit);
           assert.equal(
-            yield* driver.readConfigValue(cwd, "branch.feature/revision.t3-merge-base"),
+            yield* driver.readConfigValue(cwd, "branch.feature/revision.vibecodinger-merge-base"),
             null,
           );
         }),
@@ -7694,7 +7709,7 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
           const renamed = `${branch}-renamed`;
           assert.equal(yield* git(cwd, ["config", `branch.${renamed}.remote`]), "origin");
           assert.equal(
-            yield* git(cwd, ["config", `branch.${renamed}.t3-merge-base-ref`]),
+            yield* git(cwd, ["config", `branch.${renamed}.vibecodinger-merge-base-ref`]),
             `refs/remotes/origin/${initialBranch}`,
           );
         }
@@ -7710,7 +7725,11 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
         const driver = yield* GitVcsDriver.GitVcsDriver;
         // A multi-model send launches one worktree per model with the same message, so their
         // generated names often match and the renames can land together.
-        const temporaryBranches = ["t3/aaaa1111", "t3/bbbb2222", "t3/cccc3333"];
+        const temporaryBranches = [
+          "vibecodinger/aaaa1111",
+          "vibecodinger/bbbb2222",
+          "vibecodinger/cccc3333",
+        ];
         yield* Effect.forEach(temporaryBranches, (branch) =>
           driver.createWorktree({
             cwd,
@@ -7758,7 +7777,7 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
           });
 
           assert.equal(
-            yield* driver.readConfigValue(cwd, "branch.feature/branch.t3-merge-base"),
+            yield* driver.readConfigValue(cwd, "branch.feature/branch.vibecodinger-merge-base"),
             baseBranch,
           );
         }),
@@ -7791,7 +7810,7 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
         });
 
         assert.equal(
-          yield* driver.readConfigValue(cwd, "branch.feature/remote.t3-merge-base"),
+          yield* driver.readConfigValue(cwd, "branch.feature/remote.vibecodinger-merge-base"),
           branch,
         );
         const preview = yield* driver.getReviewDiffPreview({ cwd: worktreePath });
@@ -8382,7 +8401,10 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
           "# test\n",
         );
         assert.equal(
-          yield* driver.readConfigValue(worktreePath, "branch.feature/locked-config.t3-merge-base"),
+          yield* driver.readConfigValue(
+            worktreePath,
+            "branch.feature/locked-config.vibecodinger-merge-base",
+          ),
           null,
         );
         assert.equal(yield* fileSystem.exists(pathService.join(cwd, ".git/config.lock")), true);
@@ -8393,16 +8415,20 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
       Effect.gen(function* () {
         const cwd = yield* makeTmpDir();
         yield* initRepoWithCommit(cwd);
-        yield* git(cwd, ["checkout", "-b", "t3/abcd1234"]);
+        yield* git(cwd, ["checkout", "-b", "vibecodinger/abcd1234"]);
         yield* writeTextFile(cwd, ".git/config.lock", "");
         const driver = yield* GitVcsDriver.GitVcsDriver;
 
         const renamed = yield* TestClock.withLive(
-          driver.renameBranch({ cwd, oldBranch: "t3/abcd1234", newBranch: "t3/fix-login" }),
+          driver.renameBranch({
+            cwd,
+            oldBranch: "vibecodinger/abcd1234",
+            newBranch: "vibecodinger/fix-login",
+          }),
         );
 
-        assert.equal(renamed.branch, "t3/fix-login");
-        assert.equal(yield* git(cwd, ["branch", "--show-current"]), "t3/fix-login");
+        assert.equal(renamed.branch, "vibecodinger/fix-login");
+        assert.equal(yield* git(cwd, ["branch", "--show-current"]), "vibecodinger/fix-login");
       }),
     );
 
@@ -9998,7 +10024,10 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
         assert.strictEqual(status.branchChanges?.deletions, 0);
         // gh pr create consumes this setting verbatim as the hosted target branch.
         assert.equal(
-          yield* driver.readConfigValue(worktreePath, "branch.feature/from-upstream.t3-merge-base"),
+          yield* driver.readConfigValue(
+            worktreePath,
+            "branch.feature/from-upstream.vibecodinger-merge-base",
+          ),
           "release",
         );
         assert.equal(changes.baseRef, "upstream/release");
@@ -10134,11 +10163,11 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
 
           if (autoSetupMerge) {
             assert.equal(
-              yield* driver.readConfigValue(cwd, "branch.feature/push.t3-merge-base"),
+              yield* driver.readConfigValue(cwd, "branch.feature/push.vibecodinger-merge-base"),
               initialBranch,
             );
             assert.equal(
-              yield* driver.readConfigValue(cwd, "branch.feature/push.t3-merge-base-ref"),
+              yield* driver.readConfigValue(cwd, "branch.feature/push.vibecodinger-merge-base-ref"),
               `refs/heads/${initialBranch}`,
             );
           }
@@ -10273,7 +10302,7 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
         assert.equal(
           yield* (yield* GitVcsDriver.GitVcsDriver).readConfigValue(
             cwd,
-            "branch.feature/push.t3-merge-base",
+            "branch.feature/push.vibecodinger-merge-base",
           ),
           "release",
         );
@@ -10520,11 +10549,11 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
             `refs/remotes/origin/${publishBranch}`,
           );
           assert.equal(
-            yield* driver.readConfigValue(cwd, `branch.${branch}.t3-merge-base`),
+            yield* driver.readConfigValue(cwd, `branch.${branch}.vibecodinger-merge-base`),
             baseBranch,
           );
           assert.equal(
-            yield* driver.readConfigValue(cwd, `branch.${branch}.t3-merge-base-ref`),
+            yield* driver.readConfigValue(cwd, `branch.${branch}.vibecodinger-merge-base-ref`),
             local ? `refs/heads/${baseBranch}` : `refs/remotes/upstream/${baseBranch}`,
           );
           assert.equal(yield* git(cwd, ["rev-parse", `refs/heads/${baseBranch}`]), upstreamDevSha);
@@ -10552,7 +10581,7 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
     it.effect.each([
       { upstreamRef: "refs/remotes/origin/main", baseKey: "gh-merge-base" },
       { upstreamRef: "refs/heads/main", baseKey: "gh-merge-base" },
-      { upstreamRef: "refs/heads/main", baseKey: "t3-merge-base" },
+      { upstreamRef: "refs/heads/main", baseKey: "vibecodinger-merge-base" },
     ])(
       "keeps a recorded $baseKey when publishing a branch tracking $upstreamRef",
       ({ upstreamRef, baseKey }) =>
@@ -10569,7 +10598,7 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
           yield* git(cwd, ["config", `branch.feature/y.${baseKey}`, "release/v2"]);
           yield* git(cwd, [
             "config",
-            "branch.feature/y.t3-merge-base-ref",
+            "branch.feature/y.vibecodinger-merge-base-ref",
             "refs/heads/release/v2",
           ]);
           yield* writeTextFile(cwd, "feature.txt", "feature\n");
@@ -10590,7 +10619,7 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
           );
           assert.equal(yield* driver.readBranchBase(cwd, "feature/y"), "release/v2");
           assert.equal(
-            yield* driver.readConfigValue(cwd, "branch.feature/y.t3-merge-base-ref"),
+            yield* driver.readConfigValue(cwd, "branch.feature/y.vibecodinger-merge-base-ref"),
             "refs/heads/release/v2",
           );
         }),
