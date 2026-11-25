@@ -60,7 +60,7 @@ const event = (type: string, data: Record<string, unknown>): ProviderReplayEntry
 });
 const labelled = (entry: ProviderReplayEntry, label: string): ProviderReplayEntry =>
   entry.type === "runtime_exit" ? entry : { ...entry, label };
-/** MCP rules are last-match-wins; allow this thread after denying all T3 servers. */
+/** MCP rules are last-match-wins; allow this thread after denying all VibeCodinger servers. */
 const mcpRules = (name: string) => [
   { action: "vibe-codinger-*", resource: "*", effect: "deny" },
   { action: `vibe-codinger-thread_${name}_*`, resource: "*", effect: "allow" },

@@ -445,7 +445,7 @@ export const vibeCodingerMcpServerName = Effect.fn("vibeCodingerMcpServerName")(
   return `vibe-codinger-${Hex.encode(digest).slice(0, 16)}`;
 });
 
-// Last match wins: deny all threads' T3 servers, then allow only this thread's.
+// Last match wins: deny all threads' VibeCodinger servers, then allow only this thread's.
 const mcpRules = (mcpServerName: string | null): ReadonlyArray<Rule> =>
   mcpServerName === null
     ? []

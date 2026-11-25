@@ -331,11 +331,11 @@ host restored from an image or snapshot, where the profile can be on disk
 without being loaded. Without `sudo`, it only reports what it would change.
 
 The browser runs in Chrome's sandbox by default. Chrome cannot start that sandbox
-as root. If your T3 server runs as root, run it as a nonroot user to keep
+as root. If your VibeCodinger server runs as root, run it as a nonroot user to keep
 sandboxing enabled. `vibecodinger browser setup` does not fix this root restriction.
 
 If you need to run as root, or cannot enable the sandbox on your host, set
-`VIBECODINGER_SERVER_BROWSER_SANDBOX=0` in the **T3 server's environment** and restart
+`VIBECODINGER_SERVER_BROWSER_SANDBOX=0` in the **VibeCodinger server's environment** and restart
 the server. This disables Chrome's sandbox. For a manual launch:
 
 ```sh
@@ -345,7 +345,7 @@ VIBECODINGER_SERVER_BROWSER_SANDBOX=0 vibecodinger serve
 For a systemd service, add `Environment=VIBECODINGER_SERVER_BROWSER_SANDBOX=0` under
 `[Service]` in its configuration, run `sudo systemctl daemon-reload`, then restart
 your T3 service. Setting the variable in an agent's terminal does not change the
-environment of an already running T3 server.
+environment of an already running VibeCodinger server.
 
 ## Connect an outside agent
 

@@ -19,7 +19,7 @@ const USERNS_RESTRICTION = "/proc/sys/kernel/apparmor_restrict_unprivileged_user
 export const APPARMOR_PROFILE_PATH = "/etc/apparmor.d/vibecodinger-chrome-headless-shell";
 
 /** Match Ubuntu's Chrome profile; unconfined adds nothing beyond userns. */
-export const APPARMOR_PROFILE = `# Written by \`t3 browser setup\`: lets VibeCodinger's headless browser use Chrome's sandbox.
+export const APPARMOR_PROFILE = `# Written by \`vibecodinger browser setup\`: lets VibeCodinger's headless browser use Chrome's sandbox.
 abi <abi/4.0>,
 include <tunables/global>
 
@@ -75,7 +75,7 @@ export class PreviewBrowserRootError extends Schema.TaggedError<PreviewBrowserRo
   {},
 ) {
   override get message(): string {
-    return "T3 server is running as root; Chrome's sandbox cannot start. Run T3 as a nonroot user. Otherwise set `VIBECODINGER_SERVER_BROWSER_SANDBOX=0` in the T3 server's environment and restart the server; this disables Chrome's sandbox. Manual: `VIBECODINGER_SERVER_BROWSER_SANDBOX=0 t3 serve`. Systemd: add `Environment=VIBECODINGER_SERVER_BROWSER_SANDBOX=0` under `[Service]`, reload systemd, then restart the service. `t3 browser setup` cannot fix root sandboxing.";
+    return "VibeCodinger server is running as root; Chrome's sandbox cannot start. Run VibeCodinger as a nonroot user. Otherwise set `VIBECODINGER_SERVER_BROWSER_SANDBOX=0` in the VibeCodinger server's environment and restart the server; this disables Chrome's sandbox. Manual: `VIBECODINGER_SERVER_BROWSER_SANDBOX=0 vibecodinger serve`. Systemd: add `Environment=VIBECODINGER_SERVER_BROWSER_SANDBOX=0` under `[Service]`, reload systemd, then restart the service. `vibecodinger browser setup` cannot fix root sandboxing.";
   }
 }
 

@@ -193,14 +193,14 @@ For provider-specific setup and accounts, see [Codex](./providers-codex.md),
 ### Provider check timeouts
 
 If a provider works in its CLI but VibeCodinger reports a timeout while checking it,
-allow more time in the T3 server's environment. For example, give Codex and
+allow more time in the VibeCodinger server's environment. For example, give Codex and
 Claude readiness checks 60 seconds:
 
 ```bash
 VIBECODINGER_CODEX_PROBE_TIMEOUT_MS=60000 VIBECODINGER_CLAUDE_PROBE_TIMEOUT_MS=60000 vibecodinger serve
 ```
 
-For a remote environment, set these on the machine running the T3 server.
+For a remote environment, set these on the machine running the VibeCodinger server.
 Keep them in your launcher or service configuration to retain them across
 updates, then restart the server. For systemd, add
 `Environment=VIBECODINGER_CODEX_PROBE_TIMEOUT_MS=60000` under `[Service]` in a service
