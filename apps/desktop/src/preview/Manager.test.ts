@@ -2535,7 +2535,7 @@ describe("PreviewManager", () => {
               id,
               method: "Input.insertText",
               params: { text: "x" },
-              sessionId: "t3-preview-page",
+              sessionId: "vc-preview-page",
             }),
           }),
         );
@@ -2622,7 +2622,7 @@ describe("PreviewManager", () => {
             message: JSON.stringify({
               id: 1,
               method: "Page.captureScreenshot",
-              sessionId: "t3-preview-page",
+              sessionId: "vc-preview-page",
             }),
           }),
         );
@@ -2691,7 +2691,7 @@ describe("PreviewManager", () => {
               id: 1,
               method: "Runtime.evaluate",
               params: { expression: "document.querySelector('a').click()" },
-              sessionId: "t3-preview-page",
+              sessionId: "vc-preview-page",
             }),
           }),
         );

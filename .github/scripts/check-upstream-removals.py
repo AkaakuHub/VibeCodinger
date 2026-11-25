@@ -24,6 +24,7 @@ PNPM_LOCKFILE = b"pnpm-lock.yaml"
 
 PROTECTED_PATHS = (
     ".env.example",
+    "t3.json",
     ".task-cache.json",
     "infra/task-cache",
     ".github/actions",

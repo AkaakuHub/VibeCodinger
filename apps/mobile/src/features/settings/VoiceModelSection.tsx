@@ -146,7 +146,7 @@ function ModelStats(props: { readonly model: EnvironmentSpeechModel; readonly la
             "score",
             <T key="score">
               <Var>{languageLabel(code, locale)}</Var>{" "}
-              <Text className="font-t3-medium text-foreground">
+              <Text className="font-vc-medium text-foreground">
                 <Var>{score.grade}</Var>
               </Text>{" "}
               (<Var>{score.errorPercent}</Var>% error)
@@ -159,7 +159,7 @@ function ModelStats(props: { readonly model: EnvironmentSpeechModel; readonly la
           [
             "speed",
             <>
-              <Text className="font-t3-medium text-foreground">
+              <Text className="font-vc-medium text-foreground">
                 {Number(data.secondsPer30s.accelerated.toFixed(2))} s
               </Text>{" "}
               / 30 s

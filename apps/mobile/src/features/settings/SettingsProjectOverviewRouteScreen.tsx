@@ -336,7 +336,7 @@ function ProjectOverviewContent(props: {
           size={48}
         />
         <View className="min-w-0 flex-1">
-          <Text className="text-xl font-t3-semibold text-foreground" numberOfLines={2}>
+          <Text className="text-xl font-vc-semibold text-foreground" numberOfLines={2}>
             {displayName}
           </Text>
           <Text className="text-sm text-foreground-muted">
@@ -349,7 +349,7 @@ function ProjectOverviewContent(props: {
 
       <SettingsSection title={gt("Project")}>
         <View className="gap-3 p-4">
-          <Text className="text-sm font-t3-medium text-foreground-muted">
+          <Text className="text-sm font-vc-medium text-foreground-muted">
             <T>Name</T>
           </Text>
           <View className="flex-row items-center gap-3">
@@ -507,7 +507,7 @@ function RemoveCheckoutAction(props: {
       onPress={props.onPress}
       className="self-start rounded-full border border-border bg-card px-3 py-1.5 disabled:opacity-40"
     >
-      <Text className="font-t3-medium text-xs text-danger-foreground">
+      <Text className="font-vc-medium text-xs text-danger-foreground">
         <T>Remove checkout</T>
       </Text>
     </Pressable>

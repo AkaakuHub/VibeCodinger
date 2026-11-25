@@ -56,7 +56,7 @@ export function Facts(props: {
       {props.facts.map((fact) => (
         <View key={fact.label} className="max-w-full flex-row gap-1 rounded-md bg-subtle px-2 py-1">
           <Text className="text-xs text-foreground-muted">{fact.label}</Text>
-          <Text className="shrink font-t3-medium text-xs text-foreground">{fact.value}</Text>
+          <Text className="shrink font-vc-medium text-xs text-foreground">{fact.value}</Text>
         </View>
       ))}
     </View>

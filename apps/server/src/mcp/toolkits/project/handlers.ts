@@ -113,7 +113,7 @@ const projectWorktreePath = Effect.fn("mcp.assertProjectWorktree")(function* (
   });
 });
 
-/** The composer falls back to the project's t3.json when no setting picks the mode. */
+/** The composer falls back to the project's vibecodinger.json when no setting picks the mode. */
 const projectFileThreadEnvMode = Effect.fn("mcp.projectFileThreadEnvMode")(function* (
   workspaceRoot: string,
 ) {

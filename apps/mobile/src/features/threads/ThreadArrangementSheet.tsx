@@ -573,7 +573,7 @@ function ThreadArrangementSheet(props: { onClose: () => void }) {
                                 setExpanded((value) => ({ ...value, [section]: !value[section] }));
                             }}
                           >
-                            <Text className="text-sm font-t3-semibold text-foreground-muted">
+                            <Text className="text-sm font-vc-semibold text-foreground-muted">
                               {gt("{section} ({count})", {
                                 section: m(SECTION_LABELS[item.section]),
                                 count:
@@ -596,7 +596,7 @@ function ThreadArrangementSheet(props: { onClose: () => void }) {
                   >
                     <Text
                       numberOfLines={visiblePreview.destination?.section ? 1 : 2}
-                      className="text-base font-t3-medium"
+                      className="text-base font-vc-medium"
                     >
                       {visiblePreview.thread.title}
                     </Text>

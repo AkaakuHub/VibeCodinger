@@ -168,7 +168,7 @@ export function ProjectRepositoriesSection(props: {
                 onPress={() => remove(folder)}
                 className="rounded-full border border-border bg-card px-3 py-1.5 disabled:opacity-40"
               >
-                <Text className="font-t3-medium text-xs text-danger-foreground">
+                <Text className="font-vc-medium text-xs text-danger-foreground">
                   <T context="verb, removes a folder from the project">Remove</T>
                 </Text>
               </Pressable>

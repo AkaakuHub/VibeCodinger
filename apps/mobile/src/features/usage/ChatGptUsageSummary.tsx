@@ -38,7 +38,7 @@ export function ChatGptUsageSummary({
           className="min-h-11 justify-center"
           onPress={() => void tryOpenExternalUrl(usage.url)}
         >
-          <Text className="text-sm font-t3-medium text-primary">
+          <Text className="text-sm font-vc-medium text-primary">
             <T>Manage usage</T>
           </Text>
         </Pressable>

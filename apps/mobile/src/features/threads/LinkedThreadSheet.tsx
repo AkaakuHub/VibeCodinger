@@ -188,7 +188,7 @@ function FailureCard(props: {
       accessibilityLiveRegion="polite"
       className="gap-1 rounded-2xl border border-danger-border bg-danger px-3.5 py-3"
     >
-      <Text className="font-t3-medium text-sm text-danger-foreground">{props.failure.title}</Text>
+      <Text className="font-vc-medium text-sm text-danger-foreground">{props.failure.title}</Text>
       <Text className="text-sm text-danger-foreground">
         {props.failure.detail}
         {props.stale ? ` ${gt("Showing what was read before.")}` : ""}
@@ -222,7 +222,7 @@ function LinkedThreadComposer(props: {
       {props.notice}
       <ReadOnlyComposerBar>
         <View accessible className="min-w-0 flex-1 gap-0.5">
-          <Text numberOfLines={1} className="font-t3-bold text-sm text-foreground">
+          <Text numberOfLines={1} className="font-vc-bold text-sm text-foreground">
             <T>Read-only</T>
           </Text>
           <Text numberOfLines={1} className="font-sans text-xs text-foreground-secondary">
@@ -420,7 +420,7 @@ export function LinkedThreadView(props: {
                   accessibilityLiveRegion="polite"
                   className="gap-1 rounded-2xl border border-danger-border bg-danger px-3.5 py-3"
                 >
-                  <Text className="font-t3-medium text-sm text-danger-foreground">
+                  <Text className="font-vc-medium text-sm text-danger-foreground">
                     {gt("{label} is not reachable from this device", {
                       label: connectState.label,
                     })}

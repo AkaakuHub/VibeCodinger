@@ -771,7 +771,7 @@ function SwipeActionButton(props: {
         ]}
       >
         <Text
-          className="text-3xs font-t3-medium text-foreground-muted"
+          className="text-3xs font-vc-medium text-foreground-muted"
           maxFontSizeMultiplier={ACTION_LABEL_MAX_FONT_SCALE}
           numberOfLines={1}
           style={labelTextStyle}

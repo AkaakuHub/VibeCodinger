@@ -884,7 +884,7 @@ function MessageAttachmentFile(props: {
             )}
           </View>
           <View className="min-w-0 flex-1 gap-1">
-            <Text className="font-t3-medium text-sm text-foreground" numberOfLines={2}>
+            <Text className="font-vc-medium text-sm text-foreground" numberOfLines={2}>
               {attachment.name}
             </Text>
             <Text className="text-xs text-foreground-muted" numberOfLines={1}>
@@ -1292,7 +1292,7 @@ function ArtifactTemplateCard(props: {
         />
       </View>
       <View className="min-w-0 flex-1">
-        <Text className="font-t3-bold text-sm text-foreground" numberOfLines={1}>
+        <Text className="font-vc-bold text-sm text-foreground" numberOfLines={1}>
           {props.template.displayName}
         </Text>
         <Text className="text-xs text-foreground-muted">
@@ -1537,7 +1537,7 @@ function MarkdownDetailsFold(props: {
           size={12}
           tintColor={iconSubtleColor}
         />
-        <Text className="min-w-0 shrink font-t3-medium text-sm text-foreground">
+        <Text className="min-w-0 shrink font-vc-medium text-sm text-foreground">
           {props.summary}
         </Text>
       </Pressable>
@@ -1661,7 +1661,7 @@ function AgentMessageFoldHeader(props: {
       />
       <Text
         numberOfLines={1}
-        className="max-w-[50%] shrink-0 font-t3-medium text-sm text-user-bubble-foreground-muted"
+        className="max-w-[50%] shrink-0 font-vc-medium text-sm text-user-bubble-foreground-muted"
       >
         {label}
       </Text>
@@ -1698,7 +1698,7 @@ function OpenSenderThreadButton(props: {
         })
       }
     >
-      <Text className="font-t3-medium text-xs text-foreground-secondary">
+      <Text className="font-vc-medium text-xs text-foreground-secondary">
         <T>Open thread</T>
       </Text>
     </Pressable>
@@ -1767,7 +1767,7 @@ function ThreadAutomationMessageRow(props: {
             tintColorClassName="accent-user-bubble-foreground-muted"
             type="monochrome"
           />
-          <Text className="font-t3-medium text-sm text-user-bubble-foreground-muted">
+          <Text className="font-vc-medium text-sm text-user-bubble-foreground-muted">
             <T>Automation</T>
           </Text>
           <Text numberOfLines={1} className="min-w-0 shrink text-sm text-user-bubble-foreground">
@@ -1805,12 +1805,12 @@ function ThreadAutomationMessageRow(props: {
               hitSlop={6}
               onPress={() => openSettings(navigation, "SettingsScheduledTasks")}
             >
-              <Text className="font-t3-medium text-xs text-foreground-secondary">
+              <Text className="font-vc-medium text-xs text-foreground-secondary">
                 <T>Open automation</T>
               </Text>
             </Pressable>
           ) : null}
-          <Text className="font-t3-medium text-xs tabular-nums text-foreground-secondary">
+          <Text className="font-vc-medium text-xs tabular-nums text-foreground-secondary">
             {props.timestampLabel}
           </Text>
           <UserMessageCopyButton
@@ -1865,7 +1865,7 @@ function RunFoldWorking(props: {
       <Text
         key={props.rowSizing.textSizeKey}
         numberOfLines={1}
-        className="shrink font-t3-medium text-sm tabular-nums text-foreground-muted"
+        className="shrink font-vc-medium text-sm tabular-nums text-foreground-muted"
       >
         {gt("Working for {duration}", {
           duration:
@@ -1935,7 +1935,7 @@ function RunFoldButton({
         <Text
           key={rowSizing.textSizeKey}
           numberOfLines={1}
-          className="shrink font-t3-medium text-sm tabular-nums text-foreground-muted"
+          className="shrink font-vc-medium text-sm tabular-nums text-foreground-muted"
         >
           {entry.label}
           {error ? ` · ${error}` : ""}
@@ -2056,7 +2056,7 @@ function renderFeedEntry(
           <Text
             key={props.workRowSizing.textSizeKey}
             numberOfLines={1}
-            className="shrink font-t3-medium text-sm text-foreground-muted"
+            className="shrink font-vc-medium text-sm text-foreground-muted"
           >
             {m(msg("Pending", { $context: "message not yet sent" }))}
           </Text>
@@ -2392,7 +2392,7 @@ function renderFeedEntry(
           {...(enterAnimated ? { entering: FadeInDown.duration(220) } : {})}
         >
           {presentation.attribution === "vibecodinger" ? (
-            <Text className="mb-1 pr-1 font-t3-medium text-2xs text-foreground-muted opacity-60">
+            <Text className="mb-1 pr-1 font-vc-medium text-2xs text-foreground-muted opacity-60">
               {m(msg("Sent by VibeCodinger"))}
             </Text>
           ) : null}
@@ -2594,7 +2594,7 @@ function renderFeedEntry(
                   className="flex-row items-center gap-1"
                 >
                   <SymbolView name="arrow.uturn.forward" size={12} tintColor={iconSubtleColor} />
-                  <Text className="font-t3-medium text-xs text-foreground-secondary">
+                  <Text className="font-vc-medium text-xs text-foreground-secondary">
                     {intentBadge.label}
                   </Text>
                 </View>
@@ -2604,12 +2604,12 @@ function renderFeedEntry(
                   accessible={false}
                   accessibilityElementsHidden
                   importantForAccessibility="no"
-                  className="font-t3-medium text-xs text-foreground-secondary"
+                  className="font-vc-medium text-xs text-foreground-secondary"
                 >
                   ·
                 </Text>
               ) : null}
-              <Text className="font-t3-medium text-xs tabular-nums text-foreground-secondary">
+              <Text className="font-vc-medium text-xs tabular-nums text-foreground-secondary">
                 {entry.pendingMessage &&
                 !entry.acknowledged &&
                 entry.id !== props.pendingFoldMessageId
@@ -2713,7 +2713,7 @@ function renderFeedEntry(
                 sourceTitle={props.threadTitle}
               />
             ) : null}
-            <Text className="font-t3-medium text-xs tabular-nums text-foreground-secondary">
+            <Text className="font-vc-medium text-xs tabular-nums text-foreground-secondary">
               {timestampLabel}
             </Text>
           </View>
@@ -2774,7 +2774,7 @@ function UserMessageContent(props: UserMessageContentProps) {
   const text = replaceComposerContextReferences(liveText, (ref) => {
     const available = props.context?.records.some((record) => record.contextId === ref.contextId);
     const label = available ? ref.label : gt("{label} (unavailable)", { label: ref.label });
-    return `[${label}](t3-context://v1/${ref.kind}/${ref.contextId})`;
+    return `[${label}](vc-context://v1/${ref.kind}/${ref.contextId})`;
   });
   const onLinkPress = (href: string) => {
     const reference = parseComposerContextHref(href);
@@ -2959,7 +2959,7 @@ function ThreadFeedPlaceholder(props: {
       }}
     >
       <View className="max-w-[320px] items-center gap-2">
-        <Text className="text-center font-t3-bold text-lg text-foreground">{props.title}</Text>
+        <Text className="text-center font-vc-bold text-lg text-foreground">{props.title}</Text>
         <Text className="text-center text-sm leading-normal text-foreground-secondary">
           {props.detail}
         </Text>

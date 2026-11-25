@@ -93,13 +93,13 @@ it.live(
       expect(result._tag, "an unavailable cleanup shell must fail uninstall").toBe("Failure");
       const [, args, options] = spawned[0]!;
       expect(args.at(-1)).toBe(
-        '""%T3_UNINSTALL_PING%" -n 3 127.0.0.1 >nul & rmdir /s /q "%T3_UNINSTALL_RUNTIME%""',
+        '""%VIBECODINGER_UNINSTALL_PING%" -n 3 127.0.0.1 >nul & rmdir /s /q "%VIBECODINGER_UNINSTALL_RUNTIME%""',
       );
       expect(options).toMatchObject({
         cwd: String.raw`C:\Windows\System32`,
         env: {
-          T3_UNINSTALL_PING: String.raw`C:\Windows\System32\ping.exe`,
-          T3_UNINSTALL_RUNTIME: runtimeDir,
+          VIBECODINGER_UNINSTALL_PING: String.raw`C:\Windows\System32\ping.exe`,
+          VIBECODINGER_UNINSTALL_RUNTIME: runtimeDir,
         },
       });
     }).pipe(Effect.scoped, Effect.provide(Layer.mergeAll(NodeServices.layer, NetService.layer))),

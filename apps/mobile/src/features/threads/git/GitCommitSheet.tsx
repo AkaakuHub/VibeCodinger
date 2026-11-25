@@ -96,7 +96,7 @@ export function GitCommitSheet(props: GitCommitSheetProps) {
         </Text>
       ) : null}
       <View className="gap-2">
-        <Text className="text-sm font-t3-medium text-foreground">
+        <Text className="text-sm font-vc-medium text-foreground">
           <T>Commit message</T>
         </Text>
         <TextInput
@@ -115,7 +115,7 @@ export function GitCommitSheet(props: GitCommitSheetProps) {
       <View>
         <View className="flex-row items-center justify-between gap-2 pb-2">
           <View className="flex-1 gap-1">
-            <Text className="text-base font-t3-bold text-foreground">
+            <Text className="text-base font-vc-bold text-foreground">
               <T>Changed files</T>
             </Text>
             <Text className="text-xs text-foreground-muted">
@@ -186,7 +186,7 @@ export function GitCommitSheet(props: GitCommitSheetProps) {
                   <Text
                     numberOfLines={1}
                     ellipsizeMode="middle"
-                    className="text-sm font-t3-medium text-foreground"
+                    className="text-sm font-vc-medium text-foreground"
                   >
                     {name}
                   </Text>

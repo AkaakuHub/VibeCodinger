@@ -378,8 +378,8 @@ it.layer(NodeServices.layer)("manual server installation ownership", (it) => {
         );
       const baseDir = path.join(root, ".vibecodinger");
 
-      expect(yield* resolve("vibecodinger")).toEqual({ kind: "t3-launcher", launcher, baseDir });
-      expect(yield* resolve(launcher)).toEqual({ kind: "t3-launcher", launcher, baseDir });
+      expect(yield* resolve("vibecodinger")).toEqual({ kind: "vc-launcher", launcher, baseDir });
+      expect(yield* resolve(launcher)).toEqual({ kind: "vc-launcher", launcher, baseDir });
       expect(yield* resolve(executable)).toBeNull();
       expect(yield* resolve(copy)).toBeNull();
 
@@ -391,7 +391,7 @@ it.layer(NodeServices.layer)("manual server installation ownership", (it) => {
         { mode: 0o755 },
       );
       expect(yield* resolve(executable, path.join(root, "bin"))).toEqual({
-        kind: "t3-launcher",
+        kind: "vc-launcher",
         launcher,
         baseDir,
       });

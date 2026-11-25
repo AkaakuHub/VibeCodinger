@@ -430,7 +430,7 @@ export function NewTaskRouteScreen({ route }: StaticScreenProps<NewTaskRoutePara
                     />
                   </View>
                   <View className="min-w-0 flex-1">
-                    <Text className="text-base font-t3-bold leading-snug">
+                    <Text className="text-base font-vc-bold leading-snug">
                       <T>No project</T>
                     </Text>
                     <Text className="text-xs leading-snug text-foreground-muted" numberOfLines={1}>
@@ -458,7 +458,7 @@ export function NewTaskRouteScreen({ route }: StaticScreenProps<NewTaskRoutePara
               {projectEmptyState.loading ? (
                 <AppActivityIndicator colorClassName="accent-icon-muted" />
               ) : null}
-              <Text className="text-center text-lg font-t3-bold text-foreground">
+              <Text className="text-center text-lg font-vc-bold text-foreground">
                 {projectEmptyState.title}
               </Text>
               <Text className="text-center text-sm leading-normal text-foreground-muted">
@@ -522,7 +522,7 @@ export function NewTaskRouteScreen({ route }: StaticScreenProps<NewTaskRoutePara
             </View>
           ) : visibleScopes.length === 0 ? (
             <View className="items-center gap-2 px-6 py-8">
-              <Text className="text-center text-lg font-t3-bold text-foreground">
+              <Text className="text-center text-lg font-vc-bold text-foreground">
                 <T>No matching projects</T>
               </Text>
               <Text className="text-center text-sm leading-normal text-foreground-muted">
@@ -598,7 +598,7 @@ export function NewTaskRouteScreen({ route }: StaticScreenProps<NewTaskRoutePara
                         />
                       </View>
                       <View className="min-w-0 flex-1">
-                        <Text className={cn("text-base leading-snug", "font-t3-bold")}>
+                        <Text className={cn("text-base leading-snug", "font-vc-bold")}>
                           {scope.title}
                         </Text>
                         <Text

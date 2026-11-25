@@ -375,7 +375,7 @@ function EnvironmentDetail({ environmentId }: { readonly environmentId: Environm
                               iconUrl={provider.iconUrl}
                               size={18}
                             />
-                            <Text className="min-w-0 flex-1 text-base font-t3-medium text-foreground">
+                            <Text className="min-w-0 flex-1 text-base font-vc-medium text-foreground">
                               {provider.displayName ?? provider.driver}
                             </Text>
                           </View>

@@ -19,7 +19,7 @@ describe("ExecutionEnvironmentDescriptor", () => {
     for (const installation of [
       { kind: "npx" },
       { kind: "npm-global", prefix: "/opt/node" },
-      { kind: "t3-launcher", launcher: "/opt/bin/vibecodinger", baseDir: "/data/vibecodinger" },
+      { kind: "vc-launcher", launcher: "/opt/bin/vibecodinger", baseDir: "/data/vibecodinger" },
     ]) {
       expect(
         decodeDescriptor({
@@ -29,7 +29,7 @@ describe("ExecutionEnvironmentDescriptor", () => {
       ).toEqual(installation);
     }
     const spaced = {
-      kind: "t3-launcher",
+      kind: "vc-launcher",
       launcher: "/opt/bin/vibecodinger ",
       baseDir: " /data/vibecodinger ",
     };
@@ -42,7 +42,7 @@ describe("ExecutionEnvironmentDescriptor", () => {
     for (const installation of [
       { kind: "future-manager" },
       { kind: "npm-global" },
-      { kind: "t3-launcher", launcher: "t3" },
+      { kind: "vc-launcher", launcher: "t3" },
     ]) {
       expect(
         decodeDescriptor({

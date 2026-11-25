@@ -2753,7 +2753,7 @@ it.effect("shared intake preserves durable attachment bytes after a lost launch 
       ...launchInput({ command: "intake-launch", thread: "intake-thread" }),
       initialMessage: {
         messageId: MessageId.make("intake-first"),
-        text: "First [file](t3-context://v1/file/intake-file)",
+        text: "First [file](vc-context://v1/file/intake-file)",
         context: {
           version: 1 as const,
           records: [
@@ -3036,7 +3036,7 @@ it.live(
         yield* git.execute({ operation: "launch-test", cwd: shop, args });
       }
       yield* fileSystem.writeFileString(
-        path.join(shop, "t3.json"),
+        path.join(shop, "vibecodinger.json"),
         JSON.stringify({
           worktreeLayout: {
             create: `echo create >> "${ran}" && git worktree add -q -b "$T3_WORKTREE_BRANCH" "$T3_WORKTREE_PROJECT_PATH"`,

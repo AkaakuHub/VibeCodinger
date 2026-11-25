@@ -71,7 +71,7 @@ export function AssistantCitationSheet(props: {
           <View className="w-1 rounded-full bg-primary" />
           <Text selectable textRole="body" className="min-w-0 flex-1 text-foreground-muted">
             {contextBefore(citation.prefix)}
-            <Text className="font-t3-medium text-foreground">{citation.text}</Text>
+            <Text className="font-vc-medium text-foreground">{citation.text}</Text>
             {contextAfter(citation.suffix)}
           </Text>
         </View>

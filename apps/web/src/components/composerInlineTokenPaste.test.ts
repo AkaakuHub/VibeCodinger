@@ -21,7 +21,7 @@ const clipboard = (data: Record<string, string>) => ({
   getData: (type: string) => data[type] ?? "",
 });
 const chip = (title: string) =>
-  `[${title}](t3-context://v1/thread/${threadContextRecord(thread, title).contextId})`;
+  `[${title}](vc-context://v1/thread/${threadContextRecord(thread, title).contextId})`;
 
 /** Imports every record it is offered, as the composer does for a thread its agent can read. */
 const importAll =

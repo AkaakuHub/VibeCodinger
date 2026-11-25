@@ -69,7 +69,7 @@ export const ServerInstallation = Schema.Union([
   Schema.Struct({ kind: Schema.Literal("npm-global"), prefix: TrimmedNonEmptyString }),
   // A launcher (script, or a legacy symlink) into a downloaded runtime, as the install script and `t3 update` leave.
   Schema.Struct({
-    kind: Schema.Literal("t3-launcher"),
+    kind: Schema.Literal("vc-launcher"),
     launcher: InstalledPath,
     baseDir: InstalledPath,
   }),
@@ -179,7 +179,7 @@ export const ExecutionEnvironmentCapabilities = Schema.Struct({
       in them. Absent on servers from before linking, which clients must not
       offer linking for. */
   peerLinks: Schema.optionalKey(Schema.Boolean),
-  /** Server's `/mcp` narrows an OAuth client's modes from `T3-Mode-Limit`, so
+  /** Server's `/mcp` narrows an OAuth client's modes from `VC-Mode-Limit`, so
       a linked environment's calls keep its agent's limits. Another environment
       links to this one only when it is set. */
   mcpModeLimitHeader: Schema.optionalKey(Schema.Boolean),

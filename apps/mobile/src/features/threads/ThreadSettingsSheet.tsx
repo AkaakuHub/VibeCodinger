@@ -169,17 +169,17 @@ function ProviderHeader(props: {
       )}
       {props.detail ? (
         <View className="min-w-0 flex-1 py-1">
-          <Text className="text-sm font-t3-medium text-foreground-muted">{props.label}</Text>
+          <Text className="text-sm font-vc-medium text-foreground-muted">{props.label}</Text>
           <Text className="text-xs text-foreground-muted">{props.detail}</Text>
         </View>
       ) : (
-        <Text className="text-sm font-t3-medium text-foreground-muted">{props.label}</Text>
+        <Text className="text-sm font-vc-medium text-foreground-muted">{props.label}</Text>
       )}
       {props.collapsible ? (
         <>
           <View className="flex-1" />
           {props.collapsed ? (
-            <Text className="text-2xs font-t3-medium text-foreground-muted">
+            <Text className="text-2xs font-vc-medium text-foreground-muted">
               {props.modelCount}
             </Text>
           ) : null}
@@ -241,7 +241,7 @@ function DisclosureRow(props: {
       )}
       style={{ minHeight: ROW_MIN_HEIGHT.item }}
     >
-      <Text className="text-sm font-t3-medium text-foreground">{props.label}</Text>
+      <Text className="text-sm font-vc-medium text-foreground">{props.label}</Text>
       <View className="flex-1" />
       {props.value ? (
         <Text className="text-sm text-foreground-muted" numberOfLines={1}>
@@ -271,7 +271,7 @@ function SwitchRow(props: {
         !props.isLast && "border-b border-border-subtle",
       )}
     >
-      <Text className="text-sm font-t3-medium text-foreground">{props.label}</Text>
+      <Text className="text-sm font-vc-medium text-foreground">{props.label}</Text>
       <ThemedSwitch
         accessibilityLabel={props.label}
         onValueChange={props.onValueChange}
@@ -976,7 +976,7 @@ function ThreadSettingsOptionsItem(props: {
   return (
     <View style={{ paddingBottom: insets.bottom + props.bottomInset + 12 }}>
       <ChatGptSharingStatus provider={selectedProvider} />
-      <Text className="px-5 pb-2 pt-2 text-sm font-t3-medium text-foreground-muted">
+      <Text className="px-5 pb-2 pt-2 text-sm font-vc-medium text-foreground-muted">
         <T>Options</T>
       </Text>
       <Animated.View
@@ -1041,7 +1041,7 @@ function ThreadSettingsOptionsItem(props: {
         </Animated.View>
       </Animated.View>
 
-      <Text className="px-5 pb-2 pt-7 text-sm font-t3-medium text-foreground-muted">
+      <Text className="px-5 pb-2 pt-7 text-sm font-vc-medium text-foreground-muted">
         {gt("Catalog", { $context: "section heading for the model catalog" })}
       </Text>
       <View className="mx-4 overflow-hidden rounded-2xl bg-grouped-card">

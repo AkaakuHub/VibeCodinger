@@ -111,21 +111,21 @@ function TimelineComment({
           <Text className="text-sm">
             {approved ? (
               <T>
-                <Text className="font-t3-medium">
+                <Text className="font-vc-medium">
                   <Var>{comment.author?.login ?? gt("Unknown author")}</Var>
                 </Text>
                 <Text className="text-foreground-muted"> approved</Text>
               </T>
             ) : changes ? (
               <T>
-                <Text className="font-t3-medium">
+                <Text className="font-vc-medium">
                   <Var>{comment.author?.login ?? gt("Unknown author")}</Var>
                 </Text>
                 <Text className="text-foreground-muted"> requested changes</Text>
               </T>
             ) : (
               <T>
-                <Text className="font-t3-medium">
+                <Text className="font-vc-medium">
                   <Var>{comment.author?.login ?? gt("Unknown author")}</Var>
                 </Text>
                 <Text className="text-foreground-muted"> commented</Text>
@@ -215,7 +215,7 @@ function TimelineComment({
               }
               className="flex-row items-center justify-center gap-1 py-2 active:opacity-70"
             >
-              <Text className="text-xs font-t3-medium text-foreground">
+              <Text className="text-xs font-vc-medium text-foreground">
                 {expanded ? gt("Show less") : gt("Show more")}
               </Text>
               <SymbolView
@@ -279,7 +279,7 @@ export function pullRequestTimelineRows(
             <PullRequestAvatar actor={thread.comments[0]?.author ?? null} size={22} />
             <Text className="flex-1 text-sm">
               <T>
-                <Text className="font-t3-medium">
+                <Text className="font-vc-medium">
                   <Var>{thread.comments[0]?.author?.login ?? resolve(msg("Unknown author"))}</Var>
                 </Text>
                 <Text className="text-foreground-muted"> started a discussion</Text>

@@ -86,7 +86,7 @@ export const IssueListRow = memo(function IssueListRow(props: {
             </Text>
           </View>
           <Text
-            className={cn("text-base leading-5 font-t3-medium", foreground)}
+            className={cn("text-base leading-5 font-vc-medium", foreground)}
             numberOfLines={2}
             ellipsizeMode="tail"
           >

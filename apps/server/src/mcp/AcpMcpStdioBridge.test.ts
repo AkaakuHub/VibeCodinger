@@ -478,7 +478,7 @@ describe("AcpMcpStdioBridge", () => {
       const error = yield* mcpToolSession({
         endpoint: "http://127.0.0.1:1/mcp",
         authorization: "Bearer bridge-test",
-        clientName: "t3-thread-cli",
+        clientName: "vc-thread-cli",
         fetchImplementation: async (_url, init) => {
           if (init?.method === "DELETE") return new Response(null, { status: 204 });
           const message = JSON.parse(String(init?.body)) as { id?: unknown; method?: string };

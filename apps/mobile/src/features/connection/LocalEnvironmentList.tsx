@@ -40,7 +40,7 @@ export function LocalEnvironmentList({
           <T>No environments connected yet.</T>
           {"\n"}
           <T>
-            Tap <Text className="font-t3-bold text-foreground">+</Text> to add one.
+            Tap <Text className="font-vc-bold text-foreground">+</Text> to add one.
           </T>
         </Text>
       </View>

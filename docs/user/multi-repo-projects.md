@@ -35,7 +35,7 @@ paths on one machine, so the same project on another machine has its own. A proj
 
 ### Leave a repository out
 
-To keep a repository inside the project folder out of the project, name it in the `t3.json` in the
+To keep a repository inside the project folder out of the project, name it in the `vibecodinger.json` in the
 project folder, relative to that folder:
 
 ```json
@@ -101,7 +101,7 @@ copies. Editing one changes it for every thread.
 
 If the default layout does not suit your project, for example because build output must be per
 thread, workspace metadata has to be generated, or submodules need preparing, the project can
-create the folder with its own command. Add this to the `t3.json` in the project folder:
+create the folder with its own command. Add this to the `vibecodinger.json` in the project folder:
 
 ```json
 {
@@ -174,7 +174,7 @@ restored:
 ## Limits
 
 - One Git action runs in one repository. There is no commit or push across several at once.
-- Only the project folder's `t3.json` is read. Setup scripts and actions inside one of its
+- Only the project folder's `vibecodinger.json` is read. Setup scripts and actions inside one of its
   repositories are not picked up.
 - The Diff pane's repository picker and the base branch field for a plain folder are on web and
   desktop only.

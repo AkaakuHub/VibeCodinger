@@ -5766,7 +5766,7 @@ export const makeGitVcsDriverCore = Effect.fn("makeGitVcsDriverCore")(function* 
     },
   );
 
-  // A new worktree has no files yet, so t3.json and its pattern file come from the ref itself.
+  // A new worktree has no files yet, so vibecodinger.json and its pattern file come from the ref itself.
   const readWorktreeSparsePatterns = Effect.fn("readWorktreeSparsePatterns")(function* (
     cwd: string,
     refName: string,
@@ -5782,7 +5782,10 @@ export const makeGitVcsDriverCore = Effect.fn("makeGitVcsDriverCore")(function* 
     if (projectFile.exitCode !== 0) return null;
     const file = parseT3ProjectFile(projectFile.stdout);
     if (file === null) {
-      yield* Effect.logWarning("t3.json is invalid; checking out the full worktree", { cwd, ref });
+      yield* Effect.logWarning("vibecodinger.json is invalid; checking out the full worktree", {
+        cwd,
+        ref,
+      });
       return null;
     }
     if (file.worktreeSparsePatternsPath === undefined) return null;
@@ -5801,7 +5804,7 @@ export const makeGitVcsDriverCore = Effect.fn("makeGitVcsDriverCore")(function* 
         operation: "GitVcsDriver.createWorktree",
         command: "git worktree add",
         cwd,
-        detail: `t3.json names the sparse-checkout pattern file "${file.worktreeSparsePatternsPath}", which is not a file in ${refName}.`,
+        detail: `vibecodinger.json names the sparse-checkout pattern file "${file.worktreeSparsePatternsPath}", which is not a file in ${refName}.`,
       });
     }
     return patterns.stdout;
@@ -6161,7 +6164,7 @@ export const makeGitVcsDriverCore = Effect.fn("makeGitVcsDriverCore")(function* 
           options?.submodules ?? null,
           options?.submodules != null
             ? null
-            : // Read HEAD for the same reason: sparse patterns can leave t3.json out too.
+            : // Read HEAD for the same reason: sparse patterns can leave vibecodinger.json out too.
               yield* executeGit(
                 "GitVcsDriver.createWorktree.readProjectFile",
                 worktreePath,
@@ -6172,9 +6175,12 @@ export const makeGitVcsDriverCore = Effect.fn("makeGitVcsDriverCore")(function* 
                   if (result.exitCode !== 0) return Effect.succeed(null);
                   const file = parseT3ProjectFile(result.stdout);
                   return file === null
-                    ? Effect.logWarning("t3.json is invalid; initializing submodules recursively", {
-                        worktreePath,
-                      }).pipe(Effect.as(null))
+                    ? Effect.logWarning(
+                        "vibecodinger.json is invalid; initializing submodules recursively",
+                        {
+                          worktreePath,
+                        },
+                      ).pipe(Effect.as(null))
                     : Effect.succeed(file);
                 }),
                 Effect.orElseSucceed(() => null),
@@ -6182,7 +6188,7 @@ export const makeGitVcsDriverCore = Effect.fn("makeGitVcsDriverCore")(function* 
         );
     if (hasSubmodules && submoduleMode.value === "none" && progress?.onSubmodulesDisabled) {
       yield* progress.onSubmodulesDisabled({
-        source: submoduleMode.source === "t3.json" ? "t3.json" : "settings",
+        source: submoduleMode.source === "vibecodinger.json" ? "vibecodinger.json" : "settings",
       });
     }
     if (submoduleMode.value !== "none") {

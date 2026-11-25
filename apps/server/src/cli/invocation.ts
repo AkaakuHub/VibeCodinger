@@ -95,7 +95,7 @@ export const resolveServerInstallation = Effect.gen(function* () {
     const linked = target === undefined ? null : PINNED_RUNTIME_ENTRY.exec(target);
     if (!linked || (yield* fs.realPath(linked[1] || "/")) !== (runtime[1] || "/")) return null;
     return {
-      kind: "t3-launcher",
+      kind: "vc-launcher",
       launcher,
       baseDir: linked[1] || "/",
     } satisfies ServerInstallation;

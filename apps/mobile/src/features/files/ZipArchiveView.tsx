@@ -350,7 +350,7 @@ function ZipArchiveProgress(props: {
   const messages = useMessages();
   return (
     <View className="flex-1 justify-center gap-3 bg-sheet px-8">
-      <Text className="text-xl font-t3-semibold text-foreground">
+      <Text className="text-xl font-vc-semibold text-foreground">
         {props.totalBytes > 0 ? (
           <T>
             <Var>{formatAttachmentSize(props.receivedBytes, messages)}</Var>

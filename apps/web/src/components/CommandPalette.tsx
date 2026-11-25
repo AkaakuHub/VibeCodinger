@@ -1823,7 +1823,7 @@ function OpenCommandPaletteDialog(props: {
         "grouping",
         "checkout",
         "remove",
-        "t3.json",
+        "vibecodinger.json",
       ],
       title: gt("Project settings"),
       description: contextualProjectGroup.displayName,

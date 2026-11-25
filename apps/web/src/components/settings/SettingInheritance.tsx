@@ -26,7 +26,7 @@ import { isProjectScopedSettingKey } from "./scopedSettings";
 import { settingsScopeEnvironmentLabels } from "./settingsScopeAxis";
 
 interface InheritanceLayer {
-  readonly key: "project" | "environment" | "t3.json" | "built-in";
+  readonly key: "project" | "environment" | "vibecodinger.json" | "built-in";
   readonly label: string;
   readonly value: string;
   readonly effective: boolean;
@@ -151,14 +151,14 @@ export function settingInheritanceLayers(
   });
   if (fileBacked && target.projectId !== null) {
     layers.push({
-      key: "t3.json",
-      label: "t3.json",
+      key: "vibecodinger.json",
+      label: "vibecodinger.json",
       value:
-        source === "t3.json"
+        source === "vibecodinger.json"
           ? formatValue(key, target.settings[key], resolve)
           : resolve(msg("Inherits")),
-      effective: source === "t3.json",
-      set: source === "t3.json",
+      effective: source === "vibecodinger.json",
+      set: source === "vibecodinger.json",
     });
   }
   // File-backed defaults come from the resolver, not the schema's decoded null.

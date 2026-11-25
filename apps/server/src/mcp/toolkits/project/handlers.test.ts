@@ -837,7 +837,7 @@ it.effect("a worktree launch that omits startFromOrigin follows the new-worktree
 it.effect("a launch that omits its workspace follows the new-threads-in-a-worktree default", () =>
   Effect.gen(function* () {
     const fileSystem = yield* FileSystem.FileSystem;
-    for (const source of ["setting", "t3.json"] as const) {
+    for (const source of ["setting", "vibecodinger.json"] as const) {
       const repo = yield* fileSystem.makeTempDirectoryScoped({
         prefix: "vibecodinger-launch-env-mode-",
       });
@@ -855,9 +855,9 @@ it.effect("a launch that omits its workspace follows the new-threads-in-a-worktr
       ]) {
         yield* git.execute({ operation: "test.setupRepo", cwd: repo, args });
       }
-      if (source === "t3.json")
+      if (source === "vibecodinger.json")
         yield* fileSystem.writeFileString(
-          `${repo}/t3.json`,
+          `${repo}/vibecodinger.json`,
           JSON.stringify({ defaultThreadEnvMode: "worktree" }),
         );
       const toolkit = yield* ProjectToolkit.pipe(

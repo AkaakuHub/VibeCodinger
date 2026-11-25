@@ -117,7 +117,7 @@ function PendingFeedbackRequest(props: {
   return (
     <View className="mb-3 gap-3 rounded-[20px] border border-border bg-card-alt p-4">
       <View className="gap-1">
-        <Text className="font-t3-bold text-base text-foreground">
+        <Text className="font-vc-bold text-base text-foreground">
           <T>Send this report to the T3 team?</T>
         </Text>
         <Text className="font-sans text-xs text-foreground-muted">

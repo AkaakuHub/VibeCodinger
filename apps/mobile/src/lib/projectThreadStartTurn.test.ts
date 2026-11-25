@@ -15,7 +15,7 @@ describe("project thread title", () => {
       type: "image" as const,
       name: "photo.png",
       mimeType: "image/png",
-      text: "![photo.png](t3-context://v1/image/photo)",
+      text: "![photo.png](vc-context://v1/image/photo)",
       title: "Attached image",
     },
     {
@@ -29,7 +29,7 @@ describe("project thread title", () => {
       type: "file" as const,
       name: "report.pdf",
       mimeType: "application/pdf",
-      text: "[report.pdf](t3-context://v1/file/report)",
+      text: "[report.pdf](vc-context://v1/file/report)",
       title: "report.pdf",
     },
   ])("titles a $type-only message without changing its data", ({ text, title, ...attachment }) => {

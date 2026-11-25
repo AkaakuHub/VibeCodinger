@@ -47,7 +47,7 @@ revocation and ceilings hold, not what a full-scope session can do once issued.
    `mcp-client` session reaching a non-`/mcp` route; a read-only MCP grant
    calling a write tool.
 3. **Mode or policy escalation.** An agent, MCP client, or peer link acting
-   above its runtime-mode ceiling, `linkOrigin`, `T3-Mode-Limit`, or managed
+   above its runtime-mode ceiling, `linkOrigin`, `VC-Mode-Limit`, or managed
    policy.
 4. **Guest escape.** A guest token reading another thread, acting beyond
    proposing messages, or surviving a closed or replaced share.

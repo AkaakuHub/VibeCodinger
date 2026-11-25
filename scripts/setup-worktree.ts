@@ -44,7 +44,7 @@ for (const signal of ["SIGINT", "SIGTERM", "SIGHUP"] as const) {
 const projectRoot = process.env.VIBECODINGER_PROJECT_ROOT;
 if (!projectRoot) {
   throw new Error(
-    "VIBECODINGER_PROJECT_ROOT is not set. Run this through the t3.json setup action.",
+    "VIBECODINGER_PROJECT_ROOT is not set. Run this through the vibecodinger.json setup action.",
   );
 }
 

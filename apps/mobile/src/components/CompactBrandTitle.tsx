@@ -57,7 +57,7 @@ export function CompactBrandTitle(
       <Text
         allowFontScaling={props.allowFontScaling}
         maxFontSizeMultiplier={BRAND_MAX_FONT_SCALE}
-        className="font-t3-medium text-foreground-muted"
+        className="font-vc-medium text-foreground-muted"
         style={{ fontSize: 16 * scale, letterSpacing: -0.5 * scale }}
       >
         {WORDMARK_NAME}
@@ -74,7 +74,7 @@ export function CompactBrandTitle(
           <Text
             allowFontScaling={props.allowFontScaling}
             maxFontSizeMultiplier={BRAND_MAX_FONT_SCALE}
-            className="font-t3-bold text-foreground-muted uppercase"
+            className="font-vc-bold text-foreground-muted uppercase"
             style={{ fontSize: 9 * scale, letterSpacing: 0.9 * scale }}
           >
             {stageLabel}

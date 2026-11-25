@@ -226,7 +226,7 @@ export function PullRequestReviewSheet({
       />
       {reviewing && store.draft.comments.length ? (
         <View className="gap-2">
-          <Text className="text-sm font-t3-medium">
+          <Text className="text-sm font-vc-medium">
             {gt(
               "{count, plural, one {{count} pending line comment} other {{count} pending line comments}}",
               { count: store.draft.comments.length },

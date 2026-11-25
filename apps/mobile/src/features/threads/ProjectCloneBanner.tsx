@@ -23,7 +23,7 @@ export function ProjectCloneBanner(props: {
       <View className="flex-row items-center gap-3 rounded-2xl border border-border bg-card px-3.5 py-3">
         <AppActivityIndicator size="small" />
         <View className="min-w-0 flex-1">
-          <Text className="font-t3-medium text-sm" numberOfLines={1}>
+          <Text className="font-vc-medium text-sm" numberOfLines={1}>
             <T>
               Cloning <Var>{name}</Var>
             </T>
@@ -46,7 +46,7 @@ export function ProjectCloneBanner(props: {
     >
       <Text
         className={cn(
-          "font-t3-medium text-sm",
+          "font-vc-medium text-sm",
           cancelled ? "text-warning-foreground" : "text-danger-foreground",
         )}
         numberOfLines={1}

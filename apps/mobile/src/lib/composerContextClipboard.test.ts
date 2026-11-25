@@ -93,7 +93,7 @@ const terminal = {
   text: "Build failed",
 };
 const clipboard = {
-  text: "![Checkout](t3-context://v1/image/image-source) [Build](t3-context://v1/terminal/terminal-source)",
+  text: "![Checkout](vc-context://v1/image/image-source) [Build](vc-context://v1/terminal/terminal-source)",
   fragment: encodeComposerContextFragment({
     version: 1,
     source: { environmentId: EnvironmentId.make("source") },
@@ -193,7 +193,7 @@ describe("mobile context clipboard imports", () => {
     const controller = new AbortController();
     mocks.dispose.mockImplementationOnce(() => controller.abort());
     const imageOnly = {
-      text: "![Checkout](t3-context://v1/image/image-source)",
+      text: "![Checkout](vc-context://v1/image/image-source)",
       fragment: encodeComposerContextFragment({
         version: 1,
         source: { environmentId: EnvironmentId.make("source") },
@@ -370,7 +370,7 @@ describe("mobile context clipboard imports", () => {
       threadId: "local-thread",
     });
     expect(result!.text).toBe(
-      `[Thread](t3-context://v1/thread/${record!.contextId}) <t3-thread://v2/source/foreign-thread>`,
+      `[Thread](vc-context://v1/thread/${record!.contextId}) <t3-thread://v2/source/foreign-thread>`,
     );
     expect(
       await importComposerContextClipboard(

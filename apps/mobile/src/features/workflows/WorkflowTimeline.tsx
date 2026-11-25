@@ -170,7 +170,7 @@ function TimelineRow(props: {
           numberOfLines={1}
           className={cn(
             "max-w-[60%] text-sm",
-            live ? "font-t3-medium text-foreground" : "text-foreground-secondary",
+            live ? "font-vc-medium text-foreground" : "text-foreground-secondary",
           )}
         >
           {props.name}

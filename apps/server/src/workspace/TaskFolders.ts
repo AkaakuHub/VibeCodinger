@@ -314,7 +314,7 @@ const make = Effect.gen(function* () {
     (cause: unknown): TaskFolderError =>
       new TaskFolderError({ operation, detail: `${prefix}: ${failureDetail(cause)}`, cause });
 
-  // A project that lays its own thread folder out says so in its `t3.json`.
+  // A project that lays its own thread folder out says so in its `vibecodinger.json`.
   const projectFile = (projectRoot: string) =>
     fileSystem.readFileString(path.join(projectRoot, T3_PROJECT_FILE_NAME)).pipe(
       Effect.map(parseT3ProjectFile),

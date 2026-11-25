@@ -340,7 +340,7 @@ function contextDraft(start: number, count: number): ComposerDraft {
     name: "skill",
   }));
   return {
-    text: records.map((record) => `[Skill](t3-context://v1/skill/${record.contextId})`).join(" "),
+    text: records.map((record) => `[Skill](vc-context://v1/skill/${record.contextId})`).join(" "),
     context: { version: 1, records },
     attachments: [],
   };
@@ -467,7 +467,7 @@ describe("mobile composer drafts", () => {
       const restored = archived
         ? decoded.cloudDrafts.signedOut.account?.drafts.thread
         : decoded.drafts.thread;
-      expect(restored?.text).toBe("Review these [notes.txt](t3-context://v1/file/legacy-file) ");
+      expect(restored?.text).toBe("Review these [notes.txt](vc-context://v1/file/legacy-file) ");
       expect(restored?.attachments).toEqual(legacy.attachments);
       expect(restored?.context?.records).toEqual([
         expect.objectContaining({ kind: "file", attachmentId: file.id }),
@@ -513,7 +513,7 @@ describe("mobile composer drafts", () => {
       expect(restored?.context?.records).toHaveLength(2);
       expect(restored?.context?.records).toContainEqual(skill);
       expect(restored?.text).toBe(
-        `[notes.txt](t3-context://v1/file/${records.length === 2 ? "original" : "file_2"}) `,
+        `[notes.txt](vc-context://v1/file/${records.length === 2 ? "original" : "file_2"}) `,
       );
     }
   });
@@ -724,9 +724,9 @@ describe("mobile composer drafts", () => {
     const existing = contextDraft(0, 2);
     const incoming = contextDraft(2, 2);
     const merged = mergeComposerDraftContentState(
-      { key: { ...existing, text: "[Skill](t3-context://v1/skill/skill-0)" } },
+      { key: { ...existing, text: "[Skill](vc-context://v1/skill/skill-0)" } },
       "key",
-      { ...incoming, text: "[Skill](t3-context://v1/skill/skill-2)" },
+      { ...incoming, text: "[Skill](vc-context://v1/skill/skill-2)" },
     );
     expect(merged.key?.context?.records.map((record) => record.contextId)).toEqual([
       "skill-0",
@@ -821,7 +821,7 @@ describe("mobile composer drafts", () => {
     appAtomRegistry.set(composerDraftsAtom, {
       [key]: {
         text: records
-          .map((record) => `[Skill](t3-context://v1/skill/${record.contextId})`)
+          .map((record) => `[Skill](vc-context://v1/skill/${record.contextId})`)
           .join(" "),
         context: { version: 1, records },
         attachments: [],
@@ -869,7 +869,7 @@ describe("mobile composer drafts", () => {
       write.resolve(file);
       expect(await pending).toBe(0);
       const draft = getComposerDraftSnapshot(key);
-      expect(draft.text).toBe("before [pasted-text.txt](t3-context://v1/file/paste) after");
+      expect(draft.text).toBe("before [pasted-text.txt](vc-context://v1/file/paste) after");
       expect(draft.attachments).toEqual([file]);
     },
   );
@@ -906,7 +906,7 @@ describe("mobile composer drafts", () => {
     rememberComposerDraftSelection(key, "Before yaz", { start: 10, end: 10 });
     write.resolve();
     expect(await pending).toBe(0);
-    const link = "[picture.png](t3-context://v1/file/image)";
+    const link = "[picture.png](vc-context://v1/file/image)";
     expect(getComposerDraftSnapshot(key).text).toBe(`Before ${link} yaz`);
     const caret = `Before ${link} yaz`.length;
     expect(captureComposerDraftInsertion(key)).toMatchObject({ start: caret, end: caret });
@@ -932,7 +932,7 @@ describe("mobile composer drafts", () => {
         fileUri: `file:///notes-${index}.txt`,
       }));
       appendComposerDraftAttachments(key, files, { appendReference: true });
-      const firstLink = "[notes-0.txt](t3-context://v1/file/file-0)";
+      const firstLink = "[notes-0.txt](vc-context://v1/file/file-0)";
       const insertion = captureComposerDraftInsertion(key, { start: 0, end: firstLink.length });
       expect(countComposerDraftAttachmentsAfterSelection(key, insertion)).toBe(99);
       expect(getComposerDraftAfterSelection(key, insertion).context?.records).toHaveLength(99);
@@ -1002,7 +1002,7 @@ describe("mobile composer drafts", () => {
       fileUri: `file:///notes-${index}.txt`,
     }));
     appendComposerDraftAttachments(key, files, { appendReference: true });
-    const firstLink = "[notes-0.txt](t3-context://v1/file/existing-0)";
+    const firstLink = "[notes-0.txt](vc-context://v1/file/existing-0)";
     const insertion = captureComposerDraftInsertion(key, { start: 0, end: firstLink.length });
     setComposerDraftText(key, `New edit ${insertion.text}`);
     const edited = getComposerDraftSnapshot(key);
@@ -1070,7 +1070,7 @@ describe("mobile composer drafts", () => {
       lineEnd: 1,
       text: "Build failed",
     };
-    const reference = "[Build output](t3-context://v1/terminal/context-terminal)";
+    const reference = "[Build output](vc-context://v1/terminal/context-terminal)";
     setComposerDraftText(draftKey, "Fix this next");
     rememberComposerDraftSelection(draftKey, "Fix this next", { start: 4, end: 8 });
     insertComposerDraftContext(draftKey, {
@@ -1103,7 +1103,7 @@ describe("mobile composer drafts", () => {
     rememberComposerDraftSelection(threadKey, "Fix this next", { start: 4, end: 8 });
     rememberComposerDraftSelection(newTaskKey, "Another task", { start: 2, end: 2 });
     insertComposerDraftContext(threadKey, {
-      text: "[Build output](t3-context://v1/terminal/caret-terminal)",
+      text: "[Build output](vc-context://v1/terminal/caret-terminal)",
       context: {
         version: 1,
         records: [
@@ -1122,7 +1122,7 @@ describe("mobile composer drafts", () => {
       },
     });
     expect(getComposerDraftSnapshot(threadKey).text).toBe(
-      "Fix [Build output](t3-context://v1/terminal/caret-terminal) next",
+      "Fix [Build output](vc-context://v1/terminal/caret-terminal) next",
     );
   });
 
@@ -1510,7 +1510,7 @@ describe("mobile composer drafts", () => {
         type === "image"
           ? { text: "Unsent notes", attachments: [file] }
           : {
-              text: "Unsent notes [notes.pdf](t3-context://v1/file/local-notes) ",
+              text: "Unsent notes [notes.pdf](vc-context://v1/file/local-notes) ",
               attachments: [file],
               context: {
                 version: 1,
@@ -1532,7 +1532,7 @@ describe("mobile composer drafts", () => {
       expect(getComposerDraftSnapshot("pending-task:queued-1").text).toBe(
         type === "image"
           ? "Edited queued task"
-          : "Edited queued task [notes.pdf](t3-context://v1/file/local-notes) ",
+          : "Edited queued task [notes.pdf](vc-context://v1/file/local-notes) ",
       );
       expect(enqueue).toHaveBeenCalledExactlyOnceWith(queued);
       expect(appAtomRegistry.get(composerCloudDraftsAtom).signedOut).toEqual({});
@@ -2908,7 +2908,7 @@ describe("mobile composer drafts", () => {
 
     expect(freshRegistry.get(fresh.composerDraftsAtom)).toEqual({
       "environment-1:thread-1": {
-        text: "Persisted draft [report.pdf](t3-context://v1/file/file-cold-start) ",
+        text: "Persisted draft [report.pdf](vc-context://v1/file/file-cold-start) ",
         attachments: [file],
         context: {
           version: 1,

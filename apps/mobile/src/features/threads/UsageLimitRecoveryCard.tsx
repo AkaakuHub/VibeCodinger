@@ -158,7 +158,7 @@ export function UsageLimitRecoveryCard({
       ) : null}
       <View className="min-w-0 flex-1 gap-1">
         {chatGptLimit ? (
-          <Text className="text-sm font-t3-medium text-foreground">
+          <Text className="text-sm font-vc-medium text-foreground">
             <T>ChatGPT usage limit reached</T>
           </Text>
         ) : null}
@@ -246,8 +246,8 @@ function RecoveryAction(props: {
       <Text
         className={
           props.disabled
-            ? "text-sm font-t3-medium text-foreground-muted"
-            : "text-sm font-t3-medium text-primary"
+            ? "text-sm font-vc-medium text-foreground-muted"
+            : "text-sm font-vc-medium text-primary"
         }
       >
         {props.label}

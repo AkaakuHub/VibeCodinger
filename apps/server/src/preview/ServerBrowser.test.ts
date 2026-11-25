@@ -126,9 +126,9 @@ function makeSession(
       if (method === "Page.getFrameTree") return { frameTree: { frame: { id: "main" } } };
       if (method === "Page.createIsolatedWorld") {
         const worldContexts: Record<string, number> = {
-          "t3-preview-viewport": 9,
-          "t3-preview-title": 11,
-          "t3-preview": 1,
+          "vc-preview-viewport": 9,
+          "vc-preview-title": 11,
+          "vc-preview": 1,
         };
         return {
           executionContextId: worldContexts[(input as { worldName: string }).worldName] ?? 7,

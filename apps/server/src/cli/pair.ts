@@ -232,7 +232,7 @@ const formatPairOutput = (input: {
 type EnvironmentProbeResult =
   | { readonly _tag: "descriptor"; readonly descriptor: ExecutionEnvironmentDescriptor }
   | { readonly _tag: "unreachable" }
-  | { readonly _tag: "not-a-t3-server" };
+  | { readonly _tag: "not-a-vc-server" };
 
 const probeEnvironmentDescriptor: (
   baseUrl: string,
@@ -252,7 +252,7 @@ const probeEnvironmentDescriptor: (
     }
     const descriptor = yield* HttpClientResponse.filterStatusOk(response).pipe(
       Effect.flatMap(HttpClientResponse.schemaBodyJson(ExecutionEnvironmentDescriptor)),
-      Effect.mapError(() => ({ _tag: "not-a-t3-server" }) as const),
+      Effect.mapError(() => ({ _tag: "not-a-vc-server" }) as const),
     );
     return { _tag: "descriptor", descriptor } as const;
   },
@@ -413,7 +413,7 @@ const resolveTailscalePairingBase = Effect.fn("pair.resolveTailscalePairingBase"
         return { baseUrl, notes };
       }
     }
-    if (existing._tag === "not-a-t3-server") {
+    if (existing._tag === "not-a-vc-server") {
       return yield* new ServePortOccupiedError({ servePort: input.servePort });
     }
 

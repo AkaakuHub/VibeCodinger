@@ -246,7 +246,7 @@ private final class VibeCodingerSocksConnection {
           self.onOutcome(
             VibeCodingerTunnelFailure.classify(
               status: response?.statusCode,
-              portRefused: response?.value(forHTTPHeaderField: "x-t3-tunnel-port-refused") != nil
+              portRefused: response?.value(forHTTPHeaderField: "x-vc-tunnel-port-refused") != nil
             ))
           return self.finish(socksReply(replyFailure))
         }

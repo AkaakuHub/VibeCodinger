@@ -29,14 +29,14 @@ describe("versionSkew", () => {
     ).toBe("npm install --global --prefix '/opt/maria'\\''s node' t3@0.0.45");
     expect(
       manualServerUpdateCommand("0.0.45", {
-        kind: "t3-launcher",
+        kind: "vc-launcher",
         launcher: "t3",
         baseDir: "/home/u/.vibecodinger",
       }),
     ).toBe("'t3' update --base-dir '/home/u/.vibecodinger' 0.0.45");
     expect(
       manualServerUpdateCommand("0.0.45", {
-        kind: "t3-launcher",
+        kind: "vc-launcher",
         launcher: "/opt/maria's bin/vibecodinger",
         baseDir: "/data/vibecodinger home",
       }),

@@ -122,10 +122,10 @@ export function ThreadWorkflowOpening(props: {
       <View className="mb-5 gap-3">
         <View className="flex-row items-start gap-2">
           <View className="min-w-0 flex-1 gap-0.5">
-            <Text className="font-t3-medium text-2xs text-foreground-muted">
+            <Text className="font-vc-medium text-2xs text-foreground-muted">
               <T>Workflow started</T>
             </Text>
-            <Text numberOfLines={1} className="font-t3-medium text-sm text-foreground">
+            <Text numberOfLines={1} className="font-vc-medium text-sm text-foreground">
               {headline.title}
             </Text>
             {headline.description ? (
@@ -141,7 +141,7 @@ export function ThreadWorkflowOpening(props: {
         {canListMembers
           ? phases.map((phase) => (
               <View key={phase.index} className="gap-px">
-                <Text className="px-1 pt-1 font-t3-medium text-2xs text-foreground-muted">
+                <Text className="px-1 pt-1 font-vc-medium text-2xs text-foreground-muted">
                   {phase.title} · {phase.settledCount}/{phase.members.length}
                 </Text>
                 {phase.members.map(renderMember)}
@@ -200,7 +200,7 @@ function WorkflowScript(props: { readonly script: string }) {
           onPress={() => setExpanded((value) => !value)}
           className="self-start py-1 active:opacity-70"
         >
-          <Text className="font-t3-medium text-xs text-foreground-muted">
+          <Text className="font-vc-medium text-xs text-foreground-muted">
             {expanded
               ? gt("Show less", { $context: "collapses the workflow script" })
               : gt("Show full script")}

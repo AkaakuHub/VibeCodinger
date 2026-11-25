@@ -63,7 +63,7 @@ export function ProposedPlanCard(props: {
   return (
     <View className="mb-3 gap-3 rounded-[20px] border border-border bg-card-alt p-4">
       <View className="flex-row items-center gap-2">
-        <Text accessibilityRole="header" className="flex-1 font-t3-bold text-base text-foreground">
+        <Text accessibilityRole="header" className="flex-1 font-vc-bold text-base text-foreground">
           {proposedPlanTitle(props.markdown) ?? gt("Proposed plan")}
         </Text>
         <CopyTextButton accessibilityLabel={gt("Copy plan")} text={contents} />

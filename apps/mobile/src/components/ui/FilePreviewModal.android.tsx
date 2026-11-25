@@ -113,7 +113,7 @@ function DocumentPreview(props: {
     <Modal transparent animationType="fade" onRequestClose={props.onRequestClose}>
       <View className="flex-1 items-center justify-center bg-backdrop p-6">
         <View className="w-full max-w-sm gap-4 rounded-2xl bg-sheet-solid p-6">
-          <Text className="font-t3-semibold text-foreground">
+          <Text className="font-vc-semibold text-foreground">
             <T>Opening document…</T>
           </Text>
           <Text className="text-foreground-muted" numberOfLines={2}>

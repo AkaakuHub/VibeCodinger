@@ -138,11 +138,15 @@ export function spawnWindowsRemoval(environment: NodeJS.ProcessEnv, dir: string)
       "/v:off",
       "/s",
       "/c",
-      '""%T3_UNINSTALL_PING%" -n 3 127.0.0.1 >nul & rmdir /s /q "%T3_UNINSTALL_RUNTIME%""',
+      '""%VIBECODINGER_UNINSTALL_PING%" -n 3 127.0.0.1 >nul & rmdir /s /q "%VIBECODINGER_UNINSTALL_RUNTIME%""',
     ],
     {
       cwd: NodePath.win32.dirname(ping),
-      env: { ...process.env, T3_UNINSTALL_PING: ping, T3_UNINSTALL_RUNTIME: dir },
+      env: {
+        ...process.env,
+        VIBECODINGER_UNINSTALL_PING: ping,
+        VIBECODINGER_UNINSTALL_RUNTIME: dir,
+      },
       windowsVerbatimArguments: true,
       detached: true,
       stdio: "ignore",

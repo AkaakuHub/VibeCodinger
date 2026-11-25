@@ -43,7 +43,7 @@ export function ChatGptSharingStatus({ provider }: { provider: ServerProvider | 
         className="min-h-11 justify-center"
         onPress={() => void tryOpenExternalUrl(CHATGPT_USAGE_URL)}
       >
-        <Text className="text-xs font-t3-medium text-primary">
+        <Text className="text-xs font-vc-medium text-primary">
           <T>Manage usage</T>
         </Text>
       </Pressable>

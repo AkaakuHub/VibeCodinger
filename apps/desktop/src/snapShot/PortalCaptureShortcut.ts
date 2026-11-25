@@ -442,7 +442,7 @@ export class PortalCaptureShortcut {
     this.session = session;
     this.shortcutId = this.managedByHyprland
       ? HYPRLAND_CAPTURE_ACTION
-      : `t3-snap-shot-${NodeCrypto.createHash("sha256").update(trigger).digest("hex").slice(0, 16)}`;
+      : `vc-snap-shot-${NodeCrypto.createHash("sha256").update(trigger).digest("hex").slice(0, 16)}`;
     // Every session must bind, even when the desktop remembers this shortcut's approval.
     const bound = await this.request("BindShortcuts", "oa(sa{sv})s", [
       this.session,

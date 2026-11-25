@@ -109,7 +109,7 @@ export function manualServerUpdateCommand(
   if (installation?.kind === "npm-global") {
     return `npm install --global --prefix ${quote(installation.prefix)} t3@${targetVersion}`;
   }
-  if (installation?.kind === "t3-launcher") {
+  if (installation?.kind === "vc-launcher") {
     // An inherited VIBECODINGER_HOME would otherwise send the update to a home the launcher is not in.
     return `${quote(installation.launcher)} update --base-dir ${quote(installation.baseDir)} ${targetVersion}`;
   }

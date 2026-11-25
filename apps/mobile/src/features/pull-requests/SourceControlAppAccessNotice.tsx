@@ -56,7 +56,7 @@ export function SourceControlAppAccessNotice(props: {
         accessibilityRole="link"
         onPress={() => void tryOpenExternalUrl(appSignIn.installUrl, "provider-auth")}
       >
-        <Text className="text-sm font-t3-bold text-foreground">
+        <Text className="text-sm font-vc-bold text-foreground">
           <T>
             Install on <Var>{owner}</Var>
           </T>

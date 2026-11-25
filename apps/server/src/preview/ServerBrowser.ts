@@ -494,7 +494,7 @@ const editingCommand = (key: string, modifiers: number) => {
 };
 
 const TITLE_LIMIT = 512;
-const TITLE_WORLD = "t3-preview-title";
+const TITLE_WORLD = "vc-preview-title";
 // Observe root replacement without subscribing to body subtree mutations.
 const titleChange = (reported: string) => `new Promise((resolve) => {
   const changed = () => document.title.slice(0, ${TITLE_LIMIT}) !== ${JSON.stringify(reported)};
@@ -529,7 +529,7 @@ const titleChange = (reported: string) => `new Promise((resolve) => {
 })`;
 
 const CLIPBOARD_TEXT_LIMIT = 1024 * 1024;
-const CLIPBOARD_WORLD = "t3-preview-clipboard";
+const CLIPBOARD_WORLD = "vc-preview-clipboard";
 // Chromium shares its clipboard across contexts; capture real copy/cut keys in a page-inaccessible world instead.
 const CLIPBOARD_SCRIPT = `(() => {
   let keying = false;
@@ -848,7 +848,7 @@ const make = Effect.gen(function* () {
       const { frameTree } = await tab.cdp.send("Page.getFrameTree");
       const { executionContextId } = await tab.cdp.send("Page.createIsolatedWorld", {
         frameId: frameTree.frame.id,
-        worldName: "t3-preview-viewport",
+        worldName: "vc-preview-viewport",
       });
       const { result } = await tab.cdp.send("Runtime.evaluate", {
         expression: "({ width: innerWidth, height: innerHeight })",

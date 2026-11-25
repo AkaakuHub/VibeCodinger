@@ -492,7 +492,7 @@ function ChartCard(props: {
       className={`gap-4 rounded-[24px] border-continuous bg-grouped-card p-4${props.fill ? " flex-1" : ""}`}
     >
       {props.title ? (
-        <Text className="text-sm font-t3-medium text-foreground">{props.title}</Text>
+        <Text className="text-sm font-vc-medium text-foreground">{props.title}</Text>
       ) : (
         <UsageSummary merged={merged} metric={metric} />
       )}
@@ -549,7 +549,7 @@ function UsageSummary(props: { readonly merged: MergedUsage; readonly metric: Us
       <Text className="text-sm text-foreground-muted">
         {metric === "cost" ? gt("Raw token cost") : gt("Processed tokens")}
       </Text>
-      <Text className="text-4xl font-t3-bold tabular-nums text-foreground">
+      <Text className="text-4xl font-vc-bold tabular-nums text-foreground">
         {metric === "cost" ? `${formatUsd(merged.costUsd)}*` : formatTokens(merged.totalTokens)}
       </Text>
       <Text className="text-sm text-foreground-muted">
@@ -835,7 +835,7 @@ function MetricCell(props: {
   return (
     <View className="gap-0.5 p-4" style={{ width: `${100 / props.columns}%` }}>
       <Text className="text-sm text-foreground-muted">{props.label}</Text>
-      <Text className="text-xl font-t3-medium tabular-nums text-foreground">{props.value}</Text>
+      <Text className="text-xl font-vc-medium tabular-nums text-foreground">{props.value}</Text>
       <Text className="text-xs text-foreground-tertiary">{props.detail}</Text>
     </View>
   );

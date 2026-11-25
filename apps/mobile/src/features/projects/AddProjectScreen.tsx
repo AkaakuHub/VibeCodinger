@@ -160,8 +160,8 @@ function SectionTitle(props: { readonly children: string }) {
     <Text
       className={
         Platform.OS === "android"
-          ? "px-4 text-sm font-t3-medium text-primary-text"
-          : "px-1 text-2xs font-t3-bold tracking-[0.7px] uppercase text-foreground-muted"
+          ? "px-4 text-sm font-vc-medium text-primary-text"
+          : "px-1 text-2xs font-vc-bold tracking-[0.7px] uppercase text-foreground-muted"
       }
     >
       {props.children}
@@ -280,7 +280,7 @@ function ListRow(props: {
           {props.icon}
         </View>
         <View className="flex-1 gap-0.5">
-          <Text className="text-base leading-snug font-t3-bold">{props.title}</Text>
+          <Text className="text-base leading-snug font-vc-bold">{props.title}</Text>
           {props.subtitle ? (
             <Text className="text-sm leading-snug text-foreground-muted" numberOfLines={2}>
               {props.subtitle}
@@ -516,7 +516,7 @@ function EmptyEnvironmentState() {
 
   return (
     <View className="items-center gap-3 rounded-2xl bg-grouped-card px-5 py-8">
-      <Text className="text-center text-lg font-t3-bold">{gt("Environment unavailable")}</Text>
+      <Text className="text-center text-lg font-vc-bold">{gt("Environment unavailable")}</Text>
       <Text className="text-center text-sm leading-normal text-foreground-muted">
         {gt("Start or reconnect an environment before adding a project.")}
       </Text>
@@ -1652,7 +1652,7 @@ export function AddProjectDestinationScreen(props: {
       {error ? <ErrorBanner message={error} /> : null}
       {repositoryTitle ? (
         <View className="rounded-[24px] bg-grouped-card px-4 py-3">
-          <Text className="text-base font-t3-bold">{repositoryTitle}</Text>
+          <Text className="text-base font-vc-bold">{repositoryTitle}</Text>
           <Text className="mt-0.5 text-xs text-foreground-muted" numberOfLines={2}>
             {remoteUrl}
           </Text>

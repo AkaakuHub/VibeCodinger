@@ -66,7 +66,7 @@ export function CollapsibleUserMessageBody(props: {
           onPress={props.onToggle}
           className="mt-1.5 min-h-11 items-end justify-center active:opacity-70"
         >
-          <Text className="font-t3-medium text-xs text-user-bubble-foreground-muted">
+          <Text className="font-vc-medium text-xs text-user-bubble-foreground-muted">
             {props.expanded ? <T>Show less</T> : <T>Show full message</T>}
           </Text>
         </Pressable>

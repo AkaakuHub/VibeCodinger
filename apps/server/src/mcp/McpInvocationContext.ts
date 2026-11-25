@@ -48,23 +48,23 @@ export interface McpClientCaller {
   /** When a peer link's session ends unless it is used again, answered as `T3-Link-Expires-At`. */
   readonly linkExpiresAt?: DateTime.Utc | undefined;
   /**
-   * Narrower modes the client asked for on this request (`T3-Mode-Limit`):
+   * Narrower modes the client asked for on this request (`VC-Mode-Limit`):
    * another environment passing on the limits of the agent it calls for.
    */
   readonly narrowedTo?: ClientModes | undefined;
-  /** A linked environment's thread this request is made for (`T3-Sender-Thread`). */
+  /** A linked environment's thread this request is made for (`VC-Sender-Thread`). */
   readonly senderThread?: OrchestrationV2LinkedSender | undefined;
   /** The server's HTTP origin for an outside client's thread links. */
   readonly threadLinkOrigin?: string | undefined;
 }
 
 /**
- * `T3-Mode-Limit: <runtimeMode>/<interactionMode>` lets an OAuth client cap
+ * `VC-Mode-Limit: <runtimeMode>/<interactionMode>` lets an OAuth client cap
  * a request below what it was approved with: another environment passes on
  * the limits of the agent it calls for. It can only narrow (see
  * `clientModeCeiling`), so a client gains nothing by sending a broad one.
  */
-export const MODE_LIMIT_HEADER = "t3-mode-limit";
+export const MODE_LIMIT_HEADER = "vc-mode-limit";
 
 /**
  * `T3-Link-Expires-At: <ISO time>` answers a peer link's request with when its
@@ -73,11 +73,11 @@ export const MODE_LIMIT_HEADER = "t3-mode-limit";
 export const LINK_EXPIRES_AT_HEADER = "vibecodinger-link-expires-at";
 
 /**
- * `T3-Sender-Thread: <environmentId>/<threadId>/<title>`, each URI-encoded: the
+ * `VC-Sender-Thread: <environmentId>/<threadId>/<title>`, each URI-encoded: the
  * thread another environment makes a request for, so what it sends here can name
  * it. Read only from a linked client.
  */
-export const SENDER_THREAD_HEADER = "t3-sender-thread";
+export const SENDER_THREAD_HEADER = "vc-sender-thread";
 
 export interface ClientModes {
   readonly runtimeMode: RuntimeMode;

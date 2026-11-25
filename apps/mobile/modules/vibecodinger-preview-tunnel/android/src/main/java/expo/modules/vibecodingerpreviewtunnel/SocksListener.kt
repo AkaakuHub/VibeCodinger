@@ -244,7 +244,7 @@ internal class SocksListener(private val requestAccess: () -> String?) {
           if (!opened.isDone) {
             failure = TunnelFailure.classify(
               response?.code,
-              response?.header("x-t3-tunnel-port-refused") != null
+              response?.header("x-vc-tunnel-port-refused") != null
             )
           }
           opened.complete(false)

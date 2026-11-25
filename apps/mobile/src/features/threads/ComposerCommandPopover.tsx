@@ -220,7 +220,7 @@ const CommandRow = memo(function CommandRow(props: {
       ) : null}
       <Text
         className={cn(
-          "shrink-0 text-base font-t3-medium text-foreground",
+          "shrink-0 text-base font-vc-medium text-foreground",
           props.item.type === "thread" && "max-w-[45%]",
         )}
         numberOfLines={1}
@@ -253,7 +253,7 @@ export const ComposerCommandPopover = memo(function ComposerCommandPopover(
     <PopoverSurface>
       {label ? (
         <View className="px-3.5 pt-2.5 pb-1">
-          <Text className="text-3xs font-t3-bold tracking-[0.8px] uppercase text-foreground-muted">
+          <Text className="text-3xs font-vc-bold tracking-[0.8px] uppercase text-foreground-muted">
             {label}
           </Text>
         </View>

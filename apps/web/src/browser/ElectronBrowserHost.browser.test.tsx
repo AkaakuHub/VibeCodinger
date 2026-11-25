@@ -82,7 +82,7 @@ function setup(): Disposable {
   mocks.closeTab.mockReset().mockResolvedValue(undefined);
   mocks.registerWebview.mockReset().mockResolvedValue(undefined);
   mocks.getPreviewConfig.mockReset().mockResolvedValue({
-    partition: "persist:t3-preview-default",
+    partition: "persist:vc-preview-default",
     webPreferences: "contextIsolation=yes",
     preloadUrl: null,
   });

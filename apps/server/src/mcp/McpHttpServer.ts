@@ -220,7 +220,7 @@ const parseModeLimit = (value: string) => {
 const invalidModeLimit = HttpServerResponse.jsonUnsafe(
   {
     error: "invalid_mode_limit",
-    message: "T3-Mode-Limit must be <runtimeMode>/<interactionMode>, e.g. auto/default.",
+    message: "VC-Mode-Limit must be <runtimeMode>/<interactionMode>, e.g. auto/default.",
   },
   { status: 400, headers: { "cache-control": "no-store" } },
 );

@@ -83,10 +83,10 @@ const FileTreeRow = function FileTreeRow(props: {
         className={cn(
           "min-w-0 flex-1 text-sm leading-normal",
           props.selected
-            ? "font-t3-bold text-thread-selected-foreground"
+            ? "font-vc-bold text-thread-selected-foreground"
             : node.ignored
-              ? "font-t3-medium text-foreground-tertiary"
-              : "font-t3-medium text-foreground-secondary",
+              ? "font-vc-medium text-foreground-tertiary"
+              : "font-vc-medium text-foreground-secondary",
         )}
         numberOfLines={1}
       >
@@ -259,7 +259,7 @@ export function FileTreeBrowser(props: {
         <View className="px-4 py-5">
           {props.error && props.entries.length === 0 ? (
             <>
-              <Text className="text-sm font-t3-bold text-foreground">
+              <Text className="text-sm font-vc-bold text-foreground">
                 <T>Files unavailable</T>
               </Text>
               <Text
@@ -281,7 +281,7 @@ export function FileTreeBrowser(props: {
             <AppActivityIndicator size="small" />
           ) : (
             <>
-              <Text className="text-sm font-t3-bold text-foreground">
+              <Text className="text-sm font-vc-bold text-foreground">
                 <T>No files found</T>
               </Text>
               <Text className="mt-1 text-xs leading-normal text-foreground-muted">

@@ -578,7 +578,7 @@ it.effect.each([
 ])("decides a forward's machine only on proof: $case", ({ refused }) =>
   Effect.gen(function* () {
     const endpoint = yield* listenRefusingEndpoint(
-      refused ? { "x-t3-tunnel-port-refused": "1" } : {},
+      refused ? { "x-vc-tunnel-port-refused": "1" } : {},
     );
     const remotePort = yield* unusedPort;
     const tunnel = yield* makeTunnel(`ws://127.0.0.1:${addressPort(endpoint)}/api/preview/tunnel`);

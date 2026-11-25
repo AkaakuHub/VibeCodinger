@@ -89,7 +89,7 @@ function BackgroundWorkRow(props: {
         type="monochrome"
       />
       <View className="min-w-0 flex-1">
-        <Text className="font-t3-medium text-sm text-foreground">{item.label}</Text>
+        <Text className="font-vc-medium text-sm text-foreground">{item.label}</Text>
         <Text className="text-xs text-foreground-muted">{m(KIND_LABELS[item.kind])}</Text>
       </View>
       {childThreadId === undefined ? null : (

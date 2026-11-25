@@ -233,7 +233,7 @@ function PairingForm({
           />
 
           <View collapsable={false} className="gap-2">
-            <Text className="px-4 text-sm font-t3-medium text-foreground-muted">
+            <Text className="px-4 text-sm font-vc-medium text-foreground-muted">
               <T>Or enter it</T>
             </Text>
             <View
@@ -364,7 +364,7 @@ function PairingScanCard(props: {
                 weight="light"
               />
               <Text
-                className={cn("font-t3-medium text-sm", light ? "text-black/70" : "text-white/80")}
+                className={cn("font-vc-medium text-sm", light ? "text-black/70" : "text-white/80")}
               >
                 <T>Tap to scan</T>
               </Text>

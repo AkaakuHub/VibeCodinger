@@ -815,7 +815,7 @@ describe("thread outbox recovery rollback", () => {
       }));
       return {
         text: records
-          .map((record) => `[Skill](t3-context://v1/skill/${record.contextId})`)
+          .map((record) => `[Skill](vc-context://v1/skill/${record.contextId})`)
           .join(" "),
         context: { version: 1 as const, records },
         attachments: [],

@@ -150,7 +150,7 @@ export function SettingsOpenSourceLicenseRouteScreen({ route }: LicenseDetailPro
         showsVerticalScrollIndicator={false}
       >
         <View className="gap-2 px-1">
-          <Text className="text-2xl font-t3-bold text-foreground">{entry.name}</Text>
+          <Text className="text-2xl font-vc-bold text-foreground">{entry.name}</Text>
           <Text className="text-base leading-normal text-foreground-muted">
             {[entry.version, entry.license, formatLicenseBundles(entry.bundles, messages)]
               .filter((value): value is string => Boolean(value))
@@ -163,7 +163,7 @@ export function SettingsOpenSourceLicenseRouteScreen({ route }: LicenseDetailPro
               onPress={() => void tryOpenExternalUrl(sourceUrl)}
               className="min-h-12 flex-row items-center gap-2 self-start py-2 active:opacity-60"
             >
-              <Text className="font-t3-medium text-primary-text">
+              <Text className="font-vc-medium text-primary-text">
                 <T>Project source</T>
               </Text>
               <SymbolView

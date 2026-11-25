@@ -120,7 +120,7 @@ function QueuedRunSender(props: {
       ) : null}
       <Text
         numberOfLines={1}
-        className="min-w-0 shrink font-t3-medium text-2xs text-foreground-muted"
+        className="min-w-0 shrink font-vc-medium text-2xs text-foreground-muted"
       >
         {sender.label}
       </Text>
@@ -366,7 +366,7 @@ export function ThreadQueueSheet({ route }: StaticScreenProps<QueueTarget>) {
                         numberOfLines={1}
                       >
                         {context?.guest === undefined ? null : (
-                          <Text className="font-t3-medium text-adaptive-fuchsia-600-300">
+                          <Text className="font-vc-medium text-adaptive-fuchsia-600-300">
                             {`${context.guest.name}  `}
                           </Text>
                         )}
@@ -399,7 +399,7 @@ export function ThreadQueueSheet({ route }: StaticScreenProps<QueueTarget>) {
                         size={13}
                         tintColorClassName="accent-primary-foreground"
                       />
-                      <Text className="font-t3-medium text-sm text-primary-foreground">
+                      <Text className="font-vc-medium text-sm text-primary-foreground">
                         <T>Send now</T>
                       </Text>
                     </View>
@@ -465,7 +465,7 @@ function QueueRowSwipeable(props: {
           style={{ width: REMOVE_ACTION_WIDTH }}
         >
           <SymbolView name="trash" size={16} tintColorClassName="accent-danger-foreground" />
-          <Text className="pt-1 text-2xs font-t3-medium text-danger-foreground">
+          <Text className="pt-1 text-2xs font-vc-medium text-danger-foreground">
             {gt("Remove", { $context: "verb, menu action" })}
           </Text>
         </Pressable>

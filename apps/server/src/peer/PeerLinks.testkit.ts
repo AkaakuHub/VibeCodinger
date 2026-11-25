@@ -96,7 +96,7 @@ export const servePeer = <E, R, E2 = never, R2 = never>(
       getEnvironmentId: Ref.get(descriptor).pipe(Effect.map((current) => current.environmentId)),
       getDescriptor: Ref.get(descriptor),
     });
-    const authContext = yield* Layer.build(layerEnvironmentAuth("t3-peer-link-peer-"));
+    const authContext = yield* Layer.build(layerEnvironmentAuth("vc-peer-link-peer-"));
     const layerRecordBearers = HttpRouter.middleware(
       (httpEffect) =>
         Effect.gen(function* () {

@@ -461,7 +461,7 @@ it.live("adopts the checkouts a project's own layout command makes, and runs its
       const web = yield* repository("shop/web");
       // The project checks `api` out itself, copies its build cache and leaves `web` out.
       yield* fileSystem.writeFileString(
-        path.join(shop, "t3.json"),
+        path.join(shop, "vibecodinger.json"),
         JSON.stringify({
           worktreeLayout: {
             // A plain project's folder is no worktree, even when the command leaves a `.git` there.
@@ -517,7 +517,7 @@ it.live("leaves a project's layout commands out for a request that may not run t
       const api = yield* repository("shop/api");
       const ran = path.join(tmp, "ran");
       yield* fileSystem.writeFileString(
-        path.join(shop, "t3.json"),
+        path.join(shop, "vibecodinger.json"),
         JSON.stringify({
           worktreeLayout: {
             create: `echo create >> "${ran}" && mkdir -p "$T3_WORKTREE_PROJECT_PATH" && git -C "$T3_PROJECT_ROOT/api" worktree add -q -b "$T3_WORKTREE_BRANCH" "$T3_WORKTREE_PROJECT_PATH/api"`,
@@ -581,7 +581,7 @@ it.live(
         const taskFolders = yield* TaskFolders.TaskFolders;
         const attempt = Effect.fnUntraced(function* (command: string) {
           yield* fileSystem.writeFileString(
-            path.join(shop, "t3.json"),
+            path.join(shop, "vibecodinger.json"),
             JSON.stringify({ worktreeLayout: { create: command } }),
           );
           const plan = yield* taskFolders.plan({ projectId, repositories: [{ path: api }] });
@@ -638,7 +638,7 @@ it.live.each([{ linked: false }, { linked: true }])(
         const mono = path.join(tmp, "mono");
         if (linked) yield* run(origin, "worktree", "add", "-q", "-b", "dev", mono);
         yield* fileSystem.writeFileString(
-          path.join(mono, "t3.json"),
+          path.join(mono, "vibecodinger.json"),
           JSON.stringify({
             worktreeLayout: {
               create:
@@ -1014,7 +1014,7 @@ it.live("restores a recorded repository the project stopped tracking as its work
 
       yield* fileSystem.remove(root, { recursive: true });
       yield* fileSystem.writeFileString(
-        path.join(shop, "t3.json"),
+        path.join(shop, "vibecodinger.json"),
         JSON.stringify({ ignoreRepositories: ["web"] }),
       );
       yield* (yield* TaskFolders.TaskFolders).restore({
@@ -1033,7 +1033,7 @@ it.live("restores a recorded repository the project stopped tracking as its work
         assert.isFalse(yield* isLink(worktree));
         assert.equal(yield* run(worktree, "symbolic-ref", "--short", "HEAD"), "feature");
       }
-      assert.isTrue(yield* isLink(path.join(root, "t3.json")));
+      assert.isTrue(yield* isLink(path.join(root, "vibecodinger.json")));
     }),
   ),
 );
@@ -1050,7 +1050,7 @@ it.live("resumes once an excluded dependency's worktree is replaced by a clone",
       yield* fileSystem.remove(clone, { recursive: true });
       yield* run(taskFolder.projectPath, "clone", "-q", "--local", dependency, clone);
       yield* fileSystem.writeFileString(
-        path.join(project, "t3.json"),
+        path.join(project, "vibecodinger.json"),
         JSON.stringify({ ignoreRepositories: ["deps"] }),
       );
       const taskFolders = yield* TaskFolders.TaskFolders;

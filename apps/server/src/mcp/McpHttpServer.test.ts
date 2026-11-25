@@ -1983,7 +1983,7 @@ it.effect(
 );
 
 it.effect(
-  "narrows an OAuth client's modes to the T3-Mode-Limit it sends, and never widens them",
+  "narrows an OAuth client's modes to the VC-Mode-Limit it sends, and never widens them",
   () =>
     Effect.scoped(
       Effect.gen(function* () {
@@ -2065,13 +2065,13 @@ it.effect(
             ]),
           ),
         );
-        /** Starts a thread as the client, with `limit` as T3-Mode-Limit; the HTTP status or the outcome. */
+        /** Starts a thread as the client, with `limit` as VC-Mode-Limit; the HTTP status or the outcome. */
         const start = (limit: string | undefined, args: Record<string, string> = {}) =>
           Effect.gen(function* () {
             const headers = {
               accept: "application/json, text/event-stream",
               authorization: `Bearer ${clientToken}`,
-              ...(limit === undefined ? {} : { "t3-mode-limit": limit }),
+              ...(limit === undefined ? {} : { "vc-mode-limit": limit }),
             };
             const initialize = yield* httpClient.post("/mcp", {
               headers,

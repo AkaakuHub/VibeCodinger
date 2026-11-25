@@ -84,7 +84,7 @@ export function WorkflowStepSheet({ route }: StaticScreenProps<WorkflowStepParam
                 const lines = workflowResultLines(step.result);
                 return (
                   <View key={step.name} className="gap-1">
-                    <Text className="font-t3-medium text-sm text-foreground">{step.name}</Text>
+                    <Text className="font-vc-medium text-sm text-foreground">{step.name}</Text>
                     <Facts
                       facts={lines.flatMap((line) =>
                         line.label === null ? [] : [{ label: line.label, value: line.value }],

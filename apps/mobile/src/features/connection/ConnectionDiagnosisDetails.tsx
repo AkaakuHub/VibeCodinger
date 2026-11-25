@@ -78,7 +78,7 @@ export function ConnectionDiagnosisDetails(props: {
         ))}
       </View>
       <View className="gap-0.5">
-        <Text className="text-sm font-t3-bold text-foreground">
+        <Text className="text-sm font-vc-bold text-foreground">
           <T>What to try</T>
         </Text>
         {diagnosis.steps.map((step, index) => (
