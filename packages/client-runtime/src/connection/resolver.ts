@@ -36,7 +36,6 @@ import type {
   ConnectionTarget,
   PreparedConnection,
   PrimaryConnectionTarget,
-  RelayConnectionTarget,
   SshConnectionTarget,
 } from "./model.ts";
 import { ConnectionBlockedError, type ConnectionAttemptError } from "./model.ts";
@@ -47,6 +46,11 @@ import {
 } from "./compatibility.ts";
 import { credentialConnectionId } from "./routes.ts";
 import { fetchRemoteEnvironmentDescriptor } from "../environment/descriptor.ts";
+
+const retiredRoute = new ConnectionBlockedError({
+  reason: "configuration",
+  ...translatableDetail(msg("This environment needs to be paired directly.")),
+});
 
 export class ConnectionResolver extends Context.Service<
   ConnectionResolver,
@@ -160,6 +164,9 @@ const makeBearerBroker = Effect.fn("clientRuntime.connection.broker.makeBearer")
         actual: profile.environmentId,
       });
     }
+    if (profile.authorization === "t3-connect") {
+      return yield* retiredRoute;
+    }
     const pin = profile.e2eeServerIdentityKey;
     if (
       pin !== undefined &&
@@ -170,13 +177,6 @@ const makeBearerBroker = Effect.fn("clientRuntime.connection.broker.makeBearer")
         reason: "configuration",
         ...translatableDetail(msg("This environment requires HTTPS.")),
       });
-    }
-    if (profile.authorization === "t3-connect") {
-      const authorized = yield* remote.authorizeDpop({
-        expectedEnvironmentId: target.environmentId,
-        directEndpoint: { httpBaseUrl: profile.httpBaseUrl, wsBaseUrl: profile.wsBaseUrl },
-      });
-      return { ...authorized, target } satisfies PreparedConnection;
     }
     const credential = yield* credentials.get(credentialConnectionId(target.connectionId)).pipe(
       Effect.flatMap(
@@ -209,20 +209,6 @@ const makeBearerBroker = Effect.fn("clientRuntime.connection.broker.makeBearer")
       target,
     } satisfies PreparedConnection;
   });
-});
-
-const makeRelayBroker = Effect.fn("clientRuntime.connection.broker.makeRelay")(function* () {
-  const remote = yield* RemoteEnvironmentAuthorization.RemoteEnvironmentAuthorization;
-
-  return Effect.fnUntraced(function* (target: RelayConnectionTarget) {
-    const authorized = yield* remote.authorizeDpop({
-      expectedEnvironmentId: target.environmentId,
-    });
-    return {
-      ...authorized,
-      target,
-    } satisfies PreparedConnection;
-  }, Effect.withSpan("clientRuntime.connection.broker.relay"));
 });
 
 const makeSshBroker = Effect.fn("clientRuntime.connection.broker.makeSsh")(function* () {
@@ -301,7 +287,6 @@ const makeSshBroker = Effect.fn("clientRuntime.connection.broker.makeSsh")(funct
 export const make = Effect.gen(function* () {
   const primary = yield* makePrimaryBroker();
   const bearer = yield* makeBearerBroker();
-  const relay = yield* makeRelayBroker();
   const ssh = yield* makeSshBroker();
   const httpClient = yield* HttpClient.HttpClient;
 
@@ -322,7 +307,7 @@ export const make = Effect.gen(function* () {
         case "BearerConnectionTarget":
           return bearer({ ...entry, target });
         case "RelayConnectionTarget":
-          return relay(target);
+          return retiredRoute;
         case "SshConnectionTarget":
           return ssh({ ...entry, target });
       }
