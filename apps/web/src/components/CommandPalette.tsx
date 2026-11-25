@@ -1710,20 +1710,8 @@ function OpenCommandPaletteDialog(props: {
   actionItems.push({
     kind: "action",
     value: "action:use-in-another-app",
-    searchTerms: [
-      "mcp",
-      "connector",
-      "another app",
-      "poke",
-      "claude",
-      "chatgpt",
-      "grok",
-      "muse",
-      "instinct",
-      "openclaw",
-      "hermes",
-    ],
-    title: gt("Use T3 Code in another app (MCP)"),
+    searchTerms: ["mcp", "connector", "another app", "openclaw", "hermes"],
+    title: gt("Use VibeCodinger in another app (MCP)"),
     icon: <PlugIcon className={ITEM_ICON_CLASS} />,
     run: async () => {
       openUseInAnotherApp(

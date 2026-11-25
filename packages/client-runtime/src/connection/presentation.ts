@@ -5,8 +5,7 @@ import type { MFunctionType } from "gt-i18n/types";
 
 import { type MarkedText, resolveMarkedText } from "../errors/translatable.ts";
 import type { ConnectionCatalogEntry } from "./catalog.ts";
-import type { ConnectionTarget, SupervisorConnectionState } from "./model.ts";
-import { connectionRouteId, connectionRoutes, routeHttpBaseUrl } from "./routes.ts";
+import type { SupervisorConnectionState } from "./model.ts";
 
 export type EnvironmentConnectionPhase =
   | "available"
@@ -145,44 +144,6 @@ export function connectionStatusTitle(
     return resolve(msg("Failed to connect. Reconnecting..."));
   }
   return connectionStatusText({ ...connection, error: null }, resolve);
-}
-
-/**
- * The T3 Connect address wins whenever it is known: it works for agents anywhere, while the
- * connected route is often a LAN or loopback address. SSH routes ride a local forward that
- * disappears with the client, so they have no stable address.
- */
-export function environmentMcpUrl(input: {
-  readonly entry: ConnectionCatalogEntry;
-  readonly relayHttpBaseUrl?: string | undefined;
-  readonly connectedTarget?: ConnectionTarget | null | undefined;
-}): string | null {
-  const relayMcpUrl = input.relayHttpBaseUrl ? mcpUrlFromBase(input.relayHttpBaseUrl) : null;
-  if (relayMcpUrl !== null) return relayMcpUrl;
-  const connectedRouteId = input.connectedTarget ? connectionRouteId(input.connectedTarget) : null;
-  const routes = connectionRoutes(input.entry);
-  const connectedRoute = routes.find(
-    (route) => connectionRouteId(route.target) === connectedRouteId,
-  );
-  for (const route of connectedRoute ? [connectedRoute, ...routes] : routes) {
-    const httpBaseUrl = routeHttpBaseUrl(route);
-    const mcpUrl = httpBaseUrl === null ? null : mcpUrlFromBase(httpBaseUrl);
-    if (mcpUrl !== null) return mcpUrl;
-  }
-  return null;
-}
-
-function mcpUrlFromBase(httpBaseUrl: string): string | null {
-  let url: URL;
-  try {
-    url = new URL(httpBaseUrl);
-  } catch {
-    return null;
-  }
-  url.pathname = "/mcp";
-  url.search = "";
-  url.hash = "";
-  return url.toString();
 }
 
 export function connectionCatalogDisplayUrl(entry: ConnectionCatalogEntry): string | null {

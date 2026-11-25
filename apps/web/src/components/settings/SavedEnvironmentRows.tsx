@@ -20,7 +20,6 @@ import {
   hasSavedBearerRoute,
   connectionErrorText,
   connectionStatusText,
-  environmentMcpUrl,
 } from "@t3tools/client-runtime/connection";
 import * as Option from "effect/Option";
 import { msg, T, useGT, useMessages } from "gt-react";
@@ -38,6 +37,7 @@ import {
   useConnectionDiagnosis,
 } from "./ConnectionDiagnosisDetails";
 import { usePreparedConnection } from "~/state/session";
+import { resolveMcpGate } from "../mcp/mcpGate";
 import { EnvironmentRow, environmentTransportLabel } from "./EnvironmentRow";
 import { Menu, MenuItem, MenuPopup, MenuSeparator, MenuTrigger } from "../ui/menu";
 import { Switch } from "../ui/switch";
@@ -204,15 +204,6 @@ export function SavedBackendListRow({
   if (discoveredDescriptor !== undefined && discoveredDescriptor !== lastDescriptor) {
     setLastDescriptor(discoveredDescriptor);
   }
-  const discoveredRelayHttpBaseUrl =
-    relayDiscovery.environments.get(environmentId)?.environment.endpoint.httpBaseUrl;
-  const [lastRelayHttpBaseUrl, setLastRelayHttpBaseUrl] = useState(discoveredRelayHttpBaseUrl);
-  if (
-    discoveredRelayHttpBaseUrl !== undefined &&
-    discoveredRelayHttpBaseUrl !== lastRelayHttpBaseUrl
-  ) {
-    setLastRelayHttpBaseUrl(discoveredRelayHttpBaseUrl);
-  }
   const retryNow = useAtomCommand(environmentCatalog.retryNow);
   const {
     diagnosis: currentDiagnosis,
@@ -222,11 +213,15 @@ export function SavedBackendListRow({
   const diagnosis = resumingServerUpdate ? null : currentDiagnosis;
   const prepared = usePreparedConnection(environmentId);
   const connectedTarget = isConnected && prepared._tag === "Some" ? prepared.value.target : null;
-  const mcpUrl = environmentMcpUrl({
-    entry: environment.entry,
-    relayHttpBaseUrl: discoveredRelayHttpBaseUrl ?? lastRelayHttpBaseUrl,
-    connectedTarget,
+  const mcp = resolveMcpGate({
+    connected: isConnected,
+    approvalCodes:
+      environment.serverConfig === null
+        ? undefined
+        : environment.serverConfig.environment.capabilities.mcpApprovalCodes === true,
+    connection: Option.getOrNull(prepared),
   });
+  const mcpUrl = mcp.kind === "open" ? mcp.mcpUrl : null;
   const machineKind = resolveEnvironmentMachineKind(
     environment.serverConfig ??
       (lastDescriptor === undefined ? null : { environment: lastDescriptor }),
