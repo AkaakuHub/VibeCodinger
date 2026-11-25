@@ -308,6 +308,37 @@ describe("learned routes", () => {
     ]);
   });
 
+  it("uses only HTTPS routes pinned to the same identity when an environment is paired for E2EE", () => {
+    const pin = (route: ConnectionRoute, key: string): ConnectionRoute => {
+      const profile = profileOf(route);
+      if (profile._tag !== "BearerConnectionProfile") throw new Error("Expected a direct route");
+      return {
+        ...route,
+        profile: Option.some(
+          new BearerConnectionProfile({ ...profile, e2eeServerIdentityKey: key }),
+        ),
+      };
+    };
+    const secured = pin(TAILNET, "saved-host-key");
+    const entry = entryWithRoutes(relayOnly, [
+      LAN,
+      secured,
+      PUBLIC,
+      pin(direct("wrong-key", "https://wrong.example.com/"), "different-key"),
+      pin(direct("old-http", "http://100.64.0.5:3773/"), "saved-host-key"),
+      RELAY,
+    ]);
+    expect(usableRoutes(entry)).toEqual([secured]);
+    expect(
+      mergeLearnedRoutes({
+        entry,
+        activeRoute: secured,
+        reported: [{ httpBaseUrl: "http://100.64.0.5:3773/", kind: "tailnet" }],
+        allowInsecure: true,
+      }),
+    ).toBeNull();
+  });
+
   it("drops a stale plain HTTP route borrowing an HTTPS-paired token while another route is active", () => {
     const lanOrigin = "http://10.0.0.42:3773";
     const stale = learned(`learned:${ENVIRONMENT_ID}:${lanOrigin}@public`, `${lanOrigin}/`);
