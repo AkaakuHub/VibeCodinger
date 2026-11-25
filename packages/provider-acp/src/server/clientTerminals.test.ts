@@ -124,14 +124,14 @@ describe("AcpClientTerminals", () => {
           command: process.execPath,
           args: [
             "-e",
-            "const env = process.env; process.stdout.write([env.VIBECODINGER_ACP_MCP_AUTHORIZATION ?? '', env.t3_Acp_Mcp_Endpoint ?? '', env.VIBECODINGER_THREAD_ID ?? '', env.VIBECODINGER_TEST_INHERITED, ...Object.keys(env).filter((name) => name.toUpperCase() === 'VIBECODINGER_TEST_OVERRIDE').map((name) => name + '=' + env[name])].join('|'))",
+            "const env = process.env; process.stdout.write([env.VIBECODINGER_ACP_MCP_AUTHORIZATION ?? '', env.vibeCodinger_Acp_Mcp_Endpoint ?? '', env.VIBECODINGER_THREAD_ID ?? '', env.VIBECODINGER_TEST_INHERITED, ...Object.keys(env).filter((name) => name.toUpperCase() === 'VIBECODINGER_TEST_OVERRIDE').map((name) => name + '=' + env[name])].join('|'))",
           ],
           ...(sessionId === "unknown"
             ? {}
             : {
                 env: [
                   { name: "VIBECODINGER_TEST_OVERRIDE", value: "first" },
-                  { name: "t3_Test_Override", value: "second" },
+                  { name: "vibeCodinger_Test_Override", value: "second" },
                   { name: "VIBECODINGER_TEST_OVERRIDE", value: "request" },
                 ],
               }),
@@ -144,7 +144,7 @@ describe("AcpClientTerminals", () => {
       Effect.provideService(HostProcess.Environment, {
         ...process.env,
         VIBECODINGER_ACP_MCP_AUTHORIZATION: "launching-thread-token",
-        t3_Acp_Mcp_Endpoint: "launching-thread-endpoint",
+        vibeCodinger_Acp_Mcp_Endpoint: "launching-thread-endpoint",
         VIBECODINGER_THREAD_ID: "launching-thread",
         VIBECODINGER_TEST_INHERITED: "kept",
         VIBECODINGER_TEST_OVERRIDE: "inherited",
