@@ -495,7 +495,7 @@ describe("vibecodinger pair", () => {
       (origin) =>
         Effect.gen(function* () {
           const baseDir = NodeFS.mkdtempSync(
-            NodePath.join(NodeOS.tmpdir(), "t3-pair-protocol-test-"),
+            NodePath.join(NodeOS.tmpdir(), "vibecodinger-pair-protocol-test-"),
           );
           yield* persistServerRuntimeState({
             path: NodePath.join(baseDir, "userdata", "server-runtime.json"),
@@ -875,7 +875,7 @@ describe("auth scope options", () => {
     ({ group, action }) =>
       Effect.gen(function* () {
         const baseDir = NodeFS.mkdtempSync(
-          NodePath.join(NodeOS.tmpdir(), "t3-cli-auth-scopes-test-"),
+          NodePath.join(NodeOS.tmpdir(), "vibecodinger-cli-auth-scopes-test-"),
         );
         const output = yield* captureStdout(
           runCli([

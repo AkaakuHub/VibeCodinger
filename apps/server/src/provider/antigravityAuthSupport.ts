@@ -338,7 +338,7 @@ const copyAntigravityUserConfigFiles = Effect.fn("copyAntigravityUserConfigFiles
   }): Effect.fn.Return<void, never, FileSystem.FileSystem | Path.Path> {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const manifestPath = path.join(input.profileDirectory, ".t3-rule-copies.json");
+    const manifestPath = path.join(input.profileDirectory, ".vibecodinger-rule-copies.json");
     const readOptional = (file: string) =>
       fs.readFileString(file).pipe(Effect.orElseSucceed((): string | undefined => undefined));
     const manifestText = yield* readOptional(manifestPath);

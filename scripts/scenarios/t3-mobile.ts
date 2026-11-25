@@ -34,7 +34,7 @@ const devClientPath = Effect.gen(function* () {
   const { fingerprint } = yield* decodePrepared(prepared.stdout.trim().split("\n").at(-1) ?? "");
   return path.join(
     yield* HostProcess.HomeDirectory,
-    ".cache/t3code/native-clients/artifacts/ios/development",
+    ".cache/vibecodinger/native-clients/artifacts/ios/development",
     fingerprint,
     "VibeCodingerDev.app",
   );
