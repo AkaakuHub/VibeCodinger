@@ -710,15 +710,15 @@ describe("withMessageSenderNote", () => {
     [
       thread,
       "Hi",
-      '[VibeCodinger: the agent in T3 thread "t" sent this message, not the user.]\n\nHi',
+      '[VibeCodinger: the agent in thread "t" sent this message, not the user.]\n\nHi',
     ],
-    [thread, "", '[VibeCodinger: the agent in T3 thread "t" sent this message, not the user.]'],
+    [thread, "", '[VibeCodinger: the agent in thread "t" sent this message, not the user.]'],
     [thread, " /git/review staged", " /git/review staged"],
     [thread, "$deploy ship it", "$deploy ship it"],
     [
       thread,
       "$25 left",
-      '[VibeCodinger: the agent in T3 thread "t" sent this message, not the user.]\n\n$25 left',
+      '[VibeCodinger: the agent in thread "t" sent this message, not the user.]\n\n$25 left',
     ],
     [
       {
@@ -731,7 +731,7 @@ describe("withMessageSenderNote", () => {
         },
       },
       "Hi",
-      '[VibeCodinger: the agent in T3 thread "r" on linked environment "e" sent this message, not the user.]\n\nHi',
+      '[VibeCodinger: the agent in thread "r" on linked environment "e" sent this message, not the user.]\n\nHi',
     ],
     [
       { createdBy: "user", creationSource: "web", scheduledTaskId: ScheduledTaskId.make("s") },
