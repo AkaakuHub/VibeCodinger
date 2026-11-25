@@ -1,7 +1,6 @@
 packages:
   - apps/*
   - evals
-  - infra/*
   - oxlint-plugin-vibecodinger
   - packages/*
   - scripts
