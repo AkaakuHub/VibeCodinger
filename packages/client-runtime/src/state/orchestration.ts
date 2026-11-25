@@ -122,6 +122,10 @@ export function createOrchestrationEnvironmentAtoms<R, E>(
         );
       }),
     }),
+    runAnswerPreview: createEnvironmentRpcCommand(runtime, {
+      label: "environment-data:orchestration:run-answer-preview",
+      tag: ORCHESTRATION_V2_WS_METHODS.getRunAnswerPreview,
+    }),
     threadTranscript: createEnvironmentCommand(runtime, {
       label: "environment-data:orchestration:thread-transcript",
       execute: Effect.fn("orchestration.execute")(function* (input: {

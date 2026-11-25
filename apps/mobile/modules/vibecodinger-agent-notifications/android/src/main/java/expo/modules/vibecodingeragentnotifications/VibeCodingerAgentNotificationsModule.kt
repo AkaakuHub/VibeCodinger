@@ -7,8 +7,8 @@ class VibeCodingerAgentNotificationsModule : Module() {
   override fun definition() = ModuleDefinition {
     Name("VibeCodingerAgentNotifications")
 
-    AsyncFunction("showCompletion") { id: String, title: String ->
-      appContext.reactContext?.let { AgentNotifications.showCompletion(it, id, title) }
+    AsyncFunction("showCompletion") { id: String, title: String, body: String ->
+      appContext.reactContext?.let { AgentNotifications.showCompletion(it, id, title, body) }
       Unit
     }
 

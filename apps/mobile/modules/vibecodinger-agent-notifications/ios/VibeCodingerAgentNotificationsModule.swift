@@ -16,13 +16,14 @@ public final class VibeCodingerAgentNotificationsModule: Module {
       return try await center.requestAuthorization(options: [.alert, .sound])
     }
 
-    AsyncFunction("showCompletion") { (id: String, title: String) async throws -> Void in
+    AsyncFunction("showCompletion") { (id: String, title: String, body: String) async throws -> Void in
       let center = UNUserNotificationCenter.current()
       let status = await center.notificationSettings().authorizationStatus
       guard status == .authorized || status == .provisional else { return }
       center.delegate = self.presentation
       let content = UNMutableNotificationContent()
       content.title = title
+      content.body = body
       content.sound = .default
       try await center.add(UNNotificationRequest(identifier: id, content: content, trigger: nil))
     }

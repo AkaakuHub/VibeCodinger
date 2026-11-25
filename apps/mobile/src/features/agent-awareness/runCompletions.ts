@@ -6,7 +6,14 @@ import type { RunId } from "@vibecodinger/contracts";
 
 type Thread = Pick<EnvironmentThreadShell, "environmentId" | "id" | "latestRun" | "runtime">;
 
-export function observeRunCompletions(notify: (id: string) => void) {
+export function observeRunCompletions(
+  notify: (completion: {
+    readonly id: string;
+    readonly environmentId: Thread["environmentId"];
+    readonly threadId: Thread["id"];
+    readonly runId: RunId;
+  }) => void,
+) {
   const running = new Map<string, RunId>();
   return (threads: readonly Thread[]) => {
     for (const thread of threads) {
@@ -26,7 +33,12 @@ export function observeRunCompletions(notify: (id: string) => void) {
         run.status === "completed" &&
         run.completedAt !== null
       ) {
-        notify(JSON.stringify([thread.environmentId, thread.id, run.runId]));
+        notify({
+          id: JSON.stringify([thread.environmentId, thread.id, run.runId]),
+          environmentId: thread.environmentId,
+          threadId: thread.id,
+          runId: run.runId,
+        });
       }
       running.delete(key);
     }

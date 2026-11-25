@@ -1226,6 +1226,51 @@ it.effect("Force stop refuses once a newer run has started, before killing anyth
   }),
 );
 
+it.effect("previews the completed run's answer without its commentary", () =>
+  Effect.gen(function* () {
+    const threadId = ThreadId.make("thread:answer-preview");
+    const runId = RunId.make("run:answer-preview");
+    const messageId = MessageId.make("message:answer-preview");
+    const layerTest = ThreadManagementService.layer.pipe(
+      Layer.provide(Layer.mock(ProviderSessionManager.ProviderSessionManagerV2)({})),
+      Layer.provide(
+        Layer.mock(Orchestrator.OrchestratorV2)({
+          getThreadRecords: (_, _fields, filter) =>
+            Effect.succeed({
+              runs: filter?.runIds?.includes(runId) ? [{ id: runId, status: "completed" }] : [],
+              turnItems: [
+                {
+                  type: "assistant_message",
+                  phase: "final_answer",
+                  text: "修正しました。\\n" + "🐈".repeat(250),
+                  streaming: false,
+                  messageId,
+                },
+                {
+                  type: "assistant_message",
+                  phase: "commentary",
+                  text: "Checking the build",
+                  streaming: false,
+                  messageId,
+                },
+              ],
+            } as Partial<OrchestrationV2ThreadProjection> as OrchestrationV2ThreadProjection),
+        }),
+      ),
+      Layer.provide(ServerSettings.layerTest()),
+      Layer.provide(layerReceiptsTest),
+    );
+    const threads = yield* ThreadManagementService.ThreadManagementService.pipe(
+      Effect.provide(layerTest),
+    );
+    const preview = yield* threads.getRunAnswerPreview({ threadId, runId });
+    expect(preview).toBe("修正しました。 " + "🐈".repeat(231) + "…");
+    expect(
+      yield* threads.getRunAnswerPreview({ threadId, runId: RunId.make("run:other") }),
+    ).toBeNull();
+  }),
+);
+
 it.effect(
   "admits two transcript exports at a time and frees a slot on failure or interruption",
   () =>

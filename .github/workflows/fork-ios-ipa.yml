@@ -14,7 +14,7 @@ permissions: {}
 
 concurrency:
   group: fork-ios-ipa-${{ github.event.pull_request.number || inputs.release_tag }}
-  cancel-in-progress: false
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   package:
@@ -48,7 +48,8 @@ jobs:
         uses: voidzero-dev/setup-vp@250f29ce396baf5e8f24498e17c0dfdebabc26eb # v1.15.0
         with:
           node-version-file: package.json
-          cache: false
+          cache: true
+          cache-dependency-path: pnpm-lock.yaml
           run-install: false
 
       - name: Install mobile dependencies
@@ -58,9 +59,34 @@ jobs:
         working-directory: apps/mobile
         run: vp exec expo prebuild --clean --platform ios --no-install
 
+      - name: Identify the iOS toolchain
+        id: toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcode=$( { xcodebuild -version; xcrun --sdk iphoneos --show-sdk-build-version; } | shasum -a 256 | cut -d ' ' -f 1 )
+          echo "xcode=$xcode" >> "$GITHUB_OUTPUT"
+          echo "cocoapods=$(pod --version)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache CocoaPods downloads
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/Library/Caches/CocoaPods
+          key: ios-pods-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.toolchain.outputs.cocoapods }}-${{ hashFiles('pnpm-lock.yaml', 'apps/mobile/ios/Podfile', 'apps/mobile/ios/Podfile.properties.json') }}
+          restore-keys: ios-pods-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.toolchain.outputs.cocoapods }}-
+
       - name: Install CocoaPods dependencies
         working-directory: apps/mobile/ios
         run: pod install
+
+      - name: Cache Xcode compilation results
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        env:
+          CACHE_PREFIX: ios-compile-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.toolchain.outputs.xcode }}-${{ hashFiles('pnpm-lock.yaml', 'apps/mobile/ios/Podfile.lock') }}-
+        with:
+          path: ${{ runner.temp }}/vibecodinger-derived-data/CompilationCache.noindex
+          key: ${{ env.CACHE_PREFIX }}${{ hashFiles('apps/mobile/app.config.ts', 'apps/mobile/modules/**/ios/**', 'apps/mobile/modules/**/*.podspec', 'apps/mobile/plugins/**') }}
+          restore-keys: ${{ env.CACHE_PREFIX }}
 
       - name: Build and verify the Personal Team IPA
         working-directory: apps/mobile
@@ -74,6 +100,10 @@ jobs:
             -configuration Release \
             -destination 'generic/platform=iOS' \
             -archivePath "$archive" \
+            -derivedDataPath "$RUNNER_TEMP/vibecodinger-derived-data" \
+            -showBuildTimingSummary \
+            COMPILATION_CACHE_ENABLE_CACHING=YES \
+            COMPILATION_CACHE_ENABLE_DIAGNOSTIC_REMARKS=YES \
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
           app="$archive/Products/Applications/VibeCodinger.app"
           test -f "$app/Info.plist"
@@ -98,6 +128,7 @@ jobs:
           name: unsigned-iphone-ipa
           path: ${{ runner.temp }}/release-assets/
           if-no-files-found: error
+          compression-level: 0
 
   draft-release:
     if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'

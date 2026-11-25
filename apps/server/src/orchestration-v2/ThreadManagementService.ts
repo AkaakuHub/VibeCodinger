@@ -440,6 +440,10 @@ export interface ThreadManagementServiceShape {
     readonly threadId: ThreadId;
     readonly itemId: TurnItemId;
   }) => Effect.Effect<OrchestrationV2GetTurnItemResult, Orchestrator.OrchestratorV2Error>;
+  readonly getRunAnswerPreview: (input: {
+    readonly threadId: ThreadId;
+    readonly runId: RunId;
+  }) => Effect.Effect<string | null, Orchestrator.OrchestratorV2Error>;
   readonly getThreadRecords: Orchestrator.OrchestratorV2["Service"]["getThreadRecords"];
   readonly getThreadProjection: (
     threadId: ThreadId,
@@ -1997,6 +2001,36 @@ const make = Effect.gen(function* () {
       },
     ),
     getThreadTitles: orchestrator.getThreadTitles,
+    getRunAnswerPreview: Effect.fn("ThreadManagementService.getRunAnswerPreview")(function* ({
+      threadId,
+      runId,
+    }) {
+      const records = yield* orchestrator.getThreadRecords(threadId, ["runs", "turnItems"], {
+        runIds: [runId],
+        turnItemRunId: runId,
+        turnItemTypes: ["assistant_message"],
+      });
+      if (records.runs[0]?.status !== "completed") return null;
+      const answer = records.turnItems.findLast(
+        (item) =>
+          item.type === "assistant_message" &&
+          !item.streaming &&
+          item.delivery !== "async" &&
+          (item.phase === undefined || item.phase === "final_answer") &&
+          (item.textOmitted === true || item.text.trim().length > 0),
+      );
+      if (answer?.type !== "assistant_message") return null;
+      const text =
+        answer.textOmitted === true
+          ? (yield* orchestrator.getMessagesById(threadId, [answer.messageId])).get(
+              answer.messageId,
+            )?.text
+          : answer.text;
+      const preview = text?.trim().replace(/\s+/g, " ");
+      if (!preview) return null;
+      const characters = Array.from(preview);
+      return characters.length > 240 ? characters.slice(0, 239).join("") + "…" : preview;
+    }),
     getThreadLinkMetadata: orchestrator.getThreadLinkMetadata,
     listProjectThreads,
     sendToThread,

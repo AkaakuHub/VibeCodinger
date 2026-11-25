@@ -56,11 +56,13 @@ object AgentNotifications {
     if (expiresAt > 0 && expiresAt <= now) cancelActivity(context)
   }
 
-  fun showCompletion(context: Context, id: String, title: String) {
+  fun showCompletion(context: Context, id: String, title: String, body: String) {
     if (!NotificationManagerCompat.from(context).areNotificationsEnabled()) return
     channels(context)
     val notification = base(context, ALERT_CHANNEL)
       .setContentTitle(title)
+      .setContentText(body)
+      .setStyle(NotificationCompat.BigTextStyle().bigText(body))
       .setAutoCancel(true)
       .setContentIntent(contentIntent(context, null, null, id.hashCode()))
       .build()

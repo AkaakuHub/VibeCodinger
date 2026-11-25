@@ -44,7 +44,12 @@ describe("session completion notifications", () => {
     observe([thread("remote", "completed")]);
     observe([thread("remote", "completed")]);
 
-    expect(notify).toHaveBeenCalledTimes(1);
+    expect(notify).toHaveBeenCalledExactlyOnceWith({
+      id: JSON.stringify(["remote", "thread", "run"]),
+      environmentId: EnvironmentId.make("remote"),
+      threadId: ThreadId.make("thread"),
+      runId,
+    });
   });
 
   it("ignores earlier completions and failed runs with the same ID on another server", () => {
