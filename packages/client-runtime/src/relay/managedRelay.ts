@@ -1,20 +1,9 @@
 import {
   type RelayClientEnvironmentRecord,
-  type RelayClientDeviceRecord,
-  type RelayDeviceRegistrationRequest,
   RelayDpopAccessTokenScope,
   type RelayEnvironmentConnectResponse,
-  type RelayEnvironmentLinkChallengeRequest,
-  type RelayEnvironmentLinkChallengeResponse,
-  type RelayEnvironmentLinkRequest,
-  type RelayEnvironmentLinkResponse,
   type RelayEnvironmentStatusResponse,
-  type RelayAgentActivitySnapshotResponse,
-  type RelayLiveActivityRegistrationRequest,
-  type RelayOkResponse,
   RelayProtectedError,
-  type RelayT3ChatLinkRequestResponse,
-  type RelayT3ChatLinkResponse,
 } from "@vibecodinger/contracts/relay";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
@@ -70,57 +59,24 @@ export type ManagedRelayDpopSignerError = typeof ManagedRelayDpopSignerError.Typ
 export const ManagedRelayRequestAction = Schema.Literals([
   "exchange relay DPoP access token",
   "list relay-managed environments",
-  "list relay client devices",
-  "create relay environment link challenge",
-  "link relay environment",
-  "unlink relay environment",
   "get relay environment status",
   "connect relay environment",
-  "register relay mobile device",
-  "unregister relay mobile device",
-  "register relay live activity",
-  "read relay agent activity snapshot",
-  "read linked T3 Chat account",
-  "start T3 Chat linking",
-  "unlink T3 Chat account",
 ]);
 export type ManagedRelayRequestAction = typeof ManagedRelayRequestAction.Type;
 
 export const ManagedRelayRequestActivity = Schema.Literals([
   "Relay DPoP access token exchange",
   "Relay environment listing",
-  "Relay client device listing",
-  "Relay environment link challenge",
-  "Relay environment linking",
-  "Relay environment unlinking",
   "Relay environment status request",
   "Relay environment connection",
-  "Relay mobile device registration",
-  "Relay mobile device unregistration",
-  "Relay Live Activity registration",
-  "Relay agent activity snapshot",
-  "Relay T3 Chat link lookup",
-  "Relay T3 Chat link request",
-  "Relay T3 Chat unlinking",
 ]);
 export type ManagedRelayRequestActivity = typeof ManagedRelayRequestActivity.Type;
 
 const REQUEST_TIMED_OUT_TEXT: Record<ManagedRelayRequestActivity, string> = {
   "Relay DPoP access token exchange": msg("Relay DPoP access token exchange timed out."),
   "Relay environment listing": msg("Relay environment listing timed out."),
-  "Relay client device listing": msg("Relay client device listing timed out."),
-  "Relay environment link challenge": msg("Relay environment link challenge timed out."),
-  "Relay environment linking": msg("Relay environment linking timed out."),
-  "Relay environment unlinking": msg("Relay environment unlinking timed out."),
   "Relay environment status request": msg("Relay environment status request timed out."),
   "Relay environment connection": msg("Relay environment connection timed out."),
-  "Relay mobile device registration": msg("Relay mobile device registration timed out."),
-  "Relay mobile device unregistration": msg("Relay mobile device unregistration timed out."),
-  "Relay Live Activity registration": msg("Relay Live Activity registration timed out."),
-  "Relay agent activity snapshot": msg("Relay agent activity snapshot timed out."),
-  "Relay T3 Chat link lookup": msg("Relay T3 Chat link lookup timed out."),
-  "Relay T3 Chat link request": msg("Relay T3 Chat link request timed out."),
-  "Relay T3 Chat unlinking": msg("Relay T3 Chat unlinking timed out."),
 };
 
 export class ManagedRelayRequestTimeoutError extends Schema.TaggedError<ManagedRelayRequestTimeoutError>()(
@@ -167,22 +123,6 @@ const REQUEST_FAILED_TEXT: Record<
     failed: msg("Could not list relay-managed environments."),
     failedWithDetail: msg("Could not list relay-managed environments:"),
   },
-  "list relay client devices": {
-    failed: msg("Could not list relay client devices."),
-    failedWithDetail: msg("Could not list relay client devices:"),
-  },
-  "create relay environment link challenge": {
-    failed: msg("Could not create relay environment link challenge."),
-    failedWithDetail: msg("Could not create relay environment link challenge:"),
-  },
-  "link relay environment": {
-    failed: msg("Could not link relay environment."),
-    failedWithDetail: msg("Could not link relay environment:"),
-  },
-  "unlink relay environment": {
-    failed: msg("Could not unlink relay environment."),
-    failedWithDetail: msg("Could not unlink relay environment:"),
-  },
   "get relay environment status": {
     failed: msg("Could not get relay environment status."),
     failedWithDetail: msg("Could not get relay environment status:"),
@@ -190,34 +130,6 @@ const REQUEST_FAILED_TEXT: Record<
   "connect relay environment": {
     failed: msg("Could not connect relay environment."),
     failedWithDetail: msg("Could not connect relay environment:"),
-  },
-  "register relay mobile device": {
-    failed: msg("Could not register relay mobile device."),
-    failedWithDetail: msg("Could not register relay mobile device:"),
-  },
-  "unregister relay mobile device": {
-    failed: msg("Could not unregister relay mobile device."),
-    failedWithDetail: msg("Could not unregister relay mobile device:"),
-  },
-  "register relay live activity": {
-    failed: msg("Could not register relay live activity."),
-    failedWithDetail: msg("Could not register relay live activity:"),
-  },
-  "read relay agent activity snapshot": {
-    failed: msg("Could not read relay agent activity snapshot."),
-    failedWithDetail: msg("Could not read relay agent activity snapshot:"),
-  },
-  "read linked T3 Chat account": {
-    failed: msg("Could not read linked T3 Chat account."),
-    failedWithDetail: msg("Could not read linked T3 Chat account:"),
-  },
-  "start T3 Chat linking": {
-    failed: msg("Could not start T3 Chat linking."),
-    failedWithDetail: msg("Could not start T3 Chat linking:"),
-  },
-  "unlink T3 Chat account": {
-    failed: msg("Could not unlink T3 Chat account."),
-    failedWithDetail: msg("Could not unlink T3 Chat account:"),
   },
 };
 
@@ -330,30 +242,6 @@ export class ManagedRelayClient extends Context.Service<
     readonly listEnvironments: (input: {
       readonly clerkToken: string;
     }) => Effect.Effect<ReadonlyArray<RelayClientEnvironmentRecord>, ManagedRelayClientError>;
-    readonly listDevices: (input: {
-      readonly clerkToken: string;
-    }) => Effect.Effect<ReadonlyArray<RelayClientDeviceRecord>, ManagedRelayClientError>;
-    readonly createEnvironmentLinkChallenge: (input: {
-      readonly clerkToken: string;
-      readonly payload: RelayEnvironmentLinkChallengeRequest;
-    }) => Effect.Effect<RelayEnvironmentLinkChallengeResponse, ManagedRelayClientError>;
-    readonly linkEnvironment: (input: {
-      readonly clerkToken: string;
-      readonly payload: RelayEnvironmentLinkRequest;
-    }) => Effect.Effect<RelayEnvironmentLinkResponse, ManagedRelayClientError>;
-    readonly unlinkEnvironment: (input: {
-      readonly clerkToken: string;
-      readonly environmentId: RelayClientEnvironmentRecord["environmentId"];
-    }) => Effect.Effect<RelayOkResponse, ManagedRelayClientError>;
-    readonly getT3ChatLink: (input: {
-      readonly clerkToken: string;
-    }) => Effect.Effect<RelayT3ChatLinkResponse, ManagedRelayClientError>;
-    readonly createT3ChatLinkRequest: (input: {
-      readonly clerkToken: string;
-    }) => Effect.Effect<RelayT3ChatLinkRequestResponse, ManagedRelayClientError>;
-    readonly unlinkT3Chat: (input: {
-      readonly clerkToken: string;
-    }) => Effect.Effect<RelayOkResponse, ManagedRelayClientError>;
     readonly getEnvironmentStatus: (input: {
       readonly clerkToken: string;
       readonly scopes: ReadonlyArray<RelayDpopAccessTokenScope>;
@@ -365,22 +253,6 @@ export class ManagedRelayClient extends Context.Service<
       readonly environmentId: RelayClientEnvironmentRecord["environmentId"];
       readonly deviceId?: string;
     }) => Effect.Effect<RelayEnvironmentConnectResponse, ManagedRelayClientError>;
-    readonly registerDevice: (input: {
-      readonly clerkToken: string;
-      readonly payload: RelayDeviceRegistrationRequest;
-    }) => Effect.Effect<RelayOkResponse, ManagedRelayClientError>;
-    readonly unregisterDevice: (input: {
-      readonly clerkToken: string;
-      readonly deviceId: string;
-    }) => Effect.Effect<RelayOkResponse, ManagedRelayClientError>;
-    readonly registerLiveActivity: (input: {
-      readonly clerkToken: string;
-      readonly payload: RelayLiveActivityRegistrationRequest;
-    }) => Effect.Effect<RelayOkResponse, ManagedRelayClientError>;
-    readonly getAgentActivitySnapshot: (input: {
-      readonly clerkToken: string;
-    }) => Effect.Effect<RelayAgentActivitySnapshotResponse, ManagedRelayClientError>;
-    readonly resetTokenCache: Effect.Effect<void>;
   }
 >()("@vibecodinger/client-runtime/relay/managedRelay/ManagedRelayClient") {}
 
@@ -393,24 +265,8 @@ function disabledManagedRelayClient(): ManagedRelayClient["Service"] {
   return ManagedRelayClient.of({
     relayUrl,
     listEnvironments: unavailable("clientRuntime.managedRelay.listEnvironments"),
-    listDevices: unavailable("clientRuntime.managedRelay.listDevices"),
-    createEnvironmentLinkChallenge: unavailable(
-      "clientRuntime.managedRelay.createEnvironmentLinkChallenge",
-    ),
-    linkEnvironment: unavailable("clientRuntime.managedRelay.linkEnvironment"),
-    unlinkEnvironment: unavailable("clientRuntime.managedRelay.unlinkEnvironment"),
-    getT3ChatLink: unavailable("clientRuntime.managedRelay.getT3ChatLink"),
-    createT3ChatLinkRequest: unavailable("clientRuntime.managedRelay.createT3ChatLinkRequest"),
-    unlinkT3Chat: unavailable("clientRuntime.managedRelay.unlinkT3Chat"),
     getEnvironmentStatus: unavailable("clientRuntime.managedRelay.getEnvironmentStatus"),
     connectEnvironment: unavailable("clientRuntime.managedRelay.connectEnvironment"),
-    registerDevice: unavailable("clientRuntime.managedRelay.registerDevice"),
-    unregisterDevice: unavailable("clientRuntime.managedRelay.unregisterDevice"),
-    registerLiveActivity: unavailable("clientRuntime.managedRelay.registerLiveActivity"),
-    getAgentActivitySnapshot: unavailable("clientRuntime.managedRelay.getAgentActivitySnapshot"),
-    resetTokenCache: Effect.void.pipe(
-      Effect.withSpan("clientRuntime.managedRelay.resetTokenCache"),
-    ),
   });
 }
 

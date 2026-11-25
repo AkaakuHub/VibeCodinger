@@ -7,8 +7,9 @@ import {
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import type * as Option from "effect/Option";
+import { msg } from "gt-i18n";
 
-import type { ConnectionAttemptError } from "../connection/model.ts";
+import { type ConnectionAttemptError, ConnectionBlockedError } from "../connection/model.ts";
 
 export interface PreparedSshEnvironment {
   readonly bootstrap: DesktopSshEnvironmentBootstrap;
@@ -25,13 +26,26 @@ export interface CloudSessionIdentity {
   readonly accountId: string;
 }
 
+const pairDirectly = msg("This environment needs to be paired directly.");
+
 export class CloudSession extends Context.Service<
   CloudSession,
   {
     readonly identity: Effect.Effect<Option.Option<CloudSessionIdentity>>;
     readonly clerkToken: Effect.Effect<string, ConnectionAttemptError>;
   }
->()("@vibecodinger/client-runtime/platform/capabilities/CloudSession") {}
+>()("@vibecodinger/client-runtime/platform/capabilities/CloudSession") {
+  static readonly disabled = CloudSession.of({
+    identity: Effect.succeedNone,
+    clerkToken: Effect.fail(
+      new ConnectionBlockedError({
+        reason: "authentication",
+        detail: pairDirectly,
+        i18nMessage: [pairDirectly],
+      }),
+    ),
+  });
+}
 
 export class RelayDeviceIdentity extends Context.Service<
   RelayDeviceIdentity,

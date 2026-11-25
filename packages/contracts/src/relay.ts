@@ -8,9 +8,6 @@ import {
 } from "./baseSchemas.ts";
 import { ExecutionEnvironmentDescriptor } from "./environment.ts";
 
-export const RelayAgentAwarenessPlatform = Schema.Literals(["ios", "android"]);
-export type RelayAgentAwarenessPlatform = typeof RelayAgentAwarenessPlatform.Type;
-
 export const RelayAgentAwarenessPhase = Schema.Literals([
   "starting",
   "running",
@@ -21,71 +18,6 @@ export const RelayAgentAwarenessPhase = Schema.Literals([
   "stale",
 ]);
 export type RelayAgentAwarenessPhase = typeof RelayAgentAwarenessPhase.Type;
-
-export const RelayAgentAwarenessPreferences = Schema.Struct({
-  liveActivitiesEnabled: Schema.Boolean,
-  notificationsEnabled: Schema.Boolean,
-  notifyOnApproval: Schema.Boolean,
-  notifyOnInput: Schema.Boolean,
-  notifyOnCompletion: Schema.Boolean,
-  notifyOnFailure: Schema.Boolean,
-});
-export type RelayAgentAwarenessPreferences = typeof RelayAgentAwarenessPreferences.Type;
-
-export const RelayApnsEnvironment = Schema.Literals(["sandbox", "production"]);
-export type RelayApnsEnvironment = typeof RelayApnsEnvironment.Type;
-
-export const RelayDeviceRegistrationRequest = Schema.Struct({
-  deviceId: TrimmedNonEmptyString,
-  label: TrimmedNonEmptyString,
-  platform: RelayAgentAwarenessPlatform,
-  iosMajorVersion: Schema.optional(Schema.Int.check(Schema.isGreaterThanOrEqualTo(18))),
-  androidApiLevel: Schema.optional(Schema.Int.check(Schema.isGreaterThanOrEqualTo(24))),
-  appVersion: Schema.optional(TrimmedNonEmptyString),
-  // APNs topic must match the variant's bundle id; development-signed builds use sandbox tokens.
-  bundleId: Schema.optional(TrimmedNonEmptyString),
-  apsEnvironment: Schema.optional(RelayApnsEnvironment),
-  pushToken: Schema.optional(TrimmedNonEmptyString),
-  pushToStartToken: Schema.optional(TrimmedNonEmptyString),
-  preferences: RelayAgentAwarenessPreferences,
-}).check(
-  Schema.makeFilter((device) =>
-    device.platform === "ios"
-      ? device.iosMajorVersion !== undefined
-      : device.androidApiLevel !== undefined &&
-        device.iosMajorVersion === undefined &&
-        device.apsEnvironment === undefined &&
-        device.pushToStartToken === undefined,
-  ),
-);
-export type RelayDeviceRegistrationRequest = typeof RelayDeviceRegistrationRequest.Type;
-
-export const RelayClientDeviceRecord = Schema.Struct({
-  deviceId: TrimmedNonEmptyString,
-  label: TrimmedNonEmptyString,
-  platform: RelayAgentAwarenessPlatform,
-  iosMajorVersion: Schema.NullOr(Schema.Int.check(Schema.isGreaterThanOrEqualTo(18))),
-  androidApiLevel: Schema.optional(Schema.NullOr(Schema.Int)),
-  appVersion: Schema.NullOr(TrimmedNonEmptyString),
-  notifications: Schema.Struct({
-    enabled: Schema.Boolean,
-    notifyOnApproval: Schema.Boolean,
-    notifyOnInput: Schema.Boolean,
-    notifyOnCompletion: Schema.Boolean,
-    notifyOnFailure: Schema.Boolean,
-  }),
-  liveActivities: Schema.Struct({
-    enabled: Schema.Boolean,
-  }),
-  updatedAt: TrimmedNonEmptyString,
-});
-export type RelayClientDeviceRecord = typeof RelayClientDeviceRecord.Type;
-
-export const RelayLiveActivityRegistrationRequest = Schema.Struct({
-  deviceId: TrimmedNonEmptyString,
-  activityPushToken: TrimmedNonEmptyString,
-});
-export type RelayLiveActivityRegistrationRequest = typeof RelayLiveActivityRegistrationRequest.Type;
 
 export const RelayAgentActivityAggregateRow = Schema.Struct({
   environmentId: EnvironmentId,
@@ -160,53 +92,6 @@ export type RelayEnvironmentConfigRequest = typeof RelayEnvironmentConfigRequest
 
 export const RelayEnvironmentLinkProof = TrimmedNonEmptyString;
 export type RelayEnvironmentLinkProof = typeof RelayEnvironmentLinkProof.Type;
-
-export const RelayEnvironmentLinkChallengeRequest = Schema.Struct({
-  notificationsEnabled: Schema.Boolean.annotate({
-    description: "Whether this link may deliver push notifications.",
-  }),
-  liveActivitiesEnabled: Schema.Boolean.annotate({
-    description: "Whether this link may update Live Activities.",
-  }),
-  managedTunnelsEnabled: Schema.Boolean.annotate({
-    description: "Whether the relay should provision a managed tunnel for this environment.",
-  }),
-}).annotate({ description: "Requested capabilities for a new environment-link challenge." });
-export type RelayEnvironmentLinkChallengeRequest = typeof RelayEnvironmentLinkChallengeRequest.Type;
-
-export const RelayEnvironmentLinkChallengeResponse = Schema.Struct({
-  challenge: TrimmedNonEmptyString,
-  expiresAt: TrimmedNonEmptyString,
-});
-export type RelayEnvironmentLinkChallengeResponse =
-  typeof RelayEnvironmentLinkChallengeResponse.Type;
-
-export const RelayEnvironmentLinkRequest = Schema.Struct({
-  deviceId: Schema.optional(
-    TrimmedNonEmptyString.annotate({
-      description: "Optional client device identifier associated with this link.",
-    }),
-  ),
-  proof: RelayEnvironmentLinkProof.annotate({
-    description: "Environment-signed proof bound to a previously issued link challenge.",
-  }),
-  notificationsEnabled: Schema.Boolean,
-  liveActivitiesEnabled: Schema.Boolean,
-  managedTunnelsEnabled: Schema.Boolean,
-}).annotate({ description: "Links an authenticated cloud user to a T3 environment." });
-export type RelayEnvironmentLinkRequest = typeof RelayEnvironmentLinkRequest.Type;
-
-export const RelayEnvironmentLinkResponse = Schema.Struct({
-  ok: Schema.Boolean,
-  cloudUserId: TrimmedNonEmptyString,
-  environmentId: EnvironmentId,
-  endpoint: RelayManagedEndpoint,
-  endpointRuntime: Schema.NullOr(RelayManagedEndpointRuntimeConfig),
-  relayIssuer: TrimmedNonEmptyString,
-  environmentCredential: TrimmedNonEmptyString,
-  cloudMintPublicKey: TrimmedNonEmptyString,
-});
-export type RelayEnvironmentLinkResponse = typeof RelayEnvironmentLinkResponse.Type;
 
 export const RelayEnvironmentLinkProofInvalidReason = Schema.Literals([
   "invalid_signature_or_scope",
@@ -496,11 +381,9 @@ export type RelayClientEnvironmentRecord = typeof RelayClientEnvironmentRecord.T
 
 export const RelayEnvironmentConnectScope = "environment:connect" as const;
 export const RelayEnvironmentStatusScope = "environment:status" as const;
-const RelayMobileRegistrationScope = "mobile:registration" as const;
 export const RelayDpopAccessTokenScope = Schema.Literals([
   RelayEnvironmentConnectScope,
   RelayEnvironmentStatusScope,
-  RelayMobileRegistrationScope,
 ]);
 export type RelayDpopAccessTokenScope = typeof RelayDpopAccessTokenScope.Type;
 
@@ -564,38 +447,5 @@ export const RelayEnvironmentMintResponse = Schema.Struct({
 });
 export type RelayEnvironmentMintResponse = typeof RelayEnvironmentMintResponse.Type;
 
-export const RelayOkResponse = Schema.Struct({
-  ok: Schema.Boolean,
-});
-export type RelayOkResponse = typeof RelayOkResponse.Type;
-
-export const RelayT3ChatPlan = Schema.Literals(["free", "pro", "premier"]);
-export type RelayT3ChatPlan = typeof RelayT3ChatPlan.Type;
-
 // A linked paid T3 Chat plan raises the default managed tunnel cap.
 export const T3CHAT_PLAN_TUNNEL_LIMITS = { pro: 10, premier: 100 } as const;
-
-export const RelayT3ChatLink = Schema.Struct({
-  email: Schema.String,
-  plan: RelayT3ChatPlan,
-});
-export type RelayT3ChatLink = typeof RelayT3ChatLink.Type;
-
-export const RelayT3ChatLinkResponse = Schema.Struct({
-  // False when this relay has no T3 Chat secret, so clients hide the feature.
-  available: Schema.Boolean,
-  link: Schema.NullOr(RelayT3ChatLink),
-  // A manual cap that replaces the plan's; T3 Chat upgrades do not raise it.
-  maxTunnelsOverride: Schema.optionalKey(Schema.Number),
-});
-export type RelayT3ChatLinkResponse = typeof RelayT3ChatLinkResponse.Type;
-
-export const RelayT3ChatLinkRequestResponse = Schema.Struct({
-  url: TrimmedNonEmptyString,
-});
-export type RelayT3ChatLinkRequestResponse = typeof RelayT3ChatLinkRequestResponse.Type;
-
-export const RelayAgentActivitySnapshotResponse = Schema.Struct({
-  aggregate: Schema.NullOr(RelayAgentActivityAggregateState),
-});
-export type RelayAgentActivitySnapshotResponse = typeof RelayAgentActivitySnapshotResponse.Type;
