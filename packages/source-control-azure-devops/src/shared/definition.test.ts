@@ -1,9 +1,9 @@
-import { SourceControlProviderKind } from "@t3tools/contracts";
-import type { ChangeRequestProjectIdentity } from "@t3tools/source-control-core/shared/definition";
+import { SourceControlProviderKind } from "@vibecodinger/contracts";
+import type { ChangeRequestProjectIdentity } from "@vibecodinger/source-control-core/shared/definition";
 import {
   makeSourceControlDefinitionRegistry,
   recognizeRemoteWith,
-} from "@t3tools/source-control-core/shared/definition";
+} from "@vibecodinger/source-control-core/shared/definition";
 import { describe, expect, it } from "vite-plus/test";
 
 import { definition } from "./definition.ts";

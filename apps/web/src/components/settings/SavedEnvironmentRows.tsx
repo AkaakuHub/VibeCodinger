@@ -7,13 +7,13 @@ import {
 } from "lucide-react";
 import { useAtomValue } from "@effect/atom-react";
 import { useState } from "react";
-import { type EnvironmentId, resolveEnvironmentMachineKind } from "@t3tools/contracts";
+import { type EnvironmentId, resolveEnvironmentMachineKind } from "@vibecodinger/contracts";
 import {
   connectionRoutes,
   hasSavedBearerRoute,
   connectionErrorText,
   connectionStatusText,
-} from "@t3tools/client-runtime/connection";
+} from "@vibecodinger/client-runtime/connection";
 import * as Option from "effect/Option";
 import { msg, T, useGT, useMessages } from "gt-react";
 import { m, type MessageResolver } from "../../i18n/messages";

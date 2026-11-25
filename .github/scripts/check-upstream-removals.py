@@ -1,9 +1,16 @@
 """Preserve fork-owned routes and check upstream proposals without executing their code."""
 
 import argparse
+import os
 import re
 import subprocess
 import sys
+from functools import cache
+from pathlib import Path
+from tempfile import TemporaryDirectory
+
+OLD_PACKAGE_SCOPE = b"@" + b"t3tools/"
+PACKAGE_SCOPE = b"@vibecodinger/"
 
 PROTECTED_PATHS = (
     ".env.example",
@@ -74,7 +81,8 @@ PROTECTED_PATHS = (
     "packages/client-runtime/src/connectDeviceNotices.test.ts",
 )
 FORBIDDEN = re.compile(
-    rb"posthog|captureException\s*\(|sendBeacon\s*\(|opentelemetry/exporter|"
+    re.escape(OLD_PACKAGE_SCOPE) +
+    rb"|posthog|captureException\s*\(|sendBeacon\s*\(|opentelemetry/exporter|"
     rb"otlp.{0,48}(?:endpoint|exporter)|cloudflared|"
     rb"server\.checkOtlpEndpoint|TelemetryExportSettings|telemetry-export|"
     rb"ProcessGroupMetrics\.layer|otelEnvironment:\s*(?:OtelEnvironment|otel)\b|"
@@ -111,8 +119,38 @@ FORK_GUARDS = (
 )
 
 
-def git(*args, data=None):
-    return subprocess.run(["git", *args], input=data, capture_output=True, check=True).stdout
+def git(*args, data=None, env=None):
+    return subprocess.run(["git", *args], input=data, env=env, capture_output=True, check=True).stdout
+
+
+@cache
+def renamed_package_blob(object_id):
+    contents = git("cat-file", "blob", object_id)
+    return git("hash-object", "-w", "--stdin", data=contents.replace(OLD_PACKAGE_SCOPE, PACKAGE_SCOPE)).strip()
+
+
+def normalize_package_names(tree):
+    matches = subprocess.run(
+        ["git", "grep", "-I", "-l", "-z", "-F", "--no-textconv", OLD_PACKAGE_SCOPE.decode(), tree, "--"],
+        capture_output=True,
+    )
+    if matches.returncode == 1:
+        return git("rev-parse", f"{tree}^{{tree}}").decode().strip()
+    matches.check_returncode()
+    paths = {record.split(b":", 1)[1] for record in matches.stdout.split(b"\0") if record}
+    updates = []
+    for entry in git("ls-tree", "-r", "-z", tree).split(b"\0"):
+        if not entry:
+            continue
+        metadata, path = entry.split(b"\t", 1)
+        mode, _, object_id = metadata.split()
+        if path in paths and mode in (b"100644", b"100755"):
+            updates.append(mode + b" " + renamed_package_blob(object_id) + b"\t" + path + b"\0")
+    with TemporaryDirectory(prefix="vibecodinger-upstream-index-") as temp:
+        env = {**os.environ, "GIT_INDEX_FILE": str(Path(temp) / "index")}
+        git("read-tree", tree, env=env)
+        git("update-index", "-z", "--index-info", data=b"".join(updates), env=env)
+        return git("write-tree", env=env).decode().strip()
 
 
 def changed_paths(base, target, paths=()):
@@ -153,10 +191,13 @@ def verify(base, target):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("mode", choices=["restore", "verify"])
+    parser.add_argument("mode", choices=["normalize-package-names", "restore", "verify"])
     parser.add_argument("base")
     parser.add_argument("target")
     args = parser.parse_args()
+    if args.mode == "normalize-package-names":
+        print(normalize_package_names(args.base), normalize_package_names(args.target))
+        return 0
     if args.mode == "restore":
         restore(args.base, args.target)
         return 0

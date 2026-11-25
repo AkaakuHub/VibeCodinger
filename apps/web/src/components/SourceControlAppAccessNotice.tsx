@@ -1,8 +1,8 @@
-import type { EnvironmentId } from "@t3tools/contracts";
+import type { EnvironmentId } from "@vibecodinger/contracts";
 import {
   readHostCredentialSettings,
   sourceControlClients,
-} from "@t3tools/client-runtime/source-control-clients";
+} from "@vibecodinger/client-runtime/source-control-clients";
 import { ExternalLinkIcon } from "lucide-react";
 import { T, Var } from "gt-react";
 

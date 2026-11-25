@@ -8,10 +8,10 @@ import {
   type ThreadLinkedPullRequest,
   type ThreadId,
   type ThreadPullRequestLink,
-} from "@t3tools/contracts";
-import { resolveSelectableModel, type SelectableModelOption } from "@t3tools/shared/model";
+} from "@vibecodinger/contracts";
+import { resolveSelectableModel, type SelectableModelOption } from "@vibecodinger/shared/model";
 import type { AsyncResult } from "effect/reactivity";
-import type { PromptLinkPullRequest, PromptLinkRepository } from "@t3tools/shared/promptLinks";
+import type { PromptLinkPullRequest, PromptLinkRepository } from "@vibecodinger/shared/promptLinks";
 import {
   threadPullRequestKeyOf,
   threadPullRequestsOf,

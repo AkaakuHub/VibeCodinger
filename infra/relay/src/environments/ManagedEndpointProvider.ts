@@ -18,7 +18,7 @@ import type {
   RelayManagedEndpoint,
   RelayManagedEndpointOrigin,
   RelayManagedEndpointRuntimeConfig,
-} from "@t3tools/contracts/relay";
+} from "@vibecodinger/contracts/relay";
 
 import * as RelayConfiguration from "../Config.ts";
 import {

@@ -1,14 +1,14 @@
-import type { OrchestrationV2TurnItem } from "@t3tools/contracts";
-import { HTML_RENDER_TOOL_NAME } from "@t3tools/shared/htmlRender";
-import { resolveT3McpToolId } from "@t3tools/shared/t3McpToolPresentation";
-import { formatReadToolLabel, formatSearchToolLabel } from "@t3tools/shared/toolActivity";
+import type { OrchestrationV2TurnItem } from "@vibecodinger/contracts";
+import { HTML_RENDER_TOOL_NAME } from "@vibecodinger/shared/htmlRender";
+import { resolveT3McpToolId } from "@vibecodinger/shared/t3McpToolPresentation";
+import { formatReadToolLabel, formatSearchToolLabel } from "@vibecodinger/shared/toolActivity";
 import {
   MAX_TOOL_OUTPUT_IMAGES,
   readToolOutputImage,
   SEND_TO_USER_TOOL_NAME,
   sentMessageFromToolItem,
   type ToolOutputImage,
-} from "@t3tools/shared/toolOutput";
+} from "@vibecodinger/shared/toolOutput";
 
 export function openCodeToolOutput(
   output: string | undefined,

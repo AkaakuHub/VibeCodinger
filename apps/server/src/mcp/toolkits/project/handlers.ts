@@ -10,7 +10,7 @@ import {
   type Project as ProjectRecord,
   type ServerProvider,
   T3_PROJECT_FILE_NAME,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import * as Digest from "effect/crypto/Digest";
 import * as Effect from "effect/Effect";
 import * as Hex from "effect/encoding/Hex";
@@ -31,13 +31,13 @@ import * as GitVcsDriver from "../../../vcs/GitVcsDriver.ts";
 import * as ServerSettings from "../../../serverSettings.ts";
 import * as ProviderRegistry from "../../../provider/ProviderRegistry.ts";
 import * as DateTime from "effect/DateTime";
-import { resolveNewThreadModelSelection } from "@t3tools/shared/usageLimits";
+import { resolveNewThreadModelSelection } from "@vibecodinger/shared/usageLimits";
 import {
   resolveProjectFileBackedSetting,
   resolveProjectSettings,
-} from "@t3tools/shared/projectSettings";
-import { resolveProjectScripts } from "@t3tools/shared/projectScripts";
-import { parseT3ProjectFile } from "@t3tools/shared/t3ProjectFile";
+} from "@vibecodinger/shared/projectSettings";
+import { resolveProjectScripts } from "@vibecodinger/shared/projectScripts";
+import { parseT3ProjectFile } from "@vibecodinger/shared/t3ProjectFile";
 import { resolveRuntimeMode } from "../../delegatedTaskModes.ts";
 import * as McpInvocationContext from "../../McpInvocationContext.ts";
 import * as McpToolAccess from "../../McpToolAccess.ts";

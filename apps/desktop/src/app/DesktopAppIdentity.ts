@@ -26,7 +26,7 @@ export class DesktopAppIdentity extends Context.Service<
     readonly resolveUserDataPath: Effect.Effect<string>;
     readonly configure: Effect.Effect<void>;
   }
->()("@t3tools/desktop/app/DesktopAppIdentity") {}
+>()("@vibecodinger/desktop/app/DesktopAppIdentity") {}
 
 const normalizeCommitHash = (value: string): Option.Option<string> => {
   const trimmed = value.trim();

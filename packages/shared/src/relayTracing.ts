@@ -4,13 +4,13 @@ import * as Option from "effect/Option";
 import * as Tracer from "effect/Tracer";
 
 export class RelayClientTracer extends Context.Reference(
-  "@t3tools/shared/relayTracing/RelayClientTracer",
+  "@vibecodinger/shared/relayTracing/RelayClientTracer",
   {
     defaultValue: () => Option.none<Tracer.Tracer>(),
   },
 ) {}
 
-class LocalTracer extends Context.Reference("@t3tools/shared/relayTracing/LocalTracer", {
+class LocalTracer extends Context.Reference("@vibecodinger/shared/relayTracing/LocalTracer", {
   defaultValue: () => Option.none<Tracer.Tracer>(),
 }) {}
 

@@ -1,11 +1,17 @@
-import { ClientCapabilities, PlatformConnectionSource } from "@t3tools/client-runtime/platform";
+import {
+  ClientCapabilities,
+  PlatformConnectionSource,
+} from "@vibecodinger/client-runtime/platform";
 import {
   ConnectionBlockedError,
   ConnectionTransientError,
   Connectivity,
   Wakeups,
-} from "@t3tools/client-runtime/connection";
-import { managedRelayAccountChanges, managedRelaySessionAtom } from "@t3tools/client-runtime/relay";
+} from "@vibecodinger/client-runtime/connection";
+import {
+  managedRelayAccountChanges,
+  managedRelaySessionAtom,
+} from "@vibecodinger/client-runtime/relay";
 import * as Clock from "effect/Clock";
 import { msg } from "gt-react-native";
 import { m } from "../i18n/messages";

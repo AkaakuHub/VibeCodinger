@@ -1,4 +1,9 @@
-import { ProjectId, TaskFolder, TaskFolderError, TaskFolderRepository } from "@t3tools/contracts";
+import {
+  ProjectId,
+  TaskFolder,
+  TaskFolderError,
+  TaskFolderRepository,
+} from "@vibecodinger/contracts";
 import * as Context from "effect/Context";
 import * as DateTime from "effect/DateTime";
 import * as Effect from "effect/Effect";

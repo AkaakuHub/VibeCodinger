@@ -6,11 +6,15 @@
  */
 import * as NodeCrypto from "@effect/platform-node/NodeCrypto";
 import * as NodeServices from "@effect/platform-node/NodeServices";
-import { ProviderInstanceId, type ProviderReplayEntry } from "@t3tools/contracts";
-import { FxSettings } from "@t3tools/provider-fx/settings";
-import { FX_DRIVER_KIND, makeFxAcpRuntime, makeFxAdapterV2 } from "@t3tools/provider-fx/testing";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { resolveSelfInvocation } from "@t3tools/shared/nodeRuntime";
+import { ProviderInstanceId, type ProviderReplayEntry } from "@vibecodinger/contracts";
+import { FxSettings } from "@vibecodinger/provider-fx/settings";
+import {
+  FX_DRIVER_KIND,
+  makeFxAcpRuntime,
+  makeFxAdapterV2,
+} from "@vibecodinger/provider-fx/testing";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
+import { resolveSelfInvocation } from "@vibecodinger/shared/nodeRuntime";
 import * as Clock from "effect/Clock";
 import * as Console from "effect/Console";
 import * as Config from "effect/Config";
@@ -22,12 +26,12 @@ import * as Path from "effect/Path";
 import * as Schema from "effect/Schema";
 import type * as EffectAcpProtocol from "effect-acp/protocol";
 
-import { ACP_PROTOCOL } from "@t3tools/provider-acp/server/adapter";
-import * as IdAllocator from "@t3tools/provider-core/server/IdAllocator";
-import type * as ProviderAdapter from "@t3tools/provider-core/server/ProviderAdapter";
-import { buildRuntimeInstructions } from "@t3tools/provider-core/server/runtimeInstructions";
-import * as TestProviderHost from "@t3tools/provider-testing/TestProviderHost";
-import { checkpointWorkspace } from "@t3tools/provider-testing/replayWorkspace";
+import { ACP_PROTOCOL } from "@vibecodinger/provider-acp/server/adapter";
+import * as IdAllocator from "@vibecodinger/provider-core/server/IdAllocator";
+import type * as ProviderAdapter from "@vibecodinger/provider-core/server/ProviderAdapter";
+import { buildRuntimeInstructions } from "@vibecodinger/provider-core/server/runtimeInstructions";
+import * as TestProviderHost from "@vibecodinger/provider-testing/TestProviderHost";
+import { checkpointWorkspace } from "@vibecodinger/provider-testing/replayWorkspace";
 import * as ProviderAdapterRegistry from "../src/orchestration-v2/ProviderAdapterRegistry.ts";
 import { provideDeterministicTestRuntime } from "../src/orchestration-v2/testkit/DeterministicRuntime.ts";
 import { ORCHESTRATOR_REPLAY_FIXTURES } from "../src/orchestration-v2/testkit/fixtures/index.ts";

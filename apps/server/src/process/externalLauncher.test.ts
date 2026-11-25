@@ -16,10 +16,10 @@ import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
 import { ChildProcess, ChildProcessSpawner } from "effect/process";
 
-import { EDITORS } from "@t3tools/contracts";
-import { resolveEditorCommand } from "@t3tools/shared/editor";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { SpawnExecutableResolution } from "@t3tools/shared/shell";
+import { EDITORS } from "@vibecodinger/contracts";
+import { resolveEditorCommand } from "@vibecodinger/shared/editor";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
+import { SpawnExecutableResolution } from "@vibecodinger/shared/shell";
 import * as ExternalLauncher from "./externalLauncher.ts";
 import { WindowsVerbatimSpawn } from "./windowsVerbatimSpawn.ts";
 

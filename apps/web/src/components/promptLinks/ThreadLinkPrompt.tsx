@@ -1,6 +1,6 @@
-import type { ScopedThreadRef } from "@t3tools/contracts";
-import { withoutPromptLinkParams } from "@t3tools/shared/promptLinks";
-import { parseThreadLinkPrompt } from "@t3tools/shared/promptLinksCopy";
+import type { ScopedThreadRef } from "@vibecodinger/contracts";
+import { withoutPromptLinkParams } from "@vibecodinger/shared/promptLinks";
+import { parseThreadLinkPrompt } from "@vibecodinger/shared/promptLinksCopy";
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import { msg } from "gt-react";
 import { useEffect } from "react";

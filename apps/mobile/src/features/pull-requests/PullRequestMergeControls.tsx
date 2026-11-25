@@ -1,11 +1,11 @@
-import { errorDisplayMessage } from "@t3tools/client-runtime/errors";
+import { errorDisplayMessage } from "@vibecodinger/client-runtime/errors";
 import * as Dialog from "../../components/ui/Dialog";
 import { useAtomRefresh, useAtomValue } from "@effect/atom-react";
-import { squashAtomCommandFailure } from "@t3tools/client-runtime/state/runtime";
-import { sourceControlClients } from "@t3tools/client-runtime/source-control-clients";
+import { squashAtomCommandFailure } from "@vibecodinger/client-runtime/state/runtime";
+import { sourceControlClients } from "@vibecodinger/client-runtime/source-control-clients";
 import { changeRequestTermKind } from "../../lib/changeRequestTerm";
-import type { PullRequestDetail, PullRequestMergeMethod } from "@t3tools/contracts";
-import { resolveProjectSettings } from "@t3tools/shared/projectSettings";
+import type { PullRequestDetail, PullRequestMergeMethod } from "@vibecodinger/contracts";
+import { resolveProjectSettings } from "@vibecodinger/shared/projectSettings";
 import { AsyncResult } from "effect/reactivity";
 import { useGT, useMessages } from "gt-react-native";
 import { useRef, useState } from "react";

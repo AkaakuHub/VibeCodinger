@@ -1,5 +1,5 @@
-import type { DpopFailureReason } from "@t3tools/contracts";
-import { T3CHAT_PLAN_TUNNEL_LIMITS, type RelayProtectedError } from "@t3tools/contracts/relay";
+import type { DpopFailureReason } from "@vibecodinger/contracts";
+import { T3CHAT_PLAN_TUNNEL_LIMITS, type RelayProtectedError } from "@vibecodinger/contracts/relay";
 import { mFallback, msg } from "gt-i18n";
 import type { MFunctionType } from "gt-i18n/types";
 

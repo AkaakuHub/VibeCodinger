@@ -1,8 +1,8 @@
-import { EnvironmentId, ScheduledTaskId, ThreadId } from "@t3tools/contracts";
+import { EnvironmentId, ScheduledTaskId, ThreadId } from "@vibecodinger/contracts";
 import {
   formatComposerContextReference,
   threadContextRecord,
-} from "@t3tools/shared/composerContextReferences";
+} from "@vibecodinger/shared/composerContextReferences";
 import { describe, expect, it } from "vite-plus/test";
 
 import {

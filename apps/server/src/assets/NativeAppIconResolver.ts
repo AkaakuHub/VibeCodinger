@@ -1,5 +1,5 @@
-import { expandHomePath } from "@t3tools/provider-core/server/pathExpansion";
-import type { NativeAppIconReference } from "@t3tools/contracts";
+import { expandHomePath } from "@vibecodinger/provider-core/server/pathExpansion";
+import type { NativeAppIconReference } from "@vibecodinger/contracts";
 import * as Cache from "effect/Cache";
 import * as Cause from "effect/Cause";
 import * as Digest from "effect/crypto/Digest";
@@ -17,7 +17,7 @@ import * as PlatformError from "effect/PlatformError";
 import * as Semaphore from "effect/Semaphore";
 import * as Hex from "effect/encoding/Hex";
 import { ChildProcess, ChildProcessSpawner } from "effect/process";
-import * as HostProcess from "@t3tools/shared/HostProcess";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
 
 import * as ServerConfig from "../config.ts";
 

@@ -16,7 +16,7 @@ import {
   type UsageLimitSourceAccount,
   type UsageLimitSourceSnapshot,
   type UsageLimitSourceSnapshots,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 
 import * as DateTime from "effect/DateTime";
 

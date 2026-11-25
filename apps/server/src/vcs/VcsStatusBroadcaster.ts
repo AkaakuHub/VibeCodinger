@@ -27,11 +27,11 @@ import type {
   VcsStatusResult,
   VcsStatusStreamEvent,
   VcsStatusSubscriptionInput,
-} from "@t3tools/contracts";
-import { DEFAULT_AUTOMATIC_GIT_FETCH_INTERVAL } from "@t3tools/contracts";
-import { mergeGitStatusParts } from "@t3tools/shared/git";
-import * as KeyedLock from "@t3tools/shared/KeyedLock";
-import { resolveProjectSettings } from "@t3tools/shared/projectSettings";
+} from "@vibecodinger/contracts";
+import { DEFAULT_AUTOMATIC_GIT_FETCH_INTERVAL } from "@vibecodinger/contracts";
+import { mergeGitStatusParts } from "@vibecodinger/shared/git";
+import * as KeyedLock from "@vibecodinger/shared/KeyedLock";
+import { resolveProjectSettings } from "@vibecodinger/shared/projectSettings";
 
 import * as BackgroundPolicy from "../background/BackgroundPolicy.ts";
 import * as GitWorkflowService from "../git/GitWorkflowService.ts";

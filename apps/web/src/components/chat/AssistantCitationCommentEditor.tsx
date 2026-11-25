@@ -1,4 +1,7 @@
-import { ASSISTANT_CITATION_MAX_COMMENT_LENGTH, type AssistantCitation } from "@t3tools/contracts";
+import {
+  ASSISTANT_CITATION_MAX_COMMENT_LENGTH,
+  type AssistantCitation,
+} from "@vibecodinger/contracts";
 import { T, useGT, Var } from "gt-react";
 import { use, useEffect, useRef, useState, type RefObject } from "react";
 

@@ -1,12 +1,12 @@
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { resolveSelfInvocation, type SelfInvocation } from "@t3tools/shared/nodeRuntime";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
+import { resolveSelfInvocation, type SelfInvocation } from "@vibecodinger/shared/nodeRuntime";
 import {
   type ModelSelection,
   ProviderDriverKind,
   type OrchestrationV2ProviderCapabilities,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import { KiroSettings } from "../settings.ts";
-import { getModelSelectionStringOptionValue } from "@t3tools/shared/model";
+import { getModelSelectionStringOptionValue } from "@vibecodinger/shared/model";
 import type * as SecureRandom from "effect/crypto/SecureRandom";
 import * as Effect from "effect/Effect";
 import type * as FileSystem from "effect/FileSystem";
@@ -19,27 +19,27 @@ import type * as ChildProcessSpawner from "effect/process/ChildProcessSpawner";
 import type * as EffectAcpSchema from "effect-acp/compat";
 import * as EffectAcpErrors from "effect-acp/errors";
 
-import type * as AcpSessionRuntime from "@t3tools/provider-acp/server/AcpSessionRuntime";
+import type * as AcpSessionRuntime from "@vibecodinger/provider-acp/server/AcpSessionRuntime";
 import {
   AcpProviderCapabilitiesV2,
   makeAcpAdapterV2,
   type AcpAdapterV2Flavor,
   type AcpAdapterV2RuntimeInput,
   type AcpAdapterV2SubagentUpdate,
-} from "@t3tools/provider-acp/server/adapter";
-import type { AcpToolCallState } from "@t3tools/provider-acp/server/runtimeModel";
-import { makeAcpNativeLoggerFactory } from "@t3tools/provider-acp/server/nativeLogging";
+} from "@vibecodinger/provider-acp/server/adapter";
+import type { AcpToolCallState } from "@vibecodinger/provider-acp/server/runtimeModel";
+import { makeAcpNativeLoggerFactory } from "@vibecodinger/provider-acp/server/nativeLogging";
 import {
   ProviderAdapterDriverCreateError,
   type ProviderAdapterDriver,
   type ProviderAdapterDriverCreateInput,
-} from "@t3tools/provider-core/server/adapterDriver";
-import { makeProviderFailure } from "@t3tools/provider-core/server/failure";
-import type * as IdAllocator from "@t3tools/provider-core/server/IdAllocator";
-import { mergeProviderInstanceEnvironment } from "@t3tools/provider-core/server/instanceEnvironment";
-import type * as McpProviderSessions from "@t3tools/provider-core/server/McpProviderSessions";
-import * as ProviderEventLoggers from "@t3tools/provider-core/server/ProviderEventLoggers";
-import type * as ProviderHost from "@t3tools/provider-core/server/ProviderHost";
+} from "@vibecodinger/provider-core/server/adapterDriver";
+import { makeProviderFailure } from "@vibecodinger/provider-core/server/failure";
+import type * as IdAllocator from "@vibecodinger/provider-core/server/IdAllocator";
+import { mergeProviderInstanceEnvironment } from "@vibecodinger/provider-core/server/instanceEnvironment";
+import type * as McpProviderSessions from "@vibecodinger/provider-core/server/McpProviderSessions";
+import * as ProviderEventLoggers from "@vibecodinger/provider-core/server/ProviderEventLoggers";
+import type * as ProviderHost from "@vibecodinger/provider-core/server/ProviderHost";
 import {
   KIRO_AGENT_CONFIG_ID,
   KIRO_AUTOPILOT_CONFIG_ID,

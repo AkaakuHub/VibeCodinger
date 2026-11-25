@@ -5,17 +5,17 @@ import {
   type VcsRef,
   type ProjectId,
   type WorktreeSubmodules,
-} from "@t3tools/contracts";
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
-import type { ThreadStructureRuntime } from "@t3tools/client-runtime/state/shell";
+} from "@vibecodinger/contracts";
+import { thrownErrorMessage } from "@vibecodinger/client-runtime/errors";
+import type { ThreadStructureRuntime } from "@vibecodinger/client-runtime/state/shell";
 import * as Schema from "effect/Schema";
 import { msg } from "gt-react";
-import { sanitizeNewRefName } from "@t3tools/shared/git";
-import { workspaceRelativeFilePath } from "@t3tools/shared/path";
-import { toSortableTimestamp } from "@t3tools/client-runtime/state/thread-sort";
+import { sanitizeNewRefName } from "@vibecodinger/shared/git";
+import { workspaceRelativeFilePath } from "@vibecodinger/shared/path";
+import { toSortableTimestamp } from "@vibecodinger/client-runtime/state/thread-sort";
 import { m, type MessageResolver } from "../i18n/messages";
 import { deriveCanInterruptRunningThread } from "../session-logic";
-export { deriveLocalBranchNameFromRemoteRef, sanitizeNewRefName } from "@t3tools/shared/git";
+export { deriveLocalBranchNameFromRemoteRef, sanitizeNewRefName } from "@vibecodinger/shared/git";
 
 const isGitCommandError = Schema.is(GitCommandError);
 

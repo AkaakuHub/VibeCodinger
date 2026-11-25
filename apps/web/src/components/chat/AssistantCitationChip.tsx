@@ -1,9 +1,9 @@
-import { scopeThreadRef } from "@t3tools/client-runtime/environment";
-import type { AssistantCitation, ResponseContextRecord } from "@t3tools/contracts";
+import { scopeThreadRef } from "@vibecodinger/client-runtime/environment";
+import type { AssistantCitation, ResponseContextRecord } from "@vibecodinger/contracts";
 import {
   assistantCitationLabel,
   serializeAssistantCitation,
-} from "@t3tools/shared/assistantCitations";
+} from "@vibecodinger/shared/assistantCitations";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useGT } from "gt-react";
 import { PencilIcon, QuoteIcon } from "lucide-react";

@@ -1,4 +1,4 @@
-import { PreviewAutomationEvaluateInput } from "@t3tools/contracts";
+import { PreviewAutomationEvaluateInput } from "@vibecodinger/contracts";
 import * as Schema from "effect/Schema";
 import {
   chromium,

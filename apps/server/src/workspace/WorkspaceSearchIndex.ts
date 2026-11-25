@@ -30,10 +30,13 @@ import type {
   ProjectSearchContentsInput,
   ProjectSearchContentsResult,
   ProjectSearchEntriesResult,
-} from "@t3tools/contracts";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { PROJECT_FAVICON_EXTENSIONS, isProjectFaviconPath } from "@t3tools/shared/projectFavicon";
-import { scoreSubsequenceMatch } from "@t3tools/shared/searchRanking";
+} from "@vibecodinger/contracts";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
+import {
+  PROJECT_FAVICON_EXTENSIONS,
+  isProjectFaviconPath,
+} from "@vibecodinger/shared/projectFavicon";
+import { scoreSubsequenceMatch } from "@vibecodinger/shared/searchRanking";
 
 import * as VcsProcess from "../vcs/VcsProcess.ts";
 import { type IgnoreDecision, type IgnoreFile, parseIgnoreFile } from "./IgnorePatterns.ts";

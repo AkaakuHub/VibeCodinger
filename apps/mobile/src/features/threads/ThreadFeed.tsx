@@ -1,16 +1,19 @@
 import { CollapsibleUserMessageBody } from "./CollapsibleUserMessageBody";
 import { msg, T, useGT, useLocale, useMessages } from "gt-react-native";
 import { m } from "../../i18n/messages";
-import { errorDisplayMessage } from "@t3tools/client-runtime/errors";
-import { toServerClock } from "@t3tools/client-runtime/clock";
-import { formatDuration } from "@t3tools/shared/orchestrationTimingCopy";
+import { errorDisplayMessage } from "@vibecodinger/client-runtime/errors";
+import { toServerClock } from "@vibecodinger/client-runtime/clock";
+import { formatDuration } from "@vibecodinger/shared/orchestrationTimingCopy";
 import { Sheet } from "../../components/ui/Sheet";
 import { ListActionRow } from "../../components/ui/ListActionRow";
 import { ListSection } from "../../components/ui/ListSection";
 import { collectMobileAssistantTextSelectors } from "../../lib/assistantCitationSelection";
 import { Button } from "../../components/ui/Button";
 import * as Dialog from "../../components/ui/Dialog";
-import { ASSISTANT_CITATION_MAX_TEXT_LENGTH, type AssistantCitation } from "@t3tools/contracts";
+import {
+  ASSISTANT_CITATION_MAX_TEXT_LENGTH,
+  type AssistantCitation,
+} from "@vibecodinger/contracts";
 import { useOpenPullRequest } from "../../native/useOpenPullRequest";
 import { useWorkspaceSettledContentWidth } from "../layout/workspace-content-width";
 import { useVisibleSecondClock } from "./use-visible-second-clock";
@@ -29,7 +32,7 @@ import {
   enrichedSkillInstructionsPath,
   enrichedSkillReference,
 } from "../../lib/enrichedLinkPresentation";
-import { formatProviderSkillDisplayName } from "@t3tools/shared/inlineSkills";
+import { formatProviderSkillDisplayName } from "@vibecodinger/shared/inlineSkills";
 import {
   ThreadContextDivider,
   ThreadStatusLine,
@@ -57,15 +60,15 @@ import {
 import * as Haptics from "expo-haptics";
 import { KeyboardAwareLegendList } from "@legendapp/list/keyboard";
 import { useViewabilityAmount, type LegendListRef } from "@legendapp/list/react-native";
-import { scopeThreadRef } from "@t3tools/client-runtime/environment";
-import type { HandoffEndpoints } from "@t3tools/client-runtime/handoff";
+import { scopeThreadRef } from "@vibecodinger/client-runtime/environment";
+import type { HandoffEndpoints } from "@vibecodinger/client-runtime/handoff";
 import {
   IDLE_COMPACTING_LABELS,
   resolveUserMessageFileCards,
   resolveUserMessagePresentation,
-} from "@t3tools/client-runtime/user-message";
-import { canForkProjectedAssistantItem } from "@t3tools/client-runtime/state/thread-workflows";
-import type { WorkflowOpening } from "@t3tools/client-runtime/state/subagentRuntime";
+} from "@vibecodinger/client-runtime/user-message";
+import { canForkProjectedAssistantItem } from "@vibecodinger/client-runtime/state/thread-workflows";
+import type { WorkflowOpening } from "@vibecodinger/client-runtime/state/subagentRuntime";
 import {
   AuthFilesystemReadScope,
   idleCompactionOf,
@@ -81,48 +84,51 @@ import {
   type RunId,
   type ScheduledTaskId,
   type ScopedThreadRef,
-} from "@t3tools/contracts";
-import type { ToolCallVisibility } from "@t3tools/contracts/settings";
-import { encodeComposerContextFragment } from "@t3tools/shared/composerContextClipboard";
+} from "@vibecodinger/contracts";
+import type { ToolCallVisibility } from "@vibecodinger/contracts/settings";
+import { encodeComposerContextFragment } from "@vibecodinger/shared/composerContextClipboard";
 import {
   hasThreadLinks,
   hostedThreadLink,
   parseThreadLinkHref,
   threadLinkRefs,
-} from "@t3tools/shared/threadLinks";
-import { PROMPT_LINK_MAX_PROMPT_LENGTH } from "@t3tools/shared/promptLinks";
+} from "@vibecodinger/shared/threadLinks";
+import { PROMPT_LINK_MAX_PROMPT_LENGTH } from "@vibecodinger/shared/promptLinks";
 import {
   parseComposerContextHref,
   collectComposerContextReferences,
   replaceComposerContextReferences,
   formatComposerContextReference,
-} from "@t3tools/shared/composerContextReferences";
+} from "@vibecodinger/shared/composerContextReferences";
 import { ComposerContextSheet } from "../../components/ComposerContextSheet";
 import { writeComposerContextClipboard } from "../../lib/composerContextClipboard";
-import type { CodexArtifactTemplate } from "@t3tools/shared/codexArtifactTemplates";
-import { codexArtifactTemplatePresentationLabel } from "@t3tools/shared/codexArtifactTemplatesCopy";
-import { resolveAssetUrl } from "@t3tools/client-runtime/state/assets";
-import { formatAttachmentSize } from "@t3tools/client-runtime/state/attachments";
+import type { CodexArtifactTemplate } from "@vibecodinger/shared/codexArtifactTemplates";
+import { codexArtifactTemplatePresentationLabel } from "@vibecodinger/shared/codexArtifactTemplatesCopy";
+import { resolveAssetUrl } from "@vibecodinger/client-runtime/state/assets";
+import { formatAttachmentSize } from "@vibecodinger/client-runtime/state/attachments";
 import {
   executeAtomQuery,
   isAtomCommandInterrupted,
   settlePromise,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
-import { classifyMarkdownImageSource } from "@t3tools/client-runtime/markdown-images";
+} from "@vibecodinger/client-runtime/state/runtime";
+import { classifyMarkdownImageSource } from "@vibecodinger/client-runtime/markdown-images";
 import {
   contextCompactionTokenCounts,
   resolveViewedImageAsset,
-} from "@t3tools/client-runtime/work-log/presentation";
+} from "@vibecodinger/client-runtime/work-log/presentation";
 import {
   renderCodexInlineDirectivesAsMarkdown,
   splitCodexArtifactTemplateMarkdown,
-} from "@t3tools/shared/codexMarkdownDirectives";
-import { CHAT_LIST_ANCHOR_OFFSET, resolveChatListAnchoredEndSpace } from "@t3tools/shared/chatList";
-import { imageMimeType } from "@t3tools/shared/image";
-import { videoMimeType } from "@t3tools/shared/video";
+} from "@vibecodinger/shared/codexMarkdownDirectives";
+import {
+  CHAT_LIST_ANCHOR_OFFSET,
+  resolveChatListAnchoredEndSpace,
+} from "@vibecodinger/shared/chatList";
+import { imageMimeType } from "@vibecodinger/shared/image";
+import { videoMimeType } from "@vibecodinger/shared/video";
 import { SymbolView, type AppSymbolName } from "../../components/ui/AppSymbol";
-import { textDirection } from "@t3tools/shared/textDirection";
+import { textDirection } from "@vibecodinger/shared/textDirection";
 import { useFocusEffect, useIsFocused, useNavigation } from "@react-navigation/native";
 import { useNativeWorkspaceColumnsSupported } from "../../native/NativeWorkspaceColumns";
 import { useDeviceType } from "../../native/native-layout-metrics";
@@ -274,7 +280,7 @@ import {
 } from "./pending-thread-feed";
 import type { QueuedThreadMessage } from "../../state/thread-outbox-model";
 import { resolveThreadFeedFixedItemSize } from "./thread-feed-item-size";
-import { htmlRenderFrameHeight } from "@t3tools/shared/htmlRender";
+import { htmlRenderFrameHeight } from "@vibecodinger/shared/htmlRender";
 import { htmlRenderRowHeight, ThreadHtmlRender } from "./HtmlRenderWebView";
 import { ThreadMcpApp } from "./McpAppWebView";
 import { assetEnvironment, useAssetUrl, useRefreshAssetUrl } from "../../state/assets";
@@ -289,7 +295,7 @@ import {
   pickWorkspaceLinkMatch,
   WORKSPACE_BASENAME_LOOKUP_LIMIT,
   workspaceLinkLookupQuery,
-} from "@t3tools/client-runtime/workspace-basename-lookup";
+} from "@vibecodinger/client-runtime/workspace-basename-lookup";
 import {
   resolveThreadLink,
   useEnvironmentPreviewTunnelOff,

@@ -1,7 +1,7 @@
 import type {
   OrchestrationV2SearchThreadInput,
   OrchestrationV2SearchThreadResult,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import type {
   ActiveThreadListEntry,
   ProjectionRecordField,
@@ -43,11 +43,11 @@ import {
   type ScheduledTaskId,
   ThreadId,
   type TurnItemId,
-} from "@t3tools/contracts";
-import { delegatedTaskProgress } from "@t3tools/provider-core/server/subagentProjection";
-import { derivePendingBackgroundWork } from "@t3tools/shared/orchestrationV2PendingBackgroundWork";
-import { threadTranscriptHeader } from "@t3tools/shared/threadTranscript";
-import { AgentScope } from "@t3tools/shared/AgentScope";
+} from "@vibecodinger/contracts";
+import { delegatedTaskProgress } from "@vibecodinger/provider-core/server/subagentProjection";
+import { derivePendingBackgroundWork } from "@vibecodinger/shared/orchestrationV2PendingBackgroundWork";
+import { threadTranscriptHeader } from "@vibecodinger/shared/threadTranscript";
+import { AgentScope } from "@vibecodinger/shared/AgentScope";
 import * as Clock from "effect/Clock";
 import * as Context from "effect/Context";
 import * as DateTime from "effect/DateTime";

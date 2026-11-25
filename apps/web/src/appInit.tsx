@@ -2,9 +2,9 @@ import {
   scopedThreadKey,
   scopeProjectRef,
   scopeThreadRef,
-} from "@t3tools/client-runtime/environment";
-import type { ScopedThreadRef } from "@t3tools/contracts";
-import type { ClientSettings } from "@t3tools/contracts/settings";
+} from "@vibecodinger/client-runtime/environment";
+import type { ScopedThreadRef } from "@vibecodinger/contracts";
+import type { ClientSettings } from "@vibecodinger/contracts/settings";
 import { createBrowserHistory, createHashHistory } from "@tanstack/react-router";
 import * as Schema from "effect/Schema";
 

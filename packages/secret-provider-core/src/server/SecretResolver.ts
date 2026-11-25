@@ -1,4 +1,4 @@
-import type { SecretReference, ServerSettings } from "@t3tools/contracts";
+import type { SecretReference, ServerSettings } from "@vibecodinger/contracts";
 import * as Clock from "effect/Clock";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
@@ -27,7 +27,7 @@ export class SecretResolver extends Context.Service<
     /** The name the user gave a secret provider, or its id when it has none or is gone. */
     readonly label: (provider: SecretReference["provider"]) => Effect.Effect<string>;
   }
->()("@t3tools/secret-provider-core/server/SecretResolver") {}
+>()("@vibecodinger/secret-provider-core/server/SecretResolver") {}
 
 const cacheTtlMs = 60_000;
 

@@ -1,5 +1,5 @@
-import { EnvironmentId, type ExecutionEnvironmentDescriptor } from "@t3tools/contracts";
-import { RelayEnvironmentEndpointFailure } from "@t3tools/contracts/relay";
+import { EnvironmentId, type ExecutionEnvironmentDescriptor } from "@vibecodinger/contracts";
+import { RelayEnvironmentEndpointFailure } from "@vibecodinger/contracts/relay";
 import * as Schema from "effect/Schema";
 
 import { MarkedText } from "../errors/translatable.ts";

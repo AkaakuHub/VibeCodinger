@@ -7,18 +7,18 @@ import type {
   ServerSettings,
   SidebarProjectGroupingMode,
   UnifiedSettings,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import {
   DEFAULT_UNIFIED_SETTINGS,
   MAX_SIDEBAR_AUTO_SETTLE_AFTER_DAYS,
   MIN_SIDEBAR_AUTO_SETTLE_AFTER_DAYS,
-} from "@t3tools/contracts/settings";
+} from "@vibecodinger/contracts/settings";
 import {
   getBackgroundActivityBaseProfile,
   normalizeBackgroundActivitySettings,
   normalizeServerBackgroundActivitySettings,
   resolveServerBackgroundActivitySettings,
-} from "@t3tools/shared/backgroundActivitySettings";
+} from "@vibecodinger/shared/backgroundActivitySettings";
 import * as Duration from "effect/Duration";
 import * as Equal from "effect/Equal";
 import { msg } from "gt-react";

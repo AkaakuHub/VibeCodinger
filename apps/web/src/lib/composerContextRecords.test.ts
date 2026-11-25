@@ -6,9 +6,9 @@ import {
   ThreadId,
   TurnItemId,
   type PreviewAnnotationPayload,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import * as Schema from "effect/Schema";
-import { upgradeLegacyContextMessage } from "@t3tools/shared/composerContextLegacy";
+import { upgradeLegacyContextMessage } from "@vibecodinger/shared/composerContextLegacy";
 
 import {
   formatInlineContextReference,

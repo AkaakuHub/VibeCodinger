@@ -1,4 +1,4 @@
-import type { ModelPreferences } from "@t3tools/contracts/settings";
+import type { ModelPreferences } from "@vibecodinger/contracts/settings";
 import {
   DEFAULT_MODEL_BY_PROVIDER,
   DEFAULT_TEXT_GENERATION_MODEL,
@@ -23,7 +23,7 @@ import {
   ServerSettings,
   type ServerSettingsPatch,
   withIdleCompaction,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import * as Predicate from "effect/Predicate";
 import { deepMerge } from "./Struct.ts";
 import { createModelSelection, readCustomModelEntries } from "./model.ts";

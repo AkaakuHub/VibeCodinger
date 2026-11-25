@@ -5,13 +5,13 @@ import {
   workflowAnswer,
   type WorkflowBeat,
   type WorkflowRunNode,
-} from "@t3tools/client-runtime/workflows";
-import type { EnvironmentId, WorkflowStep } from "@t3tools/contracts";
+} from "@vibecodinger/client-runtime/workflows";
+import type { EnvironmentId, WorkflowStep } from "@vibecodinger/contracts";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
   type AtomCommandResult,
-} from "@t3tools/client-runtime/state/runtime";
+} from "@vibecodinger/client-runtime/state/runtime";
 import { useGT } from "gt-react-native";
 import type { ReactNode } from "react";
 import { View } from "react-native";

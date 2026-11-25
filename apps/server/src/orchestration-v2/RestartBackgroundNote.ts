@@ -10,11 +10,14 @@ import {
   type OrchestrationV2RunAttempt,
   type OrchestrationV2Subagent,
   type OrchestrationV2TurnItem,
-} from "@t3tools/contracts";
-import { subagentHoldsCompletion } from "@t3tools/provider-core/server/subagentProjection";
-import { backgroundWorkHoldsCompletion } from "@t3tools/shared/orchestrationV2PendingBackgroundWork";
+} from "@vibecodinger/contracts";
+import { subagentHoldsCompletion } from "@vibecodinger/provider-core/server/subagentProjection";
+import { backgroundWorkHoldsCompletion } from "@vibecodinger/shared/orchestrationV2PendingBackgroundWork";
 import * as DateTime from "effect/DateTime";
-import { latestRootProviderFailure, runRanAfter } from "@t3tools/shared/orchestrationV2ThreadError";
+import {
+  latestRootProviderFailure,
+  runRanAfter,
+} from "@vibecodinger/shared/orchestrationV2ThreadError";
 
 type Work = OrchestrationV2RestartCancelledBackgroundWork;
 type Attempt = Pick<OrchestrationV2RunAttempt, "id" | "runId">;

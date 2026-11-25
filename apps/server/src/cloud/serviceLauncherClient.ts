@@ -1,5 +1,5 @@
-import type { ServerSelfUpdateOutcome } from "@t3tools/contracts";
-import * as HostProcess from "@t3tools/shared/HostProcess";
+import type { ServerSelfUpdateOutcome } from "@vibecodinger/contracts";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
 import * as Context from "effect/Context";
 import * as Cause from "effect/Cause";
 import * as Effect from "effect/Effect";

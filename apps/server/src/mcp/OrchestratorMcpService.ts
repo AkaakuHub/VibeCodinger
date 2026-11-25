@@ -66,13 +66,16 @@ import {
   latestProviderTurnForAttempt,
   resolveProjectProviderInstanceEnabled,
   SECRET_REQUEST_UNSAVED_NOTE,
-} from "@t3tools/contracts";
-import { getProviderOptionCurrentValue, withLegacyUltracodeEffort } from "@t3tools/shared/model";
-import { backgroundWorkHoldsCompletion } from "@t3tools/shared/orchestrationV2PendingBackgroundWork";
-import { runRanAfter } from "@t3tools/shared/orchestrationV2ThreadError";
-import { resolveProjectSettings } from "@t3tools/shared/projectSettings";
-import { formatThreadLink } from "@t3tools/shared/threadLinks";
-import { threadPullRequestUpdatedAtMs } from "@t3tools/shared/threadPullRequests";
+} from "@vibecodinger/contracts";
+import {
+  getProviderOptionCurrentValue,
+  withLegacyUltracodeEffort,
+} from "@vibecodinger/shared/model";
+import { backgroundWorkHoldsCompletion } from "@vibecodinger/shared/orchestrationV2PendingBackgroundWork";
+import { runRanAfter } from "@vibecodinger/shared/orchestrationV2ThreadError";
+import { resolveProjectSettings } from "@vibecodinger/shared/projectSettings";
+import { formatThreadLink } from "@vibecodinger/shared/threadLinks";
+import { threadPullRequestUpdatedAtMs } from "@vibecodinger/shared/threadPullRequests";
 import {
   normalizeThreadPullRequestKey,
   visibleThreadPullRequests,
@@ -97,7 +100,7 @@ import {
   subagentStopNotice,
   delegatedTaskProgress,
   delegatedTaskReportRuns,
-} from "@t3tools/provider-core/server/subagentProjection";
+} from "@vibecodinger/provider-core/server/subagentProjection";
 import {
   DispatchModeLimit,
   type DispatchModeRefusal,

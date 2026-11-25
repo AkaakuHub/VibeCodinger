@@ -17,8 +17,8 @@ import {
   mcpClientScopes,
   parseMcpApprovalCode,
   type RuntimeMode,
-} from "@t3tools/contracts";
-import { encodeOAuthScope } from "@t3tools/shared/oauthScope";
+} from "@vibecodinger/contracts";
+import { encodeOAuthScope } from "@vibecodinger/shared/oauthScope";
 import * as Clock from "effect/Clock";
 import * as Context from "effect/Context";
 import * as Digest from "effect/crypto/Digest";

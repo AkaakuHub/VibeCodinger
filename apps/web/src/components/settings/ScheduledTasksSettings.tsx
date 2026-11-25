@@ -1,7 +1,7 @@
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
-import { managedCapabilityDenial } from "@t3tools/client-runtime/contract-labels";
+import { thrownErrorMessage } from "@vibecodinger/client-runtime/errors";
+import { managedCapabilityDenial } from "@vibecodinger/client-runtime/contract-labels";
 import { useAtomValue } from "@effect/atom-react";
-import { connectionStatusTitle } from "@t3tools/client-runtime/connection";
+import { connectionStatusTitle } from "@vibecodinger/client-runtime/connection";
 import { AsyncResult } from "effect/reactivity";
 import {
   ChevronDownIcon,
@@ -26,7 +26,7 @@ import type {
   ScheduledTaskUpsertInput,
   ScheduledTaskWebhookDeliverySummary,
   ThreadId,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import {
   DEFAULT_WEBHOOK_PROMPT,
   emptyWebhookFilterDraft,
@@ -34,9 +34,9 @@ import {
   removeWebhookFilterDraft,
   WEBHOOK_FILTER_OPS,
   type WebhookFilterDraft,
-} from "@t3tools/client-runtime/scheduled-task-webhook";
-import { scheduleTimeZoneLabel } from "@t3tools/client-runtime/scheduled-task-time-zone";
-import { scheduledTaskWorktreeBaseRef } from "@t3tools/client-runtime/scheduled-task-worktree";
+} from "@vibecodinger/client-runtime/scheduled-task-webhook";
+import { scheduleTimeZoneLabel } from "@vibecodinger/client-runtime/scheduled-task-time-zone";
+import { scheduledTaskWorktreeBaseRef } from "@vibecodinger/client-runtime/scheduled-task-worktree";
 import {
   MAX_WEBHOOK_DELIVERY_AGE_MINUTES,
   MAX_WEBHOOK_FILTERS,
@@ -44,11 +44,11 @@ import {
   ProviderInstanceId,
   resolveEnvironmentMachineKind,
   scheduledTaskThreadMode,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
+} from "@vibecodinger/client-runtime/state/runtime";
 import { msg, T, useGT, useLocale, useMessages, Var } from "gt-react";
 import { m, type MessageResolver } from "../../i18n/messages";
 
@@ -57,7 +57,7 @@ import { useClientSettings, useEnvironmentSettings } from "../../hooks/useSettin
 import { getCustomModelOptionsByInstance, selectsPlanAgent } from "../../modelSelection";
 import { providerInstanceEntriesFor } from "../../providerInstances";
 import { requestConfirmDialog } from "../../confirmDialog";
-import { webhookAddress } from "@t3tools/client-runtime/webhook-address";
+import { webhookAddress } from "@vibecodinger/client-runtime/webhook-address";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useCopyToClipboard } from "../../hooks/useCopyToClipboard";
 import { useNowMinute } from "../../hooks/useNowMinute";
@@ -73,7 +73,7 @@ import {
   useVisibleThreadShells,
 } from "../../state/entities";
 import { buildThreadRouteParams } from "../../threadRoutes";
-import { scopeThreadRef } from "@t3tools/client-runtime/environment";
+import { scopeThreadRef } from "@vibecodinger/client-runtime/environment";
 import { environmentAtomList, environmentIdsKey } from "../../state/environmentAtomList";
 import { usePaginatedBranches, useThreadSearch } from "../../state/queries";
 import { formatEnvironmentQueryError, useEnvironmentQuery } from "../../state/query";
@@ -83,8 +83,8 @@ import { useAtomCommand } from "../../state/use-atom-command";
 import { WorktreeBaseBranchPicker } from "../WorktreeBaseBranchPicker";
 import { EnvironmentMachineIcon } from "../EnvironmentMachineIcon";
 import { ConnectionStatusDot, connectionPhaseDotClassName } from "../ConnectionStatusDot";
-import { AuthOrchestrationOperateScope, clampManagedRuntimeMode } from "@t3tools/contracts";
-import { resolvePastedPath } from "@t3tools/shared/path";
+import { AuthOrchestrationOperateScope, clampManagedRuntimeMode } from "@vibecodinger/contracts";
+import { resolvePastedPath } from "@vibecodinger/shared/path";
 import { useManagedPolicy } from "~/state/managedPolicy";
 import { ManagedNotice } from "../ManagedPolicy";
 import { readEnvironmentScope } from "~/state/session";
@@ -118,7 +118,7 @@ import { ToggleGroup, Toggle } from "../ui/toggle-group";
 import { Empty, EmptyHeader, EmptyTitle, EmptyDescription, EmptyMedia } from "../ui/empty";
 import { ProviderModelPicker } from "../chat/ProviderModelPicker";
 import { TraitsPicker } from "../chat/TraitsPicker";
-import { createModelSelection } from "@t3tools/shared/model";
+import { createModelSelection } from "@vibecodinger/shared/model";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import {

@@ -1,17 +1,17 @@
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
+import { thrownErrorMessage } from "@vibecodinger/client-runtime/errors";
 import { useAtomValue } from "@effect/atom-react";
 import {
   managedCapabilityDenial,
   managedRuntimeModeDenial,
-} from "@t3tools/client-runtime/contract-labels";
-import { offersLinkedEnvironments } from "@t3tools/client-runtime/link-request";
+} from "@vibecodinger/client-runtime/contract-labels";
+import { offersLinkedEnvironments } from "@vibecodinger/client-runtime/link-request";
 import {
   AuthAccessWriteScope,
   AuthMcpClientAccess,
   type EnvironmentId,
   mcpClientScopes,
   sessionGrantsScope,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import { useNavigate } from "@tanstack/react-router";
 import { CheckIcon, CopyIcon } from "lucide-react";
 import * as Option from "effect/Option";

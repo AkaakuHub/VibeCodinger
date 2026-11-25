@@ -8,8 +8,8 @@ import {
   hasRelayRoute,
   presentConnectionDiagnosis,
   type EnvironmentPresentation,
-} from "@t3tools/client-runtime/connection";
-import type { EnvironmentId } from "@t3tools/contracts";
+} from "@vibecodinger/client-runtime/connection";
+import type { EnvironmentId } from "@vibecodinger/contracts";
 import Constants from "expo-constants";
 import { AsyncResult } from "effect/reactivity";
 import { View } from "react-native";

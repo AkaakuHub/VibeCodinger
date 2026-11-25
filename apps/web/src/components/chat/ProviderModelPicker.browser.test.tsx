@@ -3,8 +3,8 @@ import {
   ProviderDriverKind,
   ProviderInstanceId,
   type ModelSelection,
-} from "@t3tools/contracts";
-import { compileResolvedKeybindingsConfig } from "@t3tools/shared/keybindings";
+} from "@vibecodinger/contracts";
+import { compileResolvedKeybindingsConfig } from "@vibecodinger/shared/keybindings";
 import { useState } from "react";
 import { expect, it, vi } from "vite-plus/test";
 import { page, userEvent } from "vite-plus/test/browser";

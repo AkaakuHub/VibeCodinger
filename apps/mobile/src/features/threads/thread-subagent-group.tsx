@@ -1,19 +1,19 @@
 import { useAtomValue } from "@effect/atom-react";
 import { useGT, useMessages } from "gt-react-native";
 import { StackActions, useNavigation } from "@react-navigation/native";
-import { scopeThreadRef } from "@t3tools/client-runtime/environment";
+import { scopeThreadRef } from "@vibecodinger/client-runtime/environment";
 import {
   resolveProviderInstanceDisplayName,
   shouldShowInstanceBadge,
-} from "@t3tools/client-runtime/state/provider-instance-display";
-import { summarizeSubagentStatuses } from "@t3tools/client-runtime/state/subagent-display";
-import { isActiveSubagentStatus } from "@t3tools/client-runtime/state/subagentRuntime";
+} from "@vibecodinger/client-runtime/state/provider-instance-display";
+import { summarizeSubagentStatuses } from "@vibecodinger/client-runtime/state/subagent-display";
+import { isActiveSubagentStatus } from "@vibecodinger/client-runtime/state/subagentRuntime";
 import type {
   EnvironmentId,
   OrchestrationV2Subagent,
   OrchestrationV2TurnItem,
   ServerConfig,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import { Pressable, View, type ColorValue } from "react-native";
 
 import { AppText as Text } from "../../components/ui/AppText";

@@ -1,16 +1,16 @@
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
+import { thrownErrorMessage } from "@vibecodinger/client-runtime/errors";
 import {
   type EnvironmentId,
   type ProjectId,
   type ScopedThreadRef,
   type ThreadLinkedPullRequest,
   type VcsStatusResult,
-} from "@t3tools/contracts";
-import { scopedThreadKey } from "@t3tools/client-runtime/environment";
+} from "@vibecodinger/contracts";
+import { scopedThreadKey } from "@vibecodinger/client-runtime/environment";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
+} from "@vibecodinger/client-runtime/state/runtime";
 import { msg } from "gt-react";
 import { useEffect, useRef } from "react";
 import { m } from "~/i18n/messages";

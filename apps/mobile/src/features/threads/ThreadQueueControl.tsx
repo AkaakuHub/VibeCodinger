@@ -1,17 +1,17 @@
 import { type StaticScreenProps, useNavigation } from "@react-navigation/native";
-import { errorDisplayMessage } from "@t3tools/client-runtime/errors";
+import { errorDisplayMessage } from "@vibecodinger/client-runtime/errors";
 import { useAtomValue } from "@effect/atom-react";
 import {
   makeQueuedRunsAtom,
   queuedRunEditBlockedReason,
-} from "@t3tools/client-runtime/queued-run-edit";
-import { scopeThreadRef } from "@t3tools/client-runtime/environment";
+} from "@vibecodinger/client-runtime/queued-run-edit";
+import { scopeThreadRef } from "@vibecodinger/client-runtime/environment";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
-import { resolveUserMessagePresentation } from "@t3tools/client-runtime/user-message";
-import type { ChatAttachment, EnvironmentId, RunId, ThreadId } from "@t3tools/contracts";
+} from "@vibecodinger/client-runtime/state/runtime";
+import { resolveUserMessagePresentation } from "@vibecodinger/client-runtime/user-message";
+import type { ChatAttachment, EnvironmentId, RunId, ThreadId } from "@vibecodinger/contracts";
 import { Atom } from "effect/reactivity";
 import { Image } from "expo-image";
 import * as Haptics from "expo-haptics";

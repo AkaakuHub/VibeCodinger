@@ -1,11 +1,11 @@
 import { m } from "../i18n/messages";
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
-import { AuthProvidersManageScope, PROVIDER_DISPLAY_NAMES } from "@t3tools/contracts";
+import { thrownErrorMessage } from "@vibecodinger/client-runtime/errors";
+import { AuthProvidersManageScope, PROVIDER_DISPLAY_NAMES } from "@vibecodinger/contracts";
 import {
   isAtomCommandInterrupted,
   settlePromise,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
+} from "@vibecodinger/client-runtime/state/runtime";
 import { useRef, useState } from "react";
 import { T, useGT } from "gt-react";
 

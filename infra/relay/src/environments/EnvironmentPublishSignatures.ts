@@ -2,14 +2,14 @@ import {
   RelayAgentActivityPublishProofPayload,
   RelayAgentActivityPublishProofInvalidReason,
   type RelayAgentActivityPublishRequest,
-} from "@t3tools/contracts/relay";
+} from "@vibecodinger/contracts/relay";
 import {
   decodeRelayJwt,
   normalizeRelayIssuer,
   RELAY_ACTIVITY_PUBLISH_TYP,
   verifyRelayJwt,
-} from "@t3tools/shared/relayJwt";
-import { stableStringify } from "@t3tools/shared/relaySigning";
+} from "@vibecodinger/shared/relayJwt";
+import { stableStringify } from "@vibecodinger/shared/relaySigning";
 import * as Context from "effect/Context";
 import * as Digest from "effect/crypto/Digest";
 import * as Signature from "effect/crypto/Signature";

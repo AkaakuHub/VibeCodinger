@@ -8,7 +8,7 @@ import {
   CommandId,
   EnvironmentId,
   type ServerLifecycleStreamEvent,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import { HttpServer } from "effect/http";
 import * as NetAddress from "effect/net/NetAddress";
 import * as Deferred from "effect/Deferred";

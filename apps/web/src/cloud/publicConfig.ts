@@ -1,5 +1,5 @@
-import { clerkFrontendApiHostnameFromPublishableKey } from "@t3tools/shared/relayAuth";
-import { normalizeSecureRelayUrl } from "@t3tools/shared/relayUrl";
+import { clerkFrontendApiHostnameFromPublishableKey } from "@vibecodinger/shared/relayAuth";
+import { normalizeSecureRelayUrl } from "@vibecodinger/shared/relayUrl";
 
 export interface CloudPublicConfig {
   readonly clerkPublishableKey: string | null;

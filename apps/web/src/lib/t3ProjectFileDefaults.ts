@@ -3,9 +3,9 @@ import {
   type EnvironmentId,
   type ProjectReadFileResult,
   type T3ProjectFile,
-} from "@t3tools/contracts";
-import { parseT3ProjectFile } from "@t3tools/shared/t3ProjectFile";
-import { executeAtomQuery } from "@t3tools/client-runtime/state/runtime";
+} from "@vibecodinger/contracts";
+import { parseT3ProjectFile } from "@vibecodinger/shared/t3ProjectFile";
+import { executeAtomQuery } from "@vibecodinger/client-runtime/state/runtime";
 import { AsyncResult } from "effect/reactivity";
 
 import {

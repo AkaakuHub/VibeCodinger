@@ -1,5 +1,5 @@
-import { type ServerLifecycleWelcomePayload } from "@t3tools/contracts";
-import { scopedProjectKey, scopeProjectRef } from "@t3tools/client-runtime/environment";
+import { type ServerLifecycleWelcomePayload } from "@vibecodinger/contracts";
+import { scopedProjectKey, scopeProjectRef } from "@vibecodinger/client-runtime/environment";
 import {
   Outlet,
   Link,
@@ -42,7 +42,7 @@ import {
   deriveLogicalProjectKeyFromSettings,
   derivePhysicalProjectKeyFromPath,
   selectProjectGroupingSettings,
-} from "@t3tools/client-runtime/state/project-grouping";
+} from "@vibecodinger/client-runtime/state/project-grouping";
 import { useUiStateStore } from "../uiStateStore";
 import { resolveInitialServerAuthGateState } from "../environments/primary";
 import { hasHostedPairingRequest, isHostedStaticApp } from "../hostedPairing";

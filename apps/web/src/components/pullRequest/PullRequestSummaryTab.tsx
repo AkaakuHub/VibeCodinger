@@ -1,8 +1,8 @@
 import { pullRequestCommentPreview } from "./pullRequestMarkdown.logic";
-import { parsePullRequestAnchor } from "@t3tools/shared/pullRequestAnchor";
+import { parsePullRequestAnchor } from "@vibecodinger/shared/pullRequestAnchor";
 import { holdLinkedNodeInView, holdScrollTop } from "./holdLinkedNodeInView";
 import { useAtomValue } from "@effect/atom-react";
-import { sourceControlClients } from "@t3tools/client-runtime/source-control-clients";
+import { sourceControlClients } from "@vibecodinger/client-runtime/source-control-clients";
 import { useAtomCommand } from "~/state/use-atom-command";
 import {
   type EnvironmentId,
@@ -12,7 +12,7 @@ import {
   type PullRequestConversationThread,
   type ScopedThreadRef,
   pullRequestConversationThreads,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import {
   ArrowDownUpIcon,
   ChevronDownIcon,
@@ -93,8 +93,8 @@ import {
   settleDescriptionSave,
   startDescriptionSave,
   type DescriptionDraft,
-} from "@t3tools/client-runtime/pull-request-editing";
-import { setMarkdownTaskChecked } from "@t3tools/shared/markdownTaskEdits";
+} from "@vibecodinger/client-runtime/pull-request-editing";
+import { setMarkdownTaskChecked } from "@vibecodinger/shared/markdownTaskEdits";
 import { PullRequestMarkdown } from "./PullRequestMarkdown";
 import { PullRequestCommentBody } from "./PullRequestCommentBody";
 import { PullRequestMoreReplies } from "./PullRequestMoreReplies";
@@ -104,7 +104,7 @@ import {
   pullRequestCompletionScope,
 } from "./PullRequestMarkdownTextarea";
 import { PullRequestReactionBar } from "./PullRequestReactions";
-import { canReactPullRequestComment } from "@t3tools/client-runtime/pull-request-reactions";
+import { canReactPullRequestComment } from "@vibecodinger/client-runtime/pull-request-reactions";
 import { PullRequestResolveThreadButton } from "./PullRequestResolveThreadButton";
 import { PullRequestConversationGhost } from "./PullRequestGhosts";
 import { sectionCollapseAnchorScrollTop } from "./pullRequestSummaryScroll.logic";

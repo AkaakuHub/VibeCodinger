@@ -1,22 +1,22 @@
 import { useAtomValue } from "@effect/atom-react";
-import type { EnvironmentProject } from "@t3tools/client-runtime/state/shell";
-import { PrimaryConnectionTarget } from "@t3tools/client-runtime/connection";
+import type { EnvironmentProject } from "@vibecodinger/client-runtime/state/shell";
+import { PrimaryConnectionTarget } from "@vibecodinger/client-runtime/connection";
 import * as Option from "effect/Option";
 import type { EnvironmentPresentation } from "../../state/environments";
-import type { ServerProvider } from "@t3tools/contracts";
+import type { ServerProvider } from "@vibecodinger/contracts";
 import {
   scopedThreadKey,
   scopeProjectRef,
   scopeThreadRef,
-} from "@t3tools/client-runtime/environment";
-import { createModelSelection } from "@t3tools/shared/model";
-import { DEFAULT_UNIFIED_SETTINGS } from "@t3tools/contracts/settings";
+} from "@vibecodinger/client-runtime/environment";
+import { createModelSelection } from "@vibecodinger/shared/model";
+import { DEFAULT_UNIFIED_SETTINGS } from "@vibecodinger/contracts/settings";
 import {
   EnvironmentId,
   ProjectId,
   ProviderDriverKind,
   ProviderInstanceId,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import { expect, it, vi } from "vite-plus/test";
 
 import { act, render } from "../../../test/render";

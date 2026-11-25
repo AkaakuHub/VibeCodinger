@@ -4,10 +4,10 @@ import {
   type ResolvedKeybindingsConfig,
   type ScopedThreadRef,
   type ThreadId,
-} from "@t3tools/contracts";
-import { scopeProjectRef } from "@t3tools/client-runtime/environment";
-import { projectScriptCwd, projectScriptRuntimeEnv } from "@t3tools/shared/projectScripts";
-import { resolveTerminalSessionLabel } from "@t3tools/shared/terminalLabelsCopy";
+} from "@vibecodinger/contracts";
+import { scopeProjectRef } from "@vibecodinger/client-runtime/environment";
+import { projectScriptCwd, projectScriptRuntimeEnv } from "@vibecodinger/shared/projectScripts";
+import { resolveTerminalSessionLabel } from "@vibecodinger/shared/terminalLabelsCopy";
 import { useMessages } from "gt-react";
 import { memo, useEffect } from "react";
 import { useComposerDraftStore } from "../composerDraftStore";

@@ -1,12 +1,12 @@
 import { useAtom, useAtomSet, useAtomValue } from "@effect/atom-react";
-import { scopedThreadKey, scopeThreadRef } from "@t3tools/client-runtime/environment";
-import type { SideThreadOpenIntent } from "@t3tools/client-runtime/side-thread";
+import { scopedThreadKey, scopeThreadRef } from "@vibecodinger/client-runtime/environment";
+import type { SideThreadOpenIntent } from "@vibecodinger/client-runtime/side-thread";
 import {
   connectLinkedEnvironment,
   type LinkedThreadOpen,
   resolveLinkedThreadOpen,
-} from "@t3tools/client-runtime/linked-thread";
-import type { EnvironmentId, ScopedThreadRef, ThreadId } from "@t3tools/contracts";
+} from "@vibecodinger/client-runtime/linked-thread";
+import type { EnvironmentId, ScopedThreadRef, ThreadId } from "@vibecodinger/contracts";
 import { useNavigate, useRouter } from "@tanstack/react-router";
 import { AsyncResult, Atom } from "effect/reactivity";
 

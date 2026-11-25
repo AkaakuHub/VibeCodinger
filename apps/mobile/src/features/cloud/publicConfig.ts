@@ -1,5 +1,5 @@
 import Constants from "expo-constants";
-import { normalizeSecureRelayUrl } from "@t3tools/shared/relayUrl";
+import { normalizeSecureRelayUrl } from "@vibecodinger/shared/relayUrl";
 
 type ExpoExtra = { readonly relay?: { readonly url?: unknown } };
 

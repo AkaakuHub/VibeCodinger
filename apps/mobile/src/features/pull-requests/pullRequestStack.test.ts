@@ -1,5 +1,9 @@
-import { sourceControlClients } from "@t3tools/client-runtime/source-control-clients";
-import { ProjectId, type PullRequestStack, type ThreadPullRequestLink } from "@t3tools/contracts";
+import { sourceControlClients } from "@vibecodinger/client-runtime/source-control-clients";
+import {
+  ProjectId,
+  type PullRequestStack,
+  type ThreadPullRequestLink,
+} from "@vibecodinger/contracts";
 import { describe, expect, it } from "vite-plus/test";
 import {
   pullRequestLayerParams,

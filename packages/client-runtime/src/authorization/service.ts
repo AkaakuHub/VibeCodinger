@@ -6,10 +6,10 @@ import {
   type ClientConnectionMethod,
   EnvironmentId,
   type ExecutionEnvironmentDescriptor,
-} from "@t3tools/contracts";
-import { RelayEnvironmentConnectScope } from "@t3tools/contracts/relay";
-import * as KeyedLock from "@t3tools/shared/KeyedLock";
-import { withRelayClientTracing } from "@t3tools/shared/relayTracing";
+} from "@vibecodinger/contracts";
+import { RelayEnvironmentConnectScope } from "@vibecodinger/contracts/relay";
+import * as KeyedLock from "@vibecodinger/shared/KeyedLock";
+import { withRelayClientTracing } from "@vibecodinger/shared/relayTracing";
 import {
   exchangeRemoteDpopAccessToken,
   type RemoteEnvironmentAuthError,
@@ -127,7 +127,7 @@ export class RemoteEnvironmentAuthorization extends Context.Service<
       readonly directConnection?: DirectDpopConnection;
     }) => Effect.Effect<void, ConnectionAttemptError>;
   }
->()("@t3tools/client-runtime/authorization/service/RemoteEnvironmentAuthorization") {}
+>()("@vibecodinger/client-runtime/authorization/service/RemoteEnvironmentAuthorization") {}
 
 const CACHED_ENDPOINT_SOCKET_TIMEOUT_MS = 3_000;
 const DPOP_AUTHORIZATION_TIMEOUT_MS = 30_000;

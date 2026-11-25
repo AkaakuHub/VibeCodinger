@@ -8,7 +8,7 @@ import {
   resolveProjectProviderInstanceEnabled,
   type ServerProvider,
   type ServerSettings,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 
 import { getOnboardingProviderState } from "./providerReadiness.logic";
 

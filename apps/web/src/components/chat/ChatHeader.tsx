@@ -3,14 +3,14 @@ import {
   type EnvironmentId,
   type ScopedThreadRef,
   type ThreadId,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import { contextMenuSourceOf } from "~/contextMenuSource";
-import { scopeThreadRef } from "@t3tools/client-runtime/environment";
-import type { EnvironmentProject } from "@t3tools/client-runtime/state/shell";
+import { scopeThreadRef } from "@vibecodinger/client-runtime/environment";
+import type { EnvironmentProject } from "@vibecodinger/client-runtime/state/shell";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
+} from "@vibecodinger/client-runtime/state/runtime";
 import { T, useGT, Var } from "gt-react";
 import { ChevronDownIcon } from "lucide-react";
 import {

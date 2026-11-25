@@ -1,6 +1,6 @@
-import type { PreparedConnection } from "@t3tools/client-runtime/connection";
-import { isLocalLoopbackHost } from "@t3tools/shared/hostClassification";
-import { parseUrl } from "@t3tools/shared/url";
+import type { PreparedConnection } from "@vibecodinger/client-runtime/connection";
+import { isLocalLoopbackHost } from "@vibecodinger/shared/hostClassification";
+import { parseUrl } from "@vibecodinger/shared/url";
 
 type McpGate =
   | { readonly kind: "disconnected" | "checking" | "update" | "unavailable" }

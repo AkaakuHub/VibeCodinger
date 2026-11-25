@@ -12,13 +12,16 @@ import {
   type VcsCreateWorktreeInput,
   type VcsCreateWorktreeResult,
   T3_PROJECT_FILE_NAME,
-} from "@t3tools/contracts";
-import { resolveProjectSettings } from "@t3tools/shared/projectSettings";
-import { flattenTemporaryWorktreeBranchName, isTemporaryWorktreeBranch } from "@t3tools/shared/git";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { windowsSystem32Path } from "@t3tools/shared/windowsSystem";
-import * as KeyedLock from "@t3tools/shared/KeyedLock";
-import { parseT3ProjectFile } from "@t3tools/shared/t3ProjectFile";
+} from "@vibecodinger/contracts";
+import { resolveProjectSettings } from "@vibecodinger/shared/projectSettings";
+import {
+  flattenTemporaryWorktreeBranchName,
+  isTemporaryWorktreeBranch,
+} from "@vibecodinger/shared/git";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
+import { windowsSystem32Path } from "@vibecodinger/shared/windowsSystem";
+import * as KeyedLock from "@vibecodinger/shared/KeyedLock";
+import { parseT3ProjectFile } from "@vibecodinger/shared/t3ProjectFile";
 import * as Cause from "effect/Cause";
 import * as Context from "effect/Context";
 import * as Digest from "effect/crypto/Digest";

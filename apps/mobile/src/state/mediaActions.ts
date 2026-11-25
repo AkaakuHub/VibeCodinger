@@ -1,5 +1,8 @@
-import { settlePromise, squashAtomCommandFailure } from "@t3tools/client-runtime/state/runtime";
-import { errorDisplayMessage } from "@t3tools/client-runtime/errors";
+import {
+  settlePromise,
+  squashAtomCommandFailure,
+} from "@vibecodinger/client-runtime/state/runtime";
+import { errorDisplayMessage } from "@vibecodinger/client-runtime/errors";
 import * as Dialog from "../components/ui/Dialog";
 import type { MediaActionsSource } from "../lib/mediaActionsSource";
 import { useNavigation } from "@react-navigation/native";
@@ -8,13 +11,13 @@ import { m } from "../i18n/messages";
 import {
   formatFilePathForClipboard,
   type MediaActionId,
-} from "@t3tools/client-runtime/media-actions";
+} from "@vibecodinger/client-runtime/media-actions";
 import {
   AuthFilesystemReadScope,
   type EnvironmentId,
   sessionGrantsScope,
   type SessionGrantInput,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import { normalizeNativeMarkdownUrl } from "../lib/markdownLinks";
 import { AsyncResult } from "effect/reactivity";
 import * as Haptics from "expo-haptics";

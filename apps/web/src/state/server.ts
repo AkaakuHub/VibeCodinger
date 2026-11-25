@@ -8,16 +8,16 @@ import {
   type ServerLifecycleWelcomePayload,
   type ServerProvider,
   type ServerSettings,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import {
   AVAILABLE_CONNECTION_STATE,
   presentConnectionState,
   type EnvironmentPresentation,
-} from "@t3tools/client-runtime/connection";
-import { createServerEnvironmentAtoms } from "@t3tools/client-runtime/state/server";
-import { createOutdatedServerUpdateCommand } from "@t3tools/client-runtime/state/outdatedServerUpdate";
-import { createEnvironmentServerConfigsAtom } from "@t3tools/client-runtime/state/shell";
-import { mergeWithDefaultKeybindings } from "@t3tools/shared/keybindings";
+} from "@vibecodinger/client-runtime/connection";
+import { createServerEnvironmentAtoms } from "@vibecodinger/client-runtime/state/server";
+import { createOutdatedServerUpdateCommand } from "@vibecodinger/client-runtime/state/outdatedServerUpdate";
+import { createEnvironmentServerConfigsAtom } from "@vibecodinger/client-runtime/state/shell";
+import { mergeWithDefaultKeybindings } from "@vibecodinger/shared/keybindings";
 import * as Option from "effect/Option";
 import { AsyncResult, Atom } from "effect/reactivity";
 

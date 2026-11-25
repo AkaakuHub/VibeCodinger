@@ -1,6 +1,6 @@
 import { msg } from "gt-i18n";
 import { MarkedText, messageFromError, translatableMessage } from "../errors/translatable.ts";
-import { decodeRelayJwt } from "@t3tools/shared/relayJwt";
+import { decodeRelayJwt } from "@vibecodinger/shared/relayJwt";
 import * as Cause from "effect/Cause";
 import * as Clock from "effect/Clock";
 import * as Effect from "effect/Effect";

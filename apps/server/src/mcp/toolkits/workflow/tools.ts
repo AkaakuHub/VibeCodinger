@@ -1,4 +1,8 @@
-import { OrchestratorMcpFailure, TrimmedNonEmptyString, WorkflowHook } from "@t3tools/contracts";
+import {
+  OrchestratorMcpFailure,
+  TrimmedNonEmptyString,
+  WorkflowHook,
+} from "@vibecodinger/contracts";
 import * as Schema from "effect/Schema";
 import * as SecureRandom from "effect/crypto/SecureRandom";
 import { McpSchema, Tool, Toolkit } from "effect/ai";

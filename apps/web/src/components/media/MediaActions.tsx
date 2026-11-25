@@ -1,15 +1,18 @@
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
+import { thrownErrorMessage } from "@vibecodinger/client-runtime/errors";
 import { contextMenuSourceOf } from "../../contextMenuSource";
 import {
   formatFilePathForClipboard,
   type MediaActionId,
-} from "@t3tools/client-runtime/media-actions";
+} from "@vibecodinger/client-runtime/media-actions";
 import {
   mediaReferenceFileName,
   type MediaReference,
-} from "@t3tools/client-runtime/media-reference";
-import { resolveAssetUrl } from "@t3tools/client-runtime/state/assets";
-import { settlePromise, squashAtomCommandFailure } from "@t3tools/client-runtime/state/runtime";
+} from "@vibecodinger/client-runtime/media-reference";
+import { resolveAssetUrl } from "@vibecodinger/client-runtime/state/assets";
+import {
+  settlePromise,
+  squashAtomCommandFailure,
+} from "@vibecodinger/client-runtime/state/runtime";
 import {
   AuthFilesystemReadScope,
   type AssetResource,
@@ -18,7 +21,7 @@ import {
   sessionGrantsScope,
   type SessionGrantInput,
   type ContextMenuSource,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import { AsyncResult } from "effect/reactivity";
 import { msg } from "gt-react";
 import { useRef, useState, type ReactElement } from "react";

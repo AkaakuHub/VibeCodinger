@@ -1,4 +1,4 @@
-import type { ProviderOptionSelection } from "@t3tools/contracts";
+import type { ProviderOptionSelection } from "@vibecodinger/contracts";
 import { appAtomRegistry } from "./atom-registry";
 import {
   modelOptionMemoryAtom,

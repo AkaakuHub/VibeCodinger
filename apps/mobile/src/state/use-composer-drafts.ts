@@ -22,17 +22,17 @@ import {
   type RuntimeMode,
   type ScopedThreadRef,
   type ThreadId,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import * as Schema from "effect/Schema";
 import { useEffect, useState } from "react";
 import { AsyncResult, Atom, type AtomRegistry } from "effect/reactivity";
 import * as Option from "effect/Option";
-import { parseScopedThreadKey, scopedThreadKey } from "@t3tools/client-runtime/environment";
+import { parseScopedThreadKey, scopedThreadKey } from "@vibecodinger/client-runtime/environment";
 import type {
   EnvironmentShellState,
   EnvironmentThreadShell,
-} from "@t3tools/client-runtime/state/shell";
-import { draftModelPickMatchesThread } from "@t3tools/shared/model";
+} from "@vibecodinger/client-runtime/state/shell";
+import { draftModelPickMatchesThread } from "@vibecodinger/shared/model";
 
 import { writeFileAtomically } from "../lib/atomic-file";
 import { createComposerContextHistory, referencedComposerContext } from "../lib/composerContext";
@@ -42,9 +42,9 @@ import {
   formatComposerContextReference,
   sanitizeComposerContextLabel,
   replaceComposerContextReferences,
-} from "@t3tools/shared/composerContextReferences";
-import { imageMimeType } from "@t3tools/shared/image";
-import { videoMimeType } from "@t3tools/shared/video";
+} from "@vibecodinger/shared/composerContextReferences";
+import { imageMimeType } from "@vibecodinger/shared/image";
+import { videoMimeType } from "@vibecodinger/shared/video";
 import { DraftComposerAttachmentSchema } from "../lib/composer-image-schema";
 import {
   composerAttachmentFileReferenceKey,

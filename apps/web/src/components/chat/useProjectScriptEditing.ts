@@ -1,22 +1,22 @@
 import { msg } from "gt-react";
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
+import { thrownErrorMessage } from "@vibecodinger/client-runtime/errors";
 import { m } from "~/i18n/messages";
 import type {
   KeybindingCommand,
   ProjectId,
   ProjectScript,
   EnvironmentId,
-} from "@t3tools/contracts";
-import { AuthSettingsWriteScope, EnvironmentAuthorizationError } from "@t3tools/contracts";
-import type { UnifiedSettings } from "@t3tools/contracts/settings";
+} from "@vibecodinger/contracts";
+import { AuthSettingsWriteScope, EnvironmentAuthorizationError } from "@vibecodinger/contracts";
+import type { UnifiedSettings } from "@vibecodinger/contracts/settings";
 import {
   isAtomCommandInterrupted,
   mapAtomCommandResult,
   squashAtomCommandFailure,
   type AtomCommandResult,
-} from "@t3tools/client-runtime/state/runtime";
-import type { EnvironmentProject } from "@t3tools/client-runtime/state/shell";
-import { resolveProjectScripts } from "@t3tools/shared/projectScripts";
+} from "@vibecodinger/client-runtime/state/runtime";
+import type { EnvironmentProject } from "@vibecodinger/client-runtime/state/shell";
+import { resolveProjectScripts } from "@vibecodinger/shared/projectScripts";
 import * as Cause from "effect/Cause";
 import { AsyncResult } from "effect/reactivity";
 import { useStableCallback } from "../../hooks/useStableCallback";

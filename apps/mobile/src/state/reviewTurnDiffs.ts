@@ -1,6 +1,10 @@
-import { turnDiffSections } from "@t3tools/client-runtime/state/thread-repositories";
-import type { EnvironmentId, OrchestrationGetTurnDiffResult, ThreadId } from "@t3tools/contracts";
-import { quoteGitPatchPath, unquoteGitPatchPath } from "@t3tools/shared/gitPatchPath";
+import { turnDiffSections } from "@vibecodinger/client-runtime/state/thread-repositories";
+import type {
+  EnvironmentId,
+  OrchestrationGetTurnDiffResult,
+  ThreadId,
+} from "@vibecodinger/contracts";
+import { quoteGitPatchPath, unquoteGitPatchPath } from "@vibecodinger/shared/gitPatchPath";
 import * as Effect from "effect/Effect";
 import { Atom, type AtomRegistry } from "effect/reactivity";
 

@@ -1,10 +1,10 @@
-import type { EnvironmentId } from "@t3tools/contracts";
-import { errorDisplayMessage } from "@t3tools/client-runtime/errors";
-import type { AtomCommandResult } from "@t3tools/client-runtime/state/runtime";
+import type { EnvironmentId } from "@vibecodinger/contracts";
+import { errorDisplayMessage } from "@vibecodinger/client-runtime/errors";
+import type { AtomCommandResult } from "@vibecodinger/client-runtime/state/runtime";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
+} from "@vibecodinger/client-runtime/state/runtime";
 import { msg } from "gt-react-native";
 
 import { m } from "../../i18n/messages";

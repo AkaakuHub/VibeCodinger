@@ -4,7 +4,7 @@ import {
   type GuestMessageId,
   type ScopedThreadRef,
   type ThreadGuestShare,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import { T, useGT } from "gt-react";
 import { useState } from "react";
 

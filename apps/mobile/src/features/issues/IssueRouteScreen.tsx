@@ -1,9 +1,9 @@
 import { RegistryContext, useAtomValue } from "@effect/atom-react";
 import { StackActions, useNavigation, type StaticScreenProps } from "@react-navigation/native";
-import { issueEventSentence } from "@t3tools/client-runtime/issue-presentation";
-import { sourceControlClients } from "@t3tools/client-runtime/source-control-clients";
-import { createIssueCommentPager } from "@t3tools/client-runtime/state/issues";
-import { visibleLinkedThreads } from "@t3tools/client-runtime/state/threads";
+import { issueEventSentence } from "@vibecodinger/client-runtime/issue-presentation";
+import { sourceControlClients } from "@vibecodinger/client-runtime/source-control-clients";
+import { createIssueCommentPager } from "@vibecodinger/client-runtime/state/issues";
+import { visibleLinkedThreads } from "@vibecodinger/client-runtime/state/threads";
 import type {
   IssueComment,
   IssueEvent,
@@ -12,7 +12,7 @@ import type {
   IssueReaction,
   IssueState,
   IssueSummary,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import { AsyncResult } from "effect/reactivity";
 import { T, useGT, useMessages, Var } from "gt-react-native";
 import { useContext, useState } from "react";

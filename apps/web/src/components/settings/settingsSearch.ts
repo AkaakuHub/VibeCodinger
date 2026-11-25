@@ -1,14 +1,14 @@
 import { HOSTED_APP_CHANNEL } from "~/branding";
 import { isElectron } from "~/env";
 import { isMacPlatform, isWindowsPlatform, normalizeSearchText } from "~/lib/utils";
-import { STATIC_KEYBINDING_COMMANDS, type KeybindingCommand } from "@t3tools/contracts";
-import type { EnvironmentId } from "@t3tools/contracts";
-import type { EnvironmentConnectionPhase } from "@t3tools/client-runtime/connection";
+import { STATIC_KEYBINDING_COMMANDS, type KeybindingCommand } from "@vibecodinger/contracts";
+import type { EnvironmentId } from "@vibecodinger/contracts";
+import type { EnvironmentConnectionPhase } from "@vibecodinger/client-runtime/connection";
 import {
   sourceControlClients,
   type SourceControlDefinition,
-} from "@t3tools/client-runtime/source-control-clients";
-import { DEFAULT_KEYBINDINGS } from "@t3tools/shared/keybindings";
+} from "@vibecodinger/client-runtime/source-control-clients";
+import { DEFAULT_KEYBINDINGS } from "@vibecodinger/shared/keybindings";
 import * as Schema from "effect/Schema";
 import { decodeMsg, msg, useMessages } from "gt-react";
 import { TYPOGRAPHY_ADVANCED_STORAGE_KEY } from "../../appearanceFonts";

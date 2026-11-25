@@ -1,6 +1,6 @@
-import type { UsageProviderKind } from "@t3tools/contracts";
+import type { UsageProviderKind } from "@vibecodinger/contracts";
 
-import { ProviderDriverKind } from "@t3tools/contracts";
+import { ProviderDriverKind } from "@vibecodinger/contracts";
 
 import type { UsageMetric } from "./usageShortcuts";
 

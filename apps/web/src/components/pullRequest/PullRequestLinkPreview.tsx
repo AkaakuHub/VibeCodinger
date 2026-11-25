@@ -1,8 +1,11 @@
 import type { PreviewCard as PreviewCardPrimitive } from "@base-ui/react/preview-card";
-import { isAtomCommandInterrupted } from "@t3tools/client-runtime/state/runtime";
+import { isAtomCommandInterrupted } from "@vibecodinger/client-runtime/state/runtime";
 import { useMessages } from "gt-react";
-import { parsePullRequestAnchor, pullRequestLinkCommit } from "@t3tools/shared/pullRequestAnchor";
-import type { EnvironmentId, PullRequestRef } from "@t3tools/contracts";
+import {
+  parsePullRequestAnchor,
+  pullRequestLinkCommit,
+} from "@vibecodinger/shared/pullRequestAnchor";
+import type { EnvironmentId, PullRequestRef } from "@vibecodinger/contracts";
 import {
   cloneElement,
   useRef,

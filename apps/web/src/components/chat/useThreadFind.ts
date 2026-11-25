@@ -1,6 +1,6 @@
-import type { InlineSkill } from "@t3tools/shared/inlineSkills";
-import type { OrchestrationV2SearchThreadResult, ScopedThreadRef } from "@t3tools/contracts";
-import { scopedThreadKey } from "@t3tools/client-runtime/environment";
+import type { InlineSkill } from "@vibecodinger/shared/inlineSkills";
+import type { OrchestrationV2SearchThreadResult, ScopedThreadRef } from "@vibecodinger/contracts";
+import { scopedThreadKey } from "@vibecodinger/client-runtime/environment";
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 import { orchestrationEnvironment } from "~/state/orchestration";
 import { useRenderedAppearance } from "~/hooks/useTheme";

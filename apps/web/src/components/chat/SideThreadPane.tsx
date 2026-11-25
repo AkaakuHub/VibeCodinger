@@ -1,13 +1,13 @@
-import { scopedThreadKey, scopeThreadRef } from "@t3tools/client-runtime/environment";
-import { sideThreadKindOf } from "@t3tools/client-runtime/side-thread";
-import { formatSubagentDisplayTitle } from "@t3tools/client-runtime/state/subagent-display";
+import { scopedThreadKey, scopeThreadRef } from "@vibecodinger/client-runtime/environment";
+import { sideThreadKindOf } from "@vibecodinger/client-runtime/side-thread";
+import { formatSubagentDisplayTitle } from "@vibecodinger/client-runtime/state/subagent-display";
 import {
   isAtomCommandInterrupted,
   settlePromise,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
-import { AuthOrchestrationOperateScope, type ScopedThreadRef } from "@t3tools/contracts";
-import { threadContextRecord } from "@t3tools/shared/composerContextReferences";
+} from "@vibecodinger/client-runtime/state/runtime";
+import { AuthOrchestrationOperateScope, type ScopedThreadRef } from "@vibecodinger/contracts";
+import { threadContextRecord } from "@vibecodinger/shared/composerContextReferences";
 import { T, useGT } from "gt-react";
 import { Trash2Icon, XIcon } from "lucide-react";
 import { useEffect, useState } from "react";

@@ -1,13 +1,13 @@
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
+import { thrownErrorMessage } from "@vibecodinger/client-runtime/errors";
 import { m } from "~/i18n/messages";
 import { useScopedSettingsWriteAllowed } from "./useScopedSettings";
-import { AuthSettingsWriteScope } from "@t3tools/contracts";
-import { EnvironmentId, type T3ProjectFileScript } from "@t3tools/contracts";
+import { AuthSettingsWriteScope } from "@vibecodinger/contracts";
+import { EnvironmentId, type T3ProjectFileScript } from "@vibecodinger/contracts";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
-import { DEFAULT_RESOLVED_KEYBINDINGS } from "@t3tools/shared/keybindings";
+} from "@vibecodinger/client-runtime/state/runtime";
+import { DEFAULT_RESOLVED_KEYBINDINGS } from "@vibecodinger/shared/keybindings";
 import { ChevronDownIcon, PlusIcon } from "lucide-react";
 import { T, useGT } from "gt-react";
 import { useState } from "react";

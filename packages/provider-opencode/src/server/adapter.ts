@@ -9,9 +9,9 @@ import type {
   Todo as OpenCodeTodo,
   ToolPart,
 } from "@opencode-ai/sdk/v2";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { getModelSelectionStringOptionValue } from "@t3tools/shared/model";
-import { causeErrorTag } from "@t3tools/shared/observability";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
+import { getModelSelectionStringOptionValue } from "@vibecodinger/shared/model";
+import { causeErrorTag } from "@vibecodinger/shared/observability";
 import {
   type AgentFeedbackMode,
   defaultInstanceIdForDriver,
@@ -38,7 +38,7 @@ import {
   type RuntimeRequestId,
   type ThreadId,
   settingsSecretLiteral,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import { OpenCodeSettings } from "../settings.ts";
 import * as Cause from "effect/Cause";
 import * as DateTime from "effect/DateTime";
@@ -56,35 +56,35 @@ import * as Semaphore from "effect/Semaphore";
 import * as Scope from "effect/Scope";
 import * as Stream from "effect/Stream";
 
-import { brokenVersionDetail } from "@t3tools/provider-core/server/compatibility";
-import * as ProviderHost from "@t3tools/provider-core/server/ProviderHost";
-import { mcpToolPresentation } from "@t3tools/provider-core/server/mcpToolPresentation";
-import * as McpProviderSessions from "@t3tools/provider-core/server/McpProviderSessions";
-import * as ProviderEventLoggers from "@t3tools/provider-core/server/ProviderEventLoggers";
+import { brokenVersionDetail } from "@vibecodinger/provider-core/server/compatibility";
+import * as ProviderHost from "@vibecodinger/provider-core/server/ProviderHost";
+import { mcpToolPresentation } from "@vibecodinger/provider-core/server/mcpToolPresentation";
+import * as McpProviderSessions from "@vibecodinger/provider-core/server/McpProviderSessions";
+import * as ProviderEventLoggers from "@vibecodinger/provider-core/server/ProviderEventLoggers";
 import {
   structuralProtocolMethod,
   summarizeNativeProtocolPayload,
-} from "@t3tools/provider-core/server/nativeProtocolLogging";
-import { mergeProviderInstanceEnvironment } from "@t3tools/provider-core/server/instanceEnvironment";
-import { t3OrchestrationSystemPrompt } from "@t3tools/provider-core/server/orchestrationInstructions";
-import { buildRuntimeInstructions } from "@t3tools/provider-core/server/runtimeInstructions";
+} from "@vibecodinger/provider-core/server/nativeProtocolLogging";
+import { mergeProviderInstanceEnvironment } from "@vibecodinger/provider-core/server/instanceEnvironment";
+import { t3OrchestrationSystemPrompt } from "@vibecodinger/provider-core/server/orchestrationInstructions";
+import { buildRuntimeInstructions } from "@vibecodinger/provider-core/server/runtimeInstructions";
 import * as OpenCodeRuntime from "./OpenCodeRuntime.ts";
 import { readableProviderErrorMessage } from "./providerErrorMessage.ts";
-import * as IdAllocator from "@t3tools/provider-core/server/IdAllocator";
-import * as ProviderContinuationRequests from "@t3tools/provider-core/server/ProviderContinuationRequests";
-import { makeProviderFailure } from "@t3tools/provider-core/server/failure";
-import { turnScopedSelectionTransition } from "@t3tools/provider-core/server/selectionTransition";
-import { providerMessageTextWithAttachmentPaths } from "@t3tools/provider-core/server/attachmentPrompt";
-import * as ProviderAdapter from "@t3tools/provider-core/server/ProviderAdapter";
+import * as IdAllocator from "@vibecodinger/provider-core/server/IdAllocator";
+import * as ProviderContinuationRequests from "@vibecodinger/provider-core/server/ProviderContinuationRequests";
+import { makeProviderFailure } from "@vibecodinger/provider-core/server/failure";
+import { turnScopedSelectionTransition } from "@vibecodinger/provider-core/server/selectionTransition";
+import { providerMessageTextWithAttachmentPaths } from "@vibecodinger/provider-core/server/attachmentPrompt";
+import * as ProviderAdapter from "@vibecodinger/provider-core/server/ProviderAdapter";
 import {
   ProviderAdapterDriverCreateError,
   type ProviderAdapterDriver,
   type ProviderAdapterDriverCreateInput,
-} from "@t3tools/provider-core/server/adapterDriver";
+} from "@vibecodinger/provider-core/server/adapterDriver";
 import {
   makeSubagentChildThread,
   subagentThreadTitle,
-} from "@t3tools/provider-core/server/subagentProjection";
+} from "@vibecodinger/provider-core/server/subagentProjection";
 import { openCodeCommandFailed, openCodeToolOutput, openCodeToolTurnItem } from "./toolItems.ts";
 
 export const OPENCODE_PROVIDER = ProviderDriverKind.make("opencode");

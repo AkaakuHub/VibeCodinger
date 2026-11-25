@@ -1,16 +1,16 @@
 import {
   managedNightlyDeniedMessage,
   managedUpdatesDenial,
-} from "@t3tools/client-runtime/contract-labels";
-import type { ServerUpdateState } from "@t3tools/client-runtime/state/server";
+} from "@vibecodinger/client-runtime/contract-labels";
+import type { ServerUpdateState } from "@vibecodinger/client-runtime/state/server";
 import {
   type DesktopUpdateChannel,
   type EnvironmentId,
   type ServerConfig,
   type ServerSelfUpdateCapability,
-} from "@t3tools/contracts";
-import { cliReleaseChannelOf, desktopUpdateChannelOf } from "@t3tools/shared/cliRelease";
-import { compareSemverVersions } from "@t3tools/shared/semver";
+} from "@vibecodinger/contracts";
+import { cliReleaseChannelOf, desktopUpdateChannelOf } from "@vibecodinger/shared/cliRelease";
+import { compareSemverVersions } from "@vibecodinger/shared/semver";
 import { msg } from "gt-react";
 
 import { m, type MessageResolver } from "~/i18n/messages";

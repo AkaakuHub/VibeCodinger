@@ -4,8 +4,8 @@ import {
   type ConnectionCatalogEntry,
   type ConnectionRoute,
   mergeLearnedRoutes,
-} from "@t3tools/client-runtime/connection";
-import { EnvironmentId } from "@t3tools/contracts";
+} from "@vibecodinger/client-runtime/connection";
+import { EnvironmentId } from "@vibecodinger/contracts";
 import * as Option from "effect/Option";
 import { expect, it, vi } from "vite-plus/test";
 import { userEvent } from "vite-plus/test/browser";

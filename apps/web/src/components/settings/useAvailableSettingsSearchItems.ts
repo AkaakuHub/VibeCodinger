@@ -1,6 +1,6 @@
 import { useMessages } from "gt-react";
-import { hasFeatureFlag } from "@t3tools/client-runtime/state/server";
-import { AuthEnvironmentMaintainScope } from "@t3tools/contracts";
+import { hasFeatureFlag } from "@vibecodinger/client-runtime/state/server";
+import { AuthEnvironmentMaintainScope } from "@vibecodinger/contracts";
 
 import { isElectron } from "~/env";
 import { isLocalEnvironmentDisabled } from "~/localEnvironment";

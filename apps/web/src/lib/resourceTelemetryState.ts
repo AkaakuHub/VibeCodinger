@@ -1,10 +1,10 @@
-import { AuthDiagnosticsReadScope } from "@t3tools/contracts";
-import { AuthEnvironmentMaintainScope } from "@t3tools/contracts";
+import { AuthDiagnosticsReadScope } from "@vibecodinger/contracts";
+import { AuthEnvironmentMaintainScope } from "@vibecodinger/contracts";
 import type {
   EnvironmentId,
   ResourceTelemetryHistoryInput,
   ResourceTelemetrySnapshot,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import * as Cause from "effect/Cause";
 import { msg, useMessages } from "gt-react";
 

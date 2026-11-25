@@ -77,7 +77,7 @@ export default mergeConfig(
       tasks: {
         build: {
           command: "node scripts/cli.ts build",
-          dependsOn: ["@t3tools/web#build"],
+          dependsOn: ["@vibecodinger/web#build"],
           cache: false,
         },
         // A local tsbuildinfo is leftover build state, not a typecheck input.

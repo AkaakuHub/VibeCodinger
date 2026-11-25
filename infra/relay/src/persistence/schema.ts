@@ -4,7 +4,7 @@ import type {
   RelayAgentActivityState,
   RelayAgentAwarenessPreferences,
   RelayManagedEndpointOrigin,
-} from "@t3tools/contracts/relay";
+} from "@vibecodinger/contracts/relay";
 import {
   bigint,
   boolean,

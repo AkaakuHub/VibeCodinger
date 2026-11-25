@@ -1,7 +1,7 @@
-import { resolveProviderProbeTimeoutMs } from "@t3tools/provider-core/server/snapshotProbe";
-import { ServerProviderModel } from "@t3tools/contracts";
+import { resolveProviderProbeTimeoutMs } from "@vibecodinger/provider-core/server/snapshotProbe";
+import { ServerProviderModel } from "@vibecodinger/contracts";
 import { MuseSettings } from "../settings.ts";
-import { resolveSpawnCommand } from "@t3tools/shared/shell";
+import { resolveSpawnCommand } from "@vibecodinger/shared/shell";
 import * as DateTime from "effect/DateTime";
 import * as Effect from "effect/Effect";
 import * as Option from "effect/Option";
@@ -25,7 +25,7 @@ import {
   providerProbeEnvironment,
   spawnAndCollect,
   type ProviderProbeResult,
-} from "@t3tools/provider-core/server/snapshotProbe";
+} from "@vibecodinger/provider-core/server/snapshotProbe";
 
 const MUSE_PRESENTATION = {
   displayName: "Muse Code",

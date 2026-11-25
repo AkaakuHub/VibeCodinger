@@ -1,6 +1,6 @@
-import type { CommandOutputView } from "@t3tools/client-runtime/state/command-output";
-import type { EnvironmentId, ThreadId, TurnItemId } from "@t3tools/contracts";
-import { TERMINAL_PALETTES, terminalOutputSpans } from "@t3tools/shared/terminalOutput";
+import type { CommandOutputView } from "@vibecodinger/client-runtime/state/command-output";
+import type { EnvironmentId, ThreadId, TurnItemId } from "@vibecodinger/contracts";
+import { TERMINAL_PALETTES, terminalOutputSpans } from "@vibecodinger/shared/terminalOutput";
 import { T, Var } from "gt-react";
 import { useLayoutEffect, useRef } from "react";
 

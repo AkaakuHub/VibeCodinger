@@ -1,6 +1,9 @@
 import { RegistryContext, useAtomValue } from "@effect/atom-react";
-import { issueEventSentence, issueWriteAccess } from "@t3tools/client-runtime/issue-presentation";
-import { createIssueCommentPager } from "@t3tools/client-runtime/state/issues";
+import {
+  issueEventSentence,
+  issueWriteAccess,
+} from "@vibecodinger/client-runtime/issue-presentation";
+import { createIssueCommentPager } from "@vibecodinger/client-runtime/state/issues";
 import {
   issueAssigneeHeld,
   issueAssigneesAfterPicks,
@@ -9,9 +12,12 @@ import {
   issuePicksFor,
   issueWriteAfterPicks,
   noIssuePicks,
-} from "@t3tools/client-runtime/issue-selection";
-import { isSelected, toggleSelection } from "@t3tools/client-runtime/pull-request-selection";
-import { executeAtomQuery, squashAtomCommandFailure } from "@t3tools/client-runtime/state/runtime";
+} from "@vibecodinger/client-runtime/issue-selection";
+import { isSelected, toggleSelection } from "@vibecodinger/client-runtime/pull-request-selection";
+import {
+  executeAtomQuery,
+  squashAtomCommandFailure,
+} from "@vibecodinger/client-runtime/state/runtime";
 import type {
   EnvironmentId,
   IssueAssigneeCandidate,
@@ -26,7 +32,7 @@ import type {
   IssueRef,
   PullRequestRef,
   ScopedThreadRef,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import {
   CheckIcon,
   ChevronDownIcon,

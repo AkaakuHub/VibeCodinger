@@ -1,10 +1,10 @@
-import { desktopTrackMismatchText } from "@t3tools/client-runtime/state/server";
+import { desktopTrackMismatchText } from "@vibecodinger/client-runtime/state/server";
 import type {
   DesktopBridge,
   DesktopUpdateActionResult,
   DesktopUpdateState,
-} from "@t3tools/contracts";
-import { desktopUpdateChannelOf } from "@t3tools/shared/cliRelease";
+} from "@vibecodinger/contracts";
+import { desktopUpdateChannelOf } from "@vibecodinger/shared/cliRelease";
 import { msg } from "gt-react";
 
 import { m, type MessageResolver } from "../i18n/messages";

@@ -4,14 +4,14 @@ import {
   EditorId,
   EnvironmentAuthorizationError,
   EnvironmentId,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import {
   mapAtomCommandResult,
   type AtomCommandFailure,
   type AtomCommandResult,
-} from "@t3tools/client-runtime/state/runtime";
-import { parseFileUrlHref, splitFilePathPosition } from "@t3tools/shared/fileLinks";
-import { safeDecodeURIComponent } from "@t3tools/shared/markdownLinks";
+} from "@vibecodinger/client-runtime/state/runtime";
+import { parseFileUrlHref, splitFilePathPosition } from "@vibecodinger/shared/fileLinks";
+import { safeDecodeURIComponent } from "@vibecodinger/shared/markdownLinks";
 import * as Cause from "effect/Cause";
 import * as Schema from "effect/Schema";
 import { AsyncResult } from "effect/reactivity";

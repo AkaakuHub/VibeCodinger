@@ -6,10 +6,10 @@ import {
   AuthMcpAuthorizationRequest,
   isRuntimeModeAbove,
   parseMcpApprovalCode,
-} from "@t3tools/contracts";
-import { managedRuntimeModeCeilingMessage } from "@t3tools/client-runtime/contract-labels";
+} from "@vibecodinger/contracts";
+import { managedRuntimeModeCeilingMessage } from "@vibecodinger/client-runtime/contract-labels";
 import { Radio as RadioPrimitive } from "@base-ui/react/radio";
-import { isLoopbackHost } from "@t3tools/shared/preview";
+import { isLoopbackHost } from "@vibecodinger/shared/preview";
 import { EyeIcon, type LucideIcon } from "lucide-react";
 import type * as Context from "effect/Context";
 import * as Effect from "effect/Effect";

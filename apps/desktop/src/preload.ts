@@ -7,7 +7,7 @@ import type {
   DesktopPreviewRecordingInputEvent,
   DesktopPreviewTabState,
   DesktopSnapShotEvent,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import { contextBridge, ipcRenderer, webFrame, webUtils } from "electron";
 
 import * as IpcChannels from "./ipc/channels.ts";

@@ -1,5 +1,5 @@
 import { msg, useGT } from "gt-react";
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
+import { thrownErrorMessage } from "@vibecodinger/client-runtime/errors";
 import { m } from "~/i18n/messages";
 import { useLoadBalancedEnvironment } from "../../hooks/useLoadBalancedEnvironment";
 import { useLogicalProjectEnvironments } from "../../hooks/useLogicalProjectEnvironments";
@@ -11,24 +11,24 @@ import {
   ProviderInstanceId,
   resolveProjectProviderInstanceEnabled,
   type ThreadContextRecord,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import {
   scopedThreadKey,
   scopeProjectRef,
   scopeThreadRef,
-} from "@t3tools/client-runtime/environment";
+} from "@vibecodinger/client-runtime/environment";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
-import { isTriagePrompt, replaceTriagePlaybookLink } from "@t3tools/shared/triagePrompt";
+} from "@vibecodinger/client-runtime/state/runtime";
+import { isTriagePrompt, replaceTriagePlaybookLink } from "@vibecodinger/shared/triagePrompt";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { stackedThreadToast, toastManager } from "../ui/toast";
 import {
   deriveLogicalProjectKeyFromSettings,
   selectProjectGroupingSettings,
-} from "@t3tools/client-runtime/state/project-grouping";
+} from "@vibecodinger/client-runtime/state/project-grouping";
 import { useComposerDraftStore, DraftId } from "../../composerDraftStore";
 import { type EnvironmentPresentation, useEnvironmentProviders } from "../../state/environments";
 import { currentClientMetadata } from "../../connection/platform";

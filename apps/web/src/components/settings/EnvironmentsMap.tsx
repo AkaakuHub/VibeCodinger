@@ -6,14 +6,14 @@ import {
   connectionRouteLabelText,
   connectionRoutes,
   routeHttpBaseUrl,
-} from "@t3tools/client-runtime/connection";
+} from "@vibecodinger/client-runtime/connection";
 import {
   ANOTHER_ADDRESS,
   linkableMachines,
   offersLinkedEnvironments,
-} from "@t3tools/client-runtime/link-request";
-import type { PeerLinkHealth } from "@t3tools/client-runtime/state/peerLinks";
-import { AuthAccessWriteScope, type EnvironmentId } from "@t3tools/contracts";
+} from "@vibecodinger/client-runtime/link-request";
+import type { PeerLinkHealth } from "@vibecodinger/client-runtime/state/peerLinks";
+import { AuthAccessWriteScope, type EnvironmentId } from "@vibecodinger/contracts";
 import * as DateTime from "effect/DateTime";
 import * as Option from "effect/Option";
 import { useGT, useMessages } from "gt-react";

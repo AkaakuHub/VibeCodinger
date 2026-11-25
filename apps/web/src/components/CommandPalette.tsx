@@ -1,15 +1,15 @@
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
+import { thrownErrorMessage } from "@vibecodinger/client-runtime/errors";
 import { decodeMsg, msg, T, useGT, useMessages, Var } from "gt-react";
 import { m, type MessageResolver } from "../i18n/messages";
 import { ThreadContextDragGhost } from "./chat/ThreadContextDragGhost";
-import { threadPullRequestLinkMode } from "@t3tools/client-runtime/thread-pull-request-compatibility";
-import { visibleThreadPullRequests } from "@t3tools/shared/threadPullRequests";
+import { threadPullRequestLinkMode } from "@vibecodinger/client-runtime/thread-pull-request-compatibility";
+import { visibleThreadPullRequests } from "@vibecodinger/shared/threadPullRequests";
 
 import {
   scopedThreadKey,
   scopeProjectRef,
   scopeThreadRef,
-} from "@t3tools/client-runtime/environment";
+} from "@vibecodinger/client-runtime/environment";
 import {
   canCreateProjectInEnvironment,
   getCloneDestinationBrowsePath,
@@ -31,22 +31,22 @@ import {
   sortAddProjectProviderSources,
   type AddProjectRemoteSource,
   type AddProjectRemoteSourceReadiness,
-} from "@t3tools/client-runtime/operations/projects";
-import { sourceControlClients } from "@t3tools/client-runtime/source-control-clients";
-import { connectionStatusText } from "@t3tools/client-runtime/connection";
-import { resolveThreadReferenceCopyTarget } from "@t3tools/client-runtime/thread-reference";
+} from "@vibecodinger/client-runtime/operations/projects";
+import { sourceControlClients } from "@vibecodinger/client-runtime/source-control-clients";
+import { connectionStatusText } from "@vibecodinger/client-runtime/connection";
+import { resolveThreadReferenceCopyTarget } from "@vibecodinger/client-runtime/thread-reference";
 import {
   canPreloadBrowsePath,
   createBrowseNavigationCoordinator,
   filterFilesystemBrowseEntries,
   getFilesystemBrowsePath,
   getFilesystemBrowseTabCompletion,
-} from "@t3tools/client-runtime/state/filesystem";
+} from "@vibecodinger/client-runtime/state/filesystem";
 import {
   isAtomCommandInterrupted,
   settlePromise,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
+} from "@vibecodinger/client-runtime/state/runtime";
 import {
   AuthOrchestrationOperateScope,
   AuthSourceControlWriteScope,
@@ -57,7 +57,7 @@ import {
   SourceControlProviderKind,
   PRIMARY_LOCAL_ENVIRONMENT_ID,
   resolveEnvironmentMachineKind,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import {
   ArrowLeftIcon,
@@ -150,7 +150,10 @@ import {
   useVisibleThreadShells,
   waitForProject,
 } from "../state/entities";
-import { isShownUnderParent, visibleLinkedThreads } from "@t3tools/client-runtime/state/threads";
+import {
+  isShownUnderParent,
+  visibleLinkedThreads,
+} from "@vibecodinger/client-runtime/state/threads";
 import {
   resolveThreadActionProjectRef,
   startNewThreadFromContext,
@@ -167,8 +170,8 @@ import {
   isScratchProject,
   isUnsupportedWindowsProjectPath,
   resolveProjectPathForDispatch,
-} from "@t3tools/client-runtime/state/projects";
-import { resolvePastedPath } from "@t3tools/shared/path";
+} from "@vibecodinger/client-runtime/state/projects";
+import { resolvePastedPath } from "@vibecodinger/shared/path";
 import {
   dispatchCommandPalette,
   getCommandPaletteReturnFocus,
@@ -180,8 +183,11 @@ import {
   selectActiveRightPanel,
   useRightPanelStore,
 } from "../rightPanelStore";
-import { getLatestThreadForProject, sortThreads } from "@t3tools/client-runtime/state/thread-sort";
-import { effectiveSnoozed } from "@t3tools/client-runtime/state/thread-settled";
+import {
+  getLatestThreadForProject,
+  sortThreads,
+} from "@vibecodinger/client-runtime/state/thread-sort";
+import { effectiveSnoozed } from "@vibecodinger/client-runtime/state/thread-settled";
 import {
   cn,
   getLocalFileManagerName,
@@ -282,14 +288,14 @@ import type { ChatComposerHandle } from "./chat/ChatComposer";
 import {
   isPickableProjectMember,
   pickableProjectGroups,
-} from "@t3tools/client-runtime/state/project-grouping";
+} from "@vibecodinger/client-runtime/state/project-grouping";
 import { buildSidebarProjectPickerEntries } from "../sidebarProjectGrouping";
 import { PullRequestGlyph } from "~/components/pullRequest/pullRequestIcons";
 import { readPullRequestListPreferences } from "~/components/pullRequest/pullRequestListPreferences";
 import { readIssueListPreferences } from "~/components/issue/issueListPreferences";
 import { IssueGlyph } from "~/components/issue/issuePresentation";
 import { useThreadRouteTarget } from "../hooks/useThreadRouteTarget";
-import { threadRecentUse } from "@t3tools/shared/paletteSearch";
+import { threadRecentUse } from "@vibecodinger/shared/paletteSearch";
 
 const EMPTY_BROWSE_ENTRIES: FilesystemBrowseResult["entries"] = [];
 const ADD_PROJECT_ENTRY_GROUP = "add-project";

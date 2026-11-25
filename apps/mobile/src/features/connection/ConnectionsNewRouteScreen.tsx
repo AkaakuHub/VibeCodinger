@@ -1,4 +1,4 @@
-import { errorDisplayMessage } from "@t3tools/client-runtime/errors";
+import { errorDisplayMessage } from "@vibecodinger/client-runtime/errors";
 import { T, useGT } from "gt-react-native";
 import * as Dialog from "../../components/ui/Dialog";
 import { ScreenScrollView as ScrollView } from "../../components/ui/ScreenScrollView";
@@ -10,7 +10,7 @@ import {
   useNavigation,
   type StaticScreenProps,
 } from "@react-navigation/native";
-import type { EnvironmentId } from "@t3tools/contracts";
+import type { EnvironmentId } from "@vibecodinger/contracts";
 import { useAtomValue } from "@effect/atom-react";
 import { useState } from "react";
 import { Linking, Pressable, StyleSheet, View } from "react-native";

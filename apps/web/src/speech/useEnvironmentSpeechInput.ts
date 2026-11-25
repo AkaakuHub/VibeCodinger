@@ -6,18 +6,18 @@ import {
   getSpeechModelDownloadOutcome,
   selectEnvironmentSpeechModel,
   voiceInputBlocksSubmission,
-} from "@t3tools/client-runtime/voice-input";
-import type { PreparedConnection } from "@t3tools/client-runtime/connection";
-import { AuthOrchestrationOperateScope, CLOUD_SPEECH_LABELS } from "@t3tools/contracts";
+} from "@vibecodinger/client-runtime/voice-input";
+import type { PreparedConnection } from "@vibecodinger/client-runtime/connection";
+import { AuthOrchestrationOperateScope, CLOUD_SPEECH_LABELS } from "@vibecodinger/contracts";
 import type {
   EnvironmentId,
   EnvironmentSpeechModel,
   EnvironmentSpeechStatus,
   ProjectId,
   SpeechBenchmarkTier,
-} from "@t3tools/contracts";
-import { resolveProjectSettings } from "@t3tools/shared/projectSettings";
-import { chooseSetupSpeechModel } from "@t3tools/shared/speech";
+} from "@vibecodinger/contracts";
+import { resolveProjectSettings } from "@vibecodinger/shared/projectSettings";
+import { chooseSetupSpeechModel } from "@vibecodinger/shared/speech";
 import { useNavigate } from "@tanstack/react-router";
 import * as Option from "effect/Option";
 import { msg, useGT } from "gt-react";

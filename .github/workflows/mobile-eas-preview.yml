@@ -62,7 +62,7 @@ jobs:
           cache: true
           run-install: |
             args:
-              - --filter=@t3tools/mobile...
+              - --filter=@vibecodinger/mobile...
 
       - name: Expose pnpm
         if: steps.expo-token.outputs.present == 'true'
@@ -168,7 +168,7 @@ jobs:
           cache: true
           run-install: |
             args:
-              - --filter=@t3tools/mobile...
+              - --filter=@vibecodinger/mobile...
 
       - name: Expose pnpm
         if: steps.expo-token.outputs.present == 'true'

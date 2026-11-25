@@ -14,10 +14,10 @@ import {
   type OrchestrationV2AppThread,
   type OrchestrationV2DomainEvent,
   type OrchestrationV2ProviderThread,
-} from "@t3tools/contracts";
-import * as IdAllocator from "@t3tools/provider-core/server/IdAllocator";
-import * as AcpRegistryRuntimeCoordinator from "@t3tools/provider-acp-registry/server/AcpRegistryRuntimeCoordinator";
-import * as ProviderAdapter from "@t3tools/provider-core/server/ProviderAdapter";
+} from "@vibecodinger/contracts";
+import * as IdAllocator from "@vibecodinger/provider-core/server/IdAllocator";
+import * as AcpRegistryRuntimeCoordinator from "@vibecodinger/provider-acp-registry/server/AcpRegistryRuntimeCoordinator";
+import * as ProviderAdapter from "@vibecodinger/provider-core/server/ProviderAdapter";
 import * as Context from "effect/Context";
 import * as DateTime from "effect/DateTime";
 import * as Deferred from "effect/Deferred";

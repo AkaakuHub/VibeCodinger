@@ -1,8 +1,8 @@
 import {
   threadRuntimeIsActive,
   type EnvironmentThreadShell,
-} from "@t3tools/client-runtime/state/models";
-import type { RunId } from "@t3tools/contracts";
+} from "@vibecodinger/client-runtime/state/models";
+import type { RunId } from "@vibecodinger/contracts";
 
 type Thread = Pick<EnvironmentThreadShell, "environmentId" | "id" | "latestRun" | "runtime">;
 

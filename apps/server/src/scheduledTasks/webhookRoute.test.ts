@@ -13,7 +13,7 @@ import {
   EnvironmentHttpApi,
   ScheduledTaskWebhookDeliveryId,
   ScheduledTaskError,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import {
   ScheduledTaskService,
   type WebhookTriggerRequest,

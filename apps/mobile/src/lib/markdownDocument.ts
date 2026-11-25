@@ -2,14 +2,14 @@ import type { Root, RootContent } from "mdast";
 import { unified, type Processor } from "unified";
 import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
-import { remarkKeepWindowsProsePaths } from "@t3tools/shared/markdownWindowsPaths";
+import { remarkKeepWindowsProsePaths } from "@vibecodinger/shared/markdownWindowsPaths";
 import {
   absoluteFilePathMatches,
   inlineCodeFilePathCandidate,
   parseMarkdownFileLink,
-} from "@t3tools/shared/markdownLinks";
-import { isWindowsAbsolutePath } from "@t3tools/shared/path";
-import { hasRightToLeftLetter, textDirection } from "@t3tools/shared/textDirection";
+} from "@vibecodinger/shared/markdownLinks";
+import { isWindowsAbsolutePath } from "@vibecodinger/shared/path";
+import { hasRightToLeftLetter, textDirection } from "@vibecodinger/shared/textDirection";
 
 const parser = unified().use(remarkParse).use(remarkGfm).use(remarkKeepWindowsProsePaths);
 export type MarkdownNode = Root | RootContent;

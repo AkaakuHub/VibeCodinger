@@ -1,5 +1,5 @@
-import { assistantCitationsToPlainText } from "@t3tools/shared/assistantCitations";
-import { ATTACHMENT_ONLY_BOOTSTRAP_PROMPT } from "@t3tools/shared/composerContextReferences";
+import { assistantCitationsToPlainText } from "@vibecodinger/shared/assistantCitations";
+import { ATTACHMENT_ONLY_BOOTSTRAP_PROMPT } from "@vibecodinger/shared/composerContextReferences";
 import * as Effect from "effect/Effect";
 import type * as SqlClient from "effect/sql/SqlClient";
 

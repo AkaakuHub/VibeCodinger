@@ -1,12 +1,12 @@
-import { collectComposerModelMentions } from "@t3tools/client-runtime/composer-model-mentions";
-import type { AssistantCitation } from "@t3tools/contracts";
-import { collectAssistantCitations } from "@t3tools/shared/assistantCitations";
-import { collectComposerContextReferences } from "@t3tools/shared/composerContextReferences";
+import { collectComposerModelMentions } from "@vibecodinger/client-runtime/composer-model-mentions";
+import type { AssistantCitation } from "@vibecodinger/contracts";
+import { collectAssistantCitations } from "@vibecodinger/shared/assistantCitations";
+import { collectComposerContextReferences } from "@vibecodinger/shared/composerContextReferences";
 import {
   collectComposerInlineTokens,
   composerMathRanges,
   type ComposerInlineToken,
-} from "@t3tools/shared/composerInlineTokens";
+} from "@vibecodinger/shared/composerInlineTokens";
 import { markdownMathRanges } from "~/markdown/wordsHast";
 
 export type ComposerPromptSegment =

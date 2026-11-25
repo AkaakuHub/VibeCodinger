@@ -1,4 +1,4 @@
-import { SourceControlProviderKind } from "@t3tools/contracts";
+import { SourceControlProviderKind } from "@vibecodinger/contracts";
 import { assert, it } from "@effect/vitest";
 import * as NodeServices from "@effect/platform-node/NodeServices";
 import * as DateTime from "effect/DateTime";
@@ -16,16 +16,16 @@ import {
   DEFAULT_SERVER_SETTINGS,
   VcsProcessSpawnError,
   VcsProcessTimeoutError,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import type {
   SourceControlCliDiscoverySpec,
   SourceControlManagedCliDiscoverySpec,
   SourceControlProviderDiscoverySpec,
-} from "@t3tools/source-control-core/server/discovery";
-import type * as SourceControlHost from "@t3tools/source-control-core/server/SourceControlHost";
-import { fakeSourceControlProvider } from "@t3tools/source-control-testing/fakeSourceControlDriver";
-import * as TestSourceControlHost from "@t3tools/source-control-testing/TestSourceControlHost";
-import { SpawnExecutableResolution } from "@t3tools/shared/shell";
+} from "@vibecodinger/source-control-core/server/discovery";
+import type * as SourceControlHost from "@vibecodinger/source-control-core/server/SourceControlHost";
+import { fakeSourceControlProvider } from "@vibecodinger/source-control-testing/fakeSourceControlDriver";
+import * as TestSourceControlHost from "@vibecodinger/source-control-testing/TestSourceControlHost";
+import { SpawnExecutableResolution } from "@vibecodinger/shared/shell";
 
 import * as ServerSettings from "../serverSettings.ts";
 import * as ServerConfig from "../config.ts";

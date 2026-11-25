@@ -14,7 +14,7 @@ import type {
   RunId,
   RuntimeMode,
   TurnTokenUsage,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import * as Context from "effect/Context";
 import * as DateTime from "effect/DateTime";
 import * as Effect from "effect/Effect";
@@ -22,7 +22,7 @@ import * as Effect from "effect/Effect";
 import {
   getModelSelectionBooleanOptionValue,
   getModelSelectionStringOptionValue,
-} from "@t3tools/shared/model";
+} from "@vibecodinger/shared/model";
 
 // Bump when a field changes meaning, so reports can split old and new rows.
 const REPORT_VERSION = 2;

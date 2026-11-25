@@ -1,4 +1,4 @@
-import type { PreviewViewportSetting, PreviewViewportSize } from "@t3tools/contracts";
+import type { PreviewViewportSetting, PreviewViewportSize } from "@vibecodinger/contracts";
 import {
   useEffect,
   useRef,

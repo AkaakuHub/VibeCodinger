@@ -1,14 +1,14 @@
 import { useAtomValue } from "@effect/atom-react";
-import { scopeThreadRef } from "@t3tools/client-runtime/environment";
+import { scopeThreadRef } from "@vibecodinger/client-runtime/environment";
 import {
   resolveWorkflowOpening,
   workflowMemberModelSelection,
   workflowOpeningHeadline,
   workflowOpeningParentThreadId,
   type RuntimeSubagent,
-} from "@t3tools/client-runtime/state/subagentRuntime";
-import type { EnvironmentId, ScopedThreadRef, ThreadId } from "@t3tools/contracts";
-import type { EnvironmentThread } from "@t3tools/client-runtime/state/shell";
+} from "@vibecodinger/client-runtime/state/subagentRuntime";
+import type { EnvironmentId, ScopedThreadRef, ThreadId } from "@vibecodinger/contracts";
+import type { EnvironmentThread } from "@vibecodinger/client-runtime/state/shell";
 import { Atom } from "effect/reactivity";
 import { T, useGT, useMessages } from "gt-react-native";
 import { useState } from "react";

@@ -18,8 +18,8 @@ import {
   type ProviderInstanceId,
   type RuntimeMode,
   type ServerProvider,
-} from "@t3tools/contracts";
-import type { EffortDisplay } from "@t3tools/contracts/settings";
+} from "@vibecodinger/contracts";
+import type { EffortDisplay } from "@vibecodinger/contracts/settings";
 import { cn } from "~/lib/utils";
 import { resolveComposerTraitsInput } from "./composerProviderState";
 import { useApplyThreadModelPick } from "./useApplyThreadModelPick";

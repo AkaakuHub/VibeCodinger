@@ -5,8 +5,8 @@ import {
   type ChatGptReconnectProfile,
   type ChatGptTransferredProfile,
   type ProviderInstanceId,
-} from "@t3tools/contracts";
-import { codexCallbackUrl } from "@t3tools/shared/codexAuthHandoff";
+} from "@vibecodinger/contracts";
+import { codexCallbackUrl } from "@vibecodinger/shared/codexAuthHandoff";
 import * as Clock from "effect/Clock";
 import * as Digest from "effect/crypto/Digest";
 import * as SecureRandom from "effect/crypto/SecureRandom";
@@ -22,8 +22,8 @@ import * as Effect from "effect/Effect";
 import * as Option from "effect/Option";
 import * as Schema from "effect/Schema";
 import * as Semaphore from "effect/Semaphore";
-import * as ProviderAuthFlow from "@t3tools/provider-core/server/providerAuthFlow";
-import type { ProviderAuthFlowContext } from "@t3tools/provider-core/server/providerAuthFlow";
+import * as ProviderAuthFlow from "@vibecodinger/provider-core/server/providerAuthFlow";
+import type { ProviderAuthFlowContext } from "@vibecodinger/provider-core/server/providerAuthFlow";
 import { HttpClient, HttpClientRequest } from "effect/http";
 import * as ProviderCredentialStore from "./ProviderCredentialStore.ts";
 import { withChatGptSessionLock } from "./CodexChatGptSessionLock.ts";

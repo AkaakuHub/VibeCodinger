@@ -36,14 +36,14 @@ import {
   type ReviewDiffPreviewSource,
   trimAsciiWhitespace,
   type VcsRef,
-} from "@t3tools/contracts";
-import { dedupeRemoteBranchesWithLocalMatches } from "@t3tools/shared/git";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { compactTraceAttributes } from "@t3tools/shared/observability";
-import { decodeJsonResult } from "@t3tools/shared/schemaJson";
-import { resolveSpawnCommand, runsGitWithoutConsole } from "@t3tools/shared/shell";
-import { parseT3ProjectFile } from "@t3tools/shared/t3ProjectFile";
-import { resolveProjectFileBackedSetting } from "@t3tools/shared/projectSettings";
+} from "@vibecodinger/contracts";
+import { dedupeRemoteBranchesWithLocalMatches } from "@vibecodinger/shared/git";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
+import { compactTraceAttributes } from "@vibecodinger/shared/observability";
+import { decodeJsonResult } from "@vibecodinger/shared/schemaJson";
+import { resolveSpawnCommand, runsGitWithoutConsole } from "@vibecodinger/shared/shell";
+import { parseT3ProjectFile } from "@vibecodinger/shared/t3ProjectFile";
+import { resolveProjectFileBackedSetting } from "@vibecodinger/shared/projectSettings";
 import { gitCommandDuration, gitCommandsTotal, withMetrics } from "../observability/Metrics.ts";
 import * as GitVcsDriver from "./GitVcsDriver.ts";
 import { removeEmptyDirectory, type RemoveEmptyDirectoryError } from "./removeEmptyDirectory.ts";

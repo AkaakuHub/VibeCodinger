@@ -1,12 +1,17 @@
-import { linkOriginIsFenced, ProjectId, type ProjectScript, ThreadId } from "@t3tools/contracts";
-import { splitsSurrogatePair } from "@t3tools/shared/assistantCitations";
+import {
+  linkOriginIsFenced,
+  ProjectId,
+  type ProjectScript,
+  ThreadId,
+} from "@vibecodinger/contracts";
+import { splitsSurrogatePair } from "@vibecodinger/shared/assistantCitations";
 import {
   projectScriptRuntimeEnv,
   projectScriptTerminalInput,
   resolveProjectScripts,
   settleProjectScript,
   setupProjectScript,
-} from "@t3tools/shared/projectScripts";
+} from "@vibecodinger/shared/projectScripts";
 
 import * as Clock from "effect/Clock";
 import * as Context from "effect/Context";

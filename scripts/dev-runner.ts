@@ -4,10 +4,10 @@ import * as NodeOS from "node:os";
 
 import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
 import * as NodeServices from "@effect/platform-node/NodeServices";
-import * as NetService from "@t3tools/shared/Net";
-import { resolveGitWorktreePath, resolveWorktreeAppDataHome } from "@t3tools/shared/devHome";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { resolveSpawnCommand } from "@t3tools/shared/shell";
+import * as NetService from "@vibecodinger/shared/Net";
+import { resolveGitWorktreePath, resolveWorktreeAppDataHome } from "@vibecodinger/shared/devHome";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
+import { resolveSpawnCommand } from "@vibecodinger/shared/shell";
 import * as Config from "effect/Config";
 import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";
@@ -74,22 +74,22 @@ export const DEFAULT_APP_DATA_HOME = Effect.map(Effect.service(Path.Path), (path
 const MODE_ARGS = {
   dev: [
     "run",
-    "--filter=@t3tools/contracts",
-    "--filter=@t3tools/web",
+    "--filter=@vibecodinger/contracts",
+    "--filter=@vibecodinger/web",
     "--filter=vibecodinger",
     "--parallel",
     "dev",
   ],
   "dev:server": ["run", "--filter=vibecodinger", "dev"],
-  "dev:web": ["run", "--filter=@t3tools/web", "dev"],
-  "dev:desktop": ["run", "--filter=@t3tools/desktop", "--filter=@t3tools/web", "dev"],
+  "dev:web": ["run", "--filter=@vibecodinger/web", "dev"],
+  "dev:desktop": ["run", "--filter=@vibecodinger/desktop", "--filter=@vibecodinger/web", "dev"],
 } as const satisfies Record<string, ReadonlyArray<string>>;
 
 // `--built`: the web package rebuilds into apps/web/dist and the backend serves
 // it, so no Vite dev server runs.
 const BUILT_DEV_ARGS = [
   "run",
-  "--filter=@t3tools/web",
+  "--filter=@vibecodinger/web",
   "--filter=vibecodinger",
   "--parallel",
   "dev:built",
@@ -782,7 +782,7 @@ export const runDevRunnerWithInput = Effect.fn("dev-runner.runDevRunnerWithInput
 
   const hostEnvironment = yield* HostProcess.Environment;
   // A dev server started inside a worktree defaults to that worktree's own
-  // (gitignored) `.vibecodinger` — see @t3tools/shared/devHome for why this must
+  // (gitignored) `.vibecodinger` — see @vibecodinger/shared/devHome for why this must
   // outrank an ambient VIBECODINGER_HOME. `--home-dir` still wins.
   const worktreeHome = yield* resolveWorktreeAppDataHome(yield* HostProcess.WorkingDirectory);
   // Trim before choosing: `--home-dir ""` is not a selection, and treating it

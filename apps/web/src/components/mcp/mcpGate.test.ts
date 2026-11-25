@@ -3,8 +3,8 @@ import {
   BearerConnectionTarget,
   RelayConnectionTarget,
   SshConnectionTarget,
-} from "@t3tools/client-runtime/connection";
-import { EnvironmentId } from "@t3tools/contracts";
+} from "@vibecodinger/client-runtime/connection";
+import { EnvironmentId } from "@vibecodinger/contracts";
 
 import { resolveMcpGate } from "./mcpGate";
 

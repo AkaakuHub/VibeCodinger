@@ -4,18 +4,18 @@ import {
   ExecutionEnvironmentDescriptor,
   ORCHESTRATION_PROTOCOL_VERSION,
   PortSchema,
-} from "@t3tools/contracts";
-import { resolveWorktreeAppDataHome } from "@t3tools/shared/devHome";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { formatHostForUrl, isWildcardHost } from "@t3tools/shared/hostClassification";
-import { buildPairingAppLink } from "@t3tools/shared/remote";
+} from "@vibecodinger/contracts";
+import { resolveWorktreeAppDataHome } from "@vibecodinger/shared/devHome";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
+import { formatHostForUrl, isWildcardHost } from "@vibecodinger/shared/hostClassification";
+import { buildPairingAppLink } from "@vibecodinger/shared/remote";
 import {
   buildTailscaleHttpsBaseUrl,
   DEFAULT_TAILSCALE_SERVE_PORT,
   ensureTailscaleServe,
   readTailscaleServeRootHolder,
   readTailscaleStatus,
-} from "@t3tools/tailscale";
+} from "@vibecodinger/tailscale";
 import * as Config from "effect/Config";
 import * as Console from "effect/Console";
 import * as DateTime from "effect/DateTime";

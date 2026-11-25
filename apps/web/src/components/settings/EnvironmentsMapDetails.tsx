@@ -1,7 +1,7 @@
 import { useAtomValue } from "@effect/atom-react";
-import { connectionStatusTitle } from "@t3tools/client-runtime/connection";
-import type { PeerLinkHealth } from "@t3tools/client-runtime/state/peerLinks";
-import { AuthMcpClientAccess, resolveEnvironmentMachineKind } from "@t3tools/contracts";
+import { connectionStatusTitle } from "@vibecodinger/client-runtime/connection";
+import type { PeerLinkHealth } from "@vibecodinger/client-runtime/state/peerLinks";
+import { AuthMcpClientAccess, resolveEnvironmentMachineKind } from "@vibecodinger/contracts";
 import * as DateTime from "effect/DateTime";
 import { useGT, useMessages } from "gt-react";
 import { ArrowRightIcon, ClockAlertIcon, PlusIcon, TriangleAlertIcon, XIcon } from "lucide-react";

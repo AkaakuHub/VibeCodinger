@@ -1,6 +1,6 @@
-import { findThreadSearchOccurrences } from "@t3tools/shared/threadSearch";
+import { findThreadSearchOccurrences } from "@vibecodinger/shared/threadSearch";
 import { useEffect, useEffectEvent, useRef } from "react";
-import { THREAD_FIND_BLOCK_TAGS } from "@t3tools/shared/threadFindBlockTags";
+import { THREAD_FIND_BLOCK_TAGS } from "@vibecodinger/shared/threadFindBlockTags";
 
 import { observeResize } from "~/lib/observeResize";
 

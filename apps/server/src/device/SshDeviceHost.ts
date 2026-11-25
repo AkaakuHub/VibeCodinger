@@ -4,11 +4,11 @@ import {
   DeviceToolVersions,
   deviceToolInstallMessage,
   type SshDeviceHostConfig,
-} from "@t3tools/contracts";
-import { runSshCommand, baseSshArgs, resolveSshCommand } from "@t3tools/ssh/command";
-import { SshCommandError } from "@t3tools/ssh/errors";
-import * as NetService from "@t3tools/shared/Net";
-import { waitForHttpReady } from "@t3tools/shared/httpReadiness";
+} from "@vibecodinger/contracts";
+import { runSshCommand, baseSshArgs, resolveSshCommand } from "@vibecodinger/ssh/command";
+import { SshCommandError } from "@vibecodinger/ssh/errors";
+import * as NetService from "@vibecodinger/shared/Net";
+import { waitForHttpReady } from "@vibecodinger/shared/httpReadiness";
 import * as Digest from "effect/crypto/Digest";
 import * as Exit from "effect/Exit";
 import * as Effect from "effect/Effect";

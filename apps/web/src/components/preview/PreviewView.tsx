@@ -1,14 +1,14 @@
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
+import { thrownErrorMessage } from "@vibecodinger/client-runtime/errors";
 import { m } from "~/i18n/messages";
 import { useAtomValue } from "@effect/atom-react";
-import { scopedThreadKey } from "@t3tools/client-runtime/environment";
-import { settlePromise } from "@t3tools/client-runtime/state/runtime";
-import type { DesktopPreviewAnnotationVoiceConfig } from "@t3tools/contracts";
-import { previewStreamDownloadUrl } from "@t3tools/client-runtime/preview/server-browser-stream";
+import { scopedThreadKey } from "@vibecodinger/client-runtime/environment";
+import { settlePromise } from "@vibecodinger/client-runtime/state/runtime";
+import type { DesktopPreviewAnnotationVoiceConfig } from "@vibecodinger/contracts";
+import { previewStreamDownloadUrl } from "@vibecodinger/client-runtime/preview/server-browser-stream";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
+} from "@vibecodinger/client-runtime/state/runtime";
 import {
   AuthOrchestrationOperateScope,
   DEFAULT_BROWSER_PROFILE_ID,
@@ -19,14 +19,14 @@ import {
   DEFAULT_PREVIEW_ZOOM_FACTOR,
   PREVIEW_ZOOM_LEVELS,
   type PreviewAdjustInput,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import {
   normalizePreviewUrl,
   isPreviewUrlNormalizationError,
   resolveAddressBarInput,
   previewPdfAssetUrl,
   resolveSearchUrlTemplate,
-} from "@t3tools/shared/preview";
+} from "@vibecodinger/shared/preview";
 import { msg, T, useGT, useMessages } from "gt-react";
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 

@@ -9,9 +9,9 @@ import {
   settingsSecretLiteral,
   type UsageLimitSourceId,
   type UsageLimitSourceSnapshot,
-} from "@t3tools/contracts";
-import { resolveServerBackgroundActivitySettings } from "@t3tools/shared/backgroundActivitySettings";
-import { antigravityWindowLimitsModel, hubRoutes } from "@t3tools/shared/usageLimits";
+} from "@vibecodinger/contracts";
+import { resolveServerBackgroundActivitySettings } from "@vibecodinger/shared/backgroundActivitySettings";
+import { antigravityWindowLimitsModel, hubRoutes } from "@vibecodinger/shared/usageLimits";
 import * as Context from "effect/Context";
 import * as DateTime from "effect/DateTime";
 import * as Duration from "effect/Duration";
@@ -24,7 +24,7 @@ import * as Semaphore from "effect/Semaphore";
 import * as Stream from "effect/Stream";
 
 import * as BackgroundPolicy from "../background/BackgroundPolicy.ts";
-import * as SecretResolver from "@t3tools/secret-provider-core/server/SecretResolver";
+import * as SecretResolver from "@vibecodinger/secret-provider-core/server/SecretResolver";
 import * as SecretResolverLayer from "../secrets/SecretResolver.ts";
 import { resolveSettingsSecrets } from "../secrets/settingsSecretValue.ts";
 import * as Settings from "../serverSettings.ts";

@@ -1,19 +1,22 @@
-import { errorDisplayMessage } from "@t3tools/client-runtime/errors";
+import { errorDisplayMessage } from "@vibecodinger/client-runtime/errors";
 import * as Dialog from "./ui/Dialog";
-import { ComposerContextId } from "@t3tools/contracts";
+import { ComposerContextId } from "@vibecodinger/contracts";
 import { useAtomValue } from "@effect/atom-react";
 import { AsyncResult } from "effect/reactivity";
-import { settlePromise, squashAtomCommandFailure } from "@t3tools/client-runtime/state/runtime";
+import {
+  settlePromise,
+  squashAtomCommandFailure,
+} from "@vibecodinger/client-runtime/state/runtime";
 import { T, useGT } from "gt-react-native";
 import { useEffect, useState } from "react";
-import type { EnvironmentId } from "@t3tools/contracts";
-import { encodeComposerContextFragment } from "@t3tools/shared/composerContextClipboard";
-import { collectComposerContextReferences } from "@t3tools/shared/composerContextReferences";
+import type { EnvironmentId } from "@vibecodinger/contracts";
+import { encodeComposerContextFragment } from "@vibecodinger/shared/composerContextClipboard";
+import { collectComposerContextReferences } from "@vibecodinger/shared/composerContextReferences";
 import {
   collectAssistantCitations,
   serializeAssistantCitation,
   withAssistantCitationComment,
-} from "@t3tools/shared/assistantCitations";
+} from "@vibecodinger/shared/assistantCitations";
 import { AssistantCitationSheet } from "./AssistantCitationSheet";
 import { ComposerEditor as NativeComposerEditor } from "../native/T3ComposerEditor";
 import type { ComposerEditorProps as NativeComposerEditorProps } from "../native/T3ComposerEditor";

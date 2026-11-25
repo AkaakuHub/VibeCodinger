@@ -1,9 +1,9 @@
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
+import { thrownErrorMessage } from "@vibecodinger/client-runtime/errors";
 import { msg, T, useGT, useMessages } from "gt-react";
 import { m } from "../i18n/messages";
 import { attachSidebarTree } from "../lib/sidebarTree";
-import { type EnvironmentId, type ScopedProjectRef } from "@t3tools/contracts";
-import type { EnvironmentServerConfig } from "@t3tools/client-runtime/connection";
+import { type EnvironmentId, type ScopedProjectRef } from "@vibecodinger/contracts";
+import type { EnvironmentServerConfig } from "@vibecodinger/client-runtime/connection";
 import {
   dropThreadContext,
   endThreadContextDrag,
@@ -31,42 +31,45 @@ import {
   canSnooze,
   effectiveSnoozed,
   threadWokeAt,
-} from "@t3tools/client-runtime/state/thread-settled";
+} from "@vibecodinger/client-runtime/state/thread-settled";
 import {
   asLaunchingThread,
   createInboxReturnTracker,
   isThreadWorking,
-} from "@t3tools/client-runtime/state/thread-inbox";
-import { activeThreadSortKey, sortSettledThreads } from "@t3tools/client-runtime/state/thread-sort";
+} from "@vibecodinger/client-runtime/state/thread-inbox";
+import {
+  activeThreadSortKey,
+  sortSettledThreads,
+} from "@vibecodinger/client-runtime/state/thread-sort";
 import {
   nextShownOrder,
   threadSearchMatchKey,
   threadSearchSubject,
   type ShownOrder,
-} from "@t3tools/client-runtime/state/thread-search";
-import { foldSearchQuery, rankMessageMatches } from "@t3tools/shared/paletteSearch";
+} from "@vibecodinger/client-runtime/state/thread-search";
+import { foldSearchQuery, rankMessageMatches } from "@vibecodinger/shared/paletteSearch";
 import { findForMessageMatch, openThreadFindOnQuery } from "./chat/threadFindStore";
 import {
   threadRuntimeCanArchive,
   type EnvironmentThreadShell,
-} from "@t3tools/client-runtime/state/models";
+} from "@vibecodinger/client-runtime/state/models";
 import {
   parseScopedThreadKey,
   scopeProjectRef,
   scopeThreadRef,
   scopedThreadKey,
-} from "@t3tools/client-runtime/environment";
+} from "@vibecodinger/client-runtime/environment";
 import {
   AuthOrchestrationOperateScope,
   type ContextMenuSource,
   ProjectId,
   type ScopedThreadRef,
   type ThreadId,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import {
   resolveListedAncestorThreadRef,
   type OlderSettledScope,
-} from "@t3tools/client-runtime/state/threads";
+} from "@vibecodinger/client-runtime/state/threads";
 
 import {
   CheckIcon,
@@ -94,7 +97,7 @@ import {
   settlePromise,
   squashAtomCommandFailure,
   type AtomCommandResult,
-} from "@t3tools/client-runtime/state/runtime";
+} from "@vibecodinger/client-runtime/state/runtime";
 import { isElectron } from "../env";
 import {
   resolveShortcutCommand,
@@ -111,7 +114,7 @@ import { SidebarFolderDrop } from "./sidebar/SidebarFolderDrop";
 import {
   pickableProjectGroups,
   selectProjectGroupingSettings,
-} from "@t3tools/client-runtime/state/project-grouping";
+} from "@vibecodinger/client-runtime/state/project-grouping";
 import {
   buildSidebarProjectPickerEntries,
   projectGroupsSpanEnvironments,
@@ -239,7 +242,7 @@ import {
 import { stackedThreadToast, toastManager } from "./ui/toast";
 import { titleRegenerationToast } from "./threadTitleRegenerationToast";
 import { copyThreadReference } from "../lib/copyThreadReference";
-import { threadChipCopyTarget } from "@t3tools/client-runtime/thread-reference";
+import { threadChipCopyTarget } from "@vibecodinger/client-runtime/thread-reference";
 import { Button } from "./ui/button";
 import { isProjectPinShortcut, ProjectPinButton } from "./ProjectPinButton";
 import {

@@ -1,4 +1,7 @@
-import { identityPublicKeyFromSeed, type E2eeIdentityKeypair } from "@t3tools/shared/socketE2ee";
+import {
+  identityPublicKeyFromSeed,
+  type E2eeIdentityKeypair,
+} from "@vibecodinger/shared/socketE2ee";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";

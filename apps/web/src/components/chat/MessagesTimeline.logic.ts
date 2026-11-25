@@ -1,24 +1,24 @@
 import * as DateTime from "effect/DateTime";
 import { msg } from "gt-react";
-import { worktreeSetupAgentStarted } from "@t3tools/client-runtime/worktree-setup";
-import { resolveUserMessagePresentation } from "@t3tools/client-runtime/user-message";
+import { worktreeSetupAgentStarted } from "@vibecodinger/client-runtime/worktree-setup";
+import { resolveUserMessagePresentation } from "@vibecodinger/client-runtime/user-message";
 import {
   isLiveSubagentTurnItem,
   waitingOnSubagentsLabel,
-} from "@t3tools/client-runtime/state/subagentRuntime";
+} from "@vibecodinger/client-runtime/state/subagentRuntime";
 import * as Equal from "effect/Equal";
 import { shallow } from "zustand/vanilla/shallow";
-import { claudeResumeCompactionAge } from "@t3tools/shared/claudeCompaction";
+import { claudeResumeCompactionAge } from "@vibecodinger/shared/claudeCompaction";
 import {
   IDLE_COMPACTING_LABELS,
   IDLE_COMPACTION_TITLES,
-} from "@t3tools/client-runtime/user-message";
-import type { HandoffTimelineRun } from "@t3tools/client-runtime/handoff";
+} from "@vibecodinger/client-runtime/user-message";
+import type { HandoffTimelineRun } from "@vibecodinger/client-runtime/handoff";
 import { renderCodexDirectivesForCopy } from "~/markdown/markdownText";
 import {
   commandDisplayText,
   commandProgramName,
-} from "@t3tools/client-runtime/work-log/command-label";
+} from "@vibecodinger/client-runtime/work-log/command-label";
 import {
   commandlessCommandLabel,
   genericCommandStatusLabel,
@@ -33,7 +33,7 @@ import {
   type ToolGroupSummaryKind,
   liveThoughtLine,
   workEntryHiddenByToolCallVisibility,
-} from "@t3tools/client-runtime/work-log/presentation";
+} from "@vibecodinger/client-runtime/work-log/presentation";
 import {
   deriveRevertTurnCountByUserMessageId,
   isStreamingMessageTextUpdate,
@@ -65,23 +65,26 @@ import {
   RunId,
   type ThreadId,
   type TurnItemId,
-} from "@t3tools/contracts";
-import type { ThreadRunSummary } from "@t3tools/client-runtime/state/shell";
-import type { ToolCallVisibility } from "@t3tools/contracts/settings";
-import { resolveT3McpToolDefinition } from "@t3tools/shared/t3McpToolPresentation";
-import { compactDynamicToolOutput } from "@t3tools/shared/toolOutput";
-import { htmlRenderReferencesEqual, type HtmlRenderReference } from "@t3tools/shared/htmlRender";
-import { mcpAppReferencesEqual, type McpAppReference } from "@t3tools/shared/mcpApp";
-import { formatDuration } from "@t3tools/shared/orchestrationTimingCopy";
+} from "@vibecodinger/contracts";
+import type { ThreadRunSummary } from "@vibecodinger/client-runtime/state/shell";
+import type { ToolCallVisibility } from "@vibecodinger/contracts/settings";
+import { resolveT3McpToolDefinition } from "@vibecodinger/shared/t3McpToolPresentation";
+import { compactDynamicToolOutput } from "@vibecodinger/shared/toolOutput";
+import {
+  htmlRenderReferencesEqual,
+  type HtmlRenderReference,
+} from "@vibecodinger/shared/htmlRender";
+import { mcpAppReferencesEqual, type McpAppReference } from "@vibecodinger/shared/mcpApp";
+import { formatDuration } from "@vibecodinger/shared/orchestrationTimingCopy";
 import { formatWorkspaceRelativePath } from "../../filePathDisplay";
 import { m, type MessageResolver } from "../../i18n/messages";
-import { collectToolFilePaths } from "@t3tools/shared/toolActivity";
+import { collectToolFilePaths } from "@vibecodinger/shared/toolActivity";
 import {
   dynamicToolTitle,
   formatReadToolLabel,
   formatSearchToolLabel,
-} from "@t3tools/shared/toolActivityCopy";
-import { isHostPath } from "@t3tools/shared/path";
+} from "@vibecodinger/shared/toolActivityCopy";
+import { isHostPath } from "@vibecodinger/shared/path";
 
 export function timelineEntryRunId(entry: TimelineEntry): RunId | null {
   if (entry.kind === "message") {

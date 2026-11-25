@@ -1,19 +1,19 @@
 import { m } from "../i18n/messages";
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
+import { thrownErrorMessage } from "@vibecodinger/client-runtime/errors";
 import { useGT, useMessages } from "gt-react";
 import { ChildThreadApprovals } from "./chat/ChildThreadApprovals";
 import { draftSupportedRuntimeModes } from "./chat/runtimeModeConfig";
 import { workspaceAreaProps } from "../lib/workspaceFocus";
-import { sourceControlClients } from "@t3tools/client-runtime/source-control-clients";
-import { resolveNewThreadModelSelection } from "@t3tools/shared/usageLimits";
-import { queuedRunEditBlockedReason } from "@t3tools/client-runtime/queued-run-edit";
+import { sourceControlClients } from "@vibecodinger/client-runtime/source-control-clients";
+import { resolveNewThreadModelSelection } from "@vibecodinger/shared/usageLimits";
+import { queuedRunEditBlockedReason } from "@vibecodinger/client-runtime/queued-run-edit";
 import { ScrollToEndButton, WorkspaceFileDropOverlay } from "./chat/TimelineOverlays";
 import { usePasteToFocusComposer } from "./chat/usePasteToFocusComposer";
 import { useFocusComposerOnThreadOpen } from "./chat/useFocusComposerOnThreadOpen";
 import {
   announcedRun,
   isDetailBehindShell,
-} from "@t3tools/client-runtime/state/thread-activity-announcement";
+} from "@vibecodinger/client-runtime/state/thread-activity-announcement";
 import {
   deriveAvailableRevertTurnCounts,
   deriveThreadPendingBackgroundTasks,
@@ -53,10 +53,10 @@ import { useStableCallback } from "../hooks/useStableCallback";
 import { useProjectScriptEditing } from "./chat/useProjectScriptEditing";
 import { RightPanelSurfaceContent } from "./chat/RightPanelSurfaceContent";
 import { usePendingThreadRequests } from "./chat/usePendingThreadRequests";
-import { isScratchProject } from "@t3tools/client-runtime/state/projects";
-import { resolveWorktreeRepositorySelection } from "@t3tools/client-runtime/state/thread-repositories";
-import { visibleThreadPullRequests } from "@t3tools/shared/threadPullRequests";
-import type { UsageLimitSourceSnapshots } from "@t3tools/contracts";
+import { isScratchProject } from "@vibecodinger/client-runtime/state/projects";
+import { resolveWorktreeRepositorySelection } from "@vibecodinger/client-runtime/state/thread-repositories";
+import { visibleThreadPullRequests } from "@vibecodinger/shared/threadPullRequests";
+import type { UsageLimitSourceSnapshots } from "@vibecodinger/contracts";
 import { feedbackBannerItem } from "./chat/ComposerFeedback";
 import { freshSessionBannerItem } from "./chat/ComposerFreshSession";
 import { heldComposerSendBannerItem } from "./chat/ComposerHeldSendBanner";
@@ -86,7 +86,7 @@ import {
   ProviderInteractionMode,
   resolveIdleCompaction,
   RuntimeMode,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import {
   canResumeThread,
   deriveProviderSubagentStatus,
@@ -100,17 +100,17 @@ import {
   presentProviderStarting,
   deriveThreadStructureRuntime,
   limitRecoveryOwnsSnooze,
-} from "@t3tools/client-runtime/state/thread-execution";
+} from "@vibecodinger/client-runtime/state/thread-execution";
 import {
   resolveWorkflowOpening,
   workflowOpeningParentThreadId,
-} from "@t3tools/client-runtime/state/subagentRuntime";
+} from "@vibecodinger/client-runtime/state/subagentRuntime";
 import {
   getUserQueuedThreadRuns,
   threadCanSteer,
   threadSupportsProviderHandoff,
-} from "@t3tools/client-runtime/state/thread-workflows";
-import { resolvePendingHandoff } from "@t3tools/client-runtime/handoff";
+} from "@vibecodinger/client-runtime/state/thread-workflows";
+import { resolvePendingHandoff } from "@vibecodinger/client-runtime/handoff";
 import { HandoffRow } from "./chat/V2LifecycleRow";
 import {
   codexFeedbackMessage,
@@ -118,19 +118,19 @@ import {
   isCompleteTurnItemRow,
   shouldShowLoadEarlierControl,
   type CodexFeedbackSubmission,
-} from "@t3tools/client-runtime/state/threads";
+} from "@vibecodinger/client-runtime/state/threads";
 import {
   parseScopedThreadKey,
   scopedThreadKey,
   scopeProjectRef,
   scopeThreadRef,
-} from "@t3tools/client-runtime/environment";
-import { formatModelSlugName, resolveSelectableModel } from "@t3tools/shared/model";
-import { projectScriptCwd, resolveProjectScripts } from "@t3tools/shared/projectScripts";
-import { resolveProjectSettings } from "@t3tools/shared/projectSettings";
-import { orchestrationV2WorktreePending } from "@t3tools/shared/orchestrationV2ThreadError";
-import { resolveThreadReferenceCopyTarget } from "@t3tools/client-runtime/thread-reference";
-import { resolveTerminalSessionLabel } from "@t3tools/shared/terminalLabelsCopy";
+} from "@vibecodinger/client-runtime/environment";
+import { formatModelSlugName, resolveSelectableModel } from "@vibecodinger/shared/model";
+import { projectScriptCwd, resolveProjectScripts } from "@vibecodinger/shared/projectScripts";
+import { resolveProjectSettings } from "@vibecodinger/shared/projectSettings";
+import { orchestrationV2WorktreePending } from "@vibecodinger/shared/orchestrationV2ThreadError";
+import { resolveThreadReferenceCopyTarget } from "@vibecodinger/client-runtime/thread-reference";
+import { resolveTerminalSessionLabel } from "@vibecodinger/shared/terminalLabelsCopy";
 import { useAtomValue } from "@effect/atom-react";
 import {
   type MouseEvent as ReactMouseEvent,
@@ -157,7 +157,7 @@ import {
   mapAtomCommandResult,
   squashAtomCommandFailure,
   type AtomCommandResult,
-} from "@t3tools/client-runtime/state/runtime";
+} from "@vibecodinger/client-runtime/state/runtime";
 import { AsyncResult } from "effect/reactivity";
 import { isElectron } from "../env";
 import { useActiveThreadRef } from "../hooks/useActiveThreadRef";
@@ -210,7 +210,7 @@ import { BranchToolbar, type BranchToolbarHandle } from "./BranchToolbar";
 import { ComposerContextPermissions } from "./ComposerContextPermissions";
 import { makeWorkspaceFileDropHandlers } from "./chat/workspaceFileDrop";
 import { isEditableFocused } from "../lib/editableFocus";
-import { DEFAULT_RESOLVED_KEYBINDINGS } from "@t3tools/shared/keybindings";
+import { DEFAULT_RESOLVED_KEYBINDINGS } from "@vibecodinger/shared/keybindings";
 import { shortcutLabelForCommand } from "../keybindings";
 import { cn } from "~/lib/utils";
 import { COLLAPSED_SIDEBAR_TITLEBAR_INSET_CLASS } from "~/workspaceTitlebar";
@@ -245,7 +245,7 @@ import { draftModelSelectionApplies, threadHasStarted } from "../lib/chatThreadA
 import {
   deriveLogicalProjectKeyFromSettings,
   selectProjectGroupingSettings,
-} from "@t3tools/client-runtime/state/project-grouping";
+} from "@vibecodinger/client-runtime/state/project-grouping";
 import {
   isSameSidebarThreadRef,
   useSidebarPendingFileDropStore,
@@ -272,7 +272,7 @@ import { threadEnvironment } from "../state/threads";
 import {
   resolveProviderSkillsForCwd,
   resolveProvidersForCwd,
-} from "@t3tools/client-runtime/providerSkills";
+} from "@vibecodinger/client-runtime/providerSkills";
 import { chatGitStatusAtom, NO_CHAT_GIT_STATUS_ATOM, vcsEnvironment } from "../state/vcs";
 import {
   type EnvironmentPresentation,
@@ -316,7 +316,7 @@ import { getTriggerDisplayModelName } from "./chat/providerIconUtils";
 import { resolveScrollToEndClearance } from "./composerFooterLayout";
 import { ChatHeader } from "./chat/ChatHeader";
 import { useSideChat } from "./chat/useSideChat";
-import { sideThreadComposer, sideThreadKindOf } from "@t3tools/client-runtime/side-thread";
+import { sideThreadComposer, sideThreadKindOf } from "@vibecodinger/client-runtime/side-thread";
 import { useOpenSurfaceInMainView } from "../hooks/useOpenSurfaceInMainView";
 import { useRemoteOpenState } from "~/remoteOpen";
 import { shouldShowOpenInPicker } from "./chat/OpenInPicker.logic";
@@ -363,7 +363,7 @@ import {
   hasDismissedResumeCompaction,
   latestProviderTurnTokenUsage,
   shouldOfferResumeCompaction,
-} from "@t3tools/client-runtime/state/context-window";
+} from "@vibecodinger/client-runtime/state/context-window";
 import {
   MOBILE_COMPOSER_VIEW_TRANSITION_NAME,
   MOBILE_DRAFT_HEADLINE_VIEW_TRANSITION_NAME,
@@ -386,7 +386,7 @@ import {
 } from "./ChatView.logic";
 import { useLocalStorage } from "~/hooks/useLocalStorage";
 import { useComposerHandleContext } from "../composerHandleContext";
-import { clampFileAttachmentUploadBytes } from "@t3tools/client-runtime/state/attachments";
+import { clampFileAttachmentUploadBytes } from "@vibecodinger/client-runtime/state/attachments";
 import { appAtomRegistry } from "../rpc/atomRegistry";
 import { assetEnvironment } from "../state/assets";
 import { readEnvironmentScope, readPreparedConnection } from "../state/session";
@@ -400,7 +400,10 @@ import { ChatRightPanel } from "./chat/ChatRightPanel";
 import { useDraftEnvironmentRouting } from "./chat/useDraftEnvironmentRouting";
 import { branchMismatchBannerItem, extensionStatusBannerItem } from "./chat/ThreadActivityBanners";
 import { ThreadNow } from "./chat/ThreadNow";
-import { threadRuntimeIsActive, type ThreadStructure } from "@t3tools/client-runtime/state/shell";
+import {
+  threadRuntimeIsActive,
+  type ThreadStructure,
+} from "@vibecodinger/client-runtime/state/shell";
 import { useDelayedStatus } from "../hooks/useDelayedStatus";
 import { useTimelineFollow } from "./chat/useTimelineFollow";
 import {
@@ -426,7 +429,7 @@ const ACTIVE_RUN_STATUSES: ReadonlySet<string> = new Set([
 ]);
 const EMPTY_PROVIDER_MODELS: ServerProvider["models"] = [];
 const EMPTY_USAGE_LIMIT_SOURCES: UsageLimitSourceSnapshots = [];
-import type { CodexArtifactTemplate } from "@t3tools/shared/codexArtifactTemplates";
+import type { CodexArtifactTemplate } from "@vibecodinger/shared/codexArtifactTemplates";
 
 const EMPTY_FEEDBACK_SUBMISSIONS: ReadonlyArray<CodexFeedbackSubmission> = [];
 const EMPTY_PROVIDER_SKILLS: ServerProvider["skills"] = [];

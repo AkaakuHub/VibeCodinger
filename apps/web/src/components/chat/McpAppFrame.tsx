@@ -1,4 +1,4 @@
-import type { EnvironmentId, ThreadId, TurnItemId } from "@t3tools/contracts";
+import type { EnvironmentId, ThreadId, TurnItemId } from "@vibecodinger/contracts";
 import {
   makeMcpAppHost,
   McpAppHostRefusal,
@@ -8,8 +8,8 @@ import {
   type McpAppDisplayMode,
   type McpAppHost,
   type McpAppHostContext,
-} from "@t3tools/client-runtime/mcp-apps";
-import { squashAtomCommandFailure } from "@t3tools/client-runtime/state/runtime";
+} from "@vibecodinger/client-runtime/mcp-apps";
+import { squashAtomCommandFailure } from "@vibecodinger/client-runtime/state/runtime";
 import {
   clampMcpAppHeight,
   MCP_APP_COLOR_SCHEME_PARAM,
@@ -18,7 +18,7 @@ import {
   mcpAppAllowAttribute,
   mcpAppFileName,
   type McpAppReference,
-} from "@t3tools/shared/mcpApp";
+} from "@vibecodinger/shared/mcpApp";
 import { msg, T, useGT, Var } from "gt-react";
 import { Minimize2Icon } from "lucide-react";
 import { useEffect, useRef, useState, type FocusEvent, type ToggleEvent } from "react";

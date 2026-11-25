@@ -5,17 +5,17 @@ import {
   type ServerConfigStreamEvent,
   WsSubscribeServerConfigRpc,
   WS_METHODS,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import {
   joinSocketFrameParts,
   SOCKET_FRAME_PARTS_QUERY_PARAM,
-} from "@t3tools/shared/socketFrameParts";
+} from "@vibecodinger/shared/socketFrameParts";
 import {
   decodeIdentityKey,
   layerE2eeCrypto,
   SOCKET_E2EE_QUERY_PARAM,
   wrapClientSocketWithE2ee,
-} from "@t3tools/shared/socketE2ee";
+} from "@vibecodinger/shared/socketE2ee";
 import { Aead, SecureRandom } from "effect/crypto";
 import * as Cause from "effect/Cause";
 import * as Clock from "effect/Clock";
@@ -89,7 +89,7 @@ export class RpcSessionFactory extends Context.Service<
       connection: PreparedConnection,
     ) => Effect.Effect<RpcSession, ConnectionAttemptError, Scope.Scope>;
   }
->()("@t3tools/client-runtime/rpc/session/RpcSessionFactory") {}
+>()("@vibecodinger/client-runtime/rpc/session/RpcSessionFactory") {}
 
 type InitialConfigError = Effect.Error<
   ReturnType<WsRpcProtocolClient[typeof WS_METHODS.serverGetConfig]>

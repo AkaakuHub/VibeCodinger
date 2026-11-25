@@ -1,4 +1,4 @@
-import { providerAuthReturnUrl } from "@t3tools/shared/providerAuthReturnUrl";
+import { providerAuthReturnUrl } from "@vibecodinger/shared/providerAuthReturnUrl";
 
 export const codexAuthReturnUrl = providerAuthReturnUrl;
 

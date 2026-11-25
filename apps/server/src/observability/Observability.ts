@@ -1,5 +1,5 @@
-import * as HttpObservability from "@t3tools/shared/httpObservability";
-import { makeLocalFileTracer, makeTraceSink } from "@t3tools/shared/observability";
+import * as HttpObservability from "@vibecodinger/shared/httpObservability";
+import { makeLocalFileTracer, makeTraceSink } from "@vibecodinger/shared/observability";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as References from "effect/References";

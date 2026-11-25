@@ -6,8 +6,8 @@ import {
   type VoiceInputControllerDependencies,
   type VoiceInputErrorCode,
   type VoiceInputState,
-} from "@t3tools/client-runtime/voice-input";
-import type { PreparedConnection } from "@t3tools/client-runtime/connection";
+} from "@vibecodinger/client-runtime/voice-input";
+import type { PreparedConnection } from "@vibecodinger/client-runtime/connection";
 import type {
   CloudSpeechModelId,
   CloudSpeechProvider,
@@ -18,9 +18,9 @@ import type {
   SpeechPostProcessingOptions,
   SpeechStreamText,
   SpeechTranscriptionOptions,
-} from "@t3tools/contracts";
-import { DEFAULT_CLIENT_SETTINGS, EnvironmentInternalError } from "@t3tools/contracts";
-import { resolveSpeechVocabulary } from "@t3tools/shared/speech";
+} from "@vibecodinger/contracts";
+import { DEFAULT_CLIENT_SETTINGS, EnvironmentInternalError } from "@vibecodinger/contracts";
+import { resolveSpeechVocabulary } from "@vibecodinger/shared/speech";
 import * as Schema from "effect/Schema";
 import { useEffect, useSyncExternalStore } from "react";
 

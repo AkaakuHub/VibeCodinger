@@ -6,7 +6,7 @@ import {
   OrchestrationV2AppThreadJson,
   OrchestrationV2ProviderSessionJson,
   StorageCleanupReportEntry,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import * as Base64Url from "effect/encoding/Base64Url";
 import * as Schema from "effect/Schema";
 import * as SqlClient from "effect/sql/SqlClient";
@@ -19,11 +19,11 @@ import type {
   WorktreeCleanupRules,
   StorageCleanupReport,
   ThreadId,
-} from "@t3tools/contracts";
-import { writeFileStringAtomically } from "@t3tools/shared/atomicWrite";
-import { resolveWorktreeCleanup } from "@t3tools/shared/projectSettings";
-import { resolveWorktreeAppDataHome } from "@t3tools/shared/devHome";
-import { makeDrainableWorker } from "@t3tools/shared/DrainableWorker";
+} from "@vibecodinger/contracts";
+import { writeFileStringAtomically } from "@vibecodinger/shared/atomicWrite";
+import { resolveWorktreeCleanup } from "@vibecodinger/shared/projectSettings";
+import { resolveWorktreeAppDataHome } from "@vibecodinger/shared/devHome";
+import { makeDrainableWorker } from "@vibecodinger/shared/DrainableWorker";
 import * as Context from "effect/Context";
 import * as Deferred from "effect/Deferred";
 import * as Layer from "effect/Layer";
@@ -63,9 +63,9 @@ import { isNonRepositoryGitStderr } from "./vcs/GitVcsDriverCore.ts";
 import { isLinkedWorktree, removeLinkedWorktree } from "./vcs/worktreeRemoval.ts";
 import * as TaskFolders from "./workspace/TaskFolders.ts";
 import { withWorkspaceLease } from "./workspace/workspaceLease.ts";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import * as NodeSqliteClient from "@t3tools/shared/nodeSqliteClient";
-import { isNetworkPath } from "@t3tools/shared/path";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
+import * as NodeSqliteClient from "@vibecodinger/shared/nodeSqliteClient";
+import { isNetworkPath } from "@vibecodinger/shared/path";
 
 const decodeCleanupThread = Schema.decodeUnknownEffect(
   Schema.fromJsonString(OrchestrationV2AppThreadJson),

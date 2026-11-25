@@ -1,7 +1,7 @@
 import { Button } from "../../components/ui/Button";
 import { AppActivityIndicator } from "../../components/ui/AppActivityIndicator";
 import * as Dialog from "../../components/ui/Dialog";
-import type { EnvironmentId, ThreadId, TurnItemId } from "@t3tools/contracts";
+import type { EnvironmentId, ThreadId, TurnItemId } from "@vibecodinger/contracts";
 import {
   makeMcpAppHost,
   McpAppHostRefusal,
@@ -10,10 +10,10 @@ import {
   type McpAppCallToolResult,
   type McpAppHost,
   type McpAppHostContext,
-} from "@t3tools/client-runtime/mcp-apps";
-import { scopeThreadRef } from "@t3tools/client-runtime/environment";
-import { squashAtomCommandFailure } from "@t3tools/client-runtime/state/runtime";
-import { CommandId, MessageId } from "@t3tools/contracts";
+} from "@vibecodinger/client-runtime/mcp-apps";
+import { scopeThreadRef } from "@vibecodinger/client-runtime/environment";
+import { squashAtomCommandFailure } from "@vibecodinger/client-runtime/state/runtime";
+import { CommandId, MessageId } from "@vibecodinger/contracts";
 import {
   MCP_APP_DOCUMENT_MESSAGE,
   MCP_APP_DOCUMENT_MESSAGE_KEY,
@@ -21,7 +21,7 @@ import {
   mcpAppFileName,
   mcpAppReferencesEqual,
   type McpAppReference,
-} from "@t3tools/shared/mcpApp";
+} from "@vibecodinger/shared/mcpApp";
 import * as Predicate from "effect/Predicate";
 import { AsyncResult } from "effect/reactivity";
 import Constants from "expo-constants";

@@ -7,8 +7,8 @@ import type {
   VcsListRemotesResult,
   VcsListWorkspaceFilesResult,
   VcsRepositoryIdentity,
-} from "@t3tools/contracts";
-import { CheckpointRef } from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
+import { CheckpointRef } from "@vibecodinger/contracts";
 import * as VcsProcess from "./VcsProcess.ts";
 
 export interface VcsCaptureCheckpointInput {

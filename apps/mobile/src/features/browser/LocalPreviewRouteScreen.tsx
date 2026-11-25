@@ -1,6 +1,6 @@
 import { useNavigation, type StaticScreenProps } from "@react-navigation/native";
-import { EnvironmentId } from "@t3tools/contracts";
-import { normalizePreviewUrl } from "@t3tools/shared/preview";
+import { EnvironmentId } from "@vibecodinger/contracts";
+import { normalizePreviewUrl } from "@vibecodinger/shared/preview";
 import { msg, useGT } from "gt-react-native";
 import { useRef, useState } from "react";
 import { View } from "react-native";

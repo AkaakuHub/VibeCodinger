@@ -1,14 +1,14 @@
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
+import { thrownErrorMessage } from "@vibecodinger/client-runtime/errors";
 import { m } from "~/i18n/messages";
-import { scopeProjectRef, scopeThreadRef } from "@t3tools/client-runtime/environment";
+import { scopeProjectRef, scopeThreadRef } from "@vibecodinger/client-runtime/environment";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
-import type { EnvironmentId, ScopedThreadRef } from "@t3tools/contracts";
-import { sourceControlClients } from "@t3tools/client-runtime/source-control-clients";
-import { promptLinkAppPath } from "@t3tools/shared/promptLinks";
-import { readPairingAppLink, resolveRemotePairingTarget } from "@t3tools/shared/remote";
+} from "@vibecodinger/client-runtime/state/runtime";
+import type { EnvironmentId, ScopedThreadRef } from "@vibecodinger/contracts";
+import { sourceControlClients } from "@vibecodinger/client-runtime/source-control-clients";
+import { promptLinkAppPath } from "@vibecodinger/shared/promptLinks";
+import { readPairingAppLink, resolveRemotePairingTarget } from "@vibecodinger/shared/remote";
 import { useRouter } from "@tanstack/react-router";
 import * as Effect from "effect/Effect";
 import { AtomRegistry } from "effect/reactivity";

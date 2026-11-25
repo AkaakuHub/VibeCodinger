@@ -1,9 +1,9 @@
 import { assert, describe, it } from "@effect/vitest";
 import * as NodeServices from "@effect/platform-node/NodeServices";
-import { EDITORS, REMOTE_CAPABLE_EDITOR_IDS } from "@t3tools/contracts";
-import { resolveEditorCommand } from "@t3tools/shared/editor";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { makePathDirectoryListings, PathDirectoryListings } from "@t3tools/shared/shell";
+import { EDITORS, REMOTE_CAPABLE_EDITOR_IDS } from "@vibecodinger/contracts";
+import { resolveEditorCommand } from "@vibecodinger/shared/editor";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
+import { makePathDirectoryListings, PathDirectoryListings } from "@vibecodinger/shared/shell";
 import * as FileSystem from "effect/FileSystem";
 import * as Path from "effect/Path";
 import * as Effect from "effect/Effect";

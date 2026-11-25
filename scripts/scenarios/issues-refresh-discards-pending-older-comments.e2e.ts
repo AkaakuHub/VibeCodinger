@@ -1,5 +1,10 @@
 /// <reference lib="dom" />
-import type { IssueComment, IssueCommentsPage, IssueDetail, IssueRef } from "@t3tools/contracts";
+import type {
+  IssueComment,
+  IssueCommentsPage,
+  IssueDetail,
+  IssueRef,
+} from "@vibecodinger/contracts";
 import { expect } from "e2e";
 
 import { test, WEB } from "./t3.ts";

@@ -1,4 +1,4 @@
-import { getPairingTokenFromUrl } from "@t3tools/shared/remote";
+import { getPairingTokenFromUrl } from "@vibecodinger/shared/remote";
 
 export interface HostedPairingRequest {
   readonly host: string;

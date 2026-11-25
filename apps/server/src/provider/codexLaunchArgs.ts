@@ -1,4 +1,4 @@
-import { tokenizeCliArgs } from "@t3tools/shared/cliArgs";
+import { tokenizeCliArgs } from "@vibecodinger/shared/cliArgs";
 
 const VIBECODINGER_CODEX_LAUNCH_ARGS_ENV = "VIBECODINGER_CODEX_LAUNCH_ARGS";
 

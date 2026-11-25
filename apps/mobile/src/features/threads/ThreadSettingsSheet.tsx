@@ -1,16 +1,16 @@
 import {
   getPromptControlledTraits,
   getTraitSelectChange,
-} from "@t3tools/client-runtime/model-traits";
+} from "@vibecodinger/client-runtime/model-traits";
 import { T, useGT, useLocale, useMessages } from "gt-react-native";
 import * as Dialog from "../../components/ui/Dialog";
 import { createV5StackNavigator as createNativeStackNavigator } from "../../native/createV5StackNavigator";
 import { useSheetStackOptions } from "../layout/nested-stacks";
-import { DEFAULT_SERVER_SETTINGS, ProviderInstanceId } from "@t3tools/contracts";
+import { DEFAULT_SERVER_SETTINGS, ProviderInstanceId } from "@vibecodinger/contracts";
 import {
   modelPreferencesMigrationPatch,
   resolveModelPreferences,
-} from "@t3tools/shared/serverSettings";
+} from "@vibecodinger/shared/serverSettings";
 import type {
   EnvironmentId,
   ModelSelection,
@@ -20,14 +20,14 @@ import type {
   RuntimeMode,
   ServerSettings,
   ThreadId,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import type { LegendListRenderItemProps } from "@legendapp/list/react-native";
 import { RegistryContext, useAtomMount, useAtomValue } from "@effect/atom-react";
 import { AnimatedLegendList } from "@legendapp/list/reanimated";
 import {
   getProviderOptionCurrentLabel,
   getProviderOptionCurrentValue,
-} from "@t3tools/shared/model";
+} from "@vibecodinger/shared/model";
 import {
   useNavigation,
   useRoute,
@@ -72,7 +72,7 @@ import {
   type ProviderGroup,
   withStoredThreadModelOptions,
 } from "../../lib/modelOptions";
-import { groupModelsBySubProvider } from "@t3tools/client-runtime/providerSubProviders";
+import { groupModelsBySubProvider } from "@vibecodinger/client-runtime/providerSubProviders";
 import { applyProviderOptionSelection } from "../../lib/providerOptions";
 import { resolveProviderOptionDescriptors } from "../../lib/providerOptions";
 import {
@@ -123,7 +123,7 @@ import {
   providerSectionIsCollapsed,
   visibleCatalogModels,
 } from "./thread-settings-sheet-state";
-import { formatProviderUpdateRequiredNotice } from "@t3tools/client-runtime/providerUpdateRequiredModels";
+import { formatProviderUpdateRequiredNotice } from "@vibecodinger/client-runtime/providerUpdateRequiredModels";
 import type { MessageResolver } from "../../i18n/messages";
 
 const PRIMARY_PROVIDER_DRIVERS: ReadonlySet<string> = new Set([

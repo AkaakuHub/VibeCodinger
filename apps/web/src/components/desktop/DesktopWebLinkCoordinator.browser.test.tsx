@@ -1,6 +1,6 @@
-import { EnvironmentId, ProjectId, ThreadId } from "@t3tools/contracts";
-import { scopeThreadRef } from "@t3tools/client-runtime/environment";
-import type { EnvironmentProject } from "@t3tools/client-runtime/state/shell";
+import { EnvironmentId, ProjectId, ThreadId } from "@vibecodinger/contracts";
+import { scopeThreadRef } from "@vibecodinger/client-runtime/environment";
+import type { EnvironmentProject } from "@vibecodinger/client-runtime/state/shell";
 import { AsyncResult, type Atom } from "effect/reactivity";
 import { expect, it, vi } from "vite-plus/test";
 

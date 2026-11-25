@@ -1,7 +1,11 @@
-import { ProviderDriverKind, ProviderInstanceId, type ServerProvider } from "@t3tools/contracts";
+import {
+  ProviderDriverKind,
+  ProviderInstanceId,
+  type ServerProvider,
+} from "@vibecodinger/contracts";
 import { describe, expect, it } from "vite-plus/test";
 import { deriveProviderInstanceEntries } from "../../providerInstances";
-import { hasDismissedResumeCompaction } from "@t3tools/client-runtime/state/context-window";
+import { hasDismissedResumeCompaction } from "@vibecodinger/client-runtime/state/context-window";
 import { hasAvailableCompactionProvider } from "./compaction.logic";
 
 function claudeProvider(input: {

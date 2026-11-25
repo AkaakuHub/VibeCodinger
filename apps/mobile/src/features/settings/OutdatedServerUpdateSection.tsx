@@ -1,8 +1,8 @@
 import { useGT, useMessages } from "gt-react-native";
 import { useAtom, useAtomValue } from "@effect/atom-react";
-import { serverUpdateFailureText } from "@t3tools/client-runtime/state/server";
-import { squashAtomCommandFailure } from "@t3tools/client-runtime/state/runtime";
-import type { EnvironmentId } from "@t3tools/contracts";
+import { serverUpdateFailureText } from "@vibecodinger/client-runtime/state/server";
+import { squashAtomCommandFailure } from "@vibecodinger/client-runtime/state/runtime";
+import type { EnvironmentId } from "@vibecodinger/contracts";
 import { AsyncResult } from "effect/reactivity";
 import { useState } from "react";
 import { View } from "react-native";

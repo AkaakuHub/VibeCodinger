@@ -1,4 +1,4 @@
-import type { ProjectId, ProjectScript, ServerSettings } from "@t3tools/contracts";
+import type { ProjectId, ProjectScript, ServerSettings } from "@vibecodinger/contracts";
 
 type ProjectScriptSettings = Pick<
   ServerSettings,

@@ -21,12 +21,12 @@ import {
   TurnItemId,
   type ModelSelection,
   type OrchestrationV2DomainEvent,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import {
   expandAssistantCitationsForProvider,
   serializeAssistantCitation,
-} from "@t3tools/shared/assistantCitations";
-import { projectComposerContextForProvider } from "@t3tools/shared/composerContextReferences";
+} from "@vibecodinger/shared/assistantCitations";
+import { projectComposerContextForProvider } from "@vibecodinger/shared/composerContextReferences";
 import * as DateTime from "effect/DateTime";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
@@ -48,9 +48,9 @@ import * as ServerSettings from "../serverSettings.ts";
 import * as SqlitePersistence from "../persistence/Sqlite.ts";
 import * as CommandReceiptStore from "./CommandReceiptStore.ts";
 import { userFacingDispatchErrorMessage } from "./UserFacingErrors.ts";
-import { checkpointWorkspace } from "@t3tools/provider-testing/replayWorkspace";
-import * as ProviderAdapter from "@t3tools/provider-core/server/ProviderAdapter";
-import * as ProviderContinuationRequests from "@t3tools/provider-core/server/ProviderContinuationRequests";
+import { checkpointWorkspace } from "@vibecodinger/provider-testing/replayWorkspace";
+import * as ProviderAdapter from "@vibecodinger/provider-core/server/ProviderAdapter";
+import * as ProviderContinuationRequests from "@vibecodinger/provider-core/server/ProviderContinuationRequests";
 
 const driver = ProviderDriverKind.make("codex");
 const instanceId = ProviderInstanceId.make("codex");

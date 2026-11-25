@@ -9,8 +9,8 @@ import {
   type PeerLinkSummary,
   resolveEnvironmentMachineKind,
   type ServerConfig,
-} from "@t3tools/contracts";
-import { isLocalLoopbackHost } from "@t3tools/shared/hostClassification";
+} from "@vibecodinger/contracts";
+import { isLocalLoopbackHost } from "@vibecodinger/shared/hostClassification";
 import * as Option from "effect/Option";
 
 import type { EnvironmentPresentation } from "./connection/presentation.ts";

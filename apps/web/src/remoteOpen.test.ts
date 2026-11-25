@@ -5,8 +5,8 @@ import {
   RelayConnectionTarget,
   SshConnectionProfile,
   SshConnectionTarget,
-} from "@t3tools/client-runtime/connection";
-import { buildRemoteOpenUrl, EnvironmentId } from "@t3tools/contracts";
+} from "@vibecodinger/client-runtime/connection";
+import { buildRemoteOpenUrl, EnvironmentId } from "@vibecodinger/contracts";
 import * as Option from "effect/Option";
 import { describe, expect, it } from "vite-plus/test";
 

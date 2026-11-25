@@ -3,7 +3,7 @@ import {
   AuthOrchestrationOperateScope,
   EnvironmentHttpApi,
   requiredScopesForProjectMutation,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import * as Effect from "effect/Effect";
 import * as HttpApiBuilder from "effect/http-api/HttpApiBuilder";
 

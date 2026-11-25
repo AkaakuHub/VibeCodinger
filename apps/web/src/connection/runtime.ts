@@ -1,10 +1,10 @@
-import { Connection } from "@t3tools/client-runtime/connection";
-import { ShellSnapshotLoader } from "@t3tools/client-runtime/state/shell";
+import { Connection } from "@vibecodinger/client-runtime/connection";
+import { ShellSnapshotLoader } from "@vibecodinger/client-runtime/state/shell";
 import {
   BoundedThreadSnapshotLoader,
   ThreadHistoryController,
-} from "@t3tools/client-runtime/state/threads";
-import { PullRequestDiffLoader } from "@t3tools/client-runtime/state/pull-requests";
+} from "@vibecodinger/client-runtime/state/threads";
+import { PullRequestDiffLoader } from "@vibecodinger/client-runtime/state/pull-requests";
 import * as Layer from "effect/Layer";
 import { Atom } from "effect/reactivity";
 

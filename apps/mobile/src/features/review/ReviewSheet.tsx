@@ -1,7 +1,10 @@
-import { settlePromise, squashAtomCommandFailure } from "@t3tools/client-runtime/state/runtime";
+import {
+  settlePromise,
+  squashAtomCommandFailure,
+} from "@vibecodinger/client-runtime/state/runtime";
 import { AsyncResult } from "effect/reactivity";
-import type { EnvironmentId, ThreadId } from "@t3tools/contracts";
-import { formatDiffCount } from "@t3tools/client-runtime/diff-count";
+import type { EnvironmentId, ThreadId } from "@vibecodinger/contracts";
+import { formatDiffCount } from "@vibecodinger/client-runtime/diff-count";
 import { LegendList } from "@legendapp/list/react-native";
 import { useNavigation, type StaticScreenProps } from "@react-navigation/native";
 import { AppBar } from "../../components/ui/AppBar";

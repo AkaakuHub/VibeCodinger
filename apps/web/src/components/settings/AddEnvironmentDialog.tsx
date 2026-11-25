@@ -1,4 +1,4 @@
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
+import { thrownErrorMessage } from "@vibecodinger/client-runtime/errors";
 import { m } from "~/i18n/messages";
 import { pipe } from "effect/Function";
 import { ChevronsLeftRightEllipsisIcon, PlusIcon, TerminalIcon } from "lucide-react";
@@ -8,15 +8,15 @@ import { T, useGT, useMessages, Var } from "gt-react";
 import {
   type DesktopDiscoveredSshHost,
   type DesktopSshEnvironmentTarget,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import {
   RelayConnectionRegistration,
   RelayConnectionTarget,
-} from "@t3tools/client-runtime/connection";
+} from "@vibecodinger/client-runtime/connection";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
+} from "@vibecodinger/client-runtime/state/runtime";
 import * as Option from "effect/Option";
 
 import { cn } from "../../lib/utils";

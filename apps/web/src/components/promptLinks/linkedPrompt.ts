@@ -1,4 +1,4 @@
-import type { LinkedPrompt } from "@t3tools/shared/promptLinks";
+import type { LinkedPrompt } from "@vibecodinger/shared/promptLinks";
 import { msg } from "gt-react";
 
 import { type ComposerThreadTarget, useComposerDraftStore } from "~/composerDraftStore";

@@ -1,4 +1,4 @@
-import type { EnvironmentId, ScopedThreadRef } from "@t3tools/contracts";
+import type { EnvironmentId, ScopedThreadRef } from "@vibecodinger/contracts";
 import { useNavigate } from "@tanstack/react-router";
 import { useGT, useMessages } from "gt-react";
 import { MessagesSquareIcon } from "lucide-react";
@@ -7,9 +7,9 @@ import {
   guessThreadLinkRef,
   threadLinkCandidates,
   type ThreadLink,
-} from "@t3tools/shared/threadLinks";
-import { unknownThreadLinkLabel } from "@t3tools/shared/threadLinksCopy";
-import { resolveLinkedThreadOpen } from "@t3tools/client-runtime/linked-thread";
+} from "@vibecodinger/shared/threadLinks";
+import { unknownThreadLinkLabel } from "@vibecodinger/shared/threadLinksCopy";
+import { resolveLinkedThreadOpen } from "@vibecodinger/client-runtime/linked-thread";
 
 import { useThreadRefs, useThreadShell } from "../../state/entities";
 import { useConnectedEnvironmentIds, useEnvironmentIdentities } from "../../state/environments";

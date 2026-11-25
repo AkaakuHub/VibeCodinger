@@ -6,8 +6,8 @@ import {
   type ServerProvider,
   type ServerProviderUpdatedPayload,
   type ServerProviderUpdateState,
-} from "@t3tools/contracts";
-import { resolveSpawnCommand } from "@t3tools/shared/shell";
+} from "@vibecodinger/contracts";
+import { resolveSpawnCommand } from "@vibecodinger/shared/shell";
 import * as Cause from "effect/Cause";
 import * as Context from "effect/Context";
 import * as DateTime from "effect/DateTime";
@@ -34,10 +34,10 @@ import {
   resolveLatestProviderUpdateAction,
   resolveLatestProviderVersion,
   type ProviderMaintenanceCommandAction,
-} from "@t3tools/provider-core/server/maintenanceResolver";
-import * as ProviderLatestVersions from "@t3tools/provider-core/server/ProviderLatestVersions";
-import type { ProviderMaintenanceCapabilities } from "@t3tools/provider-core/server/maintenanceResolver";
-import { collectUint8StreamText } from "@t3tools/provider-core/server/collectStreamText";
+} from "@vibecodinger/provider-core/server/maintenanceResolver";
+import * as ProviderLatestVersions from "@vibecodinger/provider-core/server/ProviderLatestVersions";
+import type { ProviderMaintenanceCapabilities } from "@vibecodinger/provider-core/server/maintenanceResolver";
+import { collectUint8StreamText } from "@vibecodinger/provider-core/server/collectStreamText";
 const isServerProviderUpdateError = Schema.is(ServerProviderUpdateError);
 
 const UPDATE_OUTPUT_MAX_BYTES = 10_000;

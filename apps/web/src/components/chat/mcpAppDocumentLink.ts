@@ -1,4 +1,7 @@
-import { MCP_APP_DOCUMENT_MESSAGE, MCP_APP_DOCUMENT_MESSAGE_KEY } from "@t3tools/shared/mcpApp";
+import {
+  MCP_APP_DOCUMENT_MESSAGE,
+  MCP_APP_DOCUMENT_MESSAGE_KEY,
+} from "@vibecodinger/shared/mcpApp";
 
 const MAX_UNCONFIRMED_MESSAGES = 256;
 

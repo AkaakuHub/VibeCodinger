@@ -47,13 +47,13 @@ import {
   ThreadId,
   SERVER_BROWSER_AUTOMATION_CLIENT_ID,
   type PreviewAppearancePreference,
-} from "@t3tools/contracts";
-import { AgentScope, agentScopeLauncherScript } from "@t3tools/shared/AgentScope";
-import { writeFileStringAtomically } from "@t3tools/shared/atomicWrite";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { appLinkUrl } from "@t3tools/shared/appLinks";
-import { normalizePreviewUrl } from "@t3tools/shared/preview";
-import { resolvePreviewViewport } from "@t3tools/shared/previewViewport";
+} from "@vibecodinger/contracts";
+import { AgentScope, agentScopeLauncherScript } from "@vibecodinger/shared/AgentScope";
+import { writeFileStringAtomically } from "@vibecodinger/shared/atomicWrite";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
+import { appLinkUrl } from "@vibecodinger/shared/appLinks";
+import { normalizePreviewUrl } from "@vibecodinger/shared/preview";
+import { resolvePreviewViewport } from "@vibecodinger/shared/previewViewport";
 import * as NodeCrypto from "node:crypto";
 import * as NodeFSP from "node:fs/promises";
 import * as NodePath from "node:path";

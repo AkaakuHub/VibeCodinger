@@ -27,9 +27,9 @@ import {
   type VcsStatusLocalResult,
   type VcsStatusRemoteResult,
   type VcsStatusResult,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 
-import { trimAsciiWhitespace } from "@t3tools/contracts";
+import { trimAsciiWhitespace } from "@vibecodinger/contracts";
 import * as GitManager from "./GitManager.ts";
 import * as GitVcsDriver from "../vcs/GitVcsDriver.ts";
 import * as VcsDriverRegistry from "../vcs/VcsDriverRegistry.ts";

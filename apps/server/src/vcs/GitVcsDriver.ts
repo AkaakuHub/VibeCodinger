@@ -39,10 +39,10 @@ import {
   type VcsStatusInput,
   type VcsStatusResult,
   type WorktreeSubmodules,
-} from "@t3tools/contracts";
-import { isMissingExecutable } from "@t3tools/source-control-core/server/discovery";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { quoteGitPatchPath } from "@t3tools/shared/gitPatchPath";
+} from "@vibecodinger/contracts";
+import { isMissingExecutable } from "@vibecodinger/source-control-core/server/discovery";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
+import { quoteGitPatchPath } from "@vibecodinger/shared/gitPatchPath";
 import {
   makeGitVcsDriverCore,
   PATCH_RENDER_PREFIX_ARGS,

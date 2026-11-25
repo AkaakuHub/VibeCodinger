@@ -3,14 +3,14 @@ import {
   compactDynamicToolOutput,
   mcpToolResultOutput,
   toolOutputImages,
-} from "@t3tools/shared/toolOutput";
+} from "@vibecodinger/shared/toolOutput";
 import { makeProviderTextDeltaCoalescer } from "./ProviderTextDeltaCoalescer.ts";
 import { claudeTaskOutputRoot, tailClaudeTaskOutput } from "./ClaudeTaskOutputTail.ts";
 import {
   dynamicToolTitle,
   formatReadToolLabel,
   formatSearchToolLabel,
-} from "@t3tools/shared/toolActivity";
+} from "@vibecodinger/shared/toolActivity";
 import { field, text } from "../unknownField.ts";
 import { mergeWorkflowAgentMetadata, type WorkflowAgentMetadata } from "../workflowAgentAnswers.ts";
 import {
@@ -25,8 +25,8 @@ import {
   parseClaudeWorkflowRunHandles,
 } from "./claudeWorkflowProgress.ts";
 
-import { isWorkspaceImagePreviewPath } from "@t3tools/shared/filePreview";
-import { pastedUrl } from "@t3tools/shared/oauthCallback";
+import { isWorkspaceImagePreviewPath } from "@vibecodinger/shared/filePreview";
+import { pastedUrl } from "@vibecodinger/shared/oauthCallback";
 import {
   addClaudeLedgerUsage,
   claudeLedgerDelta,
@@ -73,26 +73,26 @@ import type {
 // @effect-diagnostics-next-line nodeBuiltinImport:off -- the SDK takes a Node ChildProcess for the CLI.
 import * as NodeChildProcess from "node:child_process";
 import * as NodeUtil from "node:util";
-import { parseCliArgs } from "@t3tools/shared/cliArgs";
-import { fromLenientJson } from "@t3tools/shared/schemaJson";
+import { parseCliArgs } from "@vibecodinger/shared/cliArgs";
+import { fromLenientJson } from "@vibecodinger/shared/schemaJson";
 import {
   claudeMcpToolName,
   claudeMcpToolNamePart,
   claudeMcpToolPrefix,
   MCP_APP_OUTPUT_KEY,
   mcpAppToolResourceUri,
-} from "@t3tools/shared/mcpApp";
-import { AgentScope } from "@t3tools/shared/AgentScope";
+} from "@vibecodinger/shared/mcpApp";
+import { AgentScope } from "@vibecodinger/shared/AgentScope";
 import * as ProviderProcesses from "../../process/providerProcesses.ts";
 import * as SpawnWorker from "../../process/SpawnWorker.ts";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { applyClaudePromptEffortPrefix } from "@t3tools/shared/model";
-import { compareSemverVersions } from "@t3tools/shared/semver";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
+import { applyClaudePromptEffortPrefix } from "@vibecodinger/shared/model";
+import { compareSemverVersions } from "@vibecodinger/shared/semver";
 import {
   CLAUDE_RESUME_COMPACTION_COMPACT_ANSWER,
   CLAUDE_RESUME_COMPACTION_NEVER_ANSWER,
   formatClaudeResumeCompactionQuestion,
-} from "@t3tools/shared/claudeCompaction";
+} from "@vibecodinger/shared/claudeCompaction";
 import {
   type AgentFeedbackMode,
   type ChatAttachment,
@@ -137,7 +137,7 @@ import {
   type ThreadId,
   resolveIdleCompaction,
   isDelegatedAppThread,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 
 import { FILE_HEADERS_ONLY, formatPatch, structuredPatch } from "diff";
 import * as Cause from "effect/Cause";
@@ -193,9 +193,9 @@ import * as ServerConfig from "../../config.ts";
 import * as PortScanner from "../../preview/PortScanner.ts";
 import * as ProcessRunner from "../../processRunner.ts";
 import * as ServerSettings from "../../serverSettings.ts";
-import { expandHomePath } from "@t3tools/provider-core/server/pathExpansion";
-import { spawnAndCollect } from "@t3tools/provider-core/server/snapshotProbe";
-import { signalProcessGroup } from "@t3tools/provider-core/server/processGroup";
+import { expandHomePath } from "@vibecodinger/provider-core/server/pathExpansion";
+import { spawnAndCollect } from "@vibecodinger/provider-core/server/snapshotProbe";
+import { signalProcessGroup } from "@vibecodinger/provider-core/server/processGroup";
 import {
   claudeLocalSettingsDirectory,
   claudeSignedOutMessage,
@@ -216,47 +216,47 @@ import {
   boundProviderEventForLogging,
   shouldPersistProviderEvent,
 } from "../../provider/EventNdjsonLogger.ts";
-import * as ProviderEventLoggers from "@t3tools/provider-core/server/ProviderEventLoggers";
+import * as ProviderEventLoggers from "@vibecodinger/provider-core/server/ProviderEventLoggers";
 import {
   claudeRateLimitEventToUpdate,
   type ClaudeScopedLimitNames,
 } from "../../provider/claudeUsageLimits.ts";
-import type { ManagedServerProvider } from "@t3tools/provider-core/server/snapshot";
+import type { ManagedServerProvider } from "@vibecodinger/provider-core/server/snapshot";
 import {
   T3_CODE_DEVICE_TOOL_INSTRUCTIONS_WITH_TOOL_SEARCH,
   T3_CODE_ORCHESTRATION_INSTRUCTIONS,
-} from "@t3tools/provider-core/server/orchestrationInstructions";
-import { buildRuntimeInstructions } from "@t3tools/provider-core/server/runtimeInstructions";
+} from "@vibecodinger/provider-core/server/orchestrationInstructions";
+import { buildRuntimeInstructions } from "@vibecodinger/provider-core/server/runtimeInstructions";
 import {
   mcpToolPresentation,
   normalizeMcpText,
-} from "@t3tools/provider-core/server/mcpToolPresentation";
-import * as McpProviderSession from "@t3tools/provider-core/server/mcpSession";
-import * as McpProviderSessions from "@t3tools/provider-core/server/McpProviderSessions";
-import * as IdAllocator from "@t3tools/provider-core/server/IdAllocator";
+} from "@vibecodinger/provider-core/server/mcpToolPresentation";
+import * as McpProviderSession from "@vibecodinger/provider-core/server/mcpSession";
+import * as McpProviderSessions from "@vibecodinger/provider-core/server/McpProviderSessions";
+import * as IdAllocator from "@vibecodinger/provider-core/server/IdAllocator";
 import {
   makeProviderFailure,
   makeProviderRetryTurnItem,
   PROVIDER_RETRY_BUDGET_MS,
   providerProcessExitGuidance,
-} from "@t3tools/provider-core/server/failure";
-import { turnScopedSelectionTransition } from "@t3tools/provider-core/server/selectionTransition";
-import { providerMessageTextWithAttachmentPaths } from "@t3tools/provider-core/server/attachmentPrompt";
-import * as ProviderAdapter from "@t3tools/provider-core/server/ProviderAdapter";
+} from "@vibecodinger/provider-core/server/failure";
+import { turnScopedSelectionTransition } from "@vibecodinger/provider-core/server/selectionTransition";
+import { providerMessageTextWithAttachmentPaths } from "@vibecodinger/provider-core/server/attachmentPrompt";
+import * as ProviderAdapter from "@vibecodinger/provider-core/server/ProviderAdapter";
 import {
   ProviderAdapterDriverCreateError,
   type ProviderAdapterDriverCreateInput,
-} from "@t3tools/provider-core/server/adapterDriver";
+} from "@vibecodinger/provider-core/server/adapterDriver";
 import {
   type BackgroundWorkReport,
   backgroundWorkNotification,
-} from "@t3tools/provider-core/server/notification";
-import * as ProviderContinuationRequests from "@t3tools/provider-core/server/ProviderContinuationRequests";
+} from "@vibecodinger/provider-core/server/notification";
+import * as ProviderContinuationRequests from "@vibecodinger/provider-core/server/ProviderContinuationRequests";
 import {
   makeSubagentChildThread,
   makeSubagentConversationArtifacts,
   subagentThreadTitle,
-} from "@t3tools/provider-core/server/subagentProjection";
+} from "@vibecodinger/provider-core/server/subagentProjection";
 
 export const CLAUDE_PROVIDER = ProviderDriverKind.make("claudeAgent");
 /** The query exited before the turn attached, so the prompt was never offered. */

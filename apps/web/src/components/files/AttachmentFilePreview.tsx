@@ -1,16 +1,16 @@
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
-import { filePreviewDelimiter } from "@t3tools/shared/delimitedPreview";
-import type { AssetResource, EnvironmentId, ScopedThreadRef } from "@t3tools/contracts";
-import { formatAttachmentSize } from "@t3tools/client-runtime/state/attachments";
-import { readFilePreviewResponse } from "@t3tools/client-runtime/file-preview";
-import { settlePromise } from "@t3tools/client-runtime/state/runtime";
+import { thrownErrorMessage } from "@vibecodinger/client-runtime/errors";
+import { filePreviewDelimiter } from "@vibecodinger/shared/delimitedPreview";
+import type { AssetResource, EnvironmentId, ScopedThreadRef } from "@vibecodinger/contracts";
+import { formatAttachmentSize } from "@vibecodinger/client-runtime/state/attachments";
+import { readFilePreviewResponse } from "@vibecodinger/client-runtime/file-preview";
+import { settlePromise } from "@vibecodinger/client-runtime/state/runtime";
 import * as AsyncResult from "effect/reactivity/AsyncResult";
 import * as Cause from "effect/Cause";
 import {
   filePreviewKind,
   officePreviewKind,
   FILE_TEXT_PREVIEW_MAX_BYTES,
-} from "@t3tools/shared/filePreview";
+} from "@vibecodinger/shared/filePreview";
 import {
   ChevronRightIcon,
   DownloadIcon,
@@ -29,7 +29,7 @@ import { m, type MessageResolver } from "~/i18n/messages";
 
 import { useAssetUrlRefresh } from "~/assets/assetUrls";
 import ChatMarkdown from "~/components/ChatMarkdown";
-import { maskMarkdownFrontmatter } from "@t3tools/shared/markdownFrontmatter";
+import { maskMarkdownFrontmatter } from "@vibecodinger/shared/markdownFrontmatter";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { toastManager } from "~/components/ui/toast";
 import { namedClipboardTarget, useCopyToClipboard } from "~/hooks/useCopyToClipboard";

@@ -7,8 +7,8 @@ import type {
   OrchestrationV2HistoricalMessage,
   OrchestrationV2ProviderThread,
   OrchestrationV2TurnItem,
-} from "@t3tools/contracts";
-import { withMessageSenderNote } from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
+import { withMessageSenderNote } from "@vibecodinger/contracts";
 
 import * as Config from "effect/Config";
 

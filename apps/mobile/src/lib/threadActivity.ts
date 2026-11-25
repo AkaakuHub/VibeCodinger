@@ -1,24 +1,24 @@
 import type {
   ThreadPendingApproval,
   ThreadPendingUserInput,
-} from "@t3tools/client-runtime/state/thread-requests";
-import { linkRequestTargetName } from "@t3tools/client-runtime/link-request";
-import { turnItemIsWorkspacePreparation } from "@t3tools/client-runtime/state/turn-item-presentation";
-import { formatSubagentDisplayTitle } from "@t3tools/client-runtime/state/subagent-display";
+} from "@vibecodinger/client-runtime/state/thread-requests";
+import { linkRequestTargetName } from "@vibecodinger/client-runtime/link-request";
+import { turnItemIsWorkspacePreparation } from "@vibecodinger/client-runtime/state/turn-item-presentation";
+import { formatSubagentDisplayTitle } from "@vibecodinger/client-runtime/state/subagent-display";
 import {
   isLiveSubagentTurnItem,
   waitingOnSubagentsLabel,
-} from "@t3tools/client-runtime/state/subagentRuntime";
-import { extractToolActivityPresentation } from "@t3tools/client-runtime/work-log/tool-presentation";
+} from "@vibecodinger/client-runtime/state/subagentRuntime";
+import { extractToolActivityPresentation } from "@vibecodinger/client-runtime/work-log/tool-presentation";
 import {
   turnItemDetailRevision,
   turnItemHasDetail,
   turnItemNeedsDetailFetch,
-} from "@t3tools/client-runtime/work-log/item-detail";
+} from "@vibecodinger/client-runtime/work-log/item-detail";
 import {
   commandDisplayText,
   commandProgramName,
-} from "@t3tools/client-runtime/work-log/command-label";
+} from "@vibecodinger/client-runtime/work-log/command-label";
 import {
   commandlessCommandLabel,
   contextCompactionLabel,
@@ -35,14 +35,14 @@ import {
   type WorkLogPresentationEntry,
   type WorkLogToolLifecycleStatus,
   workEntryHiddenByToolCallVisibility,
-} from "@t3tools/client-runtime/work-log/presentation";
-import type { ToolCallVisibility } from "@t3tools/contracts/settings";
+} from "@vibecodinger/client-runtime/work-log/presentation";
+import type { ToolCallVisibility } from "@vibecodinger/contracts/settings";
 import {
   resolveT3McpToolDefinition,
   type T3McpToolLogo,
   type T3McpToolPresentation,
-} from "@t3tools/shared/t3McpToolPresentation";
-import { resolveT3McpToolPresentation } from "@t3tools/shared/t3McpToolPresentationCopy";
+} from "@vibecodinger/shared/t3McpToolPresentation";
+import { resolveT3McpToolPresentation } from "@vibecodinger/shared/t3McpToolPresentationCopy";
 import type {
   ChatAttachment,
   MessageId,
@@ -58,36 +58,41 @@ import type {
   RunAttemptId,
   ScheduledTaskId,
   TurnItemId,
-} from "@t3tools/contracts";
-import { idleCompactionOf, isCompactionCommandMessage, RunId, ThreadId } from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
+import {
+  idleCompactionOf,
+  isCompactionCommandMessage,
+  RunId,
+  ThreadId,
+} from "@vibecodinger/contracts";
 import {
   classifyToolActivity,
   collectToolFilePaths,
   isJavaScriptReplTool,
-} from "@t3tools/shared/toolActivity";
+} from "@vibecodinger/shared/toolActivity";
 import {
   dynamicToolTitle,
   formatReadToolLabel,
   formatSearchToolLabel,
-} from "@t3tools/shared/toolActivityCopy";
-import { claudeResumeCompactionAge } from "@t3tools/shared/claudeCompaction";
-import { formatDuration } from "@t3tools/shared/orchestrationTimingCopy";
-import { truncate } from "@t3tools/shared/String";
-import type { HtmlRenderReference } from "@t3tools/shared/htmlRender";
-import type { McpAppReference } from "@t3tools/shared/mcpApp";
+} from "@vibecodinger/shared/toolActivityCopy";
+import { claudeResumeCompactionAge } from "@vibecodinger/shared/claudeCompaction";
+import { formatDuration } from "@vibecodinger/shared/orchestrationTimingCopy";
+import { truncate } from "@vibecodinger/shared/String";
+import type { HtmlRenderReference } from "@vibecodinger/shared/htmlRender";
+import type { McpAppReference } from "@vibecodinger/shared/mcpApp";
 import {
   compactDynamicToolOutput,
   htmlRenderFromToolItem,
   sentMessageFromToolItem,
   mcpAppFromToolItem,
-} from "@t3tools/shared/toolOutput";
+} from "@vibecodinger/shared/toolOutput";
 import * as DateTime from "effect/DateTime";
 import { msg } from "gt-react-native";
 import { m, type MessageResolver } from "../i18n/messages";
 import {
   IDLE_COMPACTION_TITLES,
   IDLE_COMPACTING_LABELS,
-} from "@t3tools/client-runtime/user-message";
+} from "@vibecodinger/client-runtime/user-message";
 
 export type PendingApproval = ThreadPendingApproval;
 export type PendingUserInput = ThreadPendingUserInput;
@@ -136,7 +141,7 @@ export interface ThreadFeedActivity {
 }
 
 export interface ThreadFeedMessage {
-  readonly context?: import("@t3tools/contracts").OrchestrationMessageContext | undefined;
+  readonly context?: import("@vibecodinger/contracts").OrchestrationMessageContext | undefined;
   readonly id: MessageId;
   readonly role: "user" | "assistant";
   readonly text: string;
@@ -148,8 +153,8 @@ export interface ThreadFeedMessage {
   readonly creationSource?: OrchestrationV2CreationSource;
   readonly scheduledTaskId?: ScheduledTaskId;
   readonly senderThreadId?: ThreadId;
-  readonly linkedSender?: import("@t3tools/contracts").OrchestrationV2LinkedSender;
-  readonly idleCompaction?: import("@t3tools/contracts").OrchestrationV2IdleCompaction;
+  readonly linkedSender?: import("@vibecodinger/contracts").OrchestrationV2LinkedSender;
+  readonly idleCompaction?: import("@vibecodinger/contracts").OrchestrationV2IdleCompaction;
   readonly visibility: OrchestrationV2ProjectedTurnItem["visibility"];
   readonly sourceThreadId: ThreadId;
   readonly createdAt: string;

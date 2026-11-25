@@ -1,9 +1,9 @@
-import { formatProviderSkillDisplayName } from "@t3tools/shared/inlineSkills";
-import type { ComposerPathSearchTarget } from "@t3tools/client-runtime/state/threads";
+import { formatProviderSkillDisplayName } from "@vibecodinger/shared/inlineSkills";
+import type { ComposerPathSearchTarget } from "@vibecodinger/client-runtime/state/threads";
 import {
   resolveProviderSkillSourceKind,
   type ProviderSkillSourceKind,
-} from "@t3tools/client-runtime/providerSkills";
+} from "@vibecodinger/client-runtime/providerSkills";
 import {
   type EnvironmentId,
   type EnvironmentMachineKind,
@@ -14,7 +14,7 @@ import {
   type ScopedThreadRef,
   type ServerProviderSkill,
   type ServerProviderSlashCommand,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import {
   BlocksIcon,
   FolderIcon,

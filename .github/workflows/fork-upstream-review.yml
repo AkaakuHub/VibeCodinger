@@ -1,4 +1,4 @@
-name: Propose T3 Code upstream changes
+name: Propose upstream changes
 
 on:
   schedule:
@@ -59,9 +59,14 @@ jobs:
 
           draft=()
           status=0
-          # Import the reviewed tree without publishing unreviewed upstream workflow history.
-          current=$(git commit-tree "$base^{tree}" -p "$reviewed" -m "Current fork tree")
-          git merge-tree --write-tree --name-only "$current" "$upstream" > "$RUNNER_TEMP/upstream-merge.txt" || status=$?
+          guard="$RUNNER_TEMP/check-upstream-removals.py"
+          git show "$base:.github/scripts/check-upstream-removals.py" > "$guard"
+          normalized=$(TMPDIR="$RUNNER_TEMP" python3 "$guard" normalize-package-names "$reviewed" "$upstream")
+          read -r reviewed_tree upstream_tree <<< "$normalized"
+          ancestor=$(git commit-tree "$reviewed_tree" -m "Last reviewed upstream tree")
+          current=$(git commit-tree "$base^{tree}" -p "$ancestor" -m "Current fork tree")
+          incoming=$(git commit-tree "$upstream_tree" -p "$ancestor" -m "Incoming upstream tree")
+          git merge-tree --write-tree --name-only "$current" "$incoming" > "$RUNNER_TEMP/upstream-merge.txt" || status=$?
           if (( status > 1 )); then
             echo "::error::Could not prepare the upstream tree."
             exit 1
@@ -76,8 +81,6 @@ jobs:
           export GIT_WORK_TREE="$RUNNER_TEMP/upstream-review-empty"
           mkdir "$GIT_WORK_TREE"
           git read-tree "$tree"
-          guard="$RUNNER_TEMP/check-upstream-removals.py"
-          git show "$base:.github/scripts/check-upstream-removals.py" > "$guard"
           python3 "$guard" restore "$base" "$tree" > "$RUNNER_TEMP/kept-fork-paths.txt"
           stamp=$(printf '%s\n' "$upstream" | git hash-object -w --stdin)
           git update-index --add --cacheinfo "100644,$stamp,.github/upstream-reviewed"

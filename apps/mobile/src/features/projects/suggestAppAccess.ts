@@ -2,9 +2,9 @@ import type {
   EnvironmentId,
   SourceControlAppAccess,
   SourceControlAppAccessInput,
-} from "@t3tools/contracts";
-import { appSignInTargetForRemote } from "@t3tools/client-runtime/source-control-clients";
-import type { AtomCommandResult } from "@t3tools/client-runtime/state/runtime";
+} from "@vibecodinger/contracts";
+import { appSignInTargetForRemote } from "@vibecodinger/client-runtime/source-control-clients";
+import type { AtomCommandResult } from "@vibecodinger/client-runtime/state/runtime";
 import { msg } from "gt-react-native";
 import { tryOpenExternalUrl } from "../../lib/openExternalUrl";
 

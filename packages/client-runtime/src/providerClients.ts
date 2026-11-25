@@ -4,17 +4,17 @@ import {
   CodexSettings,
   isProviderDriverKind,
   ProviderDriverKind,
-} from "@t3tools/contracts";
-import { acpRegistryClient } from "@t3tools/provider-acp-registry/client";
-import { makeProviderClientRegistry, type ProviderIcon } from "@t3tools/provider-core/client";
-import { modelShortName } from "@t3tools/provider-core/modelShortName";
-import { cursorClient } from "@t3tools/provider-cursor/client";
-import { fxClient } from "@t3tools/provider-fx/client";
-import { grokClient } from "@t3tools/provider-grok/client";
-import { kiroClient } from "@t3tools/provider-kiro/client";
-import { museClient } from "@t3tools/provider-muse/client";
-import { openCodeClient } from "@t3tools/provider-opencode/client";
-import { piClient } from "@t3tools/provider-pi/client";
+} from "@vibecodinger/contracts";
+import { acpRegistryClient } from "@vibecodinger/provider-acp-registry/client";
+import { makeProviderClientRegistry, type ProviderIcon } from "@vibecodinger/provider-core/client";
+import { modelShortName } from "@vibecodinger/provider-core/modelShortName";
+import { cursorClient } from "@vibecodinger/provider-cursor/client";
+import { fxClient } from "@vibecodinger/provider-fx/client";
+import { grokClient } from "@vibecodinger/provider-grok/client";
+import { kiroClient } from "@vibecodinger/provider-kiro/client";
+import { museClient } from "@vibecodinger/provider-muse/client";
+import { openCodeClient } from "@vibecodinger/provider-opencode/client";
+import { piClient } from "@vibecodinger/provider-pi/client";
 
 // OpenRouter's Ink and Cloud glyphs from https://openrouter.ai/brand.
 export const openRouterIcon: ProviderIcon = {

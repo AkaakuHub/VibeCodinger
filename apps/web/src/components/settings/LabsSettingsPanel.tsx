@@ -1,6 +1,6 @@
 import { msg } from "gt-react";
 import { Link } from "@tanstack/react-router";
-import { AgentFeedbackMode } from "@t3tools/contracts";
+import { AgentFeedbackMode } from "@vibecodinger/contracts";
 import { T, useGT, useMessages } from "gt-react";
 
 import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from "../ui/select";

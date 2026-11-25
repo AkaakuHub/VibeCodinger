@@ -1,17 +1,17 @@
 import { useAtomValue } from "@effect/atom-react";
-import { errorDisplayMessage } from "@t3tools/client-runtime/errors";
+import { errorDisplayMessage } from "@vibecodinger/client-runtime/errors";
 import {
   type AtomCommandResult,
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
+} from "@vibecodinger/client-runtime/state/runtime";
 import {
   AuthOrchestrationOperateScope,
   type ChatAttachment,
   type ScopedThreadRef,
   type ThreadGuestMessage,
   type ThreadGuestShare,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import { Atom } from "effect/reactivity";
 import { msg, useGT } from "gt-react-native";
 import { type ReactNode, useMemo, useState } from "react";

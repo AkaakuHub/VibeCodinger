@@ -1,14 +1,17 @@
 import { useAtomRefresh, useAtomValue } from "@effect/atom-react";
-import { errorDisplayMessage } from "@t3tools/client-runtime/errors";
+import { errorDisplayMessage } from "@vibecodinger/client-runtime/errors";
 import { Atom, AsyncResult } from "effect/reactivity";
-import { settlePromise, squashAtomCommandFailure } from "@t3tools/client-runtime/state/runtime";
+import {
+  settlePromise,
+  squashAtomCommandFailure,
+} from "@vibecodinger/client-runtime/state/runtime";
 import * as Dialog from "../components/ui/Dialog";
 import { msg, useMessages } from "gt-react-native";
 import { m } from "../i18n/messages";
-import { filePreviewDelimiter, parseDelimitedPreview } from "@t3tools/shared/delimitedPreview";
-import type { AssetResource, EnvironmentId } from "@t3tools/contracts";
-import { readFilePreviewResponse } from "@t3tools/client-runtime/file-preview";
-import { filePreviewKind, FILE_TEXT_PREVIEW_MAX_BYTES } from "@t3tools/shared/filePreview";
+import { filePreviewDelimiter, parseDelimitedPreview } from "@vibecodinger/shared/delimitedPreview";
+import type { AssetResource, EnvironmentId } from "@vibecodinger/contracts";
+import { readFilePreviewResponse } from "@vibecodinger/client-runtime/file-preview";
+import { filePreviewKind, FILE_TEXT_PREVIEW_MAX_BYTES } from "@vibecodinger/shared/filePreview";
 import { fetch } from "expo/fetch";
 import { File } from "expo-file-system";
 import * as Effect from "effect/Effect";

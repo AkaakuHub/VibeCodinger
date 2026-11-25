@@ -1,4 +1,4 @@
-import type { EnvironmentId } from "@t3tools/contracts";
+import type { EnvironmentId } from "@vibecodinger/contracts";
 
 import { environmentCatalog } from "../../connection/catalog";
 import { updateBearerConnection } from "../../connection/onboarding";

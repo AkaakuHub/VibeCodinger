@@ -1,4 +1,4 @@
-import type { DesktopBridge, DesktopUpdateState } from "@t3tools/contracts";
+import type { DesktopBridge, DesktopUpdateState } from "@vibecodinger/contracts";
 
 import { RELEASES_URL, TRIAGE_CLI_COMMAND } from "../branding.logic";
 

@@ -5,12 +5,12 @@ import type {
   ProviderOptionDescriptor,
   ProviderOptionSelection,
   ServerProviderModel,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import {
   buildProviderOptionSelectionsFromDescriptors,
   getProviderOptionDescriptors,
   withImplicitFastModeDefault,
-} from "@t3tools/shared/model";
+} from "@vibecodinger/shared/model";
 
 export function resolveProviderOptionDescriptors(input: {
   readonly capabilities: ModelCapabilities | null | undefined;

@@ -1,5 +1,5 @@
-import type { ThreadId } from "@t3tools/contracts";
-import * as KeyedLock from "@t3tools/shared/KeyedLock";
+import type { ThreadId } from "@vibecodinger/contracts";
+import * as KeyedLock from "@vibecodinger/shared/KeyedLock";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";

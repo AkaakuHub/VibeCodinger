@@ -1,8 +1,8 @@
-import { isProviderSkillUserInvocable } from "@t3tools/client-runtime/providerSkills";
-import type { ServerProviderSkill } from "@t3tools/contracts";
-import { assistantCitationLabel } from "@t3tools/shared/assistantCitations";
-import { formatProviderSkillDisplayName } from "@t3tools/shared/inlineSkills";
-import { fileDisplayName } from "@t3tools/shared/path";
+import { isProviderSkillUserInvocable } from "@vibecodinger/client-runtime/providerSkills";
+import type { ServerProviderSkill } from "@vibecodinger/contracts";
+import { assistantCitationLabel } from "@vibecodinger/shared/assistantCitations";
+import { formatProviderSkillDisplayName } from "@vibecodinger/shared/inlineSkills";
+import { fileDisplayName } from "@vibecodinger/shared/path";
 import {
   CircleDashedIcon,
   ImageIcon,
