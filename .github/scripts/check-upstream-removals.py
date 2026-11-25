@@ -22,6 +22,8 @@ PROTECTED_PATHS = (
     ".github/triage/PLAYBOOK.md",
     "apps/server/src/guest",
     "apps/web/src/routes/guest.tsx",
+    "apps/web/public/.well-known/apple-app-site-association.json",
+    "apps/web/public/.well-known/assetlinks.json",
     "apps/web/src/components/guest",
     "apps/server/src/cloud/ManagedEndpointRuntime.ts",
     "apps/server/src/cloud/RelayClientLedger.ts",
@@ -119,6 +121,7 @@ FORBIDDEN = re.compile(
     rb"cloudGetRelayClientStatus|cloudInstallRelayClient|cloud\.(?:getRelayClientStatus|installRelayClient)|RelayClientInstallDialog|"
     rb"CloudHttp\.layer|HttpApiBuilder\.layer\(EnvironmentHttpApi\).*connect|"
     rb"CODEX_INTERNAL_ORIGINATOR_OVERRIDE\s*:|CLAUDE_CODE_ENTRYPOINT\s*:\s*['\x22]t3-code|"
+    rb"com\.t3tools\.t3code|"
     rb"VIBECODINGER_REPOSITORY_URL.{0,64}github\.com/pingdotgg/t3code|"
     rb"usePrimaryCloudLinkState|useCloudLinkState|PhoneConnectLink|WebhookDeliveryMode|"
     rb"CloudLinkRow|CloudRemoteEnvironmentRows|useCloudLinkController|relayHttpBaseUrl|t3ConnectMcpUrl|"
