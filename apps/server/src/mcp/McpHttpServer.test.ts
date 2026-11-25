@@ -854,7 +854,7 @@ it.effect("bounds large ARIA trees without dropping every server locator", () =>
     Effect.gen(function* () {
       const accessibilityTree = Array.from(
         { length: 2_000 },
-        (_, index) => `- button "删除 ${index}" [ref=t3-snapshot-e${index}]`,
+        (_, index) => `- button "删除 ${index}" [ref=vc-snapshot-e${index}]`,
       ).join("\n");
       const visibleText = Array.from({ length: 700 }, (_, index) => `Row ${index} value`).join(
         "\n",
@@ -871,7 +871,7 @@ it.effect("bounds large ARIA trees without dropping every server locator", () =>
         visibleText: string;
       };
       expect(metadata.visibleText.slice(0, 1_000)).toBe(visibleText.slice(0, 1_000));
-      expect(metadata.accessibilityTree).toContain("[ref=t3-snapshot-e0]");
+      expect(metadata.accessibilityTree).toContain("[ref=vc-snapshot-e0]");
       expect(metadata.accessibilityTree.length).toBeLessThan(accessibilityTree.length);
       const body = result.content[1];
       expect(Buffer.byteLength(body?.type === "text" ? body.text : "", "utf8")).toBeLessThanOrEqual(
@@ -968,7 +968,7 @@ it.effect("bounds page text made of wide characters before dropping locators", (
     Effect.gen(function* () {
       const accessibilityTree = Array.from(
         { length: 20 },
-        (_, i) => `- button "Button ${i}" [ref=t3-1-e${i}]`,
+        (_, i) => `- button "Button ${i}" [ref=vc-1-e${i}]`,
       ).join("\n");
       yield* serveSnapshots("mcp-wide-text-client", {
         ...snapshotResult,

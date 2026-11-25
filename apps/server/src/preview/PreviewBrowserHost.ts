@@ -75,7 +75,7 @@ export class PreviewBrowserRootError extends Schema.TaggedError<PreviewBrowserRo
   {},
 ) {
   override get message(): string {
-    return "VibeCodinger server is running as root; Chrome's sandbox cannot start. Run VibeCodinger as a nonroot user. Otherwise set `VIBECODINGER_SERVER_BROWSER_SANDBOX=0` in the VibeCodinger server's environment and restart the server; this disables Chrome's sandbox. Manual: `VIBECODINGER_SERVER_BROWSER_SANDBOX=0 vibecodinger serve`. Systemd: add `Environment=VIBECODINGER_SERVER_BROWSER_SANDBOX=0` under `[Service]`, reload systemd, then restart the service. `vibecodinger browser setup` cannot fix root sandboxing.";
+    return "VibeCodinger server is running as root. Run VibeCodinger as a nonroot user to use Chrome's sandbox. Set VIBECODINGER_SERVER_BROWSER_SANDBOX=0 in the VibeCodinger server's environment and restart the server (this disables Chrome's sandbox). For a manual launch, run `VIBECODINGER_SERVER_BROWSER_SANDBOX=0 vibecodinger serve`. For systemd, add `Environment=VIBECODINGER_SERVER_BROWSER_SANDBOX=0` under `[Service]`, reload systemd, and restart the service.";
   }
 }
 
