@@ -3,6 +3,7 @@ package expo.modules.vibecodingerreviewdiff
 import expo.modules.kotlin.Promise
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
+import expo.modules.kotlin.views.ViewDefinitionBuilder
 
 private val REVIEW_DIFF_EVENTS = arrayOf(
   "onDebug",
@@ -82,28 +83,32 @@ class VibeCodingerReviewDiffModule : Module() {
       AsyncFunction("scrollToTop") { view: VibeCodingerReviewDiffView, animated: Boolean ->
         view.scrollToTop(animated)
       }
-      AsyncFunction("setRowsJson") {
-          view: VibeCodingerReviewDiffView,
-          rowsJson: String,
-          resetKey: String
-        ->
-        view.setContentResetKey(resetKey)
-        view.setRowsJson(rowsJson)
-      }
-      AsyncFunction("setTokensJson") { view: VibeCodingerReviewDiffView, tokensJson: String ->
-        view.setTokensJson(tokensJson)
-      }
-      AsyncFunction("setTokensPatchJson") {
-          view: VibeCodingerReviewDiffView,
-          tokensPatchJson: String,
-          promise: Promise
-        ->
-        view.setTokensPatchJson(tokensPatchJson) { accepted -> promise.resolve(accepted) }
-      }
+      registerContentFunctions()
 
       OnViewDestroys { view: VibeCodingerReviewDiffView ->
         view.cleanup()
       }
     }
+  }
+}
+
+private fun ViewDefinitionBuilder<VibeCodingerReviewDiffView>.registerContentFunctions() {
+  AsyncFunction("setRowsJson") {
+      view: VibeCodingerReviewDiffView,
+      rowsJson: String,
+      resetKey: String
+    ->
+    view.setContentResetKey(resetKey)
+    view.setRowsJson(rowsJson)
+  }
+  AsyncFunction("setTokensJson") { view: VibeCodingerReviewDiffView, tokensJson: String ->
+    view.setTokensJson(tokensJson)
+  }
+  AsyncFunction("setTokensPatchJson") {
+      view: VibeCodingerReviewDiffView,
+      tokensPatchJson: String,
+      promise: Promise
+    ->
+    view.setTokensPatchJson(tokensPatchJson) { accepted -> promise.resolve(accepted) }
   }
 }
