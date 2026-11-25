@@ -26,6 +26,9 @@ PROTECTED_PATHS = (
     "apps/desktop/src/app/DesktopClerk.ts",
     "apps/desktop/src/app/DesktopClerk.test.ts",
     "apps/mobile/src/features/cloud",
+    "apps/mobile/src/features/agent-awareness/remoteRegistration.ts",
+    "apps/mobile/src/features/agent-awareness/registrationPayload.ts",
+    "apps/mobile/src/features/agent-awareness/liveActivityPreferences.ts",
     "apps/mobile/src/features/connection/CloudEnvironmentRows.tsx",
     "apps/mobile/src/features/connection/ConnectDeviceApprovalCoordinator.tsx",
     "apps/mobile/src/features/connection/connectDeviceApproval.ts",
@@ -68,6 +71,7 @@ FORBIDDEN = re.compile(
     rb"posthog|captureException\s*\(|sendBeacon\s*\(|opentelemetry/exporter|"
     rb"otlp.{0,48}(?:endpoint|exporter)|cloudflared|"
     rb"relay_public_config|relay.client.tracing.config|VIBECODINGER_TELEMETRY_CHANNEL|"
+    rb"armAgentAwarenessLiveActivityForLocalWork|setAgentAwarenessRelayTokenProvider|registerLiveActivityWithRelay|"
     rb"tailscale.{0,48}funnel|--allow-funnel|https?://[^\s'\x22]*(?:relay|clerk)\.t3\.codes|"
     rb"t3-task-cache\.pinglabs\.workers\.dev|"
     rb"@clerk/(?:expo|react|electron)|cloudAuthProvider|managedAuthShell|"
