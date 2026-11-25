@@ -3,8 +3,8 @@
   "apple": {
     "modules": ["VibeCodingerNativeControlsModule", "VibeCodingerKeyboardCommandsModule"],
     "appDelegateSubscribers": [
-      "VibeCodingerWorkspaceOrientationSubscriber",
-      "VibeCodingerMenuDismissTouchGateSubscriber",
+      "WorkspaceOrientationSubscriber",
+      "MenuDismissTouchGateSubscriber",
       "VibeCodingerBackgroundGraceSubscriber"
     ]
   },

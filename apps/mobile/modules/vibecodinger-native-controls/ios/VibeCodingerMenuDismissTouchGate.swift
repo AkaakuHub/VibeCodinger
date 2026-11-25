@@ -58,7 +58,7 @@ final class VibeCodingerMenuDismissTouchGate: UIGestureRecognizer, UIGestureReco
   }
 }
 
-public final class VibeCodingerMenuDismissTouchGateSubscriber: ExpoAppDelegateSubscriber {
+public final class MenuDismissTouchGateSubscriber: ExpoAppDelegateSubscriber {
   public func subscriberDidRegister() {
     NotificationCenter.default.addObserver(
       self,

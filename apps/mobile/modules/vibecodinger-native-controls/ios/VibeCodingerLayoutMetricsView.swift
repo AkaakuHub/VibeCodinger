@@ -65,7 +65,7 @@ final class VibeCodingerLayoutMetricsView: ExpoView {
   private func publishMetrics() {
     guard let window, bounds.width > 0, bounds.height > 0, let hasHinge else { return }
     if hasHinge {
-      VibeCodingerWorkspaceOrientationSubscriber.allowHingeOrientations(in: window)
+      WorkspaceOrientationSubscriber.allowHingeOrientations(in: window)
     }
     var verticalBarEdge = "none"
     var regions: [[String: Any]] = []
