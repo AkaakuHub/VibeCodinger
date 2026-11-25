@@ -32,7 +32,16 @@ PROTECTED_PATHS = (
     "apps/desktop/src/app/ClerkTokenStore.test.ts",
     "apps/desktop/src/app/DesktopClerk.ts",
     "apps/desktop/src/app/DesktopClerk.test.ts",
-    "apps/mobile/src/features/cloud",
+    "apps/mobile/src/features/cloud/managedRelayLayer.ts",
+    "apps/mobile/src/features/cloud/managedRelayLayer.test.ts",
+    "apps/mobile/src/features/cloud/managedRelayTokenStore.ts",
+    "apps/mobile/src/features/cloud/managedRelayTokenStore.test.ts",
+    "apps/mobile/src/features/cloud/publicConfig.ts",
+    "apps/mobile/src/features/cloud/publicConfig.test.ts",
+    "apps/web/src/cloud/managedRelayLayer.ts",
+    "apps/web/src/cloud/publicConfig.ts",
+    "apps/web/src/cloud/publicConfig.test.ts",
+    "packages/client-runtime/src/relay/managedRelay.test.ts",
     "apps/mobile/scripts/sourcemap-upload.mts",
     "apps/mobile/scripts/upload-sourcemaps.mts",
     "apps/mobile/modules/t3-agent-notifications",
@@ -90,6 +99,7 @@ FORBIDDEN = re.compile(
     rb"ProcessGroupMetrics\.layer|otelEnvironment:\s*(?:OtelEnvironment|otel)\b|"
     rb"getRelayTelemetryEnabled|parsePersistedServerObservabilitySettings|observabilitySettings\.otlp|"
     rb"\b(?:t3Home|t3_home|t3-home)\b|"
+    rb"VIBECODINGER_RELAY_URL|HttpApiClient\.make\(RelayApi\b|"
     rb"relay_public_config|relay.client.tracing.config|VIBECODINGER_TELEMETRY_CHANNEL|"
     rb"MOBILE_SOURCEMAPS_R2|upload-sourcemaps\.mts|mobileSourceMapsUploadCredentials|"
     rb"armAgentAwarenessLiveActivityForLocalWork|setAgentAwarenessRelayTokenProvider|registerLiveActivityWithRelay|"
@@ -117,7 +127,6 @@ SOURCE_SUFFIXES = (
 FORK_GUARDS = (
     ("apps/server/src/server.ts", b"HttpApiBuilder.layer(EnvironmentServerHttpApi)"),
     ("apps/server/src/policy/ManagedPolicy.ts", b"connectDisabled: true"),
-    ("apps/web/vite.config.ts", b'const configuredRelayUrl = "";'),
     ("apps/web/vite.config.ts", b'const configuredClerkPublishableKey = "";'),
 )
 

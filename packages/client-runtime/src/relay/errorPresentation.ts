@@ -137,7 +137,7 @@ export function relayProtectedErrorMessage(
 
 // The relay cuts off a request it cannot finish in time with a 504 that no
 // endpoint declares, so the client sees only the status.
-export const RELAY_GATEWAY_TIMEOUT_MESSAGE = msg(
+const RELAY_GATEWAY_TIMEOUT_MESSAGE = msg(
   "Relay timed out before it finished the request (HTTP 504). Try again in a few minutes. If it keeps failing, copy the trace ID when you report it.",
 );
 
@@ -150,15 +150,4 @@ export function relayRequestFailureText(error: {
   if (error.status !== undefined)
     return [msg("Relay returned an unexpected HTTP {status}.", { status: error.status })];
   return null;
-}
-
-export function relayRequestFailureDetail(
-  error: {
-    readonly relayError?: RelayProtectedError | undefined;
-    readonly status?: number | undefined;
-  },
-  resolve: MFunctionType = mFallback,
-): string | null {
-  const text = relayRequestFailureText(error);
-  return text === null ? null : resolveMarkedText(text, resolve);
 }

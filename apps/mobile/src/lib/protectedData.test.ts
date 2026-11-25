@@ -11,6 +11,7 @@ const mocks = vi.hoisted(() => ({
   readStorage: vi.fn<() => Promise<void>>(),
 }));
 
+vi.mock("expo-crypto", () => ({ getRandomValues: vi.fn() }));
 vi.mock("expo", () => ({
   requireOptionalNativeModule: () => ({
     ...(mocks.nativeCheckSupported && {
@@ -44,12 +45,8 @@ vi.mock("../persistence/layer", async () => {
 vi.mock("../features/cloud/dpop", async () => ({
   layer: (await import("effect/Layer")).empty,
 }));
-vi.mock("../features/cloud/managedRelayLayer", async () => {
-  const Layer = await import("effect/Layer");
-  return { layer: () => Layer.empty };
-});
-vi.mock("../features/cloud/publicConfig", () => ({
-  resolveCloudPublicConfig: () => ({ relay: { url: null } }),
+vi.mock("../features/cloud/dpopSigner", async () => ({
+  layer: (await import("effect/Layer")).empty,
 }));
 vi.mock("@vibecodinger/client-runtime/rpc", async () => {
   const Layer = await import("effect/Layer");
