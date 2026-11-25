@@ -1,0 +1,128 @@
+name: Fork iPhone IPA
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/fork-ios-ipa.yml"
+      - "apps/mobile/**"
+      - "packages/**"
+      - "pnpm-lock.yaml"
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "New draft release tag, for example ios-v2.3.0"
+        type: string
+        required: true
+
+permissions: {}
+
+concurrency:
+  group: fork-ios-ipa-${{ github.event.pull_request.number || inputs.release_tag }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  package:
+    if: >-
+      github.repository == 'AkaakuHub/t3code' &&
+      ((github.event_name == 'pull_request' &&
+        github.event.pull_request.head.repo.full_name == github.repository &&
+        !startsWith(github.head_ref, 'review/t3-upstream-')) ||
+       (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'))
+    runs-on: xcode-27
+    timeout-minutes: 60
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout build source
+        shell: bash
+        run: |
+          git init .
+          git fetch --no-tags --depth=1 "https://github.com/$GITHUB_REPOSITORY.git" "$GITHUB_SHA"
+          git sparse-checkout set --no-cone '/*' '!/.repos/'
+          git checkout --detach FETCH_HEAD
+
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@250f29ce396baf5e8f24498e17c0dfdebabc26eb # v1.15.0
+        with:
+          node-version-file: package.json
+          cache: false
+          run-install: false
+
+      - name: Install mobile dependencies
+        run: vp install --frozen-lockfile --filter=@t3tools/mobile... --filter=@t3tools/scripts...
+
+      - name: Build and verify the unsigned device IPA
+        working-directory: apps/mobile
+        shell: bash
+        env:
+          APP_VARIANT: production
+          T3CODE_IOS_PERSONAL_TEAM: "1"
+          T3CODE_IOS_PERSONAL_TEAM_BUNDLE_ID: com.akaakuhub.t3code.sideload
+          EXPO_NO_GIT_STATUS: "1"
+          NODE_OPTIONS: --max-old-space-size=8192
+        run: |
+          set -euo pipefail
+          vp exec expo prebuild --clean --platform ios --no-install
+          (cd ios && pod install)
+          archive="$RUNNER_TEMP/T3Code.xcarchive"
+          xcrun xcodebuild archive \
+            -workspace ios/T3Code.xcworkspace \
+            -scheme T3Code \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath "$archive" \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
+          app="$archive/Products/Applications/T3Code.app"
+          test -f "$app/Info.plist"
+          test -f "$app/main.jsbundle"
+          executable=$(/usr/libexec/PlistBuddy -c 'Print CFBundleExecutable' "$app/Info.plist")
+          xcrun lipo -verify_arch arm64 "$app/$executable"
+          test ! -e "$app/embedded.mobileprovision"
+
+          staging=$(mktemp -d "$RUNNER_TEMP/ipa.XXXXXXXX")
+          mkdir -p "$staging/Payload" "$RUNNER_TEMP/release-assets"
+          ditto "$app" "$staging/Payload/T3Code.app"
+          ipa="$RUNNER_TEMP/release-assets/T3Code-unsigned.ipa"
+          (cd "$staging" && ditto -c -k --keepParent Payload "$ipa")
+          (cd "$RUNNER_TEMP/release-assets" && shasum -a 256 T3Code-unsigned.ipa > T3Code-unsigned.ipa.sha256)
+
+      - name: Upload iPhone IPA
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: unsigned-iphone-ipa
+          path: ${{ runner.temp }}/release-assets/
+          if-no-files-found: error
+
+  draft-release:
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    needs: package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download verified IPA
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: unsigned-iphone-ipa
+
+      - name: Create draft release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          if [[ ! "$RELEASE_TAG" =~ ^ios-v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.-]+)?$ ]]; then
+            echo '::error::Use a tag such as ios-v2.3.0.'
+            exit 1
+          fi
+          if git ls-remote --exit-code "https://github.com/$GITHUB_REPOSITORY.git" "refs/tags/$RELEASE_TAG" >/dev/null; then
+            echo '::error::Choose a new release tag.'
+            exit 1
+          fi
+          sha256sum --check T3Code-unsigned.ipa.sha256
+          gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" --title "$RELEASE_TAG" --draft --prerelease \
+            --notes 'Unsigned iPhone IPA. Re-sign it on your device with SideStore or AltStore Classic.' \
+            T3Code-unsigned.ipa T3Code-unsigned.ipa.sha256

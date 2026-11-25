@@ -107,6 +107,21 @@ T3CODE_IOS_PERSONAL_TEAM_BUNDLE_ID=com.example.t3code \
 vp run ios:release
 ```
 
+### iPhone IPA for SideStore or AltStore Classic
+
+Run **Fork iPhone IPA** on the fork's `main` branch and give it a new tag such
+as `ios-v2.3.0`. The workflow attaches `T3Code-unsigned.ipa` and its SHA-256
+checksum to a draft GitHub release. It uses the Personal Team capabilities
+above and embeds the JavaScript bundle for offline launch. Review the draft
+before publishing it.
+
+After the one-time computer setup for [SideStore](https://docs.sidestore.io/docs/installation/install.html),
+download the IPA on the iPhone and open it in SideStore to sign and install
+it with your own Apple account. Install, refresh, and update with LocalDevVPN
+on Wi-Fi. Re-enable Tailscale afterward if it was disconnected. Keep the same
+signing account when updating. AltStore Classic can also sign the IPA with
+AltServer available.
+
 Build and run the local iOS preview app:
 
 ```bash
