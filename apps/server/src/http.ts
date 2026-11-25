@@ -46,7 +46,6 @@ import {
   storeAttachmentUpload,
   validateAttachmentUploadToken,
 } from "./assets/AttachmentUpload.ts";
-import { traceRelayRequest } from "./cloud/traceRelayRequest.ts";
 import { annotateEnvironmentRequest } from "./auth/http.ts";
 import * as ServerEnvironment from "./environment/ServerEnvironment.ts";
 import {
@@ -376,7 +375,7 @@ export const layerServerEnvironmentHttpApi = HttpApiBuilder.group(
         if (!isDirectTlsRequest(request)) return descriptor;
         const { publicKey } = yield* identity.keypair.pipe(Effect.orDie);
         return { ...descriptor, e2eeServerIdentityKey: encodeIdentityKey(publicKey) };
-      }, traceRelayRequest),
+      }),
     );
   }),
 ).pipe(Layer.provide(ServerE2eeIdentity.layer));

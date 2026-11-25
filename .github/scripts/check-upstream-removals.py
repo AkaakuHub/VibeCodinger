@@ -31,6 +31,8 @@ PROTECTED_PATHS = (
     "apps/server/src/cloud/linkChecks.ts",
     "apps/server/src/cloud/publicConfig.ts",
     "apps/server/src/cloud/relayResponse.ts",
+    "apps/server/src/cloud/traceRelayRequest.ts",
+    "apps/server/src/cloud/traceRelayRequest.test.ts",
     "apps/server/src/cloud/updateHandoff.ts",
     "apps/server/src/cloud/managedTunnelStartup.ts",
     "apps/server/src/cloud/managedTunnelStartup.test.ts",
@@ -52,7 +54,7 @@ FORBIDDEN = re.compile(
     rb"layerCloudDesiredLinkReconcile|managedTunnelStartup|watchManagedTunnelOrigin|hostedApprovalUrl|agentApprovalAppUrlConfig|"
     rb"CloudHttp\.layer|HttpApiBuilder\.layer\(EnvironmentHttpApi\).*connect|"
     rb"Outside MCP clients get app\.t3\.codes|"
-    rb"relayHookBaseUrl|RelayDeliveryProof|connectSubcommands|writeHeapSnapshot\s*\(",
+    rb"relayHookBaseUrl|RelayDeliveryProof|traceAuthenticatedRelayRequest|connectSubcommands|writeHeapSnapshot\s*\(",
     re.IGNORECASE,
 )
 SOURCE_SUFFIXES = (".js", ".ts", ".mjs", ".cjs", ".tsx", ".jsx", ".json", ".yml", ".yaml", ".sh", ".ps1", ".swift", ".kt")
