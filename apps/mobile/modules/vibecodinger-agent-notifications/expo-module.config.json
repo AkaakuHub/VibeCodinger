@@ -1,5 +1,9 @@
 {
-  "platforms": ["android"],
+  "platforms": ["apple", "android"],
+  "apple": {
+    "modules": ["VibeCodingerAgentNotificationsModule"],
+    "podspecPath": "ios/VibeCodingerAgentNotifications.podspec"
+  },
   "android": {
     "modules": ["expo.modules.vibecodingeragentnotifications.VibeCodingerAgentNotificationsModule"]
   }

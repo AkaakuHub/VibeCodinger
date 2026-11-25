@@ -52,11 +52,13 @@ PROTECTED_PATHS = (
     "apps/server/src/cloud/managedTunnelStartup.ts",
     "apps/server/src/cloud/managedTunnelStartup.test.ts",
     "apps/server/src/observability/HeapSnapshot.ts",
+    "apps/server/src/observability/OtlpEndpointCheck.ts",
     "apps/server/src/relay",
     "apps/server/src/scheduledTasks/RelayDeliveryProof.ts",
     "apps/server/src/telemetry",
     "apps/web/src/cloud",
     "apps/web/src/components/clerk",
+    "apps/web/src/components/settings/TelemetryExportSettings.tsx",
     "apps/web/src/components/ConnectDeviceApprovalCoordinator.tsx",
     "apps/web/src/routes/connect.tsx",
     "apps/web/src/routes/approve-agent.tsx",
@@ -72,6 +74,7 @@ PROTECTED_PATHS = (
 FORBIDDEN = re.compile(
     rb"posthog|captureException\s*\(|sendBeacon\s*\(|opentelemetry/exporter|"
     rb"otlp.{0,48}(?:endpoint|exporter)|cloudflared|"
+    rb"server\.checkOtlpEndpoint|TelemetryExportSettings|telemetry-export|"
     rb"relay_public_config|relay.client.tracing.config|VIBECODINGER_TELEMETRY_CHANNEL|"
     rb"armAgentAwarenessLiveActivityForLocalWork|setAgentAwarenessRelayTokenProvider|registerLiveActivityWithRelay|"
     rb"expo-notifications|firebase-messaging|com\.google\.firebase\.MESSAGING_EVENT|"

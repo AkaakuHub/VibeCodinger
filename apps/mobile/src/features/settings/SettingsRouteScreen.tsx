@@ -32,6 +32,7 @@ import { useSettingsEnvironmentFilter } from "./settings-environment-filter";
 import { filterSettingsSections } from "./settings-search";
 import { usePaneRole } from "../../components/ui/Pane";
 import { useGT, useMessages } from "gt-react-native";
+import { openCompletionNotificationSettings } from "../agent-awareness/completionNotifications";
 
 export function SettingsRouteScreen() {
   const list = useSettingsListPlacement();
@@ -231,6 +232,12 @@ function useSettingsIndexSections(): SettingsListSection[] {
       rows: [
         serverPage("SettingsProviderAccounts", "person.crop.circle", gt("Providers")),
         serverPage("SettingsThreads", "text.bubble", gt("Threads")),
+        {
+          id: "CompletionNotifications",
+          icon: "bell.badge",
+          label: gt("Completion notifications"),
+          onPress: () => void openCompletionNotificationSettings().catch(console.error),
+        },
         page("SettingsScheduledTasks", "clock", gt("Scheduled tasks")),
       ],
     },

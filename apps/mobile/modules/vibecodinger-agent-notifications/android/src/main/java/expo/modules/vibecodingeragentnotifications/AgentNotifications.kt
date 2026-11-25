@@ -56,6 +56,17 @@ object AgentNotifications {
     if (expiresAt > 0 && expiresAt <= now) cancelActivity(context)
   }
 
+  fun showCompletion(context: Context, id: String, title: String) {
+    if (!NotificationManagerCompat.from(context).areNotificationsEnabled()) return
+    channels(context)
+    val notification = base(context, ALERT_CHANNEL)
+      .setContentTitle(title)
+      .setAutoCancel(true)
+      .setContentIntent(contentIntent(context, "vibecodinger", null, id.hashCode()))
+      .build()
+    manager(context).notify(id, 0, notification)
+  }
+
   private fun postAlert(
     context: Context,
     scheme: String,
