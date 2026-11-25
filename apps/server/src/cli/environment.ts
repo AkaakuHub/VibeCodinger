@@ -208,9 +208,7 @@ const readLinkBatch = Effect.fn("environment.readLinkBatch")(function* (from: st
 const environmentLinkCommand = Command.make("link", {
   ...authLocationFlags,
   url: Argument.String("url").pipe(
-    Argument.withDescription(
-      "Where the other environment answers: its T3 Connect, Tailscale, LAN or loopback address.",
-    ),
+    Argument.withDescription("The other environment's Tailscale, LAN, or loopback address."),
     Argument.optional,
   ),
   alternateUrl: Flag.String("url").pipe(

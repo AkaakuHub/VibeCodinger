@@ -586,7 +586,7 @@ export const pairCommand = Command.make("pair", {
           );
         } else if (target.state.privateNetworkOnly) {
           notes.push(
-            "This URL works only from this machine's local network. From elsewhere, re-run with --tailscale or use T3 Connect.",
+            "This URL works only on this machine's local network. Use --tailscale to pair via your tailnet.",
           );
         }
         if (target.variant === "dev" && target.state.devUrl === undefined) {
