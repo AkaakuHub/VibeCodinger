@@ -12,10 +12,15 @@ PROTECTED_PATHS = (
     ".github/workflows",
     "apps/mobile/src/features/cloud",
     "apps/server/src/cli/connect.ts",
+    "apps/server/src/cloud/CliState.ts",
     "apps/server/src/cloud/CliTokenManager.ts",
     "apps/server/src/cloud/CloudLink.ts",
     "apps/server/src/cloud/ConnectReachability.ts",
     "apps/server/src/cloud/http.ts",
+    "apps/server/src/cloud/linkChecks.ts",
+    "apps/server/src/cloud/publicConfig.ts",
+    "apps/server/src/cloud/relayResponse.ts",
+    "apps/server/src/cloud/updateHandoff.ts",
     "apps/server/src/cloud/managedTunnelStartup.ts",
     "apps/server/src/cloud/managedTunnelStartup.test.ts",
     "apps/server/src/observability/HeapSnapshot.ts",
@@ -33,12 +38,14 @@ FORBIDDEN = re.compile(
     rb"t3-task-cache\.pinglabs\.workers\.dev|"
     rb"@clerk/(?:expo|react|electron)|cloudAuthProvider|managedAuthShell|"
     rb"layerCloudDesiredLinkReconcile|managedTunnelStartup|watchManagedTunnelOrigin|hostedApprovalUrl|agentApprovalAppUrlConfig|"
+    rb"CloudHttp\.layer|HttpApiBuilder\.layer\(EnvironmentHttpApi\).*connect|"
     rb"Outside MCP clients get app\.t3\.codes|"
     rb"connectSubcommands|writeHeapSnapshot\s*\(",
     re.IGNORECASE,
 )
 SOURCE_SUFFIXES = (".js", ".ts", ".mjs", ".cjs", ".tsx", ".jsx", ".json", ".yml", ".yaml", ".sh", ".ps1", ".swift", ".kt")
 FORK_GUARDS = (
+    ("apps/server/src/server.ts", b"HttpApiBuilder.layer(EnvironmentServerHttpApi)"),
     ("apps/server/src/policy/ManagedPolicy.ts", b"connectDisabled: true"),
     ("apps/web/vite.config.ts", b'const configuredRelayUrl = "";'),
     ("apps/web/vite.config.ts", b'const configuredClerkPublishableKey = "";'),

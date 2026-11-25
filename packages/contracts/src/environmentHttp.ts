@@ -520,7 +520,7 @@ export function formatConnectReachable(
  * Sections of docs/user/t3-connect-troubleshooting.md. Each is the GitHub anchor of a
  * heading there; the test fails when a heading is renamed without updating this list.
  */
-export const T3_CONNECT_TROUBLESHOOTING_SECTIONS = [
+const T3_CONNECT_TROUBLESHOOTING_SECTIONS = [
   "the-hosts-tunnel-is-offline",
   "port-7844-is-blocked-on-the-host",
   "the-tunnel-works-but-t3-code-does-not-answer",
@@ -1120,7 +1120,7 @@ class EnvironmentWebhooksHttpApi extends HttpApiGroup.make("webhooks")
   .add(HttpApiEndpoint.get("webhookGet", WEBHOOK_PATH, webhookEndpoint))
   .annotate(HttpApi.RedactedNames, { params: ["token"] }) {}
 
-export class EnvironmentHttpApi extends HttpApi.make("environment")
+export class EnvironmentServerHttpApi extends HttpApi.make("environment")
   .add(EnvironmentMetadataHttpApi)
   .add(EnvironmentAuthHttpApi)
   .add(EnvironmentMcpOAuthHttpApi)
@@ -1128,6 +1128,7 @@ export class EnvironmentHttpApi extends HttpApi.make("environment")
   .add(EnvironmentPullRequestsHttpApi)
   .add(EnvironmentProjectsHttpApi)
   .add(EnvironmentVoiceHttpApi)
-  .add(EnvironmentConnectHttpApi)
   .add(EnvironmentWebhooksHttpApi)
   .add(EnvironmentPeerLinkHttpApi) {}
+
+export class EnvironmentHttpApi extends EnvironmentServerHttpApi.add(EnvironmentConnectHttpApi) {}

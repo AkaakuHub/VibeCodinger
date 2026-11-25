@@ -4,12 +4,12 @@ import * as FetchHttpClient from "effect/http/FetchHttpClient";
 import * as HttpClient from "effect/http/HttpClient";
 import * as HttpClientError from "effect/http/HttpClientError";
 
-export function isOfficialRelay(hostname: string): boolean {
+function isOfficialRelay(hostname: string): boolean {
   const host = hostname.replace(/\.$/, "");
   return host === "relay.t3.codes" || host.endsWith(".relay.t3.codes");
 }
 
-export function isOfficialRelayUrl(value: string): boolean {
+function isOfficialRelayUrl(value: string): boolean {
   return URL.canParse(value) && isOfficialRelay(new URL(value).hostname);
 }
 

@@ -598,7 +598,12 @@ const handleStaticAndDevRequest = Effect.fn("handleStaticAndDevRequest")(
     }
 
     const config = yield* ServerConfig.ServerConfig;
-    if (config.devUrl && isDevProxiedPath(url.value.pathname)) {
+    const pathname = url.value.pathname;
+    if (
+      pathname === "/api" ||
+      pathname.startsWith("/api/") ||
+      (config.devUrl && isDevProxiedPath(pathname))
+    ) {
       return HttpServerResponse.text("Not Found", { status: 404 });
     }
 
@@ -626,7 +631,7 @@ const handleStaticAndDevRequest = Effect.fn("handleStaticAndDevRequest")(
 
     const path = yield* Path.Path;
     const staticRoot = path.resolve(staticDir);
-    const staticRequestPath = url.value.pathname === "/" ? "/index.html" : url.value.pathname;
+    const staticRequestPath = pathname === "/" ? "/index.html" : pathname;
     const rawStaticRelativePath = staticRequestPath.replace(/^[/\\]+/, "");
     const hasRawLeadingParentSegment = rawStaticRelativePath.startsWith("..");
     const staticRelativePath = path.normalize(rawStaticRelativePath).replace(/^[/\\]+/, "");

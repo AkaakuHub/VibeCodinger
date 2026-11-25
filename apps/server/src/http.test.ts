@@ -534,6 +534,7 @@ it.layer(
       const request = yield* makeStaticRequest(staticDir);
       const initial = yield* request("/");
       expect(yield* initial.text).toBe("<html>old build</html>");
+      expect((yield* request("/api/connect/link-state")).status).toBe(404);
       const previousEtag = initial.headers["etag"] ?? '"previous-html"';
       const nextHtml = "<html>new build</html>";
       yield* fs.writeFileString(indexPath, nextHtml);
