@@ -51,7 +51,6 @@ anything.
 - [03 · Providers](./internals/03_providers.md)
 - [04 · Environment auth](./internals/04_environment-auth.md)
 - [05 · Remote environments](./internals/05_remote.md)
-- [06 · T3 Connect](./internals/06_t3-connect.md)
 - [07 · Server updates](./internals/07_server-updates.md)
 - [08 · Product analytics](./internals/08_product-analytics.md)
 - [09 · Connection runtime](./internals/09_connection-runtime.md)
@@ -68,7 +67,5 @@ anything.
 
 - [00 · Development and local builds](./operations/00_development.md)
 - [01 · Dev container](./operations/01_devcontainer.md)
-- [02 · T3 Connect setup](./operations/02_connect-setup.md)
 - [03 · Release](./operations/03_release.md)
 - [04 · Observability](./operations/04_observability.md)
-- [05 · Relay observability](./operations/05_relay-observability.md)

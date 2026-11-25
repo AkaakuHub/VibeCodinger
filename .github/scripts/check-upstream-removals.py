@@ -33,6 +33,8 @@ PROTECTED_PATHS = (
     "apps/desktop/src/app/DesktopClerk.ts",
     "apps/desktop/src/app/DesktopClerk.test.ts",
     "apps/mobile/src/features/cloud",
+    "apps/mobile/scripts/sourcemap-upload.mts",
+    "apps/mobile/scripts/upload-sourcemaps.mts",
     "apps/mobile/modules/t3-agent-notifications",
     "apps/mobile/src/features/agent-awareness/notificationNavigation.ts",
     "apps/mobile/src/features/agent-awareness/remoteRegistration.ts",
@@ -89,6 +91,7 @@ FORBIDDEN = re.compile(
     rb"getRelayTelemetryEnabled|parsePersistedServerObservabilitySettings|observabilitySettings\.otlp|"
     rb"\b(?:t3Home|t3_home|t3-home)\b|"
     rb"relay_public_config|relay.client.tracing.config|VIBECODINGER_TELEMETRY_CHANNEL|"
+    rb"MOBILE_SOURCEMAPS_R2|upload-sourcemaps\.mts|mobileSourceMapsUploadCredentials|"
     rb"armAgentAwarenessLiveActivityForLocalWork|setAgentAwarenessRelayTokenProvider|registerLiveActivityWithRelay|"
     rb"expo-notifications|firebase-messaging|com\.google\.firebase\.MESSAGING_EVENT|"
     rb"VIBECODINGER_ANDROID_GOOGLE_SERVICES_FILE|AgentMessagingService|enablePushNotifications\s*[:=]\s*true|"
@@ -108,7 +111,7 @@ FORBIDDEN = re.compile(
     re.IGNORECASE,
 )
 SOURCE_SUFFIXES = (
-    ".js", ".ts", ".mjs", ".cjs", ".tsx", ".jsx", ".json", ".yml", ".yaml",
+    ".js", ".ts", ".mjs", ".cjs", ".mts", ".cts", ".tsx", ".jsx", ".json", ".yml", ".yaml",
     ".sh", ".ps1", ".swift", ".kt", ".gradle", ".kts", ".xml",
 )
 FORK_GUARDS = (
