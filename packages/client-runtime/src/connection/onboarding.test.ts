@@ -149,7 +149,7 @@ function layerPairingHttp(
             policy: "remote-reachable",
             bootstrapMethods: ["one-time-token"],
             sessionMethods: ["bearer-access-token"],
-            sessionCookieName: "t3_session",
+            sessionCookieName: "vibecodinger_session",
           },
           scopes: sessionScopes,
           sessionMethod: "bearer-access-token",

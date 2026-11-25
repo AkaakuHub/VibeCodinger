@@ -245,7 +245,7 @@ describe("webhook route", () => {
     try {
       const response = await handler(
         new Request("http://env.local/api/hooks/id/tok", {
-          headers: { Cookie: "t3_session=session-secret", "x-github-event": "push" },
+          headers: { Cookie: "vibecodinger_session=session-secret", "x-github-event": "push" },
         }),
       );
       expect(response.status).toBe(202);
