@@ -169,5 +169,3 @@ export function makeCloudCliOAuthConfig({
 }
 
 export const cloudCliOAuthConfig = makeCloudCliOAuthConfig();
-
-export const hasCloudPublicConfig = false;

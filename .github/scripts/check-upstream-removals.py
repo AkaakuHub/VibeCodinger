@@ -16,6 +16,8 @@ PROTECTED_PATHS = (
     "apps/server/src/cloud/CloudLink.ts",
     "apps/server/src/cloud/ConnectReachability.ts",
     "apps/server/src/cloud/http.ts",
+    "apps/server/src/cloud/managedTunnelStartup.ts",
+    "apps/server/src/cloud/managedTunnelStartup.test.ts",
     "apps/server/src/observability/HeapSnapshot.ts",
     "apps/server/src/relay",
     "apps/server/src/telemetry",
@@ -30,6 +32,7 @@ FORBIDDEN = re.compile(
     rb"tailscale.{0,48}funnel|--allow-funnel|https?://[^\s'\x22]*(?:relay|clerk)\.t3\.codes|"
     rb"t3-task-cache\.pinglabs\.workers\.dev|"
     rb"@clerk/(?:expo|react|electron)|cloudAuthProvider|managedAuthShell|"
+    rb"layerCloudDesiredLinkReconcile|managedTunnelStartup|watchManagedTunnelOrigin|"
     rb"connectSubcommands|writeHeapSnapshot\s*\(",
     re.IGNORECASE,
 )

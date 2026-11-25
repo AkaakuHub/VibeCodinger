@@ -49,7 +49,6 @@ import * as CloudLink from "./CloudLink.ts";
 import * as ConnectReachability from "./ConnectReachability.ts";
 import { consumeCloudReplayGuards } from "./CloudLink.ts";
 import { pendingServiceUpdateExists } from "./updateHandoff.ts";
-import { managedTunnelStartupAction } from "./managedTunnelStartup.ts";
 import * as ManagedEndpointRuntime from "./ManagedEndpointRuntime.ts";
 import * as ManagedPolicy from "../policy/ManagedPolicy.ts";
 import * as ServerSettings from "../serverSettings.ts";
@@ -978,15 +977,6 @@ describe("releaseManagedTunnelOnShutdown", () => {
       const registration = yield* link.registerManagedTunnelRecovery("http://127.0.0.1:3773");
       expect(registration).toEqual({
         status: "recovery_required",
-        config: { providerKind: "cloudflare_tunnel", connectorToken: "token" },
-      });
-      expect(
-        managedTunnelStartupAction({
-          wantsCliLink: false,
-          registration,
-        }),
-      ).toEqual({
-        action: "request_recovery",
         config: { providerKind: "cloudflare_tunnel", connectorToken: "token" },
       });
       expect(requests).toEqual([]);
