@@ -39,7 +39,6 @@ import {
 import { makeAntigravityAuth, type AntigravityAuth } from "../AntigravityAuth.ts";
 import * as AntigravityInstallation from "../AntigravityInstallation.ts";
 import { brokenRuntimeError } from "../providerCompatibility.ts";
-import * as AntigravityUsage from "./AntigravityUsage.ts";
 import {
   antigravityAuthConfigIssue,
   antigravityAuthLabel,
@@ -130,16 +129,11 @@ export type AntigravityDriverEnv =
   | Path.Path
   | ProviderEventLoggers.ProviderEventLoggers;
 
-export const AntigravityDriver: ProviderDriver<
-  AntigravitySettings,
-  AntigravityDriverEnv,
-  AntigravityUsage.AntigravityUsage
-> = {
+export const AntigravityDriver: ProviderDriver<AntigravitySettings, AntigravityDriverEnv> = {
   driverKind: DRIVER,
   metadata: { displayName: "Antigravity", supportsMultipleInstances: true },
   configSchema: AntigravitySettings,
   defaultConfig: () => decodeSettings({}),
-  usage: AntigravityUsage.antigravityUsageReader,
   create: Effect.fn("AntigravityDriver.create")(function* ({
     instanceId,
     displayName,
@@ -198,7 +192,7 @@ export const AntigravityDriver: ProviderDriver<
     );
     const profileDirectory = directories.profile;
     // Only a session reports whether agy offers Auto, so keep the last answer across restarts.
-    const runtimeModesPath = path.join(profileDirectory, "t3-runtime-modes.json");
+    const runtimeModesPath = path.join(profileDirectory, "vc-runtime-modes.json");
     const rememberedRuntimeModes = yield* fileSystem.readFileString(runtimeModesPath).pipe(
       Effect.map((contents) =>
         decodeRememberedRuntimeModes(contents).pipe(

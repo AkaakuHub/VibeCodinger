@@ -183,7 +183,6 @@ import * as NativeTelemetryClient from "./resourceTelemetry/NativeTelemetryClien
 import * as ResourceAttribution from "./resourceTelemetry/ResourceAttribution.ts";
 import * as ResourceMonitorBinary from "./resourceTelemetry/ResourceMonitorBinary.ts";
 import * as ResourceTelemetry from "./resourceTelemetry/ResourceTelemetry.ts";
-import * as AntigravityUsage from "./provider/Drivers/AntigravityUsage.ts";
 import { MuseUsageHome } from "@vibecodinger/provider-muse/server";
 import * as CursorAccountReader from "@vibecodinger/provider-cursor/server/CursorAccountReader";
 import * as CursorUsageAccounts from "@vibecodinger/provider-cursor/server/CursorUsageAccounts";
@@ -287,7 +286,6 @@ const layerBackground = BackgroundPolicy.layer.pipe(
 const layerUsage = UsageService.layer.pipe(
   Layer.provide(
     Layer.mergeAll(
-      AntigravityUsage.layer,
       MuseUsageHome.layer,
       CodexUsageHistory.layer,
       CursorUsageAccounts.layer.pipe(Layer.provide(CursorAccountReader.layer)),
