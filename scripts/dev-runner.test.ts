@@ -502,7 +502,7 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
       }),
     );
 
-    it.effect("expands a home-relative T3 home the way the server does", () =>
+    it.effect("expands a home-relative VibeCodinger home the way the server does", () =>
       Effect.gen(function* () {
         const path = yield* Path.Path;
         const homeFor = (appDataHome: string) =>
@@ -525,7 +525,7 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
 
         assert.equal(yield* homeFor("~/vc-dev"), path.join("/home/dev", "vc-dev"));
         assert.equal(yield* homeFor("~"), "/home/dev");
-        assert.equal(yield* homeFor("~\\t3-dev"), path.join("/home/dev", "vc-dev"));
+        assert.equal(yield* homeFor("~\\vc-dev"), path.join("/home/dev", "vc-dev"));
         assert.equal(yield* homeFor("  ~/vc-dev  "), path.join("/home/dev", "vc-dev"));
         assert.equal(yield* homeFor("~someone/vc-dev"), path.resolve("~someone/vc-dev"));
         assert.equal(yield* homeFor("relative/vc-dev"), path.resolve("relative/vc-dev"));
