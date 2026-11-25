@@ -84,7 +84,7 @@ describe("ssh auth", () => {
       assert.equal(env.SSH_ASKPASS, askpassPath);
       assert.equal(env.SSH_ASKPASS_REQUIRE, "force");
       assert.equal(env.VIBECODINGER_SSH_AUTH_SECRET, "super-secret");
-      assert.equal(env.DISPLAY, "t3code");
+      assert.equal(env.DISPLAY, "vibecodinger");
       assert.equal(yield* fs.exists(askpassPath), true);
       assert.include(
         yield* fs.readFileString(askpassPath),
@@ -242,7 +242,7 @@ describe("ssh auth", () => {
 
         const next = yield* askpassPath();
         assert.notEqual(next, first);
-        assert.equal(yield* fs.exists(path.join(ownedTarget, "t3code-ssh-askpass")), false);
+        assert.equal(yield* fs.exists(path.join(ownedTarget, "vibecodinger-ssh-askpass")), false);
 
         yield* fs.remove(runtimeDirectoryOf(first));
         yield* fs.remove(ownedTarget, { recursive: true });
