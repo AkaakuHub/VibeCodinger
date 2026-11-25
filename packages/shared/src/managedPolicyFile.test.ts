@@ -138,7 +138,7 @@ describe("readManagedPolicy", () => {
       );
       // Keys beside the wrapper, or a second entry, are refused rather than dropped or merged.
       for (const ambiguous of [
-        { Forced: [{ mcx_preference_settings: settings }], limits: { telemetry: false } },
+        { Forced: [{ mcx_preference_settings: settings }], limits: { webhookTasks: false } },
         { Forced: [{ mcx_preference_settings: settings }, { mcx_preference_settings: settings }] },
       ]) {
         assert.include(

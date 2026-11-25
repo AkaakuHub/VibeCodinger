@@ -71,7 +71,7 @@ export const loadedPolicy = Effect.fn("ManagedPolicy.loadedPolicy")(function* (
  */
 export function deniedBy(
   policy: Pick<ManagedPolicy["Service"], "document">,
-  capability: "webhookTasks" | "telemetry" | "previewTunnel",
+  capability: "webhookTasks" | "previewTunnel",
 ): string | undefined {
   return policy.document?.limits?.[capability] === false ? policy.document.organization : undefined;
 }
@@ -134,7 +134,6 @@ function summarizeLimits(
     maxRuntimeMode,
     clients,
     webhookTasks,
-    telemetry,
     browserCookieImport,
     previewTunnel,
     providers,
@@ -146,7 +145,6 @@ function summarizeLimits(
     ...(clients === undefined ? {} : { clients }),
     ...(connect ? {} : { connect: false }),
     ...(webhookTasks === undefined ? {} : { webhookTasks }),
-    ...(telemetry === undefined ? {} : { telemetry }),
     ...(browserCookieImport === undefined ? {} : { browserCookieImport }),
     ...(previewTunnel === undefined ? {} : { previewTunnel }),
     ...(providers?.allowedDrivers === undefined && Object.keys(lockedInstanceFields).length === 0
@@ -204,7 +202,7 @@ const make = Effect.gen(function* () {
       lockedSettings: policy.summary.lockedSettings,
     });
   }
-  return { ...policy, telemetry: false, connectDisabled: true as const };
+  return { ...policy, connectDisabled: true as const };
 });
 
 // A single-executable server resolves packages on disk only through `require`.

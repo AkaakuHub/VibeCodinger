@@ -1,1 +1,2 @@
-export const PRIVACY_POLICY_URL = "https://t3.codes/privacy-policy";
+export const PRIVACY_INFORMATION_URL =
+  "https://github.com/AkaakuHub/t3code/blob/main/docs/user/privacy.md";
