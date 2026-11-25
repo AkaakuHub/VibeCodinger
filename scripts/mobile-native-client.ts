@@ -786,10 +786,7 @@ const prune = Effect.fn("nativeClient.prune")(
       .slice(2);
     yield* Effect.forEach(
       stale,
-      ({ name }) =>
-        fs
-          .remove(path.join(parent, name), { recursive: true, force: true })
-          .pipe(Effect.andThen(fs.remove(sidecar(path.join(parent, name)), { force: true }))),
+      ({ name }) => fs.remove(path.join(parent, name), { recursive: true, force: true }),
       { discard: true },
     );
   },
