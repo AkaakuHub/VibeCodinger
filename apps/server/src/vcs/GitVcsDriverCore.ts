@@ -27,7 +27,7 @@ import { ChildProcess, ChildProcessSpawner } from "effect/process";
 import {
   GitCommandError,
   type GitCommandFailureReason,
-  T3_PROJECT_FILE_NAME,
+  VIBECODINGER_PROJECT_FILE_NAME,
   type ReviewBranchCommitsInput,
   type ReviewDiffChangeType,
   type ReviewDiffFileContentsInput,
@@ -42,7 +42,7 @@ import * as HostProcess from "@vibecodinger/shared/HostProcess";
 import { compactTraceAttributes } from "@vibecodinger/shared/observability";
 import { decodeJsonResult } from "@vibecodinger/shared/schemaJson";
 import { resolveSpawnCommand, runsGitWithoutConsole } from "@vibecodinger/shared/shell";
-import { parseT3ProjectFile } from "@vibecodinger/shared/t3ProjectFile";
+import { parseVibeCodingerProjectFile } from "@vibecodinger/shared/vibeCodingerProjectFile";
 import { resolveProjectFileBackedSetting } from "@vibecodinger/shared/projectSettings";
 import { gitCommandDuration, gitCommandsTotal, withMetrics } from "../observability/Metrics.ts";
 import * as GitVcsDriver from "./GitVcsDriver.ts";
@@ -5776,11 +5776,11 @@ export const makeGitVcsDriverCore = Effect.fn("makeGitVcsDriverCore")(function* 
     const projectFile = yield* executeGit(
       "GitVcsDriver.createWorktree.readProjectFile",
       cwd,
-      ["show", `${ref}:${T3_PROJECT_FILE_NAME}`],
+      ["show", `${ref}:${VIBECODINGER_PROJECT_FILE_NAME}`],
       { allowNonZeroExit: true },
     );
     if (projectFile.exitCode !== 0) return null;
-    const file = parseT3ProjectFile(projectFile.stdout);
+    const file = parseVibeCodingerProjectFile(projectFile.stdout);
     if (file === null) {
       yield* Effect.logWarning("vibecodinger.json is invalid; checking out the full worktree", {
         cwd,
@@ -6168,12 +6168,12 @@ export const makeGitVcsDriverCore = Effect.fn("makeGitVcsDriverCore")(function* 
               yield* executeGit(
                 "GitVcsDriver.createWorktree.readProjectFile",
                 worktreePath,
-                ["show", `HEAD:${T3_PROJECT_FILE_NAME}`],
+                ["show", `HEAD:${VIBECODINGER_PROJECT_FILE_NAME}`],
                 { allowNonZeroExit: true },
               ).pipe(
                 Effect.flatMap((result) => {
                   if (result.exitCode !== 0) return Effect.succeed(null);
-                  const file = parseT3ProjectFile(result.stdout);
+                  const file = parseVibeCodingerProjectFile(result.stdout);
                   return file === null
                     ? Effect.logWarning(
                         "vibecodinger.json is invalid; initializing submodules recursively",

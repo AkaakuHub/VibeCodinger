@@ -10,7 +10,7 @@ import {
   isKnownThemePreference,
   publishedThemeDefinitions,
   resolveThemeAppearance,
-  T3_CHAT_THEME,
+  VIBECODINGER_CHAT_THEME,
   EMBER_THEME,
   GROVE_THEME,
   IRIS_THEME,
@@ -310,7 +310,13 @@ describe("index.html boot script", () => {
   });
 
   it("keeps every built-in boot splash in sync with the real palettes", () => {
-    for (const theme of [T3_CHAT_THEME, GROVE_THEME, OCEAN_THEME, EMBER_THEME, IRIS_THEME]) {
+    for (const theme of [
+      VIBECODINGER_CHAT_THEME,
+      GROVE_THEME,
+      OCEAN_THEME,
+      EMBER_THEME,
+      IRIS_THEME,
+    ]) {
       expect(theme.appearance).toBe("light");
       for (const mode of ["light", "dark"] as const) {
         const colors = getThemeColorsForMode(theme, mode);
@@ -351,7 +357,7 @@ describe("index.html boot script", () => {
     expect(light.isDark).toBe(false);
     expect(light.themeId).toBe("vc-chat");
     expect(light.bootVariables["--boot-background"]).toBe(
-      getThemeColorsForMode(T3_CHAT_THEME, "light")!.canvas,
+      getThemeColorsForMode(VIBECODINGER_CHAT_THEME, "light")!.canvas,
     );
   });
 

@@ -11,7 +11,7 @@ import {
   type ThreadId,
   type VcsCreateWorktreeInput,
   type VcsCreateWorktreeResult,
-  T3_PROJECT_FILE_NAME,
+  VIBECODINGER_PROJECT_FILE_NAME,
 } from "@vibecodinger/contracts";
 import { resolveProjectSettings } from "@vibecodinger/shared/projectSettings";
 import {
@@ -21,7 +21,7 @@ import {
 import * as HostProcess from "@vibecodinger/shared/HostProcess";
 import { windowsSystem32Path } from "@vibecodinger/shared/windowsSystem";
 import * as KeyedLock from "@vibecodinger/shared/KeyedLock";
-import { parseT3ProjectFile } from "@vibecodinger/shared/t3ProjectFile";
+import { parseVibeCodingerProjectFile } from "@vibecodinger/shared/vibeCodingerProjectFile";
 import * as Cause from "effect/Cause";
 import * as Context from "effect/Context";
 import * as Digest from "effect/crypto/Digest";
@@ -316,8 +316,8 @@ const make = Effect.gen(function* () {
 
   // A project that lays its own thread folder out says so in its `vibecodinger.json`.
   const projectFile = (projectRoot: string) =>
-    fileSystem.readFileString(path.join(projectRoot, T3_PROJECT_FILE_NAME)).pipe(
-      Effect.map(parseT3ProjectFile),
+    fileSystem.readFileString(path.join(projectRoot, VIBECODINGER_PROJECT_FILE_NAME)).pipe(
+      Effect.map(parseVibeCodingerProjectFile),
       Effect.orElseSucceed(() => null),
     );
   const worktreeLayout = (projectRoot: string) =>
@@ -1004,7 +1004,7 @@ const make = Effect.gen(function* () {
         if (layout !== null && !input.projectCommands) {
           return yield* new TaskFolderError({
             operation: "create",
-            detail: `This project lays out its worktrees with its own command (worktreeLayout in ${T3_PROJECT_FILE_NAME}), which this request is not permitted to run.`,
+            detail: `This project lays out its worktrees with its own command (worktreeLayout in ${VIBECODINGER_PROJECT_FILE_NAME}), which this request is not permitted to run.`,
           });
         }
         if (layout !== null) {

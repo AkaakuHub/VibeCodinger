@@ -6,10 +6,10 @@ import * as Layer from "effect/Layer";
 import * as Option from "effect/Option";
 import * as Path from "effect/Path";
 
-import * as T3ProjectFileLoader from "./T3ProjectFileLoader.ts";
+import * as VibeCodingerProjectFileLoader from "./VibeCodingerProjectFileLoader.ts";
 
 const layerTest = Layer.empty.pipe(
-  Layer.provideMerge(T3ProjectFileLoader.layer),
+  Layer.provideMerge(VibeCodingerProjectFileLoader.layer),
   Layer.provideMerge(NodeServices.layer),
 );
 
@@ -28,11 +28,11 @@ const writeProjectFile = Effect.fn("writeProjectFile")(function* (cwd: string, c
     .pipe(Effect.orDie);
 });
 
-it.layer(layerTest)("T3ProjectFileLoader", (it) => {
+it.layer(layerTest)("VibeCodingerProjectFileLoader", (it) => {
   describe("load", () => {
     it.effect("returns none for malformed JSON without failing", () =>
       Effect.gen(function* () {
-        const loader = yield* T3ProjectFileLoader.T3ProjectFileLoader;
+        const loader = yield* VibeCodingerProjectFileLoader.VibeCodingerProjectFileLoader;
         const cwd = yield* makeTempDir;
         yield* writeProjectFile(cwd, "{ not json");
 

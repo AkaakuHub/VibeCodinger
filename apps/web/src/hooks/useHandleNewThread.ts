@@ -6,7 +6,7 @@ import {
 import {
   DEFAULT_SERVER_SETTINGS,
   type ScopedProjectRef,
-  type T3ProjectFile,
+  type VibeCodingerProjectFile,
   type ThreadId,
 } from "@vibecodinger/contracts";
 import { type AnyRouter, useRouter } from "@tanstack/react-router";
@@ -48,7 +48,10 @@ import {
   threadHasStarted,
 } from "../lib/chatThreadActions";
 import type { EnvironmentProject } from "@vibecodinger/client-runtime/state/shell";
-import { peekT3ProjectFile, readT3ProjectFile } from "../lib/t3ProjectFileDefaults";
+import {
+  peekVibeCodingerProjectFile,
+  readVibeCodingerProjectFile,
+} from "../lib/vibeCodingerProjectFileDefaults";
 import { appAtomRegistry } from "../rpc/atomRegistry";
 import { environmentSummaries } from "../state/presentation";
 import { environmentServerConfigsAtom } from "../state/server";
@@ -237,7 +240,7 @@ export function createNewThreadHandler(router: AnyRouter) {
           currentRouteTarget?.kind === "draft" ? currentRouteTarget.draftId : null,
         destinationDraftId,
       });
-    const envModeFor = (projectFile: T3ProjectFile | null): DraftThreadEnvMode =>
+    const envModeFor = (projectFile: VibeCodingerProjectFile | null): DraftThreadEnvMode =>
       resolveNewThreadEnvMode({
         projectSettings: resolveProjectSettings(
           targetServerSettings,
@@ -274,8 +277,14 @@ export function createNewThreadHandler(router: AnyRouter) {
           .get(environmentSummaries.connectedEnvironmentIdsAtom)
           .includes(project.environmentId);
       if (!consultProjectFile) return { envMode: envModeFor(null), applyProjectFile: () => {} };
-      const projectFileRead = readT3ProjectFile(project.environmentId, project.workspaceRoot);
-      const cachedProjectFile = peekT3ProjectFile(project.environmentId, project.workspaceRoot);
+      const projectFileRead = readVibeCodingerProjectFile(
+        project.environmentId,
+        project.workspaceRoot,
+      );
+      const cachedProjectFile = peekVibeCodingerProjectFile(
+        project.environmentId,
+        project.workspaceRoot,
+      );
       if (cachedProjectFile !== undefined) {
         return { envMode: envModeFor(cachedProjectFile), applyProjectFile: () => {} };
       }

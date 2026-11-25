@@ -235,7 +235,7 @@ export const VIBECODINGER_DARK_THEME_COLORS: ThemeColors = {
   terminalScrollbarHover: "#363636",
 };
 
-export const T3_CHAT_THEME: ThemeDefinition = {
+export const VIBECODINGER_CHAT_THEME: ThemeDefinition = {
   id: "vc-chat",
   label: "VC Chat",
   appearance: "light",
@@ -911,7 +911,7 @@ export const IRIS_THEME: ThemeDefinition = {
 };
 
 export const BUILT_IN_THEMES: ReadonlyArray<ThemeDefinition> = [
-  T3_CHAT_THEME,
+  VIBECODINGER_CHAT_THEME,
   GROVE_THEME,
   OCEAN_THEME,
   EMBER_THEME,

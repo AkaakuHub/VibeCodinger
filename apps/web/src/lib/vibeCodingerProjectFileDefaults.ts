@@ -1,10 +1,10 @@
 import {
-  T3_PROJECT_FILE_NAME,
+  VIBECODINGER_PROJECT_FILE_NAME,
   type EnvironmentId,
   type ProjectReadFileResult,
-  type T3ProjectFile,
+  type VibeCodingerProjectFile,
 } from "@vibecodinger/contracts";
-import { parseT3ProjectFile } from "@vibecodinger/shared/t3ProjectFile";
+import { parseVibeCodingerProjectFile } from "@vibecodinger/shared/vibeCodingerProjectFile";
 import { executeAtomQuery } from "@vibecodinger/client-runtime/state/runtime";
 import { AsyncResult } from "effect/reactivity";
 
@@ -14,31 +14,31 @@ import {
 } from "~/components/files/projectFilesQueryState";
 import { appAtomRegistry } from "~/rpc/atomRegistry";
 
-function toT3ProjectFile(
+function toVibeCodingerProjectFile(
   environmentId: EnvironmentId,
   workspaceRoot: string,
   result: ProjectReadFileResult | null,
-): T3ProjectFile | null {
+): VibeCodingerProjectFile | null {
   const data = resolveProjectFileQueryData(
     environmentId,
     workspaceRoot,
-    T3_PROJECT_FILE_NAME,
+    VIBECODINGER_PROJECT_FILE_NAME,
     result,
   );
   if (data === null || data.exists === false || data.truncated) return null;
-  return parseT3ProjectFile(data.contents);
+  return parseVibeCodingerProjectFile(data.contents);
 }
 
-export async function readT3ProjectFile(
+export async function readVibeCodingerProjectFile(
   environmentId: EnvironmentId,
   workspaceRoot: string,
-): Promise<T3ProjectFile | null> {
+): Promise<VibeCodingerProjectFile | null> {
   const result = await executeAtomQuery(
     appAtomRegistry,
-    getProjectFileQueryAtom(environmentId, workspaceRoot, T3_PROJECT_FILE_NAME),
+    getProjectFileQueryAtom(environmentId, workspaceRoot, VIBECODINGER_PROJECT_FILE_NAME),
     { reportDefect: false, reportFailure: false },
   );
-  return toT3ProjectFile(
+  return toVibeCodingerProjectFile(
     environmentId,
     workspaceRoot,
     result._tag === "Success" ? result.value : null,
@@ -46,14 +46,14 @@ export async function readT3ProjectFile(
 }
 
 /** The project's vibecodinger.json from an earlier read, or `undefined` when none has loaded yet. */
-export function peekT3ProjectFile(
+export function peekVibeCodingerProjectFile(
   environmentId: EnvironmentId,
   workspaceRoot: string,
-): T3ProjectFile | null | undefined {
+): VibeCodingerProjectFile | null | undefined {
   const result = appAtomRegistry.get(
-    getProjectFileQueryAtom(environmentId, workspaceRoot, T3_PROJECT_FILE_NAME),
+    getProjectFileQueryAtom(environmentId, workspaceRoot, VIBECODINGER_PROJECT_FILE_NAME),
   );
   return AsyncResult.isSuccess(result)
-    ? toT3ProjectFile(environmentId, workspaceRoot, result.value)
+    ? toVibeCodingerProjectFile(environmentId, workspaceRoot, result.value)
     : undefined;
 }

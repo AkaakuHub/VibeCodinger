@@ -5,14 +5,14 @@ import { ThreadEnvMode, WorktreeSubmodules } from "./environment.ts";
 import { ProjectScriptIcon } from "./project.ts";
 import type { ProjectScopedServerSettingKey, ServerSettings } from "./settings.ts";
 
-export const T3_PROJECT_FILE_NAME = "vibecodinger.json";
+export const VIBECODINGER_PROJECT_FILE_NAME = "vibecodinger.json";
 
-export const T3_PROJECT_FILE_SCHEMA_URL =
+export const VIBECODINGER_PROJECT_FILE_SCHEMA_URL =
   "https://raw.githubusercontent.com/AkaakuHub/t3code/main/docs/schema/vibecodinger.json";
 
-const T3_PROJECT_FILE_PATH_MAX_LENGTH = 512;
-const T3_PROJECT_FILE_COMMAND_MAX_LENGTH = 4096;
-const T3_PROJECT_FILE_MAX_SCRIPTS = 50;
+const VIBECODINGER_PROJECT_FILE_PATH_MAX_LENGTH = 512;
+const VIBECODINGER_PROJECT_FILE_COMMAND_MAX_LENGTH = 4096;
+const VIBECODINGER_PROJECT_FILE_MAX_SCRIPTS = 50;
 
 // Encoded-side annotations survive into JSON Schema; decoding still trims and rejects empty strings.
 const trimmedNonEmpty = (annotations: { readonly description: string }, maxLength?: number) => {
@@ -24,7 +24,7 @@ const trimmedNonEmpty = (annotations: { readonly description: string }, maxLengt
   return encoded.pipe(Schema.decodeTo(encoded, SchemaTransformation.trim()));
 };
 
-export const T3ProjectFileScript = Schema.Struct({
+export const VibeCodingerProjectFileScript = Schema.Struct({
   name: trimmedNonEmpty({
     description: "Display name for the script, shown in the VibeCodinger scripts menu.",
   }),
@@ -75,12 +75,12 @@ export const T3ProjectFileScript = Schema.Struct({
 }).annotate({
   description: "A project script that team members can import into VibeCodinger.",
 });
-export type T3ProjectFileScript = typeof T3ProjectFileScript.Type;
+export type VibeCodingerProjectFileScript = typeof VibeCodingerProjectFileScript.Type;
 
-export const T3ProjectFile = Schema.Struct({
+export const VibeCodingerProjectFile = Schema.Struct({
   $schema: Schema.optionalKey(
     Schema.String.annotate({
-      description: `URL of the JSON Schema for this file, typically "${T3_PROJECT_FILE_SCHEMA_URL}".`,
+      description: `URL of the JSON Schema for this file, typically "${VIBECODINGER_PROJECT_FILE_SCHEMA_URL}".`,
     }),
   ),
   iconPath: Schema.optionalKey(
@@ -89,7 +89,7 @@ export const T3ProjectFile = Schema.Struct({
         description:
           'Workspace-relative path to the project icon (e.g. "assets/logo.svg"). Checked before VibeCodinger\'s built-in icon locations.',
       },
-      T3_PROJECT_FILE_PATH_MAX_LENGTH,
+      VIBECODINGER_PROJECT_FILE_PATH_MAX_LENGTH,
     ),
   ),
   defaultThreadEnvMode: Schema.optionalKey(
@@ -117,7 +117,7 @@ export const T3ProjectFile = Schema.Struct({
           description:
             "Shell command that lays out a thread's folder for a project tracking several repositories, in place of VibeCodinger's own worktrees and links. It runs in the project folder with T3_WORKTREE_ROOT (the folder to fill), T3_WORKTREE_PROJECT_PATH (where the project folder goes inside it), T3_WORKTREE_BRANCH, T3_WORKTREE_BASE, T3_WORKTREE_REPOSITORIES (the chosen repositories, one path per line) and T3_PROJECT_ROOT set. Each of the project's repositories it checks out at the same relative place is adopted as the thread's checkout of it, and must be a git worktree of that repository on T3_WORKTREE_BRANCH. It runs again when the folder goes missing, so it must cope with the branch already existing. It has ten minutes.",
         },
-        T3_PROJECT_FILE_COMMAND_MAX_LENGTH,
+        VIBECODINGER_PROJECT_FILE_COMMAND_MAX_LENGTH,
       ),
       remove: Schema.optionalKey(
         trimmedNonEmpty(
@@ -125,7 +125,7 @@ export const T3ProjectFile = Schema.Struct({
             description:
               "Shell command that takes the thread's folder down again, with the same variables. It can run on a folder that is partly gone, and should delete what create generated. VibeCodinger removes the checkouts it leaves behind.",
           },
-          T3_PROJECT_FILE_COMMAND_MAX_LENGTH,
+          VIBECODINGER_PROJECT_FILE_COMMAND_MAX_LENGTH,
         ),
       ),
     }).annotate({
@@ -139,23 +139,23 @@ export const T3ProjectFile = Schema.Struct({
         description:
           'Repository-relative path to a git sparse-checkout pattern file in non-cone syntax (e.g. ".vibecodinger/sparse-checkout"). New worktrees check out only the files it matches. Both files are read from the branch being checked out; a missing pattern file fails the worktree instead of checking out everything.',
       },
-      T3_PROJECT_FILE_PATH_MAX_LENGTH,
+      VIBECODINGER_PROJECT_FILE_PATH_MAX_LENGTH,
     ),
   ),
   scripts: Schema.optionalKey(
-    Schema.Array(T3ProjectFileScript)
+    Schema.Array(VibeCodingerProjectFileScript)
       .annotate({
         description:
           "Project scripts shared with everyone who opens this repository in VibeCodinger.",
       })
-      .check(Schema.isMaxLength(T3_PROJECT_FILE_MAX_SCRIPTS)),
+      .check(Schema.isMaxLength(VIBECODINGER_PROJECT_FILE_MAX_SCRIPTS)),
   ),
 }).annotate({
   title: "T3 project file",
   description:
     "Checked-in project configuration for VibeCodinger (vibecodinger.json at the repository root). See https://github.com/AkaakuHub/t3code for documentation.",
 });
-export type T3ProjectFile = typeof T3ProjectFile.Type;
+export type VibeCodingerProjectFile = typeof VibeCodingerProjectFile.Type;
 
 /** Keys must be nullable in ServerSettings so both environment and project overrides can inherit vibecodinger.json. */
 export const PROJECT_FILE_BACKED_SETTINGS = {
@@ -165,12 +165,12 @@ export const PROJECT_FILE_BACKED_SETTINGS = {
   // providerInstances overrides individual fields, so it cannot use whole-setting file inheritance.
   readonly [K in ProjectScopedServerSettingKey & keyof ServerSettings]?: {
     readonly field: {
-      readonly [F in keyof T3ProjectFile]: T3ProjectFile[F] extends
+      readonly [F in keyof VibeCodingerProjectFile]: VibeCodingerProjectFile[F] extends
         | Exclude<ServerSettings[K], null>
         | undefined
         ? F
         : never;
-    }[keyof T3ProjectFile];
+    }[keyof VibeCodingerProjectFile];
     readonly builtIn: Exclude<ServerSettings[K], null>;
   };
 };

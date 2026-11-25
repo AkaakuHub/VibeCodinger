@@ -9,7 +9,7 @@ import {
   type TaskFolderError,
   type Project as ProjectRecord,
   type ServerProvider,
-  T3_PROJECT_FILE_NAME,
+  VIBECODINGER_PROJECT_FILE_NAME,
 } from "@vibecodinger/contracts";
 import * as Digest from "effect/crypto/Digest";
 import * as Effect from "effect/Effect";
@@ -37,7 +37,7 @@ import {
   resolveProjectSettings,
 } from "@vibecodinger/shared/projectSettings";
 import { resolveProjectScripts } from "@vibecodinger/shared/projectScripts";
-import { parseT3ProjectFile } from "@vibecodinger/shared/t3ProjectFile";
+import { parseVibeCodingerProjectFile } from "@vibecodinger/shared/vibeCodingerProjectFile";
 import { resolveRuntimeMode } from "../../delegatedTaskModes.ts";
 import * as McpInvocationContext from "../../McpInvocationContext.ts";
 import * as McpToolAccess from "../../McpToolAccess.ts";
@@ -119,12 +119,12 @@ const projectFileThreadEnvMode = Effect.fn("mcp.projectFileThreadEnvMode")(funct
 ) {
   const fileSystem = yield* FileSystem.FileSystem;
   const contents = yield* fileSystem
-    .readFileString(`${workspaceRoot}/${T3_PROJECT_FILE_NAME}`)
+    .readFileString(`${workspaceRoot}/${VIBECODINGER_PROJECT_FILE_NAME}`)
     .pipe(Effect.orElseSucceed(() => null));
   return resolveProjectFileBackedSetting(
     "defaultThreadEnvMode",
     null,
-    contents === null ? null : parseT3ProjectFile(contents),
+    contents === null ? null : parseVibeCodingerProjectFile(contents),
   ).value;
 });
 

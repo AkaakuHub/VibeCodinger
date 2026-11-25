@@ -1,8 +1,8 @@
 import type { APIRoute } from "astro";
 
-import { buildT3ProjectFileJsonSchema } from "@vibecodinger/shared/t3ProjectFile";
+import { buildVibeCodingerProjectFileJsonSchema } from "@vibecodinger/shared/vibeCodingerProjectFile";
 
 export const GET: APIRoute = () =>
-  new Response(`${JSON.stringify(buildT3ProjectFileJsonSchema(), null, 2)}\n`, {
+  new Response(`${JSON.stringify(buildVibeCodingerProjectFileJsonSchema(), null, 2)}\n`, {
     headers: { "Content-Type": "application/json" },
   });

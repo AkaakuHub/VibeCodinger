@@ -46,7 +46,7 @@ import * as ProjectEnrichmentService from "./ProjectEnrichmentService.ts";
 import * as ProjectFaviconResolver from "./ProjectFaviconResolver.ts";
 import * as ProjectService from "./ProjectService.ts";
 import * as RepositoryIdentityResolver from "./RepositoryIdentityResolver.ts";
-import * as T3ProjectFileLoader from "./T3ProjectFileLoader.ts";
+import * as VibeCodingerProjectFileLoader from "./VibeCodingerProjectFileLoader.ts";
 
 const layerWorkspacePaths = Layer.succeed(WorkspacePaths.WorkspacePaths, {
   normalizeWorkspaceRoot: (workspaceRoot) => Effect.succeed(workspaceRoot.replace(/\/$/, "")),
@@ -983,7 +983,7 @@ it.effect("resolves a restored icon immediately after reselecting its saved path
       }),
       ProjectFaviconResolver.layer.pipe(
         Layer.provide(layerWorkspacePaths),
-        Layer.provide(T3ProjectFileLoader.layer),
+        Layer.provide(VibeCodingerProjectFileLoader.layer),
         Layer.provide(NodeServices.layer),
       ),
     );

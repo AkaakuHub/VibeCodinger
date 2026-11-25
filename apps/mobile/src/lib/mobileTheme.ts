@@ -1,6 +1,6 @@
 import {
   BUILT_IN_THEMES,
-  T3_CHAT_THEME,
+  VIBECODINGER_CHAT_THEME,
   VIBECODINGER_LIGHT_THEME_COLORS,
   VIBECODINGER_DARK_THEME_COLORS,
   getThemeColorsForAppearance,
@@ -455,7 +455,8 @@ export function getMobileThemeColors(
   if (themeId === DEFAULT_MOBILE_THEME_ID) {
     return appearance === "dark" ? VIBECODINGER_DARK_THEME_COLORS : VIBECODINGER_LIGHT_THEME_COLORS;
   }
-  const theme = BUILT_IN_THEMES.find((candidate) => candidate.id === themeId) ?? T3_CHAT_THEME;
+  const theme =
+    BUILT_IN_THEMES.find((candidate) => candidate.id === themeId) ?? VIBECODINGER_CHAT_THEME;
   return getThemeColorsForAppearance(theme, appearance) ?? theme.colors;
 }
 
@@ -508,7 +509,8 @@ export function getMobileThemePreviewColors(
 ): ThemePreviewColors {
   if (themeId === DEFAULT_MOBILE_THEME_ID || themeId === "material-you")
     return STANDARD_THEME_PREVIEW_COLORS[appearance];
-  const theme = BUILT_IN_THEMES.find((candidate) => candidate.id === themeId) ?? T3_CHAT_THEME;
+  const theme =
+    BUILT_IN_THEMES.find((candidate) => candidate.id === themeId) ?? VIBECODINGER_CHAT_THEME;
   const colors = getThemeColorsForAppearance(theme, appearance) ?? theme.colors;
   return {
     canvas: themeColorToNativeColor(colors.canvas),

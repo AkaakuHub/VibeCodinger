@@ -1,11 +1,14 @@
 import * as Schema from "effect/Schema";
 import { describe, expect, it } from "vite-plus/test";
 
-import { parseT3ProjectFile, T3ProjectFileFromJson } from "./t3ProjectFile.ts";
+import {
+  parseVibeCodingerProjectFile,
+  VibeCodingerProjectFileFromJson,
+} from "./vibeCodingerProjectFile.ts";
 
-const decodeJson = Schema.decodeUnknownSync(T3ProjectFileFromJson);
+const decodeJson = Schema.decodeUnknownSync(VibeCodingerProjectFileFromJson);
 
-describe("T3ProjectFileFromJson", () => {
+describe("VibeCodingerProjectFileFromJson", () => {
   it("decodes lenient JSONC with comments and trailing commas", () => {
     const decoded = decodeJson(`{
       // team scripts
@@ -20,10 +23,10 @@ describe("T3ProjectFileFromJson", () => {
   });
 });
 
-describe("parseT3ProjectFile", () => {
+describe("parseVibeCodingerProjectFile", () => {
   it("reads project defaults from JSONC with a URL in a block comment", () => {
     expect(
-      parseT3ProjectFile(`{
+      parseVibeCodingerProjectFile(`{
         /* See https://raw.githubusercontent.com/AkaakuHub/t3code/main/docs/schema/vibecodinger.json */
         "defaultThreadEnvMode": "worktree"
       }`),

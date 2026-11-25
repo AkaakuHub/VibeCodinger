@@ -14,8 +14,8 @@ import { expandHomePath } from "@vibecodinger/provider-core/server/pathExpansion
 import { splitsSurrogatePair } from "@vibecodinger/shared/assistantCitations";
 import * as HostProcess from "@vibecodinger/shared/HostProcess";
 import { fromLenientJson } from "@vibecodinger/shared/schemaJson";
-import { T3_PROJECT_FILE_NAME } from "@vibecodinger/contracts";
-import { parseT3ProjectFile } from "@vibecodinger/shared/t3ProjectFile";
+import { VIBECODINGER_PROJECT_FILE_NAME } from "@vibecodinger/contracts";
+import { parseVibeCodingerProjectFile } from "@vibecodinger/shared/vibeCodingerProjectFile";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";
@@ -285,9 +285,9 @@ export const discoverFolders = Effect.fn("WorkspaceFolders.discover")(function* 
   const { realPath, ownsHistory } = yield* folderProbes;
   const root = path.resolve(expandHomePath(workspaceRoot.trim(), yield* HostProcess.HomeDirectory));
   const ignored = (
-    parseT3ProjectFile(
+    parseVibeCodingerProjectFile(
       yield* fileSystem
-        .readFileString(path.join(root, T3_PROJECT_FILE_NAME))
+        .readFileString(path.join(root, VIBECODINGER_PROJECT_FILE_NAME))
         .pipe(Effect.orElseSucceed(() => "")),
     )?.ignoreRepositories ?? []
   ).map((entry) => path.resolve(root, entry));
