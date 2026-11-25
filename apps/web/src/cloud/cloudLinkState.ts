@@ -36,12 +36,6 @@ function refreshCloudLinkState(target: CloudLinkTarget | null): void {
   }
 }
 
-export function readCachedCloudLinkState(target: CloudLinkTarget) {
-  if (!readEnvironmentScope(target.environmentId, AuthRelayReadScope)) return null;
-  const result = appAtomRegistry.get(cloudLinkStateAtom(target.environmentId));
-  return result._tag === "Success" ? result.value : null;
-}
-
 export function useCloudLinkState(environmentId: EnvironmentId | null) {
   const gt = useGT();
   const resolve = useMessages();

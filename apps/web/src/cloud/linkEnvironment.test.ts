@@ -1,5 +1,4 @@
 import { type DesktopBridge, EnvironmentId } from "@t3tools/contracts";
-import { RelayWebClientId } from "@t3tools/contracts/relay";
 import { describe, expect, it } from "@effect/vitest";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
@@ -15,11 +14,10 @@ import {
   EnvironmentSupervisor,
 } from "@t3tools/client-runtime/connection";
 import { EnvironmentRegistry } from "@t3tools/client-runtime/connection";
-import { ManagedRelay } from "@t3tools/client-runtime/relay";
 import { layerRemoteHttpClient, type RpcSession } from "@t3tools/client-runtime/rpc";
 import { __resetDesktopPrimaryAuthForTests } from "../environments/primary/desktopAuth";
 
-import { readCloudLinkState, unlinkEnvironmentFromCloud } from "./linkEnvironment";
+import { readCloudLinkState } from "./linkEnvironment";
 
 const TARGET = {
   environmentId: "environment-1",
@@ -34,26 +32,6 @@ const SAVED_SERVICE_TARGET = {
   httpBaseUrl: "http://127.0.0.1:3773",
   wsBaseUrl: "ws://127.0.0.1:3773",
 };
-
-const createProof = vi.fn(() => Effect.succeed("dpop-proof"));
-const layerDpopSigner = Layer.succeed(
-  ManagedRelay.ManagedRelayDpopSigner,
-  ManagedRelay.ManagedRelayDpopSigner.of({
-    thumbprint: Effect.succeed("thumbprint"),
-    createProof,
-  }),
-);
-
-function layerRelay() {
-  const layerHttp = layerRemoteHttpClient(globalThis.fetch);
-  return Layer.mergeAll(
-    layerHttp,
-    ManagedRelay.layer({
-      relayUrl: "https://relay.example.test",
-      clientId: RelayWebClientId,
-    }).pipe(Layer.provideMerge(layerDpopSigner), Layer.provide(layerHttp)),
-  );
-}
 
 function layerRegistry() {
   return Layer.effect(
@@ -127,30 +105,22 @@ function layerRegistry() {
 }
 
 function layerServices() {
-  return Layer.mergeAll(layerRelay(), layerRegistry());
+  return Layer.mergeAll(layerRemoteHttpClient(globalThis.fetch), layerRegistry());
 }
 
 function withServices<A, E>(
-  effect: Effect.Effect<
-    A,
-    E,
-    | HttpClient.HttpClient
-    | ManagedRelay.ManagedRelayClient
-    | EnvironmentRegistry.EnvironmentRegistry
-  >,
+  effect: Effect.Effect<A, E, HttpClient.HttpClient | EnvironmentRegistry.EnvironmentRegistry>,
 ) {
   return effect.pipe(Effect.provide(layerServices()));
 }
 
 beforeEach(() => {
   vi.clearAllMocks();
-  vi.stubEnv("VITE_VIBECODINGER_RELAY_URL", "https://relay.example.test");
 });
 
 afterEach(() => {
   __resetDesktopPrimaryAuthForTests();
   vi.unstubAllGlobals();
-  vi.unstubAllEnvs();
   vi.restoreAllMocks();
 });
 
@@ -192,51 +162,6 @@ describe("web cloud link environment client", () => {
         expect(request.credentials).not.toBe("include");
         expect(request.headers.get("authorization")).toBe(`Bearer ${token}`);
       }
-    }),
-  );
-
-  it.effect("reports why the relay kept the environment after a local unlink", () =>
-    Effect.gen(function* () {
-      const fetchMock = vi.fn((input: RequestInfo | URL) =>
-        Promise.resolve(
-          String(input).startsWith("https://relay.example.test/")
-            ? Response.json(
-                {
-                  _tag: "RelayInternalError",
-                  code: "internal_error",
-                  reason: "upstream_unavailable",
-                  traceId: "trace-unlink",
-                },
-                { status: 500 },
-              )
-            : Response.json({ ok: true, endpointRuntimeStatus: null }),
-        ),
-      );
-      vi.stubGlobal("fetch", fetchMock);
-      vi.stubGlobal("window", {
-        location: { origin: "vibecodinger://app" },
-        desktopBridge: {
-          getLocalEnvironmentBearerToken: vi.fn().mockResolvedValue("desktop-bearer-token"),
-        } as unknown as DesktopBridge,
-      });
-
-      const error = yield* withServices(
-        unlinkEnvironmentFromCloud({
-          target: { environmentId: EnvironmentId.make(TARGET.environmentId) },
-          clerkToken: "clerk-token",
-        }),
-      ).pipe(Effect.flip);
-
-      expect(fetchMock.mock.calls.map(([input]) => String(input))).toEqual([
-        "http://127.0.0.1:3000/api/connect/unlink",
-        "https://relay.example.test/v1/client/environment-links/environment-1",
-      ]);
-      expect(error).toMatchObject({
-        _tag: "CloudEnvironmentLinkError",
-        message:
-          "Disconnected locally, but T3 Connect did not confirm it removed this environment: Relay encountered an internal error (upstream_unavailable).",
-        traceId: "trace-unlink",
-      });
     }),
   );
 });

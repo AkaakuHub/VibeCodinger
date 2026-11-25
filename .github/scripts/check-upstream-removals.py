@@ -74,7 +74,7 @@ FORBIDDEN = re.compile(
     rb"cloudGetRelayClientStatus|cloudInstallRelayClient|cloud\.(?:getRelayClientStatus|installRelayClient)|RelayClientInstallDialog|"
     rb"CloudHttp\.layer|HttpApiBuilder\.layer\(EnvironmentHttpApi\).*connect|"
     rb"VIBECODINGER_REPOSITORY_URL.{0,64}github\.com/pingdotgg/t3code|"
-    rb"t3ConnectMcpUrl|"
+    rb"CloudLinkRow|CloudRemoteEnvironmentRows|useCloudLinkController|relayHttpBaseUrl|t3ConnectMcpUrl|"
     rb"Outside MCP clients get app\.t3\.codes|"
     rb"https://t3\.codes/(?:install[.]|download|mobile)|buildHostedPairingUrl|resolveHostedPairingUrl|DEFAULT_HOSTED_APP_URL|https://app\.t3\.codes\b|"
     rb"relayHookBaseUrl|RelayDeliveryProof|traceAuthenticatedRelayRequest|connectSubcommands|writeHeapSnapshot\s*\(",

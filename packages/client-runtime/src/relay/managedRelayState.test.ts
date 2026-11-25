@@ -16,8 +16,6 @@ import * as ManagedRelay from "./managedRelay.ts";
 import {
   createManagedRelayQueryManager,
   createManagedRelaySession,
-  deregisterManagedRelayEnvironment,
-  ManagedRelaySessionError,
   managedRelaySessionAtom,
   setManagedRelaySession,
 } from "./managedRelayState.ts";
@@ -143,24 +141,6 @@ describe("createManagedRelayQueryManager", () => {
       for (const unsubscribe of readers) unsubscribe();
 
       expect(logs).toEqual([["[t3-cloud] Relay device listing failed"]]);
-    }),
-  );
-
-  it.effect("rejects deregistration after the account changes", () =>
-    Effect.gen(function* () {
-      const unlinkEnvironment = vi.fn(() => Effect.succeed({ ok: true }));
-      setSession();
-
-      const error = yield* deregisterManagedRelayEnvironment(registry, {
-        accountId: "previous-account",
-        environmentId: environment.environmentId,
-      }).pipe(
-        Effect.provideService(ManagedRelay.ManagedRelayClient, createClient({ unlinkEnvironment })),
-        Effect.flip,
-      );
-
-      expect(error).toBeInstanceOf(ManagedRelaySessionError);
-      expect(unlinkEnvironment).not.toHaveBeenCalled();
     }),
   );
 
