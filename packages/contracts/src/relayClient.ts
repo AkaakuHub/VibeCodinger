@@ -1,6 +1,6 @@
 import * as Schema from "effect/Schema";
 
-export const RelayClientStatusSchema = Schema.Union([
+const RelayClientStatusSchema = Schema.Union([
   Schema.Struct({
     status: Schema.Literal("available"),
     executablePath: Schema.String,
@@ -18,9 +18,8 @@ export const RelayClientStatusSchema = Schema.Union([
     version: Schema.String,
   }),
 ]);
-export type RelayClientStatus = typeof RelayClientStatusSchema.Type;
 
-export const RelayClientInstallProgressStageSchema = Schema.Literals([
+const RelayClientInstallProgressStageSchema = Schema.Literals([
   "checking",
   "waiting_for_lock",
   "downloading",
@@ -31,7 +30,7 @@ export const RelayClientInstallProgressStageSchema = Schema.Literals([
 ]);
 export type RelayClientInstallProgressStage = typeof RelayClientInstallProgressStageSchema.Type;
 
-export const RelayClientInstallProgressEventSchema = Schema.Union([
+const RelayClientInstallProgressEventSchema = Schema.Union([
   Schema.Struct({
     type: Schema.Literal("progress"),
     stage: RelayClientInstallProgressStageSchema,
@@ -42,23 +41,3 @@ export const RelayClientInstallProgressEventSchema = Schema.Union([
   }),
 ]);
 export type RelayClientInstallProgressEvent = typeof RelayClientInstallProgressEventSchema.Type;
-
-export const RelayClientInstallFailureReasonSchema = Schema.Literals([
-  "download_failed",
-  "invalid_checksum",
-  "install_locked",
-  "managed_by_policy",
-  "override_missing",
-  "unsupported_platform",
-  "validation_failed",
-  "write_failed",
-]);
-export type RelayClientInstallFailureReason = typeof RelayClientInstallFailureReasonSchema.Type;
-
-export class RelayClientInstallFailedError extends Schema.TaggedError<RelayClientInstallFailedError>()(
-  "RelayClientInstallFailedError",
-  {
-    reason: RelayClientInstallFailureReasonSchema,
-    message: Schema.String,
-  },
-) {}

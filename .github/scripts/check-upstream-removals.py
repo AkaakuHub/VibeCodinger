@@ -64,6 +64,7 @@ FORBIDDEN = re.compile(
     rb"t3-task-cache\.pinglabs\.workers\.dev|"
     rb"@clerk/(?:expo|react|electron)|cloudAuthProvider|managedAuthShell|"
     rb"layerCloudDesiredLinkReconcile|managedTunnelStartup|watchManagedTunnelOrigin|hostedApprovalUrl|agentApprovalAppUrlConfig|"
+    rb"cloudGetRelayClientStatus|cloudInstallRelayClient|cloud\.(?:getRelayClientStatus|installRelayClient)|RelayClientInstallDialog|"
     rb"CloudHttp\.layer|HttpApiBuilder\.layer\(EnvironmentHttpApi\).*connect|"
     rb"VIBECODINGER_REPOSITORY_URL.{0,64}github\.com/pingdotgg/t3code|"
     rb"Outside MCP clients get app\.t3\.codes|"

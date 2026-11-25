@@ -1,15 +1,9 @@
-import {
-  type DesktopBridge,
-  EnvironmentId,
-  type RelayClientInstallProgressEvent,
-  WS_METHODS,
-} from "@t3tools/contracts";
+import { type DesktopBridge, EnvironmentId } from "@t3tools/contracts";
 import { RelayWebClientId } from "@t3tools/contracts/relay";
 import { describe, expect, it } from "@effect/vitest";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as Option from "effect/Option";
-import * as Stream from "effect/Stream";
 import * as SubscriptionRef from "effect/SubscriptionRef";
 import { HttpClient } from "effect/http";
 import { afterEach, beforeEach, vi } from "vite-plus/test";
@@ -20,10 +14,9 @@ import {
   PrimaryConnectionTarget,
   EnvironmentSupervisor,
 } from "@t3tools/client-runtime/connection";
-import { type RpcSession } from "@t3tools/client-runtime/rpc";
 import { EnvironmentRegistry } from "@t3tools/client-runtime/connection";
 import { ManagedRelay } from "@t3tools/client-runtime/relay";
-import { layerRemoteHttpClient } from "@t3tools/client-runtime/rpc";
+import { layerRemoteHttpClient, type RpcSession } from "@t3tools/client-runtime/rpc";
 import { __resetDesktopPrimaryAuthForTests } from "../environments/primary/desktopAuth";
 
 import { readCloudLinkState, unlinkEnvironmentFromCloud } from "./linkEnvironment";
@@ -41,18 +34,6 @@ const SAVED_SERVICE_TARGET = {
   httpBaseUrl: "http://127.0.0.1:3773",
   wsBaseUrl: "ws://127.0.0.1:3773",
 };
-
-const relayClientInstallDialog = vi.hoisted(() => ({
-  requestConfirmation: vi.fn(),
-  reportProgress: vi.fn(),
-  finish: vi.fn(),
-}));
-
-vi.mock("./relayClientInstallDialog", () => ({
-  requestRelayClientInstallConfirmation: relayClientInstallDialog.requestConfirmation,
-  reportRelayClientInstallProgress: relayClientInstallDialog.reportProgress,
-  finishRelayClientInstall: relayClientInstallDialog.finish,
-}));
 
 const createProof = vi.fn(() => Effect.succeed("dpop-proof"));
 const layerDpopSigner = Layer.succeed(
@@ -74,28 +55,10 @@ function layerRelay() {
   );
 }
 
-function layerRegistry(options?: {
-  readonly status?: { readonly status: "available"; readonly version: string };
-  readonly installEvents?: ReadonlyArray<RelayClientInstallProgressEvent>;
-}) {
+function layerRegistry() {
   return Layer.effect(
     EnvironmentRegistry.EnvironmentRegistry,
     Effect.gen(function* () {
-      const client = {
-        [WS_METHODS.cloudGetRelayClientStatus]: () =>
-          Effect.succeed(options?.status ?? { status: "available", version: "2026.6.0" }),
-        [WS_METHODS.cloudInstallRelayClient]: () =>
-          Stream.fromIterable(options?.installEvents ?? []),
-      } as unknown as RpcSession["client"];
-      const session: RpcSession = {
-        client,
-        initialConfig: Effect.never,
-        subscribeServerConfig: (input = {}) => client.subscribeServerConfig(input),
-        ready: Effect.void,
-        probe: Effect.void,
-        inboundFrames: Effect.succeed(0),
-        closed: Effect.never,
-      };
       const makeSupervisor = Effect.fn(function* (prepared: Option.Option<PreparedConnection>) {
         return EnvironmentSupervisor.EnvironmentSupervisor.of({
           target: new PrimaryConnectionTarget({
@@ -105,7 +68,7 @@ function layerRegistry(options?: {
             wsBaseUrl: TARGET.wsBaseUrl,
           }),
           state: yield* SubscriptionRef.make(AVAILABLE_CONNECTION_STATE),
-          session: yield* SubscriptionRef.make(Option.some(session)),
+          session: yield* SubscriptionRef.make(Option.none<RpcSession>()),
           prepared: yield* SubscriptionRef.make(prepared),
           connect: Effect.void,
           disconnect: Effect.void,
@@ -157,20 +120,14 @@ function layerRegistry(options?: {
             EnvironmentSupervisor.EnvironmentSupervisor,
             supervisorFor(environmentId),
           ),
-        runStream: <A, E, R>(environmentId: EnvironmentId, stream: Stream.Stream<A, E, R>) =>
-          Stream.provideService(
-            stream,
-            EnvironmentSupervisor.EnvironmentSupervisor,
-            supervisorFor(environmentId),
-          ),
       } as unknown as EnvironmentRegistry.EnvironmentRegistry["Service"];
       return EnvironmentRegistry.EnvironmentRegistry.of(registry);
     }),
   );
 }
 
-function layerServices(options?: Parameters<typeof layerRegistry>[0]) {
-  return Layer.mergeAll(layerRelay(), layerRegistry(options));
+function layerServices() {
+  return Layer.mergeAll(layerRelay(), layerRegistry());
 }
 
 function withServices<A, E>(
@@ -181,15 +138,13 @@ function withServices<A, E>(
     | ManagedRelay.ManagedRelayClient
     | EnvironmentRegistry.EnvironmentRegistry
   >,
-  options?: Parameters<typeof layerRegistry>[0],
 ) {
-  return effect.pipe(Effect.provide(layerServices(options)));
+  return effect.pipe(Effect.provide(layerServices()));
 }
 
 beforeEach(() => {
   vi.clearAllMocks();
   vi.stubEnv("VITE_VIBECODINGER_RELAY_URL", "https://relay.example.test");
-  relayClientInstallDialog.requestConfirmation.mockResolvedValue(true);
 });
 
 afterEach(() => {

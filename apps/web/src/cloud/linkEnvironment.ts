@@ -2,7 +2,6 @@ import * as Effect from "effect/Effect";
 import { msg } from "gt-react";
 import * as Option from "effect/Option";
 import * as Schema from "effect/Schema";
-import * as Stream from "effect/Stream";
 import * as SubscriptionRef from "effect/SubscriptionRef";
 import type { HttpClient } from "effect/http";
 import {
@@ -15,25 +14,17 @@ import {
   EnvironmentHttpInternalServerError,
   EnvironmentHttpUnauthorizedError,
   EnvironmentId,
-  WS_METHODS,
 } from "@t3tools/contracts";
 import {
   type RelayEnvironmentLinkResponse,
   type RelayManagedEndpointProviderKind,
 } from "@t3tools/contracts/relay";
 import { EnvironmentRegistry, EnvironmentSupervisor } from "@t3tools/client-runtime/connection";
-import { request, runStream } from "@t3tools/client-runtime/rpc";
 import { ManagedRelay, relayRequestFailureDetail } from "@t3tools/client-runtime/relay";
 import { executeConnectedEnvironmentHttpRequest } from "@t3tools/client-runtime/state/environmentHttpAuth";
 
 import { m } from "../i18n/messages";
 import { resolveCloudPublicConfig } from "./publicConfig";
-import {
-  finishRelayClientInstall,
-  reportRelayClientInstallProgress,
-  requestRelayClientInstallConfirmation,
-} from "./relayClientInstallDialog";
-
 function relayUrl(): string | null {
   return resolveCloudPublicConfig().relayUrl;
 }
@@ -48,78 +39,6 @@ export class CloudEnvironmentLinkError extends Schema.TaggedError<CloudEnvironme
 ) {}
 
 export const isCloudEnvironmentLinkError = Schema.is(CloudEnvironmentLinkError);
-
-const relayClientRpcError = (message: string) => (cause: unknown) =>
-  new CloudEnvironmentLinkError({
-    message,
-    cause,
-  });
-
-const ensureRelayClientAvailable = Effect.fn("linkEnvironment.ensureRelayClientAvailable")(
-  function* (
-    environmentId: EnvironmentId,
-  ): Effect.fn.Return<void, CloudEnvironmentLinkError, EnvironmentRegistry.EnvironmentRegistry> {
-    const registry = yield* EnvironmentRegistry.EnvironmentRegistry;
-    const status = yield* registry
-      .run(environmentId, request(WS_METHODS.cloudGetRelayClientStatus, {}))
-      .pipe(
-        Effect.mapError(relayClientRpcError(m(msg("Could not check relay client availability.")))),
-      );
-    if (status.status === "available") return;
-    if (status.status === "unsupported") {
-      return yield* new CloudEnvironmentLinkError({
-        message: m(
-          msg("T3 Code cannot install the relay client automatically on {platform}-{arch}.", {
-            platform: status.platform,
-            arch: status.arch,
-          }),
-        ),
-      });
-    }
-
-    const confirmed = yield* Effect.tryPromise({
-      try: () => requestRelayClientInstallConfirmation(status.version),
-      catch: relayClientRpcError(m(msg("Could not confirm relay client installation."))),
-    });
-    if (!confirmed) {
-      return yield* new CloudEnvironmentLinkError({
-        message: m(msg("Relay client installation was cancelled.")),
-      });
-    }
-
-    const installed = yield* registry
-      .runStream(
-        environmentId,
-        runStream(WS_METHODS.cloudInstallRelayClient, {}).pipe(
-          Stream.tap((event) => Effect.sync(() => reportRelayClientInstallProgress(event))),
-        ),
-      )
-      .pipe(
-        Stream.runLast,
-        Effect.mapError(relayClientRpcError(m(msg("Could not install the relay client.")))),
-        Effect.ensuring(Effect.sync(finishRelayClientInstall)),
-      );
-    if (Option.isNone(installed) || installed.value.type !== "complete") {
-      return yield* new CloudEnvironmentLinkError({
-        message: m(msg("The relay client install completed without a final status.")),
-      });
-    }
-    const installedStatus = installed.value.status;
-    if (installedStatus.status !== "available") {
-      return yield* new CloudEnvironmentLinkError({
-        message:
-          installedStatus.status === "unsupported"
-            ? m(
-                msg("T3 Code cannot install the relay client automatically on {platform}-{arch}.", {
-                  platform: installedStatus.platform,
-                  arch: installedStatus.arch,
-                }),
-              )
-            : m(msg("The relay client is still unavailable after installation.")),
-      });
-    }
-  },
-);
 
 const isEnvironmentCloudApiError = Schema.is(
   Schema.Union([
@@ -408,10 +327,6 @@ export const linkEnvironmentToCloud: (input: {
   const relayClient = yield* ManagedRelay.ManagedRelayClient;
   // The environment only signs a proof for the loopback origin this request reaches it on.
   const endpoint = yield* preparedEndpoint(input.target);
-  if (managedTunnelsEnabled) {
-    yield* ensureRelayClientAvailable(input.target.environmentId);
-  }
-
   const challenge = yield* relayClient
     .createEnvironmentLinkChallenge({
       clerkToken: input.clerkToken,
