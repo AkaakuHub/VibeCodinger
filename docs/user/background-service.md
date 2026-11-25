@@ -71,7 +71,7 @@ VIBECODINGER_HOST=127.0.0.1
 Use `KEY=VALUE` entries, quoting values that contain spaces or `#`. Values are
 literal: shell commands and variable expansion are not evaluated. Entries
 override the inherited service environment, except for `PATH`, `VIBECODINGER_HOME`,
-`T3_BOOT_SERVICE_UNIT`, and `T3_SERVICE_LAUNCHER_CONTEXT` (including case variants).
+`VIBECODINGER_BOOT_SERVICE_UNIT`, and `VIBECODINGER_SERVICE_LAUNCHER_CONTEXT` (including case variants).
 
 Run `vibecodinger service restart` after changing the file. Changes apply when the service
 starts again; switching the server version alone keeps the current values.

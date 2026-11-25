@@ -173,7 +173,7 @@ describe("ProjectSetupScriptRunner", () => {
       expect(yield* Queue.size(writes)).toBe(0);
       yield* emit({ ...event, type: "output", data: "> \x1b[?2004h" });
       const written = yield* Queue.take(writes);
-      const sentinel = written.match(/__T3_SETUP_DONE___[0-9a-f]{32}:/)?.[0];
+      const sentinel = written.match(/__VIBECODINGER_SETUP_DONE___[0-9a-f]{32}:/)?.[0];
       expect(sentinel).toBeDefined();
       expect(written).toBe(
         ` ${[
@@ -206,7 +206,7 @@ describe("ProjectSetupScriptRunner", () => {
       yield* emit({ ...event, type: "output", data: "\r\n% \x1b[?2004h" });
       const command = yield* Queue.take(writes);
       expect(command).toContain("vp i");
-      const sentinel = command.match(/__T3_SETUP_DONE___[a-f0-9]+:/)?.[0];
+      const sentinel = command.match(/__VIBECODINGER_SETUP_DONE___[a-f0-9]+:/)?.[0];
       expect(sentinel).toBeDefined();
       yield* emit({ ...event, type: "output", data: `${sentinel}0\r\n% ` });
       expect(yield* completion).toMatchObject({ exitCode: 0 });

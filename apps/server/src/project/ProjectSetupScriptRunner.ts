@@ -135,7 +135,7 @@ export class ProjectSetupScriptRunner extends Context.Service<
 
 /** @public */
 // Random per-run tokens prevent script output from spoofing completion.
-const COMPLETION_SENTINEL_PREFIX = "__T3_SETUP_DONE__";
+const COMPLETION_SENTINEL_PREFIX = "__VIBECODINGER_SETUP_DONE__";
 const OUTPUT_LINE_MAX_LENGTH = 400;
 const PARTIAL_LINE_MAX_LENGTH = 4_096;
 

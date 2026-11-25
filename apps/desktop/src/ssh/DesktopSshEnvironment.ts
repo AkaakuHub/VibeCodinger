@@ -83,7 +83,7 @@ export const resolveDesktopSshCliRunner = (
   environment: DesktopEnvironment.DesktopEnvironment["Service"],
   env: NodeJS.ProcessEnv,
 ): SshTunnel.RemoteT3RunnerOptions => {
-  const devRemoteEntryPath = Option.getOrUndefined(environment.devRemoteT3ServerEntryPath);
+  const devRemoteEntryPath = Option.getOrUndefined(environment.devRemoteServerEntryPath);
   if (environment.isDevelopment && devRemoteEntryPath !== undefined) {
     return {
       nodeScriptPath: devRemoteEntryPath,

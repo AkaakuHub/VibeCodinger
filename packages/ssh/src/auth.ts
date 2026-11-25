@@ -79,12 +79,12 @@ function joinSshAskpassPath(
 const ASKPASS_POSIX_SCRIPT = `#!/bin/sh
 # Invoked by ssh via SSH_ASKPASS when T3 Code re-runs ssh with a cached password
 # from the renderer's in-app prompt. We never expose a native dialog here - if
-# T3_SSH_AUTH_SECRET is missing, that's a caller bug and we fail loudly.
-if [ "\${T3_SSH_AUTH_SECRET+x}" = "x" ]; then
-  printf "%s\\n" "$T3_SSH_AUTH_SECRET"
+# VIBECODINGER_SSH_AUTH_SECRET is missing, that's a caller bug and we fail loudly.
+if [ "\${VIBECODINGER_SSH_AUTH_SECRET+x}" = "x" ]; then
+  printf "%s\\n" "$VIBECODINGER_SSH_AUTH_SECRET"
   exit 0
 fi
-printf 'T3 Code ssh-askpass invoked without T3_SSH_AUTH_SECRET.\\n' >&2
+printf 'VibeCodinger ssh-askpass invoked without VIBECODINGER_SSH_AUTH_SECRET.\\n' >&2
 exit 1
 `;
 
@@ -92,14 +92,14 @@ exit 1
 // directly; Cygwin/MSYS ssh (Git for Windows) execs ssh-askpass.sh through its own sh. Either
 // way ssh appends the prompt as a plain trailing argument, which the helpers never read.
 const ASKPASS_WINDOWS_NODE_SCRIPT = `// Invoked by ssh via SSH_ASKPASS when T3 Code re-runs ssh with a cached password
-// from the renderer's in-app prompt. Answers from T3_SSH_AUTH_SECRET only and
+// from the renderer's in-app prompt. Answers from VIBECODINGER_SSH_AUTH_SECRET only and
 // never reads its arguments; if the secret is missing, that's a caller bug and
 // we fail loudly.
-if ("T3_SSH_AUTH_SECRET" in process.env) {
-  process.stdout.write((process.env.T3_SSH_AUTH_SECRET || "") + "\\n");
+if ("VIBECODINGER_SSH_AUTH_SECRET" in process.env) {
+  process.stdout.write((process.env.VIBECODINGER_SSH_AUTH_SECRET || "") + "\\n");
   process.exit(0);
 }
-process.stderr.write("T3 Code ssh-askpass invoked without T3_SSH_AUTH_SECRET.\\n");
+process.stderr.write("VibeCodinger ssh-askpass invoked without VIBECODINGER_SSH_AUTH_SECRET.\\n");
 process.exit(1);
 `;
 
@@ -238,7 +238,7 @@ export const buildSshChildEnvironment = Effect.fn("ssh/auth.buildSshChildEnviron
       : yield* ensureSshAskpassHelpers({ directory: input.askpassDirectory });
 
   const authSecretEnv =
-    input.authSecret === undefined ? {} : { T3_SSH_AUTH_SECRET: input.authSecret ?? "" };
+    input.authSecret === undefined ? {} : { VIBECODINGER_SSH_AUTH_SECRET: input.authSecret ?? "" };
 
   if (platform === "win32") {
     if (!(yield* isWin32OpenSsh())) {

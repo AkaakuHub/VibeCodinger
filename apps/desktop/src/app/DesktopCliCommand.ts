@@ -47,13 +47,13 @@ const sameWindowsPath = (left: string, right: string) =>
 // Failed reads must exit nonzero to prevent replacing PATH wholesale.
 const WINDOWS_USER_PATH_SCRIPT = `
 $ErrorActionPreference = 'Stop'
-if ($env:T3_SET -eq '1') {
+if ($env:VIBECODINGER_SET -eq '1') {
   $key = [Microsoft.Win32.Registry]::CurrentUser.CreateSubKey('Environment')
   $kind = [Microsoft.Win32.RegistryValueKind]::ExpandString
   if ($key.GetValueNames() -contains 'Path' -and $key.GetValueKind('Path') -eq 'String') {
     $kind = [Microsoft.Win32.RegistryValueKind]::String
   }
-  $key.SetValue('Path', $env:T3_PATH, $kind)
+  $key.SetValue('Path', $env:VIBECODINGER_PATH, $kind)
   Add-Type -Namespace T3 -Name Env -MemberDefinition '[DllImport("user32.dll", CharSet = CharSet.Unicode)] public static extern System.IntPtr SendMessageTimeout(System.IntPtr hWnd, uint Msg, System.UIntPtr wParam, string lParam, uint fuFlags, uint uTimeout, out System.UIntPtr lpdwResult);'
   $result = [System.UIntPtr]::Zero
   [void][T3.Env]::SendMessageTimeout([System.IntPtr]0xffff, 0x1A, [System.UIntPtr]::Zero, 'Environment', 2, 5000, [ref]$result)
@@ -147,13 +147,13 @@ export const make = Effect.gen(function* () {
         return stdout;
       }),
     );
-  // Explicit, so an inherited T3_SET=1 can never turn a read into a PATH write.
-  const readUserPath = powershell({ T3_SET: "0" }).pipe(
+  // Explicit, so an inherited VIBECODINGER_SET=1 can never turn a read into a PATH write.
+  const readUserPath = powershell({ VIBECODINGER_SET: "0" }).pipe(
     Effect.map((encoded) => Buffer.from(encoded.trim(), "base64").toString("utf8")),
     Effect.mapError(() => fail("Could not read your PATH, so it was left unchanged.")),
   );
   const writeUserPath = (value: string) =>
-    powershell({ T3_SET: "1", T3_PATH: value }).pipe(
+    powershell({ VIBECODINGER_SET: "1", VIBECODINGER_PATH: value }).pipe(
       Effect.asVoid,
       Effect.mapError(() => fail("Could not update your PATH.")),
     );

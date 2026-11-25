@@ -335,7 +335,7 @@ async function pathExists(target: string): Promise<boolean> {
 const MANAGED_SERVICE_ENV_NAMES = new Set([
   "PATH",
   "VIBECODINGER_HOME",
-  "T3_BOOT_SERVICE_UNIT",
+  "VIBECODINGER_BOOT_SERVICE_UNIT",
   SERVICE_LAUNCHER_CONTEXT_ENV,
 ]);
 
