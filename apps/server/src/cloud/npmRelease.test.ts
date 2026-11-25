@@ -56,12 +56,12 @@ const makeService = Effect.fnUntraced(function* (
 it.effect.each([
   {
     spec: version,
-    stdout: JSON.stringify({ version, t3code: { databaseMigration: 42 } }),
+    stdout: JSON.stringify({ version, vibecodinger: { databaseMigration: 42 } }),
     migration: 42,
   },
   {
     spec: "nightly",
-    stdout: JSON.stringify([{ version, t3code: { databaseMigration: 42 } }]),
+    stdout: JSON.stringify([{ version, vibecodinger: { databaseMigration: 42 } }]),
     migration: 42,
   },
   { spec: "latest", stdout: JSON.stringify(version), migration: undefined },
@@ -139,7 +139,7 @@ it.effect("falls back to public npm only when npm is not installed", () =>
       HttpClient.make((request) => {
         urls.push(request.url);
         const response = request.url.endsWith("/nightly")
-          ? new Response(JSON.stringify({ version, t3code: { databaseMigration: 42 } }))
+          ? new Response(JSON.stringify({ version, vibecodinger: { databaseMigration: 42 } }))
           : request.url.endsWith("/latest")
             ? new Response(new ReadableStream())
             : new Response("{}", { status: 404 });

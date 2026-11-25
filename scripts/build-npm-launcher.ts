@@ -42,7 +42,7 @@ export function npmLauncherPackageManifest(version: string, databaseMigration: n
     bin: { t3: "./bin/t3.mjs" },
     files: ["bin", "dist"],
     engines: { node: ">=20.11" },
-    t3code: { databaseMigration },
+    vibecodinger: { databaseMigration },
   };
 }
 

@@ -220,7 +220,7 @@ async function main() {
         "start",
         "--dev-client",
         "--scheme",
-        "t3code-dev",
+        "vibecodinger-dev",
         "--lan",
         "--port",
         String(metroPort),

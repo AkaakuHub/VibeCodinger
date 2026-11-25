@@ -18,10 +18,10 @@
       Connect from desktop, web, or mobile to continue working remotely.
     </p>
   </description>
-  <launchable type="desktop-id">t3code.desktop</launchable>
-  <icon type="stock">t3code</icon>
+  <launchable type="desktop-id">vibecodinger.desktop</launchable>
+  <icon type="stock">vibecodinger</icon>
   <provides>
-    <binary>t3code</binary>
+    <binary>vibecodinger</binary>
   </provides>
   <categories>
     <category>Development</category>

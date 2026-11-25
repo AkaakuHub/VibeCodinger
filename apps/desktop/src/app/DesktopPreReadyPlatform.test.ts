@@ -171,7 +171,7 @@ describe("DesktopPreReadyPlatform", () => {
         assert.equal(identity.desktopName, "net.akaaku.vibecodinger.desktop");
         assert.include(identity.desktopEntry ?? "", "Exec=/Applications/current.AppImage %U");
         assert.include(identity.desktopEntry ?? "", "Name=VibeCodinger (Beta)");
-        assert.include(identity.desktopEntry ?? "", "MimeType=x-scheme-handler/t3code;");
+        assert.include(identity.desktopEntry ?? "", "MimeType=x-scheme-handler/vibecodinger;");
         assert.include(
           identity.desktopEntry ?? "",
           "Icon=/xdg/icons/net.akaaku.vibecodinger.desktop.png",

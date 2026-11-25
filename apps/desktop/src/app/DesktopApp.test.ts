@@ -30,7 +30,6 @@ import * as DesktopAppActivation from "./DesktopAppActivation.ts";
 import * as DesktopAppIdentity from "./DesktopAppIdentity.ts";
 import * as DesktopClerk from "./DesktopClerk.ts";
 import * as DesktopEnvironment from "./DesktopEnvironment.ts";
-import * as DesktopLegacyLocalStorage from "./DesktopLegacyLocalStorage.ts";
 import * as DesktopLifecycle from "./DesktopLifecycle.ts";
 import * as DesktopLinuxUrlHandler from "./DesktopLinuxUrlHandler.ts";
 import * as DesktopPreReadyPlatform from "./DesktopPreReadyPlatform.ts";
@@ -160,9 +159,6 @@ const runStubbedDesktop = (stub: StubbedDesktop) =>
         Effect.provideService(ElectronProtocol.ElectronProtocol, {
           registerDesktopProtocol: () => Effect.void,
         } as unknown as ElectronProtocol.ElectronProtocol["Service"]),
-        Effect.provideService(DesktopLegacyLocalStorage.DesktopLegacyLocalStorage, {
-          load: () => Effect.void,
-        } as unknown as DesktopLegacyLocalStorage.DesktopLegacyLocalStorage["Service"]),
         Effect.provideService(DesktopSnapShot.DesktopSnapShot, {
           initialize: Effect.void,
         } as DesktopSnapShot.DesktopSnapShot["Service"]),
