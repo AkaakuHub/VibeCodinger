@@ -139,12 +139,12 @@ describe("Azure DevOps repository keys", () => {
 
   it("gives a repository the same key over SSH as over HTTPS", () => {
     for (const remote of [
-      "git@ssh.dev.azure.com:v3/VibeCodingerTools/Platform/T3Code",
-      "ssh://git@ssh.dev.azure.com:22/v3/VibeCodingerTools/Platform/T3Code",
-      "https://VibeCodingerTools@dev.azure.com/VibeCodingerTools/Platform/_git/T3Code",
+      "git@ssh.dev.azure.com:v3/ExampleOrg/Platform/T3Code",
+      "ssh://git@ssh.dev.azure.com:22/v3/ExampleOrg/Platform/T3Code",
+      "https://ExampleOrg@dev.azure.com/ExampleOrg/Platform/_git/T3Code",
     ]) {
       expect(registry.repositoryKeyFromRemote(remote), remote).toBe(
-        "dev.azure.com/t3tools/platform/_git/t3code",
+        "dev.azure.com/exampleorg/platform/_git/t3code",
       );
     }
   });
@@ -210,11 +210,11 @@ describe("Azure DevOps repository keys", () => {
 
   it("keeps the organization in the host for the legacy visualstudio.com remotes", () => {
     for (const remote of [
-      "VibeCodingerTools@vs-ssh.visualstudio.com:v3/VibeCodingerTools/Platform/T3Code",
-      "https://VibeCodingerTools.visualstudio.com/Platform/_git/T3Code",
+      "ExampleOrg@vs-ssh.visualstudio.com:v3/ExampleOrg/Platform/T3Code",
+      "https://ExampleOrg.visualstudio.com/Platform/_git/T3Code",
     ]) {
       expect(registry.repositoryKeyFromRemote(remote), remote).toBe(
-        "t3tools.visualstudio.com/platform/_git/t3code",
+        "exampleorg.visualstudio.com/platform/_git/t3code",
       );
     }
   });

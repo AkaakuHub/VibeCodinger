@@ -15,12 +15,12 @@ it("removes URL credentials, query parameters, and fragments from error transpor
 });
 
 it.each([
-  ["git@github.com:VibeCodingerTools/t3code.git", "VibeCodingerTools/t3code"],
-  ["github.com:VibeCodingerTools/t3code.git", "VibeCodingerTools/t3code"],
-  ["gitlab.com:VibeCodingerTools/platform/t3code", "VibeCodingerTools/platform/t3code"],
-  ["https://github.com/VibeCodingerTools/t3code.git", "VibeCodingerTools/t3code"],
-  ["https://github.com/VibeCodingerTools/t3code.git?view=compact", "VibeCodingerTools/t3code"],
-  ["https://github.com/VibeCodingerTools/t3code.git#section", "VibeCodingerTools/t3code"],
+  ["git@github.com:ExampleOrg/t3code.git", "ExampleOrg/t3code"],
+  ["github.com:ExampleOrg/t3code.git", "ExampleOrg/t3code"],
+  ["gitlab.com:ExampleOrg/platform/t3code", "ExampleOrg/platform/t3code"],
+  ["https://github.com/ExampleOrg/t3code.git", "ExampleOrg/t3code"],
+  ["https://github.com/ExampleOrg/t3code.git?view=compact", "ExampleOrg/t3code"],
+  ["https://github.com/ExampleOrg/t3code.git#section", "ExampleOrg/t3code"],
   ["C:/repos/t3code", null],
 ])("reads the repository path of %s", (remoteUrl, expected) => {
   assert.strictEqual(repositoryPathFromRemoteUrl(remoteUrl), expected);

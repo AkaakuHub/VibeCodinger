@@ -14,9 +14,9 @@ const kindOf = (url: string) => sourceControlClients.parseChangeRequestUrl(url)?
 
 describe("sourceControlClients.parseChangeRequestUrl", () => {
   it("reads a GitHub pull request, lower-casing the repository", () => {
-    expect(parse("https://github.com/VibeCodingerTools/T3Code/pull/123")).toEqual({
+    expect(parse("https://github.com/ExampleOrg/T3Code/pull/123")).toEqual({
       host: "github.com",
-      repository: "t3tools/t3code",
+      repository: "exampleorg/t3code",
       number: 123,
     });
   });
@@ -96,9 +96,9 @@ describe("sourceControlClients.parseChangeRequestUrl", () => {
   });
 
   it("reads a GitLab merge request on any host, nested groups and all", () => {
-    expect(parse("https://gitlab.com/t3tools/platform/t3code/-/merge_requests/42")).toEqual({
+    expect(parse("https://gitlab.com/exampleorg/platform/t3code/-/merge_requests/42")).toEqual({
       host: "gitlab.com",
-      repository: "t3tools/platform/t3code",
+      repository: "exampleorg/platform/t3code",
       number: 42,
     });
     expect(parse("https://code.acme.test/team/project/-/merge_requests/9")).toEqual({
@@ -165,28 +165,28 @@ describe("sourceControlClients.parseChangeRequestUrl", () => {
   });
 
   it("survives trailing segments, a trailing slash and a query string", () => {
-    expect(parse("https://github.com/t3tools/t3code/pull/123/files?w=1")).toEqual({
+    expect(parse("https://github.com/exampleorg/t3code/pull/123/files?w=1")).toEqual({
       host: "github.com",
-      repository: "t3tools/t3code",
+      repository: "exampleorg/t3code",
       number: 123,
     });
-    expect(parse("https://github.com/t3tools/t3code/pull/123/")).toEqual({
+    expect(parse("https://github.com/exampleorg/t3code/pull/123/")).toEqual({
       host: "github.com",
-      repository: "t3tools/t3code",
+      repository: "exampleorg/t3code",
       number: 123,
     });
   });
 
   it("claims nothing it cannot be sure of", () => {
     for (const link of [
-      "https://github.com/t3tools/t3code/issues/123",
+      "https://github.com/exampleorg/t3code/issues/123",
       "https://git.cafe/pingdotgg/t3code/issues/23897",
       "https://git.cafe/pingdotgg/t3code/pull/abc",
       "https://git.cafe/pingdotgg/t3code",
-      "https://github.com/t3tools/t3code/commit/0a1b2c3",
-      "https://github.com/t3tools/t3code",
-      "https://github.com/t3tools/t3code/pull/abc",
-      "https://gitlab.com/t3tools/t3code/-/issues/12",
+      "https://github.com/exampleorg/t3code/commit/0a1b2c3",
+      "https://github.com/exampleorg/t3code",
+      "https://github.com/exampleorg/t3code/pull/abc",
+      "https://gitlab.com/exampleorg/t3code/-/issues/12",
       "https://blog.example.test/2026/updates/archive/pull/3",
       "https://scm.example.test/tfs/Collection/Project/_git/Repo",
       "https://scm.example.test/tfs/Collection/Project/pullrequest/123",
@@ -194,7 +194,7 @@ describe("sourceControlClients.parseChangeRequestUrl", () => {
       "https://scm.example.test/tfs/Collection/Project/_git/Repo/pullrequest/0",
       "https://scm.example.test/tfs/Collection/Project/_git/Repo/pullrequest/9007199254740992",
       "ftp://scm.example.test/tfs/Collection/Project/_git/Repo/pullrequest/123",
-      "javascript:alert(1)//github.com/t3tools/t3code/pull/1",
+      "javascript:alert(1)//github.com/exampleorg/t3code/pull/1",
       "not a url",
     ]) {
       expect(parse(link), link).toBeNull();
@@ -316,19 +316,19 @@ describe("sourceControlClients.recognizeRemote", () => {
 describe("sourceControlClients repository keys", () => {
   // Persisted as `repositoryIdentity.canonicalKey` and in thread pull request keys.
   it.each([
-    ["git@github.com:VibeCodingerTools/T3Code.git", "github.com/t3tools/t3code"],
+    ["git@github.com:ExampleOrg/T3Code.git", "github.com/exampleorg/t3code"],
     ["ssh://git@gitlab.company.com:2222/team/project.git", "gitlab.company.com/team/project"],
     [
-      "git@ssh.dev.azure.com:v3/VibeCodingerTools/Platform/T3Code",
-      "dev.azure.com/t3tools/platform/_git/t3code",
+      "git@ssh.dev.azure.com:v3/ExampleOrg/Platform/T3Code",
+      "dev.azure.com/exampleorg/platform/_git/t3code",
     ],
     [
-      "VibeCodingerTools@vs-ssh.visualstudio.com:v3/VibeCodingerTools/Platform/T3Code",
-      "t3tools.visualstudio.com/platform/_git/t3code",
+      "ExampleOrg@vs-ssh.visualstudio.com:v3/ExampleOrg/Platform/T3Code",
+      "exampleorg.visualstudio.com/platform/_git/t3code",
     ],
     [
-      "https://VibeCodingerTools.visualstudio.com/DefaultCollection/Platform/_git/T3Code",
-      "t3tools.visualstudio.com/defaultcollection/platform/_git/t3code",
+      "https://ExampleOrg.visualstudio.com/DefaultCollection/Platform/_git/T3Code",
+      "exampleorg.visualstudio.com/defaultcollection/platform/_git/t3code",
     ],
     ["git@ssh.dev.azure.com:v3/o/p", "ssh.dev.azure.com/v3/o/p"],
     ["ssh.dev.azure.com/v3/o/p/r", "ssh.dev.azure.com/v3/o/p/r"],

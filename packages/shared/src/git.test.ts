@@ -18,20 +18,20 @@ import {
 
 describe("normalizeGitRemoteUrl", () => {
   it("canonicalizes equivalent GitHub remotes across protocol variants", () => {
-    expect(normalizeGitRemoteUrl("git@github.com:VibeCodingerTools/T3Code.git")).toBe(
-      "github.com/t3tools/t3code",
+    expect(normalizeGitRemoteUrl("git@github.com:ExampleOrg/T3Code.git")).toBe(
+      "github.com/exampleorg/t3code",
     );
-    expect(normalizeGitRemoteUrl("https://github.com/VibeCodingerTools/T3Code.git")).toBe(
-      "github.com/t3tools/t3code",
+    expect(normalizeGitRemoteUrl("https://github.com/ExampleOrg/T3Code.git")).toBe(
+      "github.com/exampleorg/t3code",
     );
-    expect(normalizeGitRemoteUrl("ssh://git@github.com/VibeCodingerTools/T3Code")).toBe(
-      "github.com/t3tools/t3code",
+    expect(normalizeGitRemoteUrl("ssh://git@github.com/ExampleOrg/T3Code")).toBe(
+      "github.com/exampleorg/t3code",
     );
-    expect(
-      normalizeGitRemoteUrl("https://github.com/VibeCodingerTools/T3Code.git?view=compact"),
-    ).toBe("github.com/t3tools/t3code");
-    expect(normalizeGitRemoteUrl("https://github.com/VibeCodingerTools/T3Code.git#section")).toBe(
-      "github.com/t3tools/t3code",
+    expect(normalizeGitRemoteUrl("https://github.com/ExampleOrg/T3Code.git?view=compact")).toBe(
+      "github.com/exampleorg/t3code",
+    );
+    expect(normalizeGitRemoteUrl("https://github.com/ExampleOrg/T3Code.git#section")).toBe(
+      "github.com/exampleorg/t3code",
     );
     expect(normalizeGitRemoteUrl("https://code.example.test/team/%C3%84pp.git")).toBe(
       normalizeGitRemoteUrl("git@code.example.test:team/Äpp.git"),
@@ -52,11 +52,11 @@ describe("normalizeGitRemoteUrl", () => {
   });
 
   it("preserves nested group paths for providers like GitLab", () => {
-    expect(normalizeGitRemoteUrl("git@gitlab.com:VibeCodingerTools/platform/T3Code.git")).toBe(
-      "gitlab.com/t3tools/platform/t3code",
+    expect(normalizeGitRemoteUrl("git@gitlab.com:ExampleOrg/platform/T3Code.git")).toBe(
+      "gitlab.com/exampleorg/platform/t3code",
     );
-    expect(normalizeGitRemoteUrl("https://gitlab.com/VibeCodingerTools/platform/T3Code.git")).toBe(
-      "gitlab.com/t3tools/platform/t3code",
+    expect(normalizeGitRemoteUrl("https://gitlab.com/ExampleOrg/platform/T3Code.git")).toBe(
+      "gitlab.com/exampleorg/platform/t3code",
     );
   });
 
