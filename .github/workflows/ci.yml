@@ -70,7 +70,7 @@ jobs:
           sparse-checkout: |
             /*
             !/.repos/
-            !/apps/mobile/modules/t3-terminal/Vendor/**/*.a
+            !/apps/mobile/modules/vibecodinger-terminal/Vendor/**/*.a
           sparse-checkout-cone-mode: false
 
       - name: Reject repository-owned PR assets
@@ -127,7 +127,7 @@ jobs:
           sparse-checkout: |
             /*
             !/.repos/
-            !/apps/mobile/modules/t3-terminal/Vendor/**/*.a
+            !/apps/mobile/modules/vibecodinger-terminal/Vendor/**/*.a
           sparse-checkout-cone-mode: false
 
       - uses: ./.github/actions/setup-apt-mirrors
@@ -284,7 +284,7 @@ jobs:
           sparse-checkout: |
             /*
             !/.repos/
-            !/apps/mobile/modules/t3-terminal/Vendor/**/*.a
+            !/apps/mobile/modules/vibecodinger-terminal/Vendor/**/*.a
           sparse-checkout-cone-mode: false
 
       - uses: ./.github/actions/setup-apt-mirrors
@@ -373,7 +373,7 @@ jobs:
           sparse-checkout: |
             /*
             !/.repos/
-            !/apps/mobile/modules/t3-terminal/Vendor/**/*.a
+            !/apps/mobile/modules/vibecodinger-terminal/Vendor/**/*.a
           sparse-checkout-cone-mode: false
 
       - name: Setup Vite+
@@ -434,7 +434,7 @@ jobs:
           sparse-checkout: |
             /*
             !/.repos/
-            !/apps/mobile/modules/t3-terminal/Vendor/**/*.a
+            !/apps/mobile/modules/vibecodinger-terminal/Vendor/**/*.a
           sparse-checkout-cone-mode: false
 
       - name: Detect affected jobs
@@ -554,7 +554,7 @@ jobs:
           sparse-checkout: |
             /*
             !/.repos/
-            !/apps/mobile/modules/t3-terminal/Vendor/**/*.a
+            !/apps/mobile/modules/vibecodinger-terminal/Vendor/**/*.a
           sparse-checkout-cone-mode: false
 
       - name: Setup Rust
@@ -618,7 +618,7 @@ jobs:
           sparse-checkout: |
             /*
             !/.repos/
-            !/apps/mobile/modules/t3-terminal/Vendor/**/*.a
+            !/apps/mobile/modules/vibecodinger-terminal/Vendor/**/*.a
           sparse-checkout-cone-mode: false
 
       - name: Setup Vite+

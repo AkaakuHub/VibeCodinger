@@ -1,0 +1,17 @@
+{
+  "name": "@vibecodinger/mobile-terminal-native",
+  "version": "0.0.0",
+  "private": true,
+  "expo-module": {
+    "ios": {
+      "modules": [
+        "VibeCodingerTerminalModule"
+      ]
+    },
+    "android": {
+      "modules": [
+        "expo.modules.vibecodingerterminal.VibeCodingerTerminalModule"
+      ]
+    }
+  }
+}

@@ -1,15 +1,17 @@
 included:
-  - ios/T3Code
-  - modules/t3-composer-editor/ios
-  - modules/t3-native-controls/ios
-  - modules/t3-terminal/ios
-  - modules/t3-review-diff/ios
-  - modules/t3-voice-transcription/ios
+  - ios/VibeCodinger
+  - ios/VibeCodingerDev
+  - ios/VibeCodingerPreview
+  - modules/vibecodinger-composer-editor/ios
+  - modules/vibecodinger-native-controls/ios
+  - modules/vibecodinger-terminal/ios
+  - modules/vibecodinger-review-diff/ios
+  - modules/vibecodinger-voice-transcription/ios
 
 excluded:
   - ios/Pods
   - ios/build
-  - modules/t3-terminal/Vendor
+  - modules/vibecodinger-terminal/Vendor
 
 reporter: xcode
 

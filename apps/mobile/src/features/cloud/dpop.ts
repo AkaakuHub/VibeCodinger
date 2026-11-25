@@ -88,7 +88,7 @@ interface NativeDpopKeys {
 // Platform crypto: in Hermes, @noble/curves blocks JS for about a second on its first P-256 key.
 // Imported lazily: loading `expo` at module scope breaks Node tests that import this file.
 const nativeDpopKeys = async () =>
-  (await import("expo")).requireNativeModule<NativeDpopKeys>("T3NativeControls");
+  (await import("expo")).requireNativeModule<NativeDpopKeys>("VibeCodingerNativeControls");
 
 function base64UrlToBytes(value: string): Uint8Array {
   return Result.getOrThrow(Base64Url.decode(value));

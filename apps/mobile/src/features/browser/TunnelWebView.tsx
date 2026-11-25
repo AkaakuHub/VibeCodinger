@@ -33,7 +33,7 @@ export interface TunnelWebViewRef {
 
 const PreviewTunnel = requireNativeModule<{
   resolveAccess(requestId: string, url: string | null): void;
-}>("T3PreviewTunnel");
+}>("VibeCodingerPreviewTunnel");
 
 const NativeTunnelWebView = requireNativeView<
   ViewProps & {
@@ -54,7 +54,7 @@ const NativeTunnelWebView = requireNativeView<
     ) => void;
     readonly onPageScroll: (event: NativeSyntheticEvent<{ y: number }>) => void;
   }
->("T3PreviewTunnel");
+>("VibeCodingerPreviewTunnel");
 
 /** A native webview whose localhost is the environment's loopback, reached through its tunnel. */
 export function TunnelWebView({

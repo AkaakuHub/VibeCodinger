@@ -90,7 +90,7 @@ export function pendingCloudVoiceChoice(
 
 const native = requireOptionalNativeModule<{
   decodeRecording?: (uri: string) => Promise<Uint8Array>;
-}>("T3VoiceTranscription");
+}>("VibeCodingerVoiceTranscription");
 export const hasEnvironmentVoiceCapture = typeof native?.decodeRecording === "function";
 
 const voiceConnections = (capability: "voiceTranscription" | "cloudVoiceTranscription") =>

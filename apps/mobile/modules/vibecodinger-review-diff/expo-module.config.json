@@ -1,0 +1,10 @@
+{
+  "platforms": ["apple", "android"],
+  "apple": {
+    "modules": ["VibeCodingerReviewDiffModule"],
+    "podspecPath": "VibeCodingerReviewDiffNative.podspec"
+  },
+  "android": {
+    "modules": ["expo.modules.vibecodingerreviewdiff.VibeCodingerReviewDiffModule"]
+  }
+}

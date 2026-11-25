@@ -24,7 +24,7 @@ interface NativeProps {
   readonly onComposerChange: (event: { readonly nativeEvent: NativeEvent }) => void;
 }
 
-// Mirrors the iOS editor's revision and reset bookkeeping (T3ComposerEditorView.setControlledDocumentJson).
+// Mirrors the iOS editor's revision and reset bookkeeping (VibeCodingerComposerEditorView.setControlledDocumentJson).
 const native = vi.hoisted(() => ({
   text: "",
   eventCount: 0,
@@ -101,7 +101,10 @@ function emit(value: string, resetGeneration = native.resetGeneration) {
 
 vi.mock("expo", () => ({ requireNativeView: () => NativeView }));
 // Vite resolves the platform-neutral module; the race lives in the iOS editor.
-vi.mock("../native/T3ComposerEditor", () => import("../native/T3ComposerEditor.ios"));
+vi.mock(
+  "../native/VibeCodingerComposerEditor",
+  () => import("../native/VibeCodingerComposerEditor.ios"),
+);
 vi.mock("react-native", () => ({ StyleSheet: { flatten: (style: unknown) => style } }));
 vi.mock("expo-file-system", () => ({
   Directory: class {
@@ -149,7 +152,7 @@ import {
   useComposerDraft,
 } from "../state/use-composer-drafts";
 import { ComposerEditor } from "./ComposerEditor";
-import type { ComposerEditorHandle } from "../native/T3ComposerEditor.types";
+import type { ComposerEditorHandle } from "../native/VibeCodingerComposerEditor.types";
 
 const DRAFT_KEY = "environment:thread";
 

@@ -282,7 +282,7 @@ function AppContent() {
   useEffect(() => {
     if (Platform.OS !== "android") return;
     void requireNativeModule<{ setNavigationBarStyle(light: boolean): Promise<void> }>(
-      "T3NativeControls",
+      "VibeCodingerNativeControls",
     ).setNavigationBarStyle(themeAppearance === "light");
   }, [themeAppearance]);
 

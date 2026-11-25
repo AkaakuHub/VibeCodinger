@@ -21,7 +21,7 @@ import {
   firstWorkspaceDetailOpen,
   workspaceHasColumns,
 } from "../layout/workspace/workspace-selection-store";
-import { T3KeyboardCommands } from "../../native/T3KeyboardCommands";
+import { VibeCodingerKeyboardCommands } from "../../native/VibeCodingerKeyboardCommands";
 import { useThreadShell } from "../../state/entities";
 import type { GitActionProgress } from "../../state/use-vcs-action-state";
 import { GitActionProgressOverlay } from "../threads/GitActionProgressOverlay";
@@ -201,9 +201,9 @@ export function HardwareKeyboardCommandProvider({
 
   return (
     <CommandPaletteContext value={palette}>
-      <T3KeyboardCommands enabledCommands={enabledCommands} onCommand={onCommand}>
+      <VibeCodingerKeyboardCommands enabledCommands={enabledCommands} onCommand={onCommand}>
         {children}
-      </T3KeyboardCommands>
+      </VibeCodingerKeyboardCommands>
       <GitActionProgressOverlay progress={copyFeedback} onDismiss={dismissCopyFeedback} />
     </CommandPaletteContext>
   );

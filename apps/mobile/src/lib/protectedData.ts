@@ -3,7 +3,7 @@ import { AppState, Platform } from "react-native";
 
 const NativeControls = requireOptionalNativeModule<{
   readonly isProtectedDataAvailable?: () => Promise<boolean>;
-}>("T3NativeControls");
+}>("VibeCodingerNativeControls");
 
 let protectedDataAvailable: Promise<void> | undefined;
 

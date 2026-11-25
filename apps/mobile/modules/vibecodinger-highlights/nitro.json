@@ -1,0 +1,20 @@
+{
+  "$schema": "https://nitro.margelo.com/nitro.schema.json",
+  "cxxNamespace": ["vibecodingerhighlights"],
+  "ios": {
+    "iosModuleName": "VibeCodingerHighlightsNative"
+  },
+  "android": {
+    "androidNamespace": ["vibecodingerhighlights"],
+    "androidCxxLibName": "vibecodingerhighlights"
+  },
+  "autolinking": {
+    "VibeCodingerHighlights": {
+      "all": {
+        "language": "c++",
+        "implementationClassName": "HybridVibeCodingerHighlights"
+      }
+    }
+  },
+  "ignorePaths": ["node_modules", "Vendor"]
+}

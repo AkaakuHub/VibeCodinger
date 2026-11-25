@@ -1,0 +1,10 @@
+{
+  "platforms": ["apple", "android"],
+  "apple": {
+    "modules": ["VibeCodingerTerminalModule"],
+    "podspecPath": "VibeCodingerTerminalNative.podspec"
+  },
+  "android": {
+    "modules": ["expo.modules.vibecodingerterminal.VibeCodingerTerminalModule"]
+  }
+}

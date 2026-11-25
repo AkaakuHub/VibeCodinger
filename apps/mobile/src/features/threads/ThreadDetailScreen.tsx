@@ -24,7 +24,7 @@ import {
   snoozeWakeLabel,
 } from "@vibecodinger/client-runtime/state/thread-settled";
 import type { WorktreeSetupCardProps } from "./worktree-setup-card";
-import type { ComposerTextPaste } from "../../native/T3ComposerEditor.types";
+import type { ComposerTextPaste } from "../../native/VibeCodingerComposerEditor.types";
 import { type EnvironmentConnectionPhase } from "@vibecodinger/client-runtime/connection";
 import type { EnvironmentThreadShell } from "@vibecodinger/client-runtime/state/shell";
 import type { HandoffEndpoints } from "@vibecodinger/client-runtime/handoff";

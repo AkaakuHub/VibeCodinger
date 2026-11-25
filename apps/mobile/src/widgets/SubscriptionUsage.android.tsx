@@ -175,7 +175,7 @@ export function SubscriptionUsage(props: SubscriptionUsageProps, environment: Wi
           <Row modifiers={[size(segmentWidth, barHeight)]}>
             <Spacer modifiers={[width(segmentWidth - refill)]} />
             <Image
-              source={{ uri: "t3_widget_hatch" }}
+              source={{ uri: "vibecodinger_widget_hatch" }}
               tint={color}
               alpha={0.22}
               contentScale="fillBounds"

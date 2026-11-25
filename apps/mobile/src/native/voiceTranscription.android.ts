@@ -22,7 +22,9 @@ type GoogleTranscriptionModule = {
   startLive?(id: number, uri: string, locale: string, mode: number): Promise<string>;
 };
 
-const native = requireOptionalNativeModule<GoogleTranscriptionModule>("T3VoiceTranscription");
+const native = requireOptionalNativeModule<GoogleTranscriptionModule>(
+  "VibeCodingerVoiceTranscription",
+);
 
 const nativeErrorMessages: Readonly<Record<string, string>> = {
   unavailable: msg("On-device voice transcription is not available for this device language."),

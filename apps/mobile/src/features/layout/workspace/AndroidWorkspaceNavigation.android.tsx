@@ -69,7 +69,9 @@ const TAB_TITLES = {
   settings: msg("Settings"),
 };
 
-const NativeNavigation = requireNativeView<NativeNavigationProps>("T3WorkspaceNavigation");
+const NativeNavigation = requireNativeView<NativeNavigationProps>(
+  "VibeCodingerWorkspaceNavigation",
+);
 
 function nativeColor(value: string) {
   const color = processColor(value);

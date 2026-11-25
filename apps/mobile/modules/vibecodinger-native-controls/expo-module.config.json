@@ -1,0 +1,20 @@
+{
+  "platforms": ["apple", "android"],
+  "apple": {
+    "modules": ["VibeCodingerNativeControlsModule", "VibeCodingerKeyboardCommandsModule"],
+    "appDelegateSubscribers": [
+      "VibeCodingerWorkspaceOrientationSubscriber",
+      "VibeCodingerMenuDismissTouchGateSubscriber",
+      "VibeCodingerBackgroundGraceSubscriber"
+    ]
+  },
+  "android": {
+    "modules": [
+      "expo.modules.vibecodingernativecontrols.VibeCodingerNativeControlsModule",
+      "expo.modules.vibecodingernativecontrols.VibeCodingerWorkspaceNavigationModule",
+      "expo.modules.vibecodingernativecontrols.VibeCodingerKeyboardCommandsModule",
+      "expo.modules.vibecodingernativecontrols.VibeCodingerFoldPostureModule",
+      "expo.modules.vibecodingernativecontrols.VibeCodingerSecretInputModule"
+    ]
+  }
+}

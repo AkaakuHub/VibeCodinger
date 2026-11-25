@@ -1,6 +1,6 @@
 import { Button } from "../../components/ui/Button";
 import * as Dialog from "../../components/ui/Dialog";
-import type { ComposerTextPaste } from "../../native/T3ComposerEditor.types";
+import type { ComposerTextPaste } from "../../native/VibeCodingerComposerEditor.types";
 import { useAppearancePreferences } from "../settings/appearance/AppearancePreferencesProvider";
 import type { EnvironmentThreadShell } from "@vibecodinger/client-runtime/state/shell";
 import {

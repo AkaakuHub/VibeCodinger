@@ -50,7 +50,9 @@ function RawView({
       mocks.rows(value);
       if (mocks.registrationFailures > 0) {
         mocks.registrationFailures -= 1;
-        throw new Error("Unable to find the 'T3ReviewDiffSurface' view for this native tag");
+        throw new Error(
+          "Unable to find the 'VibeCodingerReviewDiffSurface' view for this native tag",
+        );
       }
       if (resetKey !== undefined) setContentResetKey(resetKey);
       setContent((current) => ({ ...current, rows: value }));
@@ -432,18 +434,18 @@ it("recognizes registration races for the installed native view name", async () 
 
   expect(
     isPendingNativeViewRegistration(
-      new Error("Unable to find the 'T3ReviewDiffSurface' view for this native tag"),
+      new Error("Unable to find the 'VibeCodingerReviewDiffSurface' view for this native tag"),
     ),
   ).toBe(true);
   expect(
     isPendingNativeViewRegistration(
-      new Error("Unable to find the 'T3ReviewDiffView' view for this native tag"),
+      new Error("Unable to find the 'VibeCodingerReviewDiffView' view for this native tag"),
     ),
   ).toBe(false);
   expect(
     isPendingNativeViewRegistration(
       new Error(
-        "Unable to find the class expo.modules.t3reviewdiff.T3ReviewDiffView view with tag 1150",
+        "Unable to find the class expo.modules.vibecodingerreviewdiff.VibeCodingerReviewDiffView view with tag 1150",
       ),
     ),
   ).toBe(true);

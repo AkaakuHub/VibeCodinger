@@ -19,5 +19,5 @@ export function canSaveImageToLibrary(mimeType: string): boolean {
 export function saveImageToLibrary(uri: string, mimeType: string, name: string): Promise<void> {
   return requireNativeModule<{
     saveImageToLibrary(uri: string, mimeType: string, name: string): Promise<void>;
-  }>("T3NativeControls").saveImageToLibrary(uri, baseMimeType(mimeType), name);
+  }>("VibeCodingerNativeControls").saveImageToLibrary(uri, baseMimeType(mimeType), name);
 }

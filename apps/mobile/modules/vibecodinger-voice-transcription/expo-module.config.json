@@ -1,0 +1,10 @@
+{
+  "platforms": ["apple", "android"],
+  "apple": {
+    "modules": ["VibeCodingerVoiceTranscriptionModule"],
+    "podspecPath": "ios/VibeCodingerVoiceTranscription.podspec"
+  },
+  "android": {
+    "modules": ["expo.modules.vibecodingervoicetranscription.VibeCodingerVoiceTranscriptionModule"]
+  }
+}

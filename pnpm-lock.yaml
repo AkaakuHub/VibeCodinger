@@ -578,17 +578,17 @@ importers:
         specifier: workspace:*
         version: link:../../packages/contracts
       '@vibecodinger/mobile-highlights-native':
-        specifier: file:./modules/t3-highlights
-        version: file:apps/mobile/modules/t3-highlights(react-native-nitro-modules@0.37.2(react-native@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(bufferutil@4.1.0)(supports-color@8.1.1)(utf-8-validate@6.0.6))(@types/react@19.3.0)(bufferutil@4.1.0)(react@19.3.0)(supports-color@8.1.1)(utf-8-validate@6.0.6))(react@19.3.0))
+        specifier: file:./modules/vibecodinger-highlights
+        version: file:apps/mobile/modules/vibecodinger-highlights(react-native-nitro-modules@0.37.2(react-native@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(bufferutil@4.1.0)(supports-color@8.1.1)(utf-8-validate@6.0.6))(@types/react@19.3.0)(bufferutil@4.1.0)(react@19.3.0)(supports-color@8.1.1)(utf-8-validate@6.0.6))(react@19.3.0))
       '@vibecodinger/mobile-review-diff-native':
-        specifier: file:./modules/t3-review-diff
-        version: file:apps/mobile/modules/t3-review-diff
+        specifier: file:./modules/vibecodinger-review-diff
+        version: file:apps/mobile/modules/vibecodinger-review-diff
       '@vibecodinger/mobile-source-text':
-        specifier: file:./modules/t3-source-text
-        version: file:apps/mobile/modules/t3-source-text(react-native@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(bufferutil@4.1.0)(supports-color@8.1.1)(utf-8-validate@6.0.6))(@types/react@19.3.0)(bufferutil@4.1.0)(react@19.3.0)(supports-color@8.1.1)(utf-8-validate@6.0.6))(react@19.3.0)
+        specifier: file:./modules/vibecodinger-source-text
+        version: file:apps/mobile/modules/vibecodinger-source-text(react-native@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(bufferutil@4.1.0)(supports-color@8.1.1)(utf-8-validate@6.0.6))(@types/react@19.3.0)(bufferutil@4.1.0)(react@19.3.0)(supports-color@8.1.1)(utf-8-validate@6.0.6))(react@19.3.0)
       '@vibecodinger/mobile-terminal-native':
-        specifier: file:./modules/t3-terminal
-        version: file:apps/mobile/modules/t3-terminal
+        specifier: file:./modules/vibecodinger-terminal
+        version: file:apps/mobile/modules/vibecodinger-terminal
       '@vibecodinger/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -6764,22 +6764,22 @@ packages:
   '@vercel/routing-utils@6.2.0':
     resolution: {integrity: sha512-YI2cGYZmJKEyGSEgf5Fw5rVuW7X1bTOQ7/pnLRNTFMH3YB3qqP5erCLCJGv2kIvNo1iQAPINHQRJj6ykEdGoPg==}
 
-  '@vibecodinger/mobile-highlights-native@file:apps/mobile/modules/t3-highlights':
-    resolution: {directory: apps/mobile/modules/t3-highlights, type: directory}
+  '@vibecodinger/mobile-highlights-native@file:apps/mobile/modules/vibecodinger-highlights':
+    resolution: {directory: apps/mobile/modules/vibecodinger-highlights, type: directory}
     peerDependencies:
       react-native-nitro-modules: '*'
 
-  '@vibecodinger/mobile-review-diff-native@file:apps/mobile/modules/t3-review-diff':
-    resolution: {directory: apps/mobile/modules/t3-review-diff, type: directory}
+  '@vibecodinger/mobile-review-diff-native@file:apps/mobile/modules/vibecodinger-review-diff':
+    resolution: {directory: apps/mobile/modules/vibecodinger-review-diff, type: directory}
 
-  '@vibecodinger/mobile-source-text@file:apps/mobile/modules/t3-source-text':
-    resolution: {directory: apps/mobile/modules/t3-source-text, type: directory}
+  '@vibecodinger/mobile-source-text@file:apps/mobile/modules/vibecodinger-source-text':
+    resolution: {directory: apps/mobile/modules/vibecodinger-source-text, type: directory}
     peerDependencies:
       react: '*'
       react-native: '*'
 
-  '@vibecodinger/mobile-terminal-native@file:apps/mobile/modules/t3-terminal':
-    resolution: {directory: apps/mobile/modules/t3-terminal, type: directory}
+  '@vibecodinger/mobile-terminal-native@file:apps/mobile/modules/vibecodinger-terminal':
+    resolution: {directory: apps/mobile/modules/vibecodinger-terminal, type: directory}
 
   '@vitejs/plugin-react@6.1.2':
     resolution: {integrity: sha512-fhJNGUdscQa4HkI0xFxwonWyhnVReCPDbXI7FH7jmzpnVCrFQI7PRrhWecO263610vOrs9tr2Y4xcf8uAdFxbw==}
@@ -15918,18 +15918,18 @@ snapshots:
     optionalDependencies:
       ajv: 6.15.0
 
-  '@vibecodinger/mobile-highlights-native@file:apps/mobile/modules/t3-highlights(react-native-nitro-modules@0.37.2(react-native@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(bufferutil@4.1.0)(supports-color@8.1.1)(utf-8-validate@6.0.6))(@types/react@19.3.0)(bufferutil@4.1.0)(react@19.3.0)(supports-color@8.1.1)(utf-8-validate@6.0.6))(react@19.3.0))':
+  '@vibecodinger/mobile-highlights-native@file:apps/mobile/modules/vibecodinger-highlights(react-native-nitro-modules@0.37.2(react-native@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(bufferutil@4.1.0)(supports-color@8.1.1)(utf-8-validate@6.0.6))(@types/react@19.3.0)(bufferutil@4.1.0)(react@19.3.0)(supports-color@8.1.1)(utf-8-validate@6.0.6))(react@19.3.0))':
     dependencies:
       react-native-nitro-modules: 0.37.2(react-native@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(bufferutil@4.1.0)(supports-color@8.1.1)(utf-8-validate@6.0.6))(@types/react@19.3.0)(bufferutil@4.1.0)(react@19.3.0)(supports-color@8.1.1)(utf-8-validate@6.0.6))(react@19.3.0)
 
-  '@vibecodinger/mobile-review-diff-native@file:apps/mobile/modules/t3-review-diff': {}
+  '@vibecodinger/mobile-review-diff-native@file:apps/mobile/modules/vibecodinger-review-diff': {}
 
-  '@vibecodinger/mobile-source-text@file:apps/mobile/modules/t3-source-text(react-native@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(bufferutil@4.1.0)(supports-color@8.1.1)(utf-8-validate@6.0.6))(@types/react@19.3.0)(bufferutil@4.1.0)(react@19.3.0)(supports-color@8.1.1)(utf-8-validate@6.0.6))(react@19.3.0)':
+  '@vibecodinger/mobile-source-text@file:apps/mobile/modules/vibecodinger-source-text(react-native@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(bufferutil@4.1.0)(supports-color@8.1.1)(utf-8-validate@6.0.6))(@types/react@19.3.0)(bufferutil@4.1.0)(react@19.3.0)(supports-color@8.1.1)(utf-8-validate@6.0.6))(react@19.3.0)':
     dependencies:
       react: 19.3.0
       react-native: 0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(bufferutil@4.1.0)(supports-color@8.1.1)(utf-8-validate@6.0.6))(@types/react@19.3.0)(bufferutil@4.1.0)(react@19.3.0)(supports-color@8.1.1)(utf-8-validate@6.0.6)
 
-  '@vibecodinger/mobile-terminal-native@file:apps/mobile/modules/t3-terminal': {}
+  '@vibecodinger/mobile-terminal-native@file:apps/mobile/modules/vibecodinger-terminal': {}
 
   '@vitejs/plugin-react@6.1.2(@voidzero-dev/vite-plus-core@1.4.0(@types/node@24.12.4)(@volar/typescript@2.4.28(typescript@6.0.3))(esbuild@0.28.2)(jiti@2.7.0)(terser@5.48.0)(typescript@6.0.3)(unrun@0.2.39)(yaml@2.9.0))(babel-plugin-react-compiler@1.0.0)(oxc-transform-react@0.152.0)':
     dependencies:

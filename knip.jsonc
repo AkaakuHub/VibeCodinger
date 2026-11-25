@@ -134,11 +134,11 @@
         "@vibecodinger/mobile-terminal-native",
       ],
     },
-    "apps/mobile/modules/t3-highlights": {
+    "apps/mobile/modules/vibecodinger-highlights": {
       // Nitrogen discovers HybridObject specifications by filename.
       "entry": ["src/*.nitro.ts!"],
     },
-    "apps/mobile/modules/t3-source-text": {
+    "apps/mobile/modules/vibecodinger-source-text": {
       // React Native codegen discovers component specifications by filename.
       "entry": ["src/*NativeComponent.ts!"],
     },
