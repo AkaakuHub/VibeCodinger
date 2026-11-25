@@ -10,8 +10,8 @@
 
 This app has three variants:
 
-- `development`: Expo dev client, installable side-by-side as `T3 Code Dev`
-- `preview`: persistent internal preview build, installable side-by-side as `T3 Code Preview`
+- `development`: Expo dev client, installable side-by-side as `VibeCodinger Dev`
+- `preview`: persistent internal preview build, installable side-by-side as `VibeCodinger Preview`
 - `production`: release build as `VibeCodinger`
 
 Run commands from `apps/mobile`.

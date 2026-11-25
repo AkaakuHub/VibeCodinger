@@ -73,19 +73,17 @@ const RELEASE_ASSETS = {
 
 const VARIANT_CONFIG = {
   development: {
-    appName: "T3 Code Dev",
+    appName: "VibeCodinger Dev",
     scheme: "vibecodinger-dev",
-    iosBundleIdentifier: "com.t3tools.t3code.dev",
-    androidPackage: "com.t3tools.t3code.dev",
-    relyingParty: "clerk.t3.codes",
+    iosBundleIdentifier: "net.akaaku.vibecodinger.dev",
+    androidPackage: "net.akaaku.vibecodinger.dev",
     assets: DEVELOPMENT_ASSETS,
   },
   preview: {
-    appName: "T3 Code Preview",
+    appName: "VibeCodinger Preview",
     scheme: "vibecodinger-preview",
-    iosBundleIdentifier: "com.t3tools.t3code.preview",
-    androidPackage: "com.t3tools.t3code.preview",
-    relyingParty: "clerk.t3.codes",
+    iosBundleIdentifier: "net.akaaku.vibecodinger.preview",
+    androidPackage: "net.akaaku.vibecodinger.preview",
     assets: PREVIEW_ASSETS,
   },
   production: {
@@ -93,7 +91,6 @@ const VARIANT_CONFIG = {
     scheme: "vibecodinger",
     iosBundleIdentifier: "net.akaaku.vibecodinger",
     androidPackage: "net.akaaku.vibecodinger",
-    relyingParty: "clerk.t3.codes",
     assets: RELEASE_ASSETS,
   },
 } as const;
@@ -112,8 +109,6 @@ function resolveAppVariant(value: string | undefined): AppVariant {
 }
 
 const variant = VARIANT_CONFIG[APP_VARIANT];
-// Copied thread links open the app. app.t3.codes/.well-known lists every variant's identifiers.
-const HOSTED_APP_HOST = "app.t3.codes";
 const iosBundleIdentifier = isIosPersonalTeamBuild
   ? personalTeamBundleIdentifier!
   : variant.iosBundleIdentifier;
@@ -228,7 +223,7 @@ const sharingPlugin: NonNullable<ExpoConfig["plugins"]>[number] = [
 
 const config: ExpoConfig = {
   name: variant.appName,
-  slug: "t3-code",
+  slug: "vibecodinger",
   platforms: ["ios", "android"],
   scheme: variant.scheme,
   version: repoEnv.T3CODE_MOBILE_VERSION ?? "2.3.0",
@@ -239,27 +234,12 @@ const config: ExpoConfig = {
   orientation: "portrait",
   icon: variant.assets.appIcon,
   userInterfaceStyle: "automatic",
-  updates: {
-    enabled: false,
-    url: "https://u.expo.dev/d763fcb8-d37c-41ea-a773-b54a0ab4a454",
-    checkAutomatically: "ON_LOAD",
-    fallbackToCacheTimeout: 0,
-  },
+  updates: { enabled: false },
   ios: {
     icon: variant.assets.iosIcon,
     supportsTablet: true,
     requireFullScreen: process.env.T3_SHOWCASE_CAPTURE_BUILD === "1",
     bundleIdentifier: iosBundleIdentifier,
-    ...(APP_VARIANT !== "production" && !isIosPersonalTeamBuild
-      ? {
-          appleTeamId: "ARK85ZXQ4Z",
-          associatedDomains: [
-            `applinks:${variant.relyingParty}`,
-            `webcredentials:${variant.relyingParty}`,
-            `applinks:${HOSTED_APP_HOST}`,
-          ],
-        }
-      : {}),
     entitlements: {
       "keychain-access-groups": [`$(AppIdentifierPrefix)${iosBundleIdentifier}`],
     },
@@ -311,18 +291,6 @@ const config: ExpoConfig = {
     predictiveBackGestureEnabled: true,
     // expo-sensors declares this for its pedometer, which the app does not use.
     blockedPermissions: ["android.permission.ACTIVITY_RECOGNITION"],
-    ...(APP_VARIANT !== "production"
-      ? {
-          intentFilters: [
-            {
-              action: "VIEW",
-              autoVerify: true,
-              data: [{ scheme: "https", host: HOSTED_APP_HOST, pathPrefix: "/threads/" }],
-              category: ["BROWSABLE", "DEFAULT"],
-            },
-          ],
-        }
-      : {}),
   },
   web: {
     favicon: variant.assets.appIcon,
@@ -471,11 +439,7 @@ const config: ExpoConfig = {
   extra: {
     appVariant: APP_VARIANT,
     iosPersonalTeamBuild: isIosPersonalTeamBuild,
-    eas: {
-      projectId: "d763fcb8-d37c-41ea-a773-b54a0ab4a454",
-    },
   },
-  owner: "pingdotgg",
   experiments: {
     // Metro only runs babel-plugin-react-compiler when this is set; see src/reactCompilerCoverage.test.ts.
     reactCompiler: true,

@@ -1,8 +1,4 @@
-import { DEFAULT_HOSTED_APP_URL } from "@t3tools/shared/connectAuth";
 import { afterEach, expect, it, vi } from "vite-plus/test";
-
-import appleAppSiteAssociation from "../web/public/.well-known/apple-app-site-association.json";
-import assetLinks from "../web/public/.well-known/assetlinks.json";
 
 // Keep config parsing independent of local env files and build credentials.
 vi.mock("../../scripts/lib/public-config.ts", () => ({
@@ -27,27 +23,15 @@ it.each(["prod", ""])("rejects APP_VARIANT=%j before selecting production IDs", 
 
 it.each([
   [undefined, "net.akaaku.vibecodinger"],
-  ["development", "com.t3tools.t3code.dev"],
-  ["preview", "com.t3tools.t3code.preview"],
+  ["development", "net.akaaku.vibecodinger.dev"],
+  ["preview", "net.akaaku.vibecodinger.preview"],
   ["production", "net.akaaku.vibecodinger"],
 ])("keeps the iOS and Android identifiers for APP_VARIANT=%j", async (value, identifier) => {
   const config = await loadConfig(value);
   expect(config.ios?.bundleIdentifier).toBe(identifier);
   expect(config.android?.package).toBe(identifier);
-  if (value === undefined || value === "production") {
-    expect(config.ios?.appleTeamId).toBeUndefined();
-    expect(config.ios?.associatedDomains).toBeUndefined();
-    expect(config.android?.intentFilters).toBeUndefined();
-    return;
-  }
-  // Copied thread links open the official builds listed by app.t3.codes.
-  const host = new URL(DEFAULT_HOSTED_APP_URL).host;
-  expect(config.ios?.associatedDomains).toContain(`applinks:${host}`);
-  expect(appleAppSiteAssociation.applinks.details[0]?.appIDs).toContain(
-    `${config.ios?.appleTeamId}.${identifier}`,
-  );
-  expect(config.android?.intentFilters?.[0]?.data).toEqual([
-    { scheme: "https", host, pathPrefix: "/threads/" },
-  ]);
-  expect(assetLinks.map((link) => link.target.package_name)).toContain(identifier);
+  expect(config.ios?.appleTeamId).toBeUndefined();
+  expect(config.ios?.associatedDomains).toBeUndefined();
+  expect(config.android?.intentFilters).toBeUndefined();
+  expect(config.updates).toEqual({ enabled: false });
 });

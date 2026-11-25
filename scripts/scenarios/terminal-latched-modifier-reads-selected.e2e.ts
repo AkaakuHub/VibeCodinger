@@ -17,7 +17,7 @@ test(
       environmentId(`http://${MOBILE.host}:${MOBILE.serverPort}`),
     );
     await device.openLink(`vibecodinger-dev://threads/${environment}/${threadId}/terminal`, {
-      app: "com.t3tools.t3code.dev",
+      app: "net.akaaku.vibecodinger.dev",
     });
     await device.alert("accept").catch(() => {});
 
