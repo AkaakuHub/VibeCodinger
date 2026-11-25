@@ -1,0 +1,127 @@
+name: Propose T3 Code upstream changes
+
+on:
+  schedule:
+    - cron: "23 20 * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: fork-upstream-review
+  cancel-in-progress: false
+
+jobs:
+  propose:
+    if: github.repository == 'AkaakuHub/t3code' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PROPOSAL_TOKEN: ${{ secrets.UPSTREAM_REVIEW_TOKEN }}
+    steps:
+      - name: Prepare a review branch without running upstream code
+        shell: bash
+        run: |
+          set -euo pipefail
+          export GIT_CONFIG_COUNT=1
+          export GIT_CONFIG_KEY_0=core.hooksPath
+          export GIT_CONFIG_VALUE_0=/dev/null
+          export GIT_AUTHOR_NAME='github-actions[bot]'
+          export GIT_AUTHOR_EMAIL='41898282+github-actions[bot]@users.noreply.github.com'
+          export GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME"
+          export GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
+
+          gh auth setup-git
+          remote="https://github.com/$GITHUB_REPOSITORY.git"
+          git init --bare "$RUNNER_TEMP/upstream-review.git"
+          cd "$RUNNER_TEMP/upstream-review.git"
+          git fetch --no-tags "$remote" refs/heads/main:refs/heads/fork-main
+          git fetch --no-tags https://github.com/pingdotgg/t3code.git refs/heads/main:refs/heads/upstream-main
+          base=$(git rev-parse refs/heads/fork-main)
+          upstream=$(git rev-parse refs/heads/upstream-main)
+          reviewed=$(git show "$base:.github/t3-upstream-reviewed" 2>/dev/null || git merge-base "$base" "$upstream")
+          if [[ ! "$reviewed" =~ ^[0-9a-f]{40}$ ]] || ! git merge-base --is-ancestor "$reviewed" "$upstream"; then
+            echo "::error::The last reviewed commit is missing from upstream history."
+            exit 1
+          fi
+          if [[ "$upstream" == "$reviewed" ]]; then
+            exit 0
+          fi
+          head="review/t3-upstream-$upstream"
+
+          existing=$(gh pr list --repo "$GITHUB_REPOSITORY" --state all --head "$head" --json number --jq 'length')
+          if [[ "$existing" != 0 ]]; then
+            exit 0
+          fi
+
+          draft=()
+          status=0
+          # Import the reviewed tree without publishing unreviewed upstream workflow history.
+          current=$(git commit-tree "$base^{tree}" -p "$reviewed" -m "Current fork tree")
+          git merge-tree --write-tree --name-only "$current" "$upstream" > "$RUNNER_TEMP/upstream-merge.txt" || status=$?
+          if (( status > 1 )); then
+            echo "::error::Could not prepare the upstream tree."
+            exit 1
+          fi
+          read -r tree < "$RUNNER_TEMP/upstream-merge.txt"
+          git cat-file -e "$tree^{tree}"
+          if (( status == 1 )); then
+            draft=(--draft)
+          fi
+
+          export GIT_INDEX_FILE="$RUNNER_TEMP/upstream-review.index"
+          export GIT_WORK_TREE="$RUNNER_TEMP/upstream-review-empty"
+          mkdir "$GIT_WORK_TREE"
+          git read-tree "$tree"
+          # Only reviewed workflow definitions may run when the review branch is published.
+          git ls-files -z -- .github/workflows | git update-index --force-remove -z --stdin
+          git ls-tree -r -z "$base" -- .github/workflows | git update-index -z --index-info
+          stamp=$(printf '%s\n' "$upstream" | git hash-object -w --stdin)
+          git update-index --add --cacheinfo "100644,$stamp,.github/t3-upstream-reviewed"
+          tree=$(git write-tree)
+
+          {
+            echo 'Review the pinned upstream changes before merging.'
+            echo
+            echo "Upstream commit: https://github.com/pingdotgg/t3code/commit/$upstream"
+            echo
+            echo 'Review analytics, endpoints, identifiers, credential handling, dependencies, and build/install scripts for new outbound collection.'
+            echo 'The proposal uses the fork’s current workflow definitions. Review upstream workflow changes separately.'
+            echo 'The proposed .github/t3-upstream-reviewed records the exact commit for the next comparison.'
+            changed=$(git diff --no-ext-diff --no-textconv --name-only -i -G 'telemetry|posthog|axiom|otlp|analytics|sendBeacon|distinct_id|crashReport' "$base" "$tree")
+            if [[ -n "$changed" ]]; then
+              echo
+              echo 'Paths with changes matching telemetry-related terms (review the full diff too):'
+              printf '%s\n' "$changed" | sed 's/^/- /'
+            fi
+            if (( status == 1 )); then
+              echo
+              echo '**Conflicts: resolve these on this branch before marking it ready.**'
+              echo
+              awk 'NR > 1 && NF {print "- " $0} NR > 1 && !NF {exit}' "$RUNNER_TEMP/upstream-merge.txt"
+            fi
+            echo 'No approval or merge is performed by this workflow.'
+          } > "$RUNNER_TEMP/upstream-review-body.md"
+
+          if [[ -z "$PROPOSAL_TOKEN" ]]; then
+            echo "::error::Set UPSTREAM_REVIEW_TOKEN to a dedicated repository token with Contents and Pull requests write access."
+            exit 1
+          fi
+          export GH_TOKEN="$PROPOSAL_TOKEN"
+          if git ls-remote --exit-code --heads "$remote" "refs/heads/$head" >/dev/null; then
+            git fetch --no-tags "$remote" "refs/heads/$head"
+            if [[ "$(git show -s --format=%P FETCH_HEAD)" != "$base" ||
+                  "$(git rev-parse 'FETCH_HEAD^{tree}')" != "$tree" ]]; then
+              echo "::error::The existing proposal branch differs from this review snapshot."
+              exit 1
+            fi
+          else
+            commit=$(git commit-tree "$tree" -p "$base" -m "Import T3 Code upstream for review")
+            git push "$remote" "$commit:refs/heads/$head"
+          fi
+          gh pr create --repo "$GITHUB_REPOSITORY" --base main --head "$head" "${draft[@]}" \
+            --title "Review T3 Code upstream ${upstream:0:12}" \
+            --body-file "$RUNNER_TEMP/upstream-review-body.md"

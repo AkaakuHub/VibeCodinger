@@ -67,6 +67,18 @@ Restart `vp run dev --share` and open its printed pairing URL once per browser p
 - `apps/web` uses real Chromium (`*.browser.test.{ts,tsx}`) for DOM/React tests (no jsdom) and Node for `*.test.ts`.
 - Typechecking uses `effect-tsgo tsrs --noEmit` (`@effect/tsgo`), not `typescript` (except `apps/marketing` for Astro). On Windows, open the workspace through WSL for VS Code's `.vscode/tsdk/tsgo`.
 
+## Upstream review PRs
+
+The fork checks upstream `main` daily and opens a PR for the pinned upstream
+commit. Changes that conflict open as drafts. The PR points out paths with
+telemetry-related changes and keeps the fork's workflow definitions. Review
+upstream workflow changes separately. The PR records the exact upstream
+commit in `.github/t3-upstream-reviewed` for the next comparison.
+
+Set `UPSTREAM_REVIEW_TOKEN` to a dedicated GitHub credential scoped to this
+repository with Contents and Pull requests write access. The workflow creates
+the review branch and PR. Approval and merge stay with the maintainer.
+
 ## Desktop artifacts
 
 Unsigned local builds write to `release/`:
