@@ -115,12 +115,14 @@ checksum to a draft GitHub release. It uses the Personal Team capabilities
 above and embeds the JavaScript bundle for offline launch. Review the draft
 before publishing it.
 
-After the one-time computer setup for [SideStore](https://docs.sidestore.io/docs/installation/install.html),
-download the IPA on the iPhone and open it in SideStore to sign and install
-it with your own Apple account. Install, refresh, and update with LocalDevVPN
-on Wi-Fi. Re-enable Tailscale afterward if it was disconnected. Keep the same
-signing account when updating. AltStore Classic can also sign the IPA with
-AltServer available.
+On iOS 27 or later in a region that supports AltStore PAL, install AltStore
+Classic through PAL. Complete **Set up Remote AltServer** in Classic's
+settings. Then download the IPA from GitHub Releases on the iPhone, open it
+in Classic, and sign it with your own Apple account. Install and refresh over
+Wi-Fi. See [AltStore Classic 2.3](https://faq.altstore.io/release-notes/altstore#altstore-2.3).
+
+[SideStore](https://docs.sidestore.io/docs/installation/install.html) also
+supports re-signing the IPA. Keep the same signing account when updating.
 
 Build and run the local iOS preview app:
 
