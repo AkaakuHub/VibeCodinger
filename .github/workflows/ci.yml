@@ -414,6 +414,17 @@ jobs:
             node apps/web/node_modules/playwright/cli.js install-deps chromium
           fi
 
+      - name: Cache Vitest module transforms
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        env:
+          CACHE_PREFIX: web-vitest-v1-${{ runner.os }}-${{ runner.arch }}-${{ matrix.shard }}-${{ hashFiles('pnpm-lock.yaml') }}-
+        with:
+          path: |
+            node_modules/.vitest-cache
+            apps/web/node_modules/.vitest-cache
+          key: ${{ env.CACHE_PREFIX }}${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.sha }}
+          restore-keys: ${{ env.CACHE_PREFIX }}
+
       - name: Test
         run: vp run --filter @vibecodinger/web test --shard ${{ matrix.shard }}/${{ strategy.job-total }}
 
@@ -576,6 +587,14 @@ jobs:
         with:
           toolchain: stable
           components: rustfmt
+
+      - name: Cache Cargo dependencies and build products
+        uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+        with:
+          workspaces: |
+            native/resource-monitor
+            native/kde-snap-shot
+            native/hyprland-snap-shot
 
       - name: Check Rust formatting
         run: |

@@ -556,7 +556,7 @@ const build = Effect.fn("nativeClient.build")(function* (
       const android = path.join(mobile, "android");
       yield* command(
         path.join(android, (yield* HostProcess.Platform) === "win32" ? "gradlew.bat" : "gradlew"),
-        ["app:assembleDebug", `-PreactNativeArchitectures=${abi}`],
+        ["app:assembleDebug", "--build-cache", `-PreactNativeArchitectures=${abi}`],
         true,
         android,
       );

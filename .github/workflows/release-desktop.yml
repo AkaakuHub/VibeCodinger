@@ -161,6 +161,14 @@ jobs:
         env:
           pnpm_config_cache_dir: ${{ runner.temp }}/pnpm-metadata
 
+      - name: Cache downloaded Electron archives
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.cache/electron
+            ~/Library/Caches/electron
+          key: desktop-electron-v1-${{ runner.os }}-${{ runner.arch }}-${{ inputs.platform }}-${{ inputs.arch }}-${{ hashFiles('node_modules/.pnpm/electron@*/node_modules/electron/package.json') }}
+
       # The CLI archive and the staged app install without a lockfile, so they
       # ask the registry about every package and fetch platform packages the
       # workspace store lacks. They share this registry metadata and store. A

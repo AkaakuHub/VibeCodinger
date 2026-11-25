@@ -786,6 +786,9 @@ async function buildIos(): Promise<string> {
       "-quiet",
       `ARCHS=${IOS_SIMULATOR_ARCH}`,
       "ONLY_ACTIVE_ARCH=YES",
+      "COMPILATION_CACHE_ENABLE_CACHING=YES",
+      "COMPILATION_CACHE_ENABLE_DIAGNOSTIC_REMARKS=YES",
+      `COMPILATION_CACHE_CAS_PATH=${NodePath.join(derivedData, "CompilationCache.noindex")}`,
       "build",
     ],
     { cwd: MOBILE_ROOT, env: MOBILE_BUILD_ENV },
@@ -802,6 +805,7 @@ async function buildAndroid(abis: ReadonlyArray<string>): Promise<string> {
     "./gradlew",
     [
       "app:assembleDebug",
+      "--build-cache",
       ...(abis.length > 0 ? [`-PreactNativeArchitectures=${abis.join(",")}`] : []),
     ],
     {

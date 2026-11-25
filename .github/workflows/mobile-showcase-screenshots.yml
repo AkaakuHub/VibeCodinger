@@ -90,6 +90,24 @@ jobs:
       - name: Install foldable simulator controls
         run: npm install --global agent-device@0.21.41
 
+      - name: Identify the simulator toolchain
+        id: xcode
+        run: |
+          set -euo pipefail
+          fingerprint=$( { xcodebuild -version; xcrun --sdk iphonesimulator --show-sdk-build-version; pod --version; } | shasum -a 256 | cut -d ' ' -f 1 )
+          echo "fingerprint=$fingerprint" >> "$GITHUB_OUTPUT"
+
+      - name: Cache iOS showcase dependencies and compilation results
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        env:
+          CACHE_PREFIX: ios-showcase-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode.outputs.fingerprint }}-${{ hashFiles('pnpm-lock.yaml') }}-
+        with:
+          path: |
+            ~/Library/Caches/CocoaPods
+            apps/mobile/.showcase/ios-derived-data/CompilationCache.noindex
+          key: ${{ env.CACHE_PREFIX }}${{ hashFiles('apps/mobile/app.config.ts', 'apps/mobile/plugins/**', 'apps/mobile/modules/**/ios/**', 'apps/mobile/modules/**/*.podspec') }}
+          restore-keys: ${{ env.CACHE_PREFIX }}
+
       - name: Capture iOS showcase
         run: pnpm screenshots:mobile --platform ios --appearance "${{ inputs.appearance }}" --theme "${{ inputs.theme }}"
 
@@ -114,6 +132,11 @@ jobs:
     timeout-minutes: ${{ inputs.theme == 'all' && 300 || 60 }}
     env:
       VIBECODINGER_SHOWCASE_ANDROID_ABI: x86_64
+      CMAKE_C_COMPILER_LAUNCHER: ccache
+      CMAKE_CXX_COMPILER_LAUNCHER: ccache
+      CCACHE_BASEDIR: ${{ github.workspace }}
+      CCACHE_COMPILERCHECK: content
+      CCACHE_MAXSIZE: 512M
     steps:
       - name: Checkout
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
@@ -150,6 +173,24 @@ jobs:
       - name: Setup Gradle cache
         uses: gradle/actions/setup-gradle@0723195856401067f7a2779048b490ace7a47d7c # v5.0.2
 
+      - name: Set up ccache
+        id: ccache
+        run: |
+          echo "CCACHE_DIR=$RUNNER_TEMP/android-ccache" >> "$GITHUB_ENV"
+          if ! command -v ccache >/dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y ccache
+          fi
+
+      - name: Cache Android C and C++ compilation results
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        env:
+          CACHE_PREFIX: android-ccache-v1-${{ runner.os }}-${{ runner.arch }}-${{ env.VIBECODINGER_SHOWCASE_ANDROID_ABI }}-${{ hashFiles('pnpm-lock.yaml') }}-
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ${{ env.CACHE_PREFIX }}${{ hashFiles('apps/mobile/app.config.ts', 'apps/mobile/plugins/**', 'apps/mobile/modules/**/android/**', 'apps/mobile/modules/**/cpp/**') }}
+          restore-keys: ${{ env.CACHE_PREFIX }}
+
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS="static_node=kvm"' \
@@ -169,6 +210,10 @@ jobs:
           ram-size: 4096M
           disable-animations: false
           script: pnpm screenshots:mobile --platform android --appearance "${{ inputs.appearance }}" --theme "${{ inputs.theme }}"
+
+      - name: Report Android native cache statistics
+        if: ${{ !cancelled() && steps.ccache.outcome == 'success' }}
+        run: ccache --show-stats
 
       - name: Validate Google Play assets
         run: pnpm screenshots:mobile --platform android --appearance "${{ inputs.appearance }}" --theme "${{ inputs.theme }}" --validate-only
