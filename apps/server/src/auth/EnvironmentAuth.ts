@@ -1808,8 +1808,6 @@ const mcpApprovalLevel = (subject: string): AuthMcpClientAccess | undefined => {
 };
 
 /** Subjects of sessions and links a pairing link created, keyed by how the client paired. */
-const LINK_PAIRED_SUBJECTS = { link: "one-time-token", connect: CLOUD_CONNECT_SUBJECT } as const;
-
 /**
  * Revokes sessions and unused links from pairing the policy no longer allows, so a policy rolled
  * out to a machine that already had phones paired takes effect on the next start.
@@ -1824,10 +1822,8 @@ const revokePairedClientsThePolicyDisallows = Effect.fn(
   },
 ) {
   const remoteAllowed = ManagedLimits.allowsRemoteClients(policy);
-  const disallowed = new Set<string>();
-  if (!remoteAllowed) disallowed.add(LINK_PAIRED_SUBJECTS.link);
-  if (!ManagedLimits.allowsConnect(policy)) disallowed.add(LINK_PAIRED_SUBJECTS.connect);
-  if (disallowed.size === 0) return;
+  const disallowed = new Set<string>([CLOUD_CONNECT_SUBJECT]);
+  if (!remoteAllowed) disallowed.add("one-time-token");
   const sessions = (yield* stores.sessions.listActive()).filter(
     (session) =>
       disallowed.has(session.subject) ||
