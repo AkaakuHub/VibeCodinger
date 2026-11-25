@@ -289,10 +289,10 @@ describe("DesktopLinuxUrlHandler", () => {
 
     return Effect.gen(function* () {
       yield* runRegister(recorded, {
-        environment: { desktopLauncherPath: Option.some("/opt/VibeCodinger/t3code") },
+        environment: { desktopLauncherPath: Option.some("/opt/VibeCodinger/vibecodinger") },
       });
 
-      assert.include(recorded.files[0]?.content, 'Exec="/opt/VibeCodinger/t3code" %U');
+      assert.include(recorded.files[0]?.content, 'Exec="/opt/VibeCodinger/vibecodinger" %U');
     });
   });
 

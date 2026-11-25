@@ -240,7 +240,7 @@ describe("DesktopPreReadyPlatform", () => {
               DesktopConfig.layerTest({
                 XDG_DATA_HOME: "/xdg",
                 APPIMAGE: "/Applications/current.AppImage",
-                VIBECODINGER_DESKTOP_LAUNCHER_PATH: " /opt/VibeCodinger/t3code ",
+                VIBECODINGER_DESKTOP_LAUNCHER_PATH: " /opt/VibeCodinger/vibecodinger ",
               }),
             ),
           ),
@@ -248,7 +248,7 @@ describe("DesktopPreReadyPlatform", () => {
         const entry = writeFileSyncMock.mock.calls.find(
           ([path]) => path === "/xdg/applications/net.akaaku.vibecodinger.desktop",
         )?.[1];
-        assert.include(entry, 'Exec="/opt/VibeCodinger/t3code" %U');
+        assert.include(entry, 'Exec="/opt/VibeCodinger/vibecodinger" %U');
       }),
     ).pipe(Effect.ensuring(Effect.sync(() => vi.unstubAllEnvs())));
   });

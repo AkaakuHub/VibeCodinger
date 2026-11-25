@@ -260,16 +260,19 @@ describe("DesktopLifecycle", () => {
         return yield* Deferred.await(relaunched);
       }).pipe(
         Effect.provide(layer),
-        Effect.provideService(HostProcess.ExecutablePath, "/opt/VibeCodinger/t3code"),
+        Effect.provideService(HostProcess.ExecutablePath, "/opt/VibeCodinger/vibecodinger"),
         Effect.provideService(HostProcess.Arguments, [
-          "/opt/VibeCodinger/t3code",
+          "/opt/VibeCodinger/vibecodinger",
           "--no-sandbox",
-          "T3CODE://pair?token=spent",
+          "VIBECODINGER://pair?token=spent",
           "vibecodinger://new?prompt=hello",
         ]),
       );
 
-      assert.deepEqual(options, { execPath: "/opt/VibeCodinger/t3code", args: ["--no-sandbox"] });
+      assert.deepEqual(options, {
+        execPath: "/opt/VibeCodinger/vibecodinger",
+        args: ["--no-sandbox"],
+      });
     }),
   );
 
