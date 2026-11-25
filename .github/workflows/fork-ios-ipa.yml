@@ -14,7 +14,7 @@ permissions: {}
 
 concurrency:
   group: fork-ios-ipa-${{ github.event.pull_request.number || inputs.release_tag }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  cancel-in-progress: false
 
 jobs:
   package:
