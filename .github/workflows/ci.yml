@@ -166,6 +166,16 @@ jobs:
         id: electron
         run: vp run --filter @vibecodinger/desktop ensure:electron
 
+      - name: Restore build and typecheck task cache
+        if: needs.changes.outputs.build != 'false' || needs.changes.outputs.typecheck != 'false'
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        env:
+          CACHE_PREFIX: build-tasks-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('pnpm-lock.yaml', 'pnpm-workspace.yaml', 'package.json') }}-
+        with:
+          path: node_modules/.vite/task-cache
+          key: ${{ env.CACHE_PREFIX }}${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.sha }}
+          restore-keys: ${{ env.CACHE_PREFIX }}
+
       # Runs in the background while the build runs, and reports in the last
       # step: neither result hides the other.
       - name: Start typecheck
