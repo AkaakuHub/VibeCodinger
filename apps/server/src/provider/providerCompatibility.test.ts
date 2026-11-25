@@ -173,7 +173,7 @@ describe("provider compatibility", () => {
     }
   });
 
-  it("applies policies only within their T3 Code version range", () => {
+  it("applies policies only within their VibeCodinger version range", () => {
     const scopedPolicy = { ...policy, t3CodeRange: ">=0.0.42 <0.1.0" };
     for (const version of ["0.0.42", "0.0.45"]) {
       assert.strictEqual(

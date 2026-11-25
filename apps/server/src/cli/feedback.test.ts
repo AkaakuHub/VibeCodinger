@@ -57,7 +57,7 @@ it("feedback subjects name every listed vibecodinger command", () => {
 
 const hidden = (tool: string) =>
   new McpBridge.AcpMcpBridgeError({
-    message: "T3 Code MCP tools/call failed.",
+    message: "VibeCodinger MCP tools/call failed.",
     rpcError: { code: -32602, message: `Tool '${tool}' not found` },
   });
 

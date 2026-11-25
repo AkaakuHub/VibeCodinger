@@ -19,7 +19,7 @@ const USERNS_RESTRICTION = "/proc/sys/kernel/apparmor_restrict_unprivileged_user
 export const APPARMOR_PROFILE_PATH = "/etc/apparmor.d/vibecodinger-chrome-headless-shell";
 
 /** Match Ubuntu's Chrome profile; unconfined adds nothing beyond userns. */
-export const APPARMOR_PROFILE = `# Written by \`t3 browser setup\`: lets T3 Code's headless browser use Chrome's sandbox.
+export const APPARMOR_PROFILE = `# Written by \`t3 browser setup\`: lets VibeCodinger's headless browser use Chrome's sandbox.
 abi <abi/4.0>,
 include <tunables/global>
 

@@ -945,7 +945,7 @@ const makePendingCodexProvider = Effect.fn("CodexProvider.makePendingCodexProvid
         version: null,
         status: "warning",
         auth: { status: "unknown" },
-        message: "Codex is disabled in T3 Code settings.",
+        message: "Codex is disabled in VibeCodinger settings.",
       },
     });
   }
@@ -1046,7 +1046,7 @@ export const checkCodexProviderStatus = Effect.fn("checkCodexProviderStatus")(fu
         version: null,
         status: "warning",
         auth: { status: "unknown" },
-        message: "Codex is disabled in T3 Code settings.",
+        message: "Codex is disabled in VibeCodinger settings.",
       },
     });
   }

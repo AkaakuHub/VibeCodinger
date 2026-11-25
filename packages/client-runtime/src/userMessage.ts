@@ -18,7 +18,7 @@ import { imageMimeType } from "@vibecodinger/shared/image";
 import { videoMimeType } from "@vibecodinger/shared/video";
 import { msg } from "gt-i18n";
 
-/** The working row while T3 Code's own compaction runs. */
+/** The working row while VibeCodinger's own compaction runs. */
 export const IDLE_COMPACTING_LABELS = {
   beforeCacheExpires: msg("Compacting before the cache expires…"),
   onReturn: msg("Compacting…"),

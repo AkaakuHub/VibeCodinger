@@ -507,7 +507,7 @@ export const makeAntigravityInstallation = Effect.fn("AntigravityInstallation.ma
         _tag: "repairable" as const,
         error: installationError(
           "resolve",
-          `Antigravity ${record.version} predates the Antigravity CLI and no longer works with this T3 Code release. Update it in Antigravity setup.`,
+          `Antigravity ${record.version} predates the Antigravity CLI and no longer works with this VibeCodinger release. Update it in Antigravity setup.`,
         ),
       };
     }
@@ -659,7 +659,7 @@ export const makeAntigravityInstallation = Effect.fn("AntigravityInstallation.ma
       if (yield* isWithdrawn(installed.version))
         return yield* installationError(
           "resolve",
-          `Antigravity ${installed.version} no longer works with this T3 Code release. Update it in Antigravity setup.`,
+          `Antigravity ${installed.version} no longer works with this VibeCodinger release. Update it in Antigravity setup.`,
         );
       return installed;
     }

@@ -17,6 +17,7 @@ PACKAGE_SCOPE = b"@vibecodinger/"
 OLD_LINT_PLUGIN = b"oxlint-plugin-" + b"t3code"
 LINT_PLUGIN = b"oxlint-plugin-vibecodinger"
 OLD_LINT_RULE = b"t3code/" + rb"(no|max|prefer|require|namespace)-"
+OLD_LINT_DIAGNOSTIC = b"t3code" + rb"\("
 LINT_PLUGIN_METADATA = (b"index.ts", b"test/utils.ts")
 PNPMFILE = b".pnpmfile.cjs"
 PNPM_LOCKFILE = b"pnpm-lock.yaml"
@@ -157,6 +158,7 @@ def git(*args, data=None, env=None):
 def normalized_names(contents, *, lint_metadata=False):
     contents = contents.replace(OLD_PACKAGE_SCOPE, PACKAGE_SCOPE)
     contents = contents.replace(OLD_LINT_PLUGIN, LINT_PLUGIN)
+    contents = contents.replace(OLD_LINT_DIAGNOSTIC, rb"vibecodinger\(")
     contents = re.sub(OLD_LINT_RULE, rb"vibecodinger/\1-", contents)
     if lint_metadata:
         contents = contents.replace(b'name: "t3code"', b'name: "vibecodinger"')
@@ -177,7 +179,7 @@ def renamed_package_blob(object_id, lint_metadata=False, pnpmfile_checksum=None)
 
 
 def normalize_package_names(tree):
-    pattern = b"|".join((OLD_PACKAGE_SCOPE, OLD_LINT_PLUGIN, OLD_LINT_RULE))
+    pattern = b"|".join((OLD_PACKAGE_SCOPE, OLD_LINT_PLUGIN, OLD_LINT_RULE, re.escape(OLD_LINT_DIAGNOSTIC)))
     matches = subprocess.run(
         ["git", "grep", "-I", "-l", "-z", "-E", "--no-textconv", pattern.decode(), tree, "--"],
         capture_output=True,

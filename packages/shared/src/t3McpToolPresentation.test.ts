@@ -22,7 +22,7 @@ describe("resolveT3McpToolPresentation", () => {
         "t3_code/",
         "vibecodinger:",
         "mcp_t3-code_",
-        "T3 Code ",
+        "VibeCodinger ",
         "t3-code · ",
       ]) {
         expect(resolveT3McpToolPresentation(`${prefix}${tool} completed`), tool).toEqual(

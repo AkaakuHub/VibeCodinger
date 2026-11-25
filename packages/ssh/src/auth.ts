@@ -77,7 +77,7 @@ function joinSshAskpassPath(
 }
 
 const ASKPASS_POSIX_SCRIPT = `#!/bin/sh
-# Invoked by ssh via SSH_ASKPASS when T3 Code re-runs ssh with a cached password
+# Invoked by ssh via SSH_ASKPASS when VibeCodinger re-runs ssh with a cached password
 # from the renderer's in-app prompt. We never expose a native dialog here - if
 # VIBECODINGER_SSH_AUTH_SECRET is missing, that's a caller bug and we fail loudly.
 if [ "\${VIBECODINGER_SSH_AUTH_SECRET+x}" = "x" ]; then
@@ -91,7 +91,7 @@ exit 1
 // Windows has no helper form every ssh can start. Win32-OpenSSH starts `"<node>" "<this file>"`
 // directly; Cygwin/MSYS ssh (Git for Windows) execs ssh-askpass.sh through its own sh. Either
 // way ssh appends the prompt as a plain trailing argument, which the helpers never read.
-const ASKPASS_WINDOWS_NODE_SCRIPT = `// Invoked by ssh via SSH_ASKPASS when T3 Code re-runs ssh with a cached password
+const ASKPASS_WINDOWS_NODE_SCRIPT = `// Invoked by ssh via SSH_ASKPASS when VibeCodinger re-runs ssh with a cached password
 // from the renderer's in-app prompt. Answers from VIBECODINGER_SSH_AUTH_SECRET only and
 // never reads its arguments; if the secret is missing, that's a caller bug and
 // we fail loudly.

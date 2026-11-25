@@ -284,10 +284,10 @@ describe("nextTurnDetailAnnouncement", () => {
 
   it.each<{ level: ScreenReaderAnnouncements; spoken: ReadonlyArray<string> }>([
     { level: "status", spoken: [] },
-    { level: "messages", spoken: ["T3 Code: first", "T3 Code: second"] },
+    { level: "messages", spoken: ["VibeCodinger: first", "VibeCodinger: second"] },
     {
       level: "everything",
-      spoken: ["Running git", "T3 Code: first", "Reading a.ts", "T3 Code: second"],
+      spoken: ["Running git", "VibeCodinger: first", "Reading a.ts", "VibeCodinger: second"],
     },
   ])("says each message and step once at the $level level", ({ level, spoken }) => {
     expect(speak(level, turn)).toEqual(spoken);
@@ -300,7 +300,7 @@ describe("nextTurnDetailAnnouncement", () => {
         frame("Running git", [said("first")]),
         frame("Reading a.ts", [said("first"), said("second", true, true)]),
       ]),
-    ).toEqual(["T3 Code: second", "Reading a.ts"]);
+    ).toEqual(["VibeCodinger: second", "Reading a.ts"]);
   });
 
   it("stays silent about history loaded above the messages it knows", () => {
@@ -323,7 +323,7 @@ describe("nextTurnDetailAnnouncement", () => {
         frame(null),
         frame(null, [first, { ...said("empty", true, true), text: "<!-- note -->" }]),
       ]),
-    ).toEqual(["T3 Code: Tests pass in web. See the docs"]);
+    ).toEqual(["VibeCodinger: Tests pass in web. See the docs"]);
   });
 
   it("cuts a long message without splitting an emoji", () => {

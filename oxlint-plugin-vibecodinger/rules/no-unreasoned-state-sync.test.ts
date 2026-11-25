@@ -3,7 +3,7 @@ import { assert, describe } from "@effect/vitest";
 import { createOxlintRuleHarness } from "../test/utils.ts";
 
 const reports = (output: string) =>
-  output.match(/t3code\(no-unreasoned-state-sync\)/g)?.length ?? 0;
+  output.match(/vibecodinger\(no-unreasoned-state-sync\)/g)?.length ?? 0;
 const lint = (filename: string) =>
   createOxlintRuleHarness("vibecodinger/no-unreasoned-state-sync", { filename });
 
