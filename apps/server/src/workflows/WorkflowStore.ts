@@ -603,10 +603,10 @@ export const make = Effect.gen(function* () {
             // A step that finished is progress: the next pause is the first in a row again.
             status === "completed"
               ? // Not while paused: a step beside the one that failed is no progress past it.
-                sql`
+                Effect.asVoid(sql`
                   UPDATE workflow_runs SET pauses = 0
                   WHERE run_id = ${runId} AND ended_at IS NULL AND status != 'paused'
-                `
+                `)
               : Effect.void,
           ),
         ),
