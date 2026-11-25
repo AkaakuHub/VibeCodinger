@@ -2,7 +2,7 @@ import ExpoModulesCore
 import UIKit
 
 enum T3ComposerClipboard {
-  static let fragmentType = "app.t3.context-fragment"
+  static let fragmentType = "net.akaaku.vibecodinger.context-fragment"
 
   // Pasted thread links become chips in JS; packages/shared/src/threadLinks.ts parses them.
   static func hasThreadLink(_ text: String) -> Bool {
@@ -25,7 +25,7 @@ enum T3ComposerClipboard {
         let attribute = raw.addingPercentEncoding(withAllowedCharacters: .alphanumerics) ?? ""
         let escaped = text.replacingOccurrences(of: "&", with: "&amp;").replacingOccurrences(of: "<", with: "&lt;").replacingOccurrences(of: ">", with: "&gt;")
         items[fragmentType] = encoded
-        items["public.html"] = Data("<pre data-t3-context-fragment=\"\(attribute)\">\(escaped)</pre>".utf8)
+        items["public.html"] = Data("<pre data-vibecodinger-context-fragment=\"\(attribute)\">\(escaped)</pre>".utf8)
       }
     }
     UIPasteboard.general.items = [items]
