@@ -35,16 +35,25 @@ class VibeCodingerSecretInputModule : Module() {
       Prop("inputLabel") { view: VibeCodingerSecretInputView, value: String ->
         view.input.contentDescription = value
       }
-      Prop("textColor") { view: VibeCodingerSecretInputView, value: Int -> view.input.setTextColor(value) }
+      Prop("textColor") { view: VibeCodingerSecretInputView, value: Int ->
+        view.input.setTextColor(value)
+      }
       Prop("placeholderColor") { view: VibeCodingerSecretInputView, value: Int ->
         view.input.setHintTextColor(value)
       }
-      Prop("cursorColor") { view: VibeCodingerSecretInputView, value: Int -> view.setCursorColor(value) }
+      Prop("cursorColor") { view: VibeCodingerSecretInputView, value: Int ->
+        view.setCursorColor(value)
+      }
       Prop("fontSize") { view: VibeCodingerSecretInputView, value: Float ->
         view.input.setTextSize(TypedValue.COMPLEX_UNIT_DIP, value)
       }
-      Prop("editable") { view: VibeCodingerSecretInputView, value: Boolean -> view.input.isEnabled = value }
-      Prop("revealed") { view: VibeCodingerSecretInputView, value: Boolean -> view.setRevealed(value) }
+      Prop("editable") { view: VibeCodingerSecretInputView, value: Boolean ->
+        view.input.isEnabled =
+          value
+      }
+      Prop("revealed") { view: VibeCodingerSecretInputView, value: Boolean ->
+        view.setRevealed(value)
+      }
       Prop("returnKey") { view: VibeCodingerSecretInputView, value: String ->
         view.input.imeOptions =
           if (value == "next") EditorInfo.IME_ACTION_NEXT else EditorInfo.IME_ACTION_DONE
@@ -61,7 +70,10 @@ class VibeCodingerSecretInputModule : Module() {
  * credential autofill, so password managers offer logins above the keyboard; this view owns the
  * EditText so it can.
  */
-class VibeCodingerSecretInputView(context: Context, appContext: AppContext) : ExpoView(context, appContext) {
+class VibeCodingerSecretInputView(
+  context: Context,
+  appContext: AppContext
+) : ExpoView(context, appContext) {
   // Yoga sizes this view; the EditText inside is laid out by Android.
   override val shouldUseAndroidLayout = true
 

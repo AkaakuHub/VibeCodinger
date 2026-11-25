@@ -45,7 +45,9 @@ class VibeCodingerNativeControlsModule : Module() {
       VibeCodingerDpopKeys.matches(privateKey, publicKey)
     }
 
-    AsyncFunction("signDpop") { key: ByteArray, input: ByteArray -> VibeCodingerDpopKeys.sign(key, input) }
+    AsyncFunction("signDpop") { key: ByteArray, input: ByteArray ->
+      VibeCodingerDpopKeys.sign(key, input)
+    }
 
     AsyncFunction("openFile") { uri: String, mimeType: String, promise: Promise ->
       check(filePreviewPromise == null) { "A document viewer is already open." }

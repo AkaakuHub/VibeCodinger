@@ -68,11 +68,17 @@ class VibeCodingerWorkspaceNavigationModule : Module() {
   override fun definition() = ModuleDefinition {
     Name("VibeCodingerWorkspaceNavigation")
     View(VibeCodingerWorkspaceNavigationView::class) {
-      Prop("tabs") { view: VibeCodingerWorkspaceNavigationView, value: List<String> -> view.tabs = value }
+      Prop("tabs") { view: VibeCodingerWorkspaceNavigationView, value: List<String> ->
+        view.tabs =
+          value
+      }
       Prop("tabTitles") { view: VibeCodingerWorkspaceNavigationView, value: Map<String, String> ->
         view.tabTitles = value
       }
-      Prop("expandedTabTitles") { view: VibeCodingerWorkspaceNavigationView, value: Map<String, String> ->
+      Prop("expandedTabTitles") {
+          view: VibeCodingerWorkspaceNavigationView,
+          value: Map<String, String>
+        ->
         view.expandedTabTitles = value
       }
       Prop("newThreadTitle") { view: VibeCodingerWorkspaceNavigationView, value: String ->
@@ -86,9 +92,16 @@ class VibeCodingerWorkspaceNavigationModule : Module() {
         view.clipToPadding = !value
         view.clipChildren = !value
       }
-      Prop("rail") { view: VibeCodingerWorkspaceNavigationView, value: Boolean -> view.rail = value }
-      Prop("dark") { view: VibeCodingerWorkspaceNavigationView, value: Boolean -> view.dark = value }
-      Prop("textScale") { view: VibeCodingerWorkspaceNavigationView, value: Float -> view.textScale = value }
+      Prop("rail") { view: VibeCodingerWorkspaceNavigationView, value: Boolean ->
+        view.rail = value
+      }
+      Prop("dark") { view: VibeCodingerWorkspaceNavigationView, value: Boolean ->
+        view.dark = value
+      }
+      Prop("textScale") { view: VibeCodingerWorkspaceNavigationView, value: Float ->
+        view.textScale =
+          value
+      }
       Prop("newEnabled") { view: VibeCodingerWorkspaceNavigationView, value: Boolean ->
         view.newEnabled = value
       }

@@ -96,11 +96,17 @@ class VibeCodingerComposerEditorModule : Module() {
       Prop("lineHeight") { view: VibeCodingerComposerEditorView, lineHeight: Double ->
         view.setLineHeight(lineHeight.toFloat())
       }
-      Prop("contentInsetVertical") { view: VibeCodingerComposerEditorView, contentInsetVertical: Double ->
+      Prop("contentInsetVertical") {
+          view: VibeCodingerComposerEditorView,
+          contentInsetVertical: Double
+        ->
         view.setContentInsetVertical(contentInsetVertical.toInt())
       }
 
-      Prop("singleLineCentered") { view: VibeCodingerComposerEditorView, singleLineCentered: Boolean ->
+      Prop("singleLineCentered") {
+          view: VibeCodingerComposerEditorView,
+          singleLineCentered: Boolean
+        ->
         view.setSingleLineCentered(singleLineCentered)
       }
       Prop("editable") { view: VibeCodingerComposerEditorView, editable: Boolean ->

@@ -30,7 +30,10 @@ import kotlin.math.abs
  * never reach another's.
  */
 @SuppressLint("SetJavaScriptEnabled")
-class VibeCodingerTunnelWebView(context: Context, appContext: AppContext) : ExpoView(context, appContext) {
+class VibeCodingerTunnelWebView(
+  context: Context,
+  appContext: AppContext
+) : ExpoView(context, appContext) {
   override val shouldUseAndroidLayout = true
 
   private val onAccessRequest by EventDispatcher()

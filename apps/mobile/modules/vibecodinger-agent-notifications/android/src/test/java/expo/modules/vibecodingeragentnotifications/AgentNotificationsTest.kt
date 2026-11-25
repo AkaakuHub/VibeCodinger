@@ -80,8 +80,12 @@ class AgentNotificationsTest {
   @Test
   fun alertsAndActivityUseVersionAppropriatePriorityAndPromotion() {
     assertTrue(AgentNotifications.showcase(context, "vibecodinger-dev", update("work", true)))
-    val alert = manager.activeNotifications.single { it.tag == "vibecodinger-agent-alert" }.notification
-    val card = manager.activeNotifications.single { it.tag == "vibecodinger-agent-activity" }.notification
+    val alert = manager.activeNotifications.single {
+      it.tag == "vibecodinger-agent-alert"
+    }.notification
+    val card = manager.activeNotifications.single {
+      it.tag == "vibecodinger-agent-activity"
+    }.notification
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
       assertEquals(Notification.PRIORITY_HIGH, alert.priority)
       assertTrue(alert.defaults and Notification.DEFAULT_SOUND != 0)

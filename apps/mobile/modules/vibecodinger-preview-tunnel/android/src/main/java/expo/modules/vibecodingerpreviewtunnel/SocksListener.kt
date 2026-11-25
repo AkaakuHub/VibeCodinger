@@ -269,7 +269,9 @@ internal class SocksListener(private val requestAccess: () -> String?) {
     lastFailure = null
     replied.complete(Unit)
     socket.soTimeout = 0
-    val reader = Thread({ sendPageBytes(input, webSocket, closed) }, "vibecodinger-preview-tunnel-up")
+    val reader = Thread({
+      sendPageBytes(input, webSocket, closed)
+    }, "vibecodinger-preview-tunnel-up")
       .apply { isDaemon = true }
     reader.start()
     closed.get()

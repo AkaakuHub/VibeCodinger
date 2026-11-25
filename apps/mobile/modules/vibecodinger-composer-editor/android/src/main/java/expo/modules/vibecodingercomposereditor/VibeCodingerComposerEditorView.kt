@@ -909,7 +909,9 @@ internal class SelectionAwareEditText(
     return when {
       hasContextHtml -> pasteContext(payload)
       pasteImagesOrInterceptedText() -> true
-      isSingleItemClip() && VibeCodingerComposerClipboard.hasThreadLink(payload["text"].orEmpty()) ->
+      isSingleItemClip() && VibeCodingerComposerClipboard.hasThreadLink(
+        payload["text"].orEmpty()
+      ) ->
         pasteContext(payload)
       else -> false
     }

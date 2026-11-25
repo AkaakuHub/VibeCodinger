@@ -25,7 +25,10 @@ class VibeCodingerReviewDiffModule : Module() {
       Prop("contentResetKey") { view: VibeCodingerReviewDiffView, contentResetKey: String ->
         view.setContentResetKey(contentResetKey)
       }
-      Prop("collapsedFileIdsJson") { view: VibeCodingerReviewDiffView, collapsedFileIdsJson: String ->
+      Prop("collapsedFileIdsJson") {
+          view: VibeCodingerReviewDiffView,
+          collapsedFileIdsJson: String
+        ->
         view.setCollapsedFileIdsJson(collapsedFileIdsJson)
       }
       Prop("viewedFileIdsJson") { view: VibeCodingerReviewDiffView, viewedFileIdsJson: String ->
@@ -34,7 +37,10 @@ class VibeCodingerReviewDiffModule : Module() {
       Prop("selectedRowIdsJson") { view: VibeCodingerReviewDiffView, selectedRowIdsJson: String ->
         view.setSelectedRowIdsJson(selectedRowIdsJson)
       }
-      Prop("collapsedCommentIdsJson") { view: VibeCodingerReviewDiffView, collapsedCommentIdsJson: String ->
+      Prop("collapsedCommentIdsJson") {
+          view: VibeCodingerReviewDiffView,
+          collapsedCommentIdsJson: String
+        ->
         view.setCollapsedCommentIdsJson(collapsedCommentIdsJson)
       }
       Prop("appearanceScheme") { view: VibeCodingerReviewDiffView, appearanceScheme: String ->
@@ -66,13 +72,21 @@ class VibeCodingerReviewDiffModule : Module() {
 
       Events(REVIEW_DIFF_EVENTS)
 
-      AsyncFunction("scrollToFile") { view: VibeCodingerReviewDiffView, fileId: String, animated: Boolean ->
+      AsyncFunction("scrollToFile") {
+          view: VibeCodingerReviewDiffView,
+          fileId: String,
+          animated: Boolean
+        ->
         view.scrollToFile(fileId, animated)
       }
       AsyncFunction("scrollToTop") { view: VibeCodingerReviewDiffView, animated: Boolean ->
         view.scrollToTop(animated)
       }
-      AsyncFunction("setRowsJson") { view: VibeCodingerReviewDiffView, rowsJson: String, resetKey: String ->
+      AsyncFunction("setRowsJson") {
+          view: VibeCodingerReviewDiffView,
+          rowsJson: String,
+          resetKey: String
+        ->
         view.setContentResetKey(resetKey)
         view.setRowsJson(rowsJson)
       }

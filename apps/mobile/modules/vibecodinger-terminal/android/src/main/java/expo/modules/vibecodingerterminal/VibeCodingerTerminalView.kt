@@ -19,7 +19,10 @@ import expo.modules.kotlin.viewevent.EventDispatcher
 import expo.modules.kotlin.views.ExpoView
 import kotlin.math.max
 
-class VibeCodingerTerminalView(context: Context, appContext: AppContext) : ExpoView(context, appContext) {
+class VibeCodingerTerminalView(context: Context, appContext: AppContext) : ExpoView(
+  context,
+  appContext
+) {
   private val container = FrameLayout(context)
   private val terminalCanvas = TerminalCanvasView(context)
   private val sentText = TerminalSentText()

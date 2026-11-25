@@ -21,7 +21,9 @@ class VibeCodingerDpopKeysTest {
     val privateKey = key.copyOfRange(0, 32)
     val publicKey = key.copyOfRange(32, 97)
     assertTrue(VibeCodingerDpopKeys.matches(privateKey, publicKey))
-    assertFalse(VibeCodingerDpopKeys.matches(VibeCodingerDpopKeys.generate().copyOfRange(0, 32), publicKey))
+    assertFalse(
+      VibeCodingerDpopKeys.matches(VibeCodingerDpopKeys.generate().copyOfRange(0, 32), publicKey)
+    )
 
     val input = "header.payload".toByteArray()
     repeat(32) {
