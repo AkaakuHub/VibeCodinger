@@ -26,6 +26,8 @@ PROTECTED_PATHS = (
     "apps/server/src/cloud/ManagedEndpointRuntime.ts",
     "apps/server/src/cloud/RelayClientLedger.ts",
     "packages/shared/src/relayClient.ts",
+    "packages/shared/src/relayTracing.ts",
+    "packages/shared/src/relayTracing.test.ts",
     "apps/server/src/triage/triagePrompt.ts",
     "apps/server/src/triage/triagePrompt.test.ts",
     "apps/desktop/src/app/ClerkTokenStore.ts",
@@ -97,7 +99,7 @@ FORBIDDEN = re.compile(
     rb"otlp.{0,48}(?:endpoint|exporter)|cloudflared|"
     rb"server\.checkOtlpEndpoint|TelemetryExportSettings|telemetry-export|"
     rb"ProcessGroupMetrics\.layer|otelEnvironment:\s*(?:OtelEnvironment|otel)\b|"
-    rb"getRelayTelemetryEnabled|parsePersistedServerObservabilitySettings|observabilitySettings\.otlp|"
+    rb"RelayClientTracer|withRelayClientTracing|getRelayTelemetryEnabled|parsePersistedServerObservabilitySettings|observabilitySettings\.otlp|"
     rb"\b(?:t3Home|t3_home|t3-home)\b|"
     rb"VIBECODINGER_RELAY_URL|HttpApiClient\.make\(RelayApi\b|"
     rb"relay_public_config|relay.client.tracing.config|VIBECODINGER_TELEMETRY_CHANNEL|"

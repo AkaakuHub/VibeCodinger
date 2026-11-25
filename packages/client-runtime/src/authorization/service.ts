@@ -9,7 +9,6 @@ import {
 } from "@vibecodinger/contracts";
 import { RelayEnvironmentConnectScope } from "@vibecodinger/contracts/relay";
 import * as KeyedLock from "@vibecodinger/shared/KeyedLock";
-import { withRelayClientTracing } from "@vibecodinger/shared/relayTracing";
 import {
   exchangeRemoteDpopAccessToken,
   type RemoteEnvironmentAuthError,
@@ -784,12 +783,10 @@ export const make = Effect.gen(function* () {
         return directHttpAuthorization(connection, credential);
       },
     ),
-    // The relay tracer must wrap span creation, not just the token request.
     authorizeDpopHttp: Effect.fnUntraced(function* (input) {
       return yield* getDpopToken(input).pipe(
         Effect.map(({ token }) => httpAuthorization(token)),
         Effect.withSpan("environment.authorization.http"),
-        withRelayClientTracing,
       );
     }),
     // Untraced: a span here would stay open for the socket's lifetime. Each renewal has its own.
@@ -814,7 +811,6 @@ export const make = Effect.gen(function* () {
             : directDpopToken(direct).pipe(Effect.map((credential) => credential.expiresAtEpochMs))
         ).pipe(
           Effect.withSpan("environment.authorization.renewSocket"),
-          withRelayClientTracing,
           // A relay blip retries until expiry; a blocked credential ends the loop.
           Effect.catchTags({ ConnectionTransientError: () => Effect.succeed(expiresAtEpochMs) }),
         );
