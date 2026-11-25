@@ -7,6 +7,7 @@ import sys
 
 PROTECTED_PATHS = (
     ".task-cache.json",
+    "infra/task-cache",
     ".github/actions",
     ".github/scripts",
     ".github/workflows",

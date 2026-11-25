@@ -15,7 +15,6 @@ import * as Path from "effect/Path";
 import * as Schema from "effect/Schema";
 import * as Stream from "effect/Stream";
 import { Argument, Command, Flag } from "effect/cli";
-import { FetchHttpClient, HttpClient, HttpClientRequest, HttpClientResponse } from "effect/http";
 import { ChildProcess, ChildProcessSpawner } from "effect/process";
 
 export type NativePlatform = "ios" | "android";
@@ -53,7 +52,7 @@ export function clientStatus(
   return record.fingerprint === fingerprint ? "compatible" : "stale";
 }
 
-export type ArtifactSource = "local" | "remote" | "build";
+export type ArtifactSource = "local" | "build";
 
 /** Keep native sources stable during ensure, as with a normal build; endpoint checks reject detected edits. */
 export const ensureClient = Effect.fn("ensureClient")(function* <E, R, E2, R2>(operations: {
@@ -92,7 +91,7 @@ const digest = Effect.fn("nativeClient.digest")(function* (value: string | Uint8
 });
 
 /** Hash fixed-size chunks to bound memory, including resources and symlink targets. */
-export const hashBundle = Effect.fn("hashBundle")(function* (root: string) {
+const hashBundle = Effect.fn("hashBundle")(function* (root: string) {
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
   const entries: string[] = [];
@@ -431,197 +430,11 @@ export const prebuildAndroid = Effect.fn("nativeClient.prebuildAndroid")(functio
 });
 
 const artifactNames = { ios: "VibeCodingerDev.app", android: "app-debug.apk" } as const;
-// R2 requires equal-sized parts and Workers cap request bodies at 100 MB.
-const partSize = 64 * 1024 * 1024;
-const RemoteCredentials = Schema.fromJsonString(
-  Schema.Record(Schema.String, Schema.Struct({ name: Schema.String, token: Schema.String })),
-);
-const decodeCredentials = Schema.decodeUnknownEffect(RemoteCredentials);
-const decodeEndpoint = Schema.decodeUnknownEffect(
-  Schema.fromJsonString(Schema.Struct({ endpoint: Schema.String })),
-);
-const decodeUpload = Schema.decodeUnknownEffect(
-  Schema.Union([
-    Schema.Struct({ exists: Schema.Literal(true) }),
-    Schema.Struct({ uploadId: Schema.String }),
-  ]),
-);
-const decodePart = Schema.decodeUnknownEffect(Schema.Struct({ etag: Schema.String }));
 const decodeEasBuilds = Schema.decodeUnknownEffect(
   Schema.fromJsonString(
     Schema.Array(Schema.Struct({ artifacts: Schema.Struct({ buildUrl: Schema.String }) })),
   ),
 );
-
-interface RemoteCache {
-  readonly url: string;
-  readonly name: string;
-  readonly token: string;
-}
-
-/** The shared task-cache login (infra/task-cache/install.sh) also authorizes native clients. */
-const remoteCache = Effect.fn("nativeClient.remoteCache")(
-  function* (home: string) {
-    const environment = yield* HostProcess.Environment;
-    if (environment.T3_NATIVE_CLIENT_CACHE === "off") return null;
-    const fs = yield* FileSystem.FileSystem;
-    const path = yield* Path.Path;
-    const { endpoint } = yield* decodeEndpoint(
-      yield* fs.readFileString(path.join((yield* roots).repo, ".task-cache.json")),
-    );
-    const credentials = yield* decodeCredentials(
-      yield* fs.readFileString(path.join(home, ".config/t3-task-cache/credentials.json")),
-    );
-    const login = credentials[endpoint];
-    if (!login) return null;
-    const base = endpoint.replace(/\/$/, "");
-    return {
-      url: `${base}/native-clients`,
-      ...login,
-    } satisfies RemoteCache;
-  },
-  Effect.orElseSucceed(() => null),
-);
-
-const ReaderLogin = Schema.fromJsonString(
-  Schema.Struct({ name: Schema.String, token: Schema.String }),
-);
-
-/**
- * A URL another machine can download `key` from. The header goes to that machine, so only a
- * read-only login (`ci-reader`) is ever handed out, never a developer's writer token.
- */
-const sharedSource = Effect.fn("nativeClient.sharedSource")(
-  function* (home: string, key: string) {
-    const remote = yield* remoteCache(home);
-    if (!remote) return null;
-    const fs = yield* FileSystem.FileSystem;
-    const path = yield* Path.Path;
-    const reader =
-      remote.name === "ci-reader"
-        ? remote
-        : yield* fs
-            .readFileString(path.join(home, ".config/t3-task-cache/ci-reader.json"))
-            .pipe(Effect.flatMap(Schema.decodeUnknownEffect(ReaderLogin)));
-    const basic = Buffer.from(`${reader.name}:${reader.token}`).toString("base64");
-    return { url: `${remote.url}/${key}`, header: `authorization:Basic ${basic}` };
-  },
-  Effect.orElseSucceed(() => null),
-);
-
-const authorized = (remote: RemoteCache, request: HttpClientRequest.HttpClientRequest) =>
-  request.pipe(HttpClientRequest.basicAuth(remote.name, remote.token));
-
-/** Download into a sibling staging directory and publish only after the digest matches. */
-const download = Effect.fn("nativeClient.download")(function* (
-  remote: RemoteCache,
-  platform: NativePlatform,
-  key: string,
-  target: string,
-) {
-  const fs = yield* FileSystem.FileSystem;
-  const path = yield* Path.Path;
-  const client = yield* HttpClient.HttpClient;
-  const response = yield* client.execute(
-    authorized(remote, HttpClientRequest.get(`${remote.url}/${key}`)),
-  );
-  if (response.status === 404) return false;
-  yield* HttpClientResponse.filterStatusOk(response);
-  const expected = response.headers["x-t3-digest"] ?? "";
-  if (!/^[a-f0-9]{64}$/.test(expected))
-    return yield* new NativeClientError({ message: "Cached native client has no digest." });
-  yield* Console.error(`Downloading native client ${key} from the shared cache...`);
-  const staging = yield* fs.makeTempDirectory({
-    directory: path.dirname(target),
-    prefix: ".download-",
-  });
-  return yield* Effect.gen(function* () {
-    if (platform === "ios") {
-      const archive = `${staging}.tgz`;
-      yield* response.stream.pipe(
-        Stream.run(fs.sink(archive)),
-        Effect.andThen(command("tar", ["-xzf", archive, "-C", staging])),
-        Effect.ensuring(fs.remove(archive, { force: true }).pipe(Effect.ignore)),
-      );
-    } else {
-      yield* response.stream.pipe(Stream.run(fs.sink(path.join(staging, artifactNames.android))));
-    }
-    if ((yield* hashBundle(staging)) !== expected)
-      return yield* new NativeClientError({ message: "Cached native client failed verification." });
-    yield* publish(staging, target);
-    return true;
-  }).pipe(
-    Effect.ensuring(fs.remove(staging, { recursive: true, force: true }).pipe(Effect.ignore)),
-  );
-});
-
-/** Upload in fixed-size parts; any failure aborts the upload and leaves the cache unchanged. */
-const upload = Effect.fn("nativeClient.upload")(function* (
-  remote: RemoteCache,
-  platform: NativePlatform,
-  key: string,
-  artifact: string,
-) {
-  const fs = yield* FileSystem.FileSystem;
-  const path = yield* Path.Path;
-  const client = (yield* HttpClient.HttpClient).pipe(HttpClient.filterStatusOk);
-  const created = yield* client
-    .execute(
-      authorized(remote, HttpClientRequest.post(`${remote.url}/${key}/uploads`)).pipe(
-        HttpClientRequest.setHeader("x-t3-digest", yield* hashBundle(artifact)),
-      ),
-    )
-    .pipe(
-      Effect.flatMap((response) => response.json),
-      Effect.flatMap(decodeUpload),
-    );
-  if ("exists" in created) return;
-  const uploadUrl = `${remote.url}/${key}/uploads/${encodeURIComponent(created.uploadId)}`;
-  yield* Console.error(`Uploading native client ${key} to the shared cache...`);
-  yield* Effect.gen(function* () {
-    const directory = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-native-upload-" });
-    const file =
-      platform === "ios"
-        ? path.join(directory, "client.tgz")
-        : path.join(artifact, artifactNames.android);
-    if (platform === "ios")
-      yield* command("tar", ["-czf", file, "-C", artifact, artifactNames.ios]);
-    const handle = yield* fs.open(file);
-    const parts: Array<{ partNumber: number; etag: string }> = [];
-    for (let partNumber = 1; ; partNumber++) {
-      const buffer = new Uint8Array(partSize);
-      let filled = 0;
-      while (filled < partSize) {
-        const read = Number(yield* handle.read(buffer.subarray(filled)));
-        if (read === 0) break;
-        filled += read;
-      }
-      if (filled === 0) break;
-      const { etag } = yield* client
-        .execute(
-          authorized(remote, HttpClientRequest.put(`${uploadUrl}/${partNumber}`)).pipe(
-            HttpClientRequest.bodyUint8Array(buffer.subarray(0, filled)),
-          ),
-        )
-        .pipe(
-          Effect.flatMap((response) => response.json),
-          Effect.flatMap(decodePart),
-        );
-      parts.push({ partNumber, etag });
-      if (filled < partSize) break;
-    }
-    yield* client.execute(
-      authorized(remote, HttpClientRequest.post(`${uploadUrl}/complete`)).pipe(
-        HttpClientRequest.bodyJsonUnsafe({ parts }),
-      ),
-    );
-  }).pipe(
-    Effect.scoped,
-    Effect.onError(() =>
-      client.execute(authorized(remote, HttpClientRequest.delete(uploadUrl))).pipe(Effect.ignore),
-    ),
-  );
-});
 
 const publish = Effect.fn("nativeClient.publish")(function* (staging: string, target: string) {
   const fs = yield* FileSystem.FileSystem;
@@ -793,161 +606,6 @@ const prune = Effect.fn("nativeClient.prune")(
   (effect) => Effect.ignore(effect),
 );
 
-const buildWorkflow = "mobile-dev-client.yml";
-const WorkflowRun = Schema.Struct({
-  displayTitle: Schema.String,
-  status: Schema.String,
-  conclusion: Schema.NullOr(Schema.String),
-  createdAt: Schema.String,
-});
-const decodeWorkflowRuns = Schema.decodeUnknownEffect(
-  Schema.fromJsonString(Schema.Array(WorkflowRun)),
-);
-
-/** The workflow names each run after the client it builds, which is how a waiting machine finds it. */
-export const buildRunTitle = (platform: NativePlatform, abi: string | null, fingerprint: string) =>
-  `Dev client ${platform}${abi ? ` ${abi}` : ""} ${fingerprint}`;
-
-export type RemoteBuildState = "none" | "running" | "failed" | "succeeded";
-
-/** The newest run with this title that was created at or after `sinceMs`. */
-export const remoteBuildState = (
-  runs: ReadonlyArray<typeof WorkflowRun.Type>,
-  title: string,
-  sinceMs: number,
-): RemoteBuildState => {
-  const run = runs
-    .filter((run) => run.displayTitle === title && Date.parse(run.createdAt) >= sinceMs)
-    .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))[0];
-  if (!run) return "none";
-  if (run.status !== "completed") return "running";
-  return run.conclusion === "success" ? "succeeded" : "failed";
-};
-
-const remoteBuildPollMs = 20_000;
-const remoteBuildTimeoutMs = 25 * 60_000;
-/** A run this recent for the same client is joined instead of dispatching a second one. */
-const remoteBuildJoinMs = 30 * 60_000;
-
-/**
- * Build the client for HEAD in the `mobile-dev-client.yml` workflow (Blacksmith runners with warm
- * Gradle and ccache state) and download it from the shared cache. False means "build here
- * instead": no `gh`, no permission to dispatch, HEAD not on GitHub, native edits that HEAD does
- * not have (the workflow rejects a fingerprint it does not compute), or a failed run.
- */
-const buildOnBlacksmith = Effect.fn("nativeClient.buildOnBlacksmith")(
-  function* (
-    remote: RemoteCache,
-    platform: NativePlatform,
-    abi: string | null,
-    fingerprint: string,
-    key: string,
-    directory: string,
-  ) {
-    const environment = yield* HostProcess.Environment;
-    // The workflow itself runs this script: it must build, never dispatch.
-    if (environment.GITHUB_ACTIONS === "true" || environment.T3_NATIVE_CLIENT_BUILD === "local")
-      return false;
-    if (!(yield* isCommandAvailable("gh"))) return false;
-    const repository = environment.T3_NATIVE_CLIENT_REPOSITORY ?? "pingdotgg/t3code";
-    const { repo } = yield* roots;
-    const sha = yield* command("git", ["rev-parse", "HEAD"], false, repo);
-    const pushed = yield* command(
-      "gh",
-      ["api", `repos/${repository}/commits/${sha}`, "--jq", ".sha"],
-      false,
-      repo,
-    ).pipe(
-      Effect.map((found) => found === sha),
-      Effect.orElseSucceed(() => false),
-    );
-    if (!pushed) {
-      yield* Console.error(`HEAD ${sha.slice(0, 10)} is not on GitHub yet; building here.`);
-      return false;
-    }
-    const title = buildRunTitle(platform, abi, fingerprint);
-    const state = (sinceMs: number) =>
-      command(
-        "gh",
-        [
-          "run",
-          "list",
-          "--repo",
-          repository,
-          "--workflow",
-          buildWorkflow,
-          "--event",
-          "workflow_dispatch",
-          "--limit",
-          "30",
-          "--json",
-          "displayTitle,status,conclusion,createdAt",
-        ],
-        false,
-        repo,
-      ).pipe(
-        Effect.flatMap(decodeWorkflowRuns),
-        Effect.map((runs) => remoteBuildState(runs, title, sinceMs)),
-        // A failed listing says nothing about the build; keep waiting on the cache.
-        Effect.orElseSucceed((): RemoteBuildState => "none"),
-      );
-    const started = yield* Clock.currentTimeMillis;
-    const joined = (yield* state(started - remoteBuildJoinMs)) === "running";
-    if (!joined) {
-      const dispatched = yield* command(
-        "gh",
-        [
-          "workflow",
-          "run",
-          buildWorkflow,
-          "--repo",
-          repository,
-          "--ref",
-          "main",
-          "-f",
-          `ref=${sha}`,
-          "-f",
-          `platform=${platform}`,
-          "-f",
-          `abi=${abi ?? "x86_64"}`,
-          "-f",
-          `fingerprint=${fingerprint}`,
-        ],
-        false,
-        repo,
-      ).pipe(
-        Effect.as(true),
-        Effect.orElseSucceed(() => false),
-      );
-      if (!dispatched) return false;
-    }
-    yield* Console.error(
-      `${joined ? "A Blacksmith build of" : "Building"} ${key} ${joined ? "is already running" : "on Blacksmith"}; waiting for it in the shared cache...`,
-    );
-    const since = joined ? started - remoteBuildJoinMs : started - 60_000;
-    const fetched = download(remote, platform, key, directory).pipe(
-      Effect.orElseSucceed(() => false),
-    );
-    while ((yield* Clock.currentTimeMillis) - started < remoteBuildTimeoutMs) {
-      yield* Effect.sleep(remoteBuildPollMs);
-      if (yield* fetched) return true;
-      const now = yield* state(since);
-      if (now === "failed" || (now === "succeeded" && !(yield* fetched))) {
-        yield* Console.error(
-          now === "failed"
-            ? "The Blacksmith build failed (or HEAD lacks this checkout's native edits); building here."
-            : "The Blacksmith run finished without sharing this client; building here.",
-        );
-        return false;
-      }
-    }
-    yield* Console.error("The Blacksmith build did not finish in time; building here.");
-    return false;
-  },
-  Effect.orElseSucceed(() => false),
-);
-
-/** Local artifact, then the shared cache, then a Blacksmith build when this user can start one, then a build here that is shared back when credentials allow. */
 export const resolveArtifact = Effect.fn("nativeClient.resolveArtifact")(function* (
   home: string,
   platform: NativePlatform,
@@ -967,55 +625,14 @@ export const resolveArtifact = Effect.fn("nativeClient.resolveArtifact")(functio
     return { ...artifact, source: "local" as const };
   }
   yield* fs.makeDirectory(path.dirname(directory), { recursive: true });
-  const remote = yield* remoteCache(home);
-  if (remote) {
-    const downloaded = yield* download(remote, platform, key, directory).pipe(
-      Effect.catch((error) =>
-        Console.error(`Shared native client cache unavailable (${describe(error)}).`).pipe(
-          Effect.as(false),
-        ),
-      ),
-    );
-    if (downloaded) {
-      yield* prune(path.dirname(directory), fingerprint);
-      return { ...artifact, source: "remote" as const };
-    }
-  }
-  if (remote && (yield* buildOnBlacksmith(remote, platform, abi, fingerprint, key, directory))) {
-    yield* prune(path.dirname(directory), fingerprint);
-    return { ...artifact, source: "remote" as const };
-  }
   const log = yield* BuildLog;
   yield* Console.error(
     `No cached client for ${key}. Building it here once for every machine (5-15 min)${log ? `. Log: ${log}` : ""}`,
   );
   yield* build(platform, abi, directory, fingerprint);
   yield* prune(path.dirname(directory), fingerprint);
-  if (remote && (yield* HostProcess.Environment).T3_NATIVE_CLIENT_CACHE !== "read") {
-    // The Blacksmith workflow exists to share the client: there a failed upload fails the run.
-    const required = (yield* HostProcess.Environment).T3_NATIVE_CLIENT_SHARE === "required";
-    yield* upload(remote, platform, key, directory).pipe(
-      Effect.catch((error) =>
-        required
-          ? Effect.fail(
-              new NativeClientError({
-                message: `Native client was not shared (${describe(error)}).`,
-              }),
-            )
-          : Console.error(`Native client was not shared (${describe(error)}).`),
-      ),
-    );
-  }
   return { ...artifact, source: "build" as const };
 });
-
-const describe = (error: unknown) =>
-  typeof error === "object" &&
-  error !== null &&
-  "message" in error &&
-  typeof error.message === "string"
-    ? error.message
-    : String(error);
 
 const install = Effect.fn("nativeClient.install")(function* (
   platform: NativePlatform,
@@ -1068,49 +685,21 @@ const installIntoSession = Effect.fn("nativeClient.installIntoSession")(function
   // A session behind a gateway (a device pool) is reachable only with the config that opened it.
   const target = ["--session", session, ...(config ? ["--config", config] : [])];
   // Daemon variables in the shell (a device-pool login) override the config and authenticate
-  // as someone who does not hold this lease; T3 Code's own launcher drops them the same way.
+  // as someone who does not hold this lease; VibeCodinger's launcher drops them the same way.
   const agentDeviceEnvironment = config
     ? ["AGENT_DEVICE_DAEMON_BASE_URL", "AGENT_DEVICE_DAEMON_AUTH_TOKEN", "AGENT_DEVICE_CONFIG"]
     : [];
   const deviceAbi = platform === "android" ? abi : null;
   const current = yield* fingerprint(platform);
-  const key = `${platform}/${deviceAbi ? `development-${deviceAbi}` : "development"}/${current}`;
-  const source = yield* sharedSource(home, key);
-  // The session's host downloads the client itself; uploading a 166 MB APK through a
-  // gateway from here takes minutes and can outlast the remote install timeout.
-  const downloadOnDevice = source
-    ? command(
-        node,
-        [agentDevice, "install-from-source", source.url, "--header", source.header, ...target],
-        true,
-        workspace,
-        agentDeviceEnvironment,
-      ).pipe(
-        Effect.as(true),
-        Effect.catch((error) =>
-          Console.error(`The device could not download ${key} (${describe(error)}).`).pipe(
-            Effect.as(false),
-          ),
-        ),
-      )
-    : Effect.succeed(false);
-  const fetched = yield* downloadOnDevice;
-  const artifact = fetched
-    ? { source: "remote" as const }
-    : yield* Effect.gen(function* () {
-        const local = yield* resolveArtifact(home, platform, deviceAbi, current);
-        // A build just shared the client, so the device can fetch it now too.
-        if (local.source === "build" && (yield* downloadOnDevice)) return local;
-        yield* Console.error(`Installing into agent-device session ${session}...`);
-        yield* command(
-          node,
-          [agentDevice, "install", bundleId, local.file, ...target],
-          true,
-          workspace,
-          agentDeviceEnvironment,
-        );
-        return local;
-      });
+  const artifact = yield* resolveArtifact(home, platform, deviceAbi, current);
+  yield* Console.error(`Installing into agent-device session ${session}...`);
+  yield* command(
+    node,
+    [agentDevice, "install", bundleId, artifact.file, ...target],
+    true,
+    workspace,
+    agentDeviceEnvironment,
+  );
   if (metro) {
     const url = encodeURIComponent(metro);
     yield* command(
@@ -1310,7 +899,10 @@ const main = Command.make(
     const stamp = DateTime.formatIso(DateTime.makeUnsafe(started)).replaceAll(":", "-");
     const log = path.join(logs, `${stamp}-${platform}.log`);
     const result = yield* ensureClient(operations).pipe(
-      Effect.provideService(BuildLog, environment.T3_NATIVE_CLIENT_VERBOSE === "1" ? null : log),
+      Effect.provideService(
+        BuildLog,
+        environment.VIBECODINGER_NATIVE_CLIENT_VERBOSE === "1" ? null : log,
+      ),
     );
     const seconds = Math.round(((yield* Clock.currentTimeMillis) - started) / 1000);
     yield* Console.error(
@@ -1332,7 +924,7 @@ if (import.meta.main) {
         ),
     }),
     Effect.scoped,
-    Effect.provide([NodeServices.layer, NodeCrypto.layer, FetchHttpClient.layer]),
+    Effect.provide([NodeServices.layer, NodeCrypto.layer]),
     NodeRuntime.runMain,
   );
 }
