@@ -94,8 +94,10 @@ For a headless host, T3 Code can terminate HTTPS and WebSocket TLS itself. Set
 `T3CODE_TLS_PORT`, `T3CODE_TLS_CERT_FILE`, and `T3CODE_TLS_KEY_FILE` together
 in the server process environment. The certificate and key must be PEM files,
 and the certificate must cover the Tailscale hostname and be trusted by your
-clients. The TLS listener binds to `127.0.0.1` and requires TLS 1.3. Keep the
-regular server listener on `127.0.0.1` for local administration.
+clients. The TLS listener binds to `127.0.0.1` and requires TLS 1.3. Once enabled,
+only local environment discovery used by `t3 pair` is available on the regular
+loopback HTTP port. All remote API calls, attachments, and previews on this
+server use HTTPS.
 
 Once T3 Code is listening, forward TCP from the tailnet to the TLS port. For
 example, to forward tailnet port 13443 to a T3 TLS listener on port 3774:
@@ -109,6 +111,12 @@ mapping before replacing it. Use [TCP forwarding](https://tailscale.com/docs/ref
 and keep the regular HTTP port private. The Tailscale forwarder carries the
 encrypted connection through to T3 Code. Only the client and T3 Code terminate
 TLS. T3 Code still processes and stores conversation data on the host.
+
+Compatible clients additionally encrypt RPC frames using the M3 Code protocol.
+Pair from the HTTPS address to pin the host key in the client. The host requires
+this protocol on its TLS WebSocket endpoint. File and image transfers use the
+same host-terminated TLS connection and keep HTTP streaming and range support.
+Build the iPhone app from this fork for the encrypted WebSocket protocol.
 
 Run `t3 pair` on the host to create a one-time code. In the app's **Add
 environment** screen, enter the HTTPS address of the tailnet host, including the

@@ -36,6 +36,7 @@ import * as BackgroundPolicy from "./background/BackgroundPolicy.ts";
 import * as HostPowerMonitor from "./background/HostPowerMonitor.ts";
 import * as KeepAwake from "./background/KeepAwake.ts";
 import * as ServerConfig from "./config.ts";
+import * as ServerE2eeIdentity from "./auth/ServerE2eeIdentity.ts";
 import * as TransportTls from "./transportTls.ts";
 import { withRootRequestSpans } from "./http.ts";
 import * as ServerHttp from "./http.ts";
@@ -844,6 +845,7 @@ const layerRuntimeCoreDependencies = layerRuntimeCoreDependenciesBase.pipe(
   Layer.provideMerge(
     Layer.mergeAll(AssetSigner.layer, EnvironmentKeys.layer, WorkspacePreviewRevisions.layer),
   ),
+  Layer.provideMerge(ServerE2eeIdentity.layer),
   Layer.provideMerge(ServerSecretStore.layer),
   Layer.provideMerge(
     Layer.mergeAll(
@@ -960,6 +962,7 @@ const layerMakeRoutes = Layer.mergeAll(
   Layer.provide(layerCommandReadiness),
   Layer.provide(ServerHttp.layerBrowserApiCors),
   Layer.provide(ServerHttp.layerHttpCompression),
+  Layer.provide(TransportTls.layerRequireTls),
 );
 
 const layerMakeServer = Layer.unwrap(

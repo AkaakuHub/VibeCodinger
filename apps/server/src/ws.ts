@@ -279,6 +279,13 @@ import * as PairingGrantStore from "./auth/PairingGrantStore.ts";
 import * as SessionStore from "./auth/SessionStore.ts";
 import { failEnvironmentAuthInvalid, failEnvironmentInternal } from "./auth/http.ts";
 import * as SourceControlRateLimit from "@t3tools/source-control-core/server/SourceControlRateLimit";
+import {
+  layerE2eeCrypto,
+  SOCKET_E2EE_QUERY_PARAM,
+  wrapServerSocketWithE2ee,
+} from "@t3tools/shared/socketE2ee";
+import * as ServerE2eeIdentity from "./auth/ServerE2eeIdentity.ts";
+import { isDirectTlsRequest } from "./transportTls.ts";
 import { isNetworkPath } from "@t3tools/shared/path";
 import * as RelayClient from "@t3tools/shared/relayClient";
 import {
@@ -3662,6 +3669,13 @@ export const layer = Layer.unwrap(
             { status: 426 },
           );
         }
+        const encrypted = isDirectTlsRequest(request);
+        if (encrypted !== (url.value.searchParams.get(SOCKET_E2EE_QUERY_PARAM) === "1")) {
+          return HttpServerResponse.jsonUnsafe(
+            { code: "encrypted_transport_required" },
+            { status: 403 },
+          );
+        }
         const serverAuth = yield* EnvironmentAuth.EnvironmentAuth;
         const sessions = yield* SessionStore.SessionStore;
         const session = yield* serverAuth.authenticateWebSocketUpgrade(request, "rpc").pipe(
@@ -3676,7 +3690,7 @@ export const layer = Layer.unwrap(
           ),
         );
         // Desktop bootstrap sessions connect to their own backend, including same-machine WSL.
-        if (session.subject === "desktop-bootstrap") {
+        if (encrypted || session.subject === "desktop-bootstrap") {
           delete NodeHttpServerRequest.toIncomingMessage(request).headers[
             "sec-websocket-extensions"
           ];
@@ -3744,6 +3758,16 @@ export const layer = Layer.unwrap(
           ),
         );
         const splitFrames = url.value.searchParams.has(SOCKET_FRAME_PARTS_QUERY_PARAM);
+        const upgrade = encrypted
+          ? Effect.gen(function* () {
+              const environmentId = yield* (yield* ServerEnvironment.ServerEnvironment)
+                .getEnvironmentId;
+              const identity = yield* ServerE2eeIdentity.ServerE2eeIdentity;
+              const { seed } = yield* identity.keypair.pipe(Effect.orDie);
+              const socket = yield* request.upgrade;
+              return yield* wrapServerSocketWithE2ee(socket, { environmentId, identitySeed: seed });
+            })
+          : request.upgrade;
         const framedRpcWebSocketHttpEffect = rpcWebSocketHttpEffect.pipe(
           Effect.provideService(
             HttpServerRequest.HttpServerRequest,
@@ -3751,7 +3775,7 @@ export const layer = Layer.unwrap(
             // wrapped through the request it reads.
             Object.create(request, {
               upgrade: {
-                value: Effect.map(request.upgrade, (socket) =>
+                value: Effect.map(upgrade, (socket) =>
                   withSocketHeartbeat(splitFrames ? splitLargeSocketFrames(socket) : socket),
                 ),
               },
@@ -3781,4 +3805,4 @@ export const layer = Layer.unwrap(
       ),
     );
   }),
-).pipe(Layer.provide(NpmRelease.layer));
+).pipe(Layer.provide(NpmRelease.layer), Layer.provide(layerE2eeCrypto));

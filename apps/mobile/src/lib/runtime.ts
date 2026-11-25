@@ -1,3 +1,5 @@
+import { getRandomValues } from "expo-crypto";
+import * as SecureRandom from "effect/crypto/SecureRandom";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as ManagedRuntime from "effect/ManagedRuntime";
@@ -19,13 +21,18 @@ function configuredRelayUrl(): string {
 }
 
 const layerHttpClient = layerRemoteHttpClient(fetch);
+const layerSecureRandom = Layer.succeed(
+  SecureRandom.SecureRandom,
+  SecureRandom.make((size) => getRandomValues(new Uint8Array(size))),
+);
 
 type RuntimeLayerSource =
   | ReturnType<typeof ManagedRelayLayer.layer>
   | typeof NativeWebSocket.layer
   | typeof Dpop.layer
   | typeof layerHttpClient
-  | typeof Persistence.layer;
+  | typeof Persistence.layer
+  | typeof layerSecureRandom;
 
 const layerRuntime = Layer.merge(
   ManagedRelayLayer.layer(configuredRelayUrl()),
@@ -34,6 +41,7 @@ const layerRuntime = Layer.merge(
   Layer.provideMerge(Dpop.layer),
   Layer.provideMerge(layerHttpClient),
   Layer.provideMerge(Persistence.layer),
+  Layer.provideMerge(layerSecureRandom),
   // These layers read the keychain and the database while they build, and a
   // failed build is kept for the life of the process.
   Layer.provide(Layer.effectDiscard(Effect.promise(whenProtectedDataAvailable))),

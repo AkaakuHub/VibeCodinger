@@ -5619,5 +5619,9 @@
   "892f08d21b8e48a9": "Merga {layers} in i {base} med {kind, select, squash {squash} merge {merge} rebase {rebase} fastForward {fast-forward} other {{method}}} när kraven är uppfyllda. Det kan ske direkt.",
   "89bf40eb2503b6c5": "Ny enhet inloggad på {environment}",
   "c94b5fe9ef372bc0": "{device} anslöt via {product}. Om det inte var du, ta bort den under Inställningar → Åtkomst i T3 Code på den datorn.",
-  "bec67d0ed485f885": "{count, plural, one {{count} enhet} other {{count} enheter}} anslöt via {product}. Om det inte var du, ta bort dem under Inställningar → Åtkomst i T3 Code på den datorn."
+  "bec67d0ed485f885": "{count, plural, one {{count} enhet} other {{count} enheter}} anslöt via {product}. Om det inte var du, ta bort dem under Inställningar → Åtkomst i T3 Code på den datorn.",
+  "473550adc709d86e": "The saved encryption identity does not match the server.",
+  "ffa2e62f5d3f3826": "The server did not provide a valid encryption identity over HTTPS.",
+  "47dcceed3e672fd5": "This environment requires HTTPS.",
+  "5ba716d9df66be39": "This environment requires HTTPS and a valid encryption identity."
 }

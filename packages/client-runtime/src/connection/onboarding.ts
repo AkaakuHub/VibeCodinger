@@ -1,6 +1,7 @@
 import { msg } from "gt-i18n";
 import { detailFromError, translatableDetail } from "../errors/translatable.ts";
 import type { DesktopSshEnvironmentTarget, EnvironmentId } from "@t3tools/contracts";
+import { decodeIdentityKey } from "@t3tools/shared/socketE2ee";
 import { resolveRemotePairingTarget } from "@t3tools/shared/remote";
 import * as Clock from "effect/Clock";
 import * as Context from "effect/Context";
@@ -137,6 +138,18 @@ export const preparePairingRegistration = Effect.fn(
   ) {
     return yield* differentMachineError(descriptor.label);
   }
+  const pin = descriptor.e2eeServerIdentityKey;
+  if (
+    pin !== undefined &&
+    (new URL(target.httpBaseUrl).protocol !== "https:" || decodeIdentityKey(pin) === undefined)
+  ) {
+    return yield* new ConnectionBlockedError({
+      reason: "configuration",
+      ...translatableDetail(
+        msg("The server did not provide a valid encryption identity over HTTPS."),
+      ),
+    });
+  }
   const connectionId = bearerConnectionId(descriptor.environmentId, target.httpBaseUrl);
   const route = {
     target: new BearerConnectionTarget({
@@ -150,6 +163,7 @@ export const preparePairingRegistration = Effect.fn(
       label: descriptor.label,
       httpBaseUrl: target.httpBaseUrl,
       wsBaseUrl: target.wsBaseUrl,
+      ...(pin === undefined ? {} : { e2eeServerIdentityKey: pin }),
     }),
   };
   // The registry checks again under its lease; this early check keeps a refused code unspent.
@@ -313,6 +327,13 @@ export const prepareBearerConnectionUpdate = Effect.fn(
           : translatableDetail(msg("The environment URL is invalid."))),
       }),
   });
+  const pin = entry.profile.value.e2eeServerIdentityKey;
+  if (pin !== undefined && new URL(httpBaseUrl).protocol !== "https:") {
+    return yield* new ConnectionBlockedError({
+      reason: "configuration",
+      ...translatableDetail(msg("This environment requires HTTPS.")),
+    });
+  }
   const connectionId = entry.target.connectionId;
   return new BearerConnectionRegistration({
     target: new BearerConnectionTarget({
@@ -326,6 +347,7 @@ export const prepareBearerConnectionUpdate = Effect.fn(
       label,
       httpBaseUrl,
       wsBaseUrl: deriveWsBaseUrl(httpBaseUrl),
+      ...(pin === undefined ? {} : { e2eeServerIdentityKey: pin }),
     }),
     credential: credential.value,
   });

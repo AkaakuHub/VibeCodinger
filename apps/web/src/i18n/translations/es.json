@@ -12796,5 +12796,9 @@
   "012c67c7f1a99e33": "Fusión automática de la pila",
   "4a18481bea4b4ad5": "Nuevo dispositivo conectado a {environmentLabel}",
   "4144ab6aa487528a": "{device} se conectó a través de {product}. ¿No fuiste tú? Revísalo.",
-  "a10cfdb27152c757": "{count, plural, one {{count} dispositivo se conectó} other {{count} dispositivos se conectaron}} a través de {product}. ¿No fuiste tú? Revísalos."
+  "a10cfdb27152c757": "{count, plural, one {{count} dispositivo se conectó} other {{count} dispositivos se conectaron}} a través de {product}. ¿No fuiste tú? Revísalos.",
+  "473550adc709d86e": "The saved encryption identity does not match the server.",
+  "ffa2e62f5d3f3826": "The server did not provide a valid encryption identity over HTTPS.",
+  "47dcceed3e672fd5": "This environment requires HTTPS.",
+  "5ba716d9df66be39": "This environment requires HTTPS and a valid encryption identity."
 }

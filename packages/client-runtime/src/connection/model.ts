@@ -172,6 +172,7 @@ export interface PreparedConnection {
   readonly target: ConnectionTarget;
   /** What the server said about itself while this connection was prepared. */
   readonly descriptor?: ExecutionEnvironmentDescriptor;
+  readonly e2eeServerIdentityKey?: string;
 }
 
 export type SupervisorConnectionPhase =

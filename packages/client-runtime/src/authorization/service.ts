@@ -78,6 +78,7 @@ export class RemoteEnvironmentAuthorization extends Context.Service<
       readonly wsBaseUrl: string;
       readonly bearerToken: string;
       readonly connectionMethod: ClientConnectionMethod;
+      readonly expectedE2eeIdentityKey?: string;
     }) => Effect.Effect<AuthorizedRemoteEnvironment, ConnectionAttemptError>;
     readonly authorizeDpop: (input: {
       readonly expectedEnvironmentId: EnvironmentId;
@@ -94,6 +95,7 @@ export class RemoteEnvironmentAuthorization extends Context.Service<
       readonly connectionId: string;
       readonly httpBaseUrl: string;
       readonly wsBaseUrl: string;
+      readonly expectedE2eeIdentityKey?: string;
     }) => Effect.Effect<AuthorizedRemoteEnvironment, ConnectionAttemptError>;
     readonly authorizeDirectDpopHttp: (
       connection: DirectDpopConnection,
@@ -216,6 +218,7 @@ export const make = Effect.gen(function* () {
       readonly expectedEnvironmentId: EnvironmentId;
       readonly httpBaseUrl: string;
       readonly connectionMethod: ClientConnectionMethod;
+      readonly expectedE2eeIdentityKey?: string;
     }) {
       const checked = checkedDescriptors.get(input.httpBaseUrl);
       checkedDescriptors.delete(input.httpBaseUrl);
@@ -238,6 +241,15 @@ export const make = Effect.gen(function* () {
         return yield* environmentMismatchError({
           expected: input.expectedEnvironmentId,
           actual: descriptor.environmentId,
+        });
+      }
+      if (
+        input.expectedE2eeIdentityKey !== undefined &&
+        input.expectedE2eeIdentityKey !== descriptor.e2eeServerIdentityKey
+      ) {
+        return yield* new ConnectionBlockedError({
+          reason: "configuration",
+          ...translatableDetail(msg("The saved encryption identity does not match the server.")),
         });
       }
       return descriptor;
@@ -621,8 +633,7 @@ export const make = Effect.gen(function* () {
       input: Parameters<RemoteEnvironmentAuthorization["Service"]["authorizeDirectDpop"]>[0],
     ) {
       const descriptor = yield* verifyDirectEndpoint({
-        expectedEnvironmentId: input.expectedEnvironmentId,
-        httpBaseUrl: input.httpBaseUrl,
+        ...input,
         connectionMethod: "direct",
       });
       const connection = { connectionId: input.connectionId, httpBaseUrl: input.httpBaseUrl };

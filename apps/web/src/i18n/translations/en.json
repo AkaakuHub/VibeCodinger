@@ -12810,5 +12810,9 @@
   "012c67c7f1a99e33": "Auto-merge stack",
   "4a18481bea4b4ad5": "New device signed in to {environmentLabel}",
   "4144ab6aa487528a": "{device} connected through {product}. Not you? Review it.",
-  "a10cfdb27152c757": "{count, plural, one {{count} device} other {{count} devices}} connected through {product}. Not you? Review them."
+  "a10cfdb27152c757": "{count, plural, one {{count} device} other {{count} devices}} connected through {product}. Not you? Review them.",
+  "473550adc709d86e": "The saved encryption identity does not match the server.",
+  "ffa2e62f5d3f3826": "The server did not provide a valid encryption identity over HTTPS.",
+  "47dcceed3e672fd5": "This environment requires HTTPS.",
+  "5ba716d9df66be39": "This environment requires HTTPS and a valid encryption identity."
 }

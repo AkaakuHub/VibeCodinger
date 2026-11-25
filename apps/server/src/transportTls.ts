@@ -1,5 +1,5 @@
 // @effect-diagnostics nodeBuiltinImport:off - Node owns the TLS and HTTP sockets.
-import type * as NodeHttp from "node:http";
+import * as NodeHttp from "node:http";
 // @effect-diagnostics nodeBuiltinImport:off - Node owns the TLS and HTTP sockets.
 import * as NodeTls from "node:tls";
 // @effect-diagnostics nodeBuiltinImport:off - Node owns the TLS and HTTP sockets.
@@ -11,14 +11,44 @@ import * as Layer from "effect/Layer";
 import * as Option from "effect/Option";
 import * as Schema from "effect/Schema";
 import * as Schedule from "effect/Schedule";
+import { HttpRouter, HttpServerRequest, HttpServerResponse } from "effect/http";
 
 class TransportTlsError extends Schema.TaggedError<TransportTlsError>()("TransportTlsError", {
   message: Schema.String,
   cause: Schema.optional(Schema.Defect()),
 }) {}
 
+export const isDirectTlsRequest = (request: { readonly source: object }): boolean =>
+  request.source instanceof NodeHttp.IncomingMessage &&
+  request.source.socket instanceof NodeTls.TLSSocket;
+
+const portConfig = Config.option(Config.Int("T3CODE_TLS_PORT"));
+
+export const layerRequireTls = Layer.unwrap(
+  Effect.gen(function* () {
+    if (Option.isNone(yield* portConfig)) return Layer.empty;
+    return HttpRouter.middleware(
+      (effect) =>
+        Effect.flatMap(HttpServerRequest.HttpServerRequest, (request) => {
+          if (isDirectTlsRequest(request)) return effect;
+          // The headless pairing CLI discovers the local listener before minting its link.
+          if (
+            request.method === "GET" &&
+            request.url === "/.well-known/t3/environment" &&
+            /^127\.0\.0\.1(?::\d+)?$/.test(request.headers.host ?? "") &&
+            request.headers["x-forwarded-proto"] === undefined
+          ) {
+            return effect;
+          }
+          return Effect.succeed(HttpServerResponse.empty({ status: 403 }));
+        }),
+      { global: true },
+    );
+  }),
+);
+
 const configuration = Config.all({
-  port: Config.option(Config.Int("T3CODE_TLS_PORT")),
+  port: portConfig,
   cert: Config.option(Config.NonEmptyString("T3CODE_TLS_CERT_FILE")),
   key: Config.option(Config.NonEmptyString("T3CODE_TLS_KEY_FILE")),
 });

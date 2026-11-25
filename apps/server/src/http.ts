@@ -1,3 +1,4 @@
+import { encodeIdentityKey } from "@t3tools/shared/socketE2ee";
 import * as Mime from "effect/http/Mime";
 import { EnvironmentHttpApi } from "@t3tools/contracts";
 import { isDevProxiedPath } from "@t3tools/shared/devProxy";
@@ -35,6 +36,8 @@ import * as HttpIncomingMessage from "effect/http/HttpIncomingMessage";
 import * as HttpApiBuilder from "effect/http-api/HttpApiBuilder";
 
 import * as ServerConfig from "./config.ts";
+import { isDirectTlsRequest } from "./transportTls.ts";
+import * as ServerE2eeIdentity from "./auth/ServerE2eeIdentity.ts";
 import { ASSET_ROUTE_PREFIX, readMcpAppHtml, resolveAsset } from "./assets/AssetAccess.ts";
 import { sourceControlMediaResponse } from "./assets/sourceControlMediaResponse.ts";
 import { statMediaFile, streamMediaFile, type OpenMediaFile } from "./assets/MediaFile.ts";
@@ -363,15 +366,20 @@ export const layerServerEnvironmentHttpApi = HttpApiBuilder.group(
   "metadata",
   Effect.fnUntraced(function* (handlers) {
     const serverEnvironment = yield* ServerEnvironment.ServerEnvironment;
+    const identity = yield* ServerE2eeIdentity.ServerE2eeIdentity;
     return handlers.handle(
       "descriptor",
       Effect.fn("environment.metadata.descriptor")(function* (args) {
         yield* annotateEnvironmentRequest(args.endpoint.name);
-        return yield* serverEnvironment.getDescriptor;
+        const descriptor = yield* serverEnvironment.getDescriptor;
+        const request = yield* HttpServerRequest.HttpServerRequest;
+        if (!isDirectTlsRequest(request)) return descriptor;
+        const { publicKey } = yield* identity.keypair.pipe(Effect.orDie);
+        return { ...descriptor, e2eeServerIdentityKey: encodeIdentityKey(publicKey) };
       }, traceRelayRequest),
     );
   }),
-);
+).pipe(Layer.provide(ServerE2eeIdentity.layer));
 
 // Answers only for a launch that was handed a readiness secret, so the desktop app can tell the
 // backend it started from any other listener at the same address.

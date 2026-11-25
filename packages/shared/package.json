@@ -27,6 +27,10 @@
       "types": "./src/delimitedPreview.ts",
       "import": "./src/delimitedPreview.ts"
     },
+    "./socketE2ee": {
+      "types": "./src/socketE2ee.ts",
+      "import": "./src/socketE2ee.ts"
+    },
     "./socketFrameParts": {
       "types": "./src/socketFrameParts.ts",
       "import": "./src/socketFrameParts.ts"

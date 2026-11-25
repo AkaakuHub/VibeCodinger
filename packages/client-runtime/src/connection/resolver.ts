@@ -88,6 +88,7 @@ function primarySocketUrl(
 const makePrimaryBroker = Effect.fn("clientRuntime.connection.broker.makePrimary")(function* () {
   const auth = yield* ClientCapabilities.PrimaryEnvironmentAuth;
   const presentation = yield* ClientCapabilities.ClientPresentation;
+  const httpClient = yield* HttpClient.HttpClient;
   const remote = yield* RemoteEnvironmentAuthorization.RemoteEnvironmentAuthorization;
 
   return Effect.fn("clientRuntime.connection.broker.primary")(function* (
@@ -95,12 +96,26 @@ const makePrimaryBroker = Effect.fn("clientRuntime.connection.broker.makePrimary
   ) {
     const bearerToken = yield* auth.bearerToken;
     if (Option.isNone(bearerToken)) {
+      const descriptor =
+        new URL(target.httpBaseUrl).protocol === "https:"
+          ? yield* fetchRemoteEnvironmentDescriptor({ httpBaseUrl: target.httpBaseUrl }).pipe(
+              Effect.mapError(mapRemoteEnvironmentError),
+              Effect.provideService(HttpClient.HttpClient, httpClient),
+            )
+          : undefined;
+      if (descriptor && descriptor.environmentId !== target.environmentId) {
+        return yield* environmentMismatchError({
+          expected: target.environmentId,
+          actual: descriptor.environmentId,
+        });
+      }
       return {
         environmentId: target.environmentId,
         label: target.label,
         httpBaseUrl: target.httpBaseUrl,
         socketUrl: primarySocketUrl(target, presentation.metadata),
         httpAuthorization: null,
+        ...(descriptor === undefined ? {} : { descriptor }),
         target,
       } satisfies PreparedConnection;
     }
@@ -146,6 +161,17 @@ const makeBearerBroker = Effect.fn("clientRuntime.connection.broker.makeBearer")
         actual: profile.environmentId,
       });
     }
+    const pin = profile.e2eeServerIdentityKey;
+    if (
+      pin !== undefined &&
+      (new URL(profile.httpBaseUrl).protocol !== "https:" ||
+        new URL(profile.wsBaseUrl).protocol !== "wss:")
+    ) {
+      return yield* new ConnectionBlockedError({
+        reason: "configuration",
+        ...translatableDetail(msg("This environment requires HTTPS.")),
+      });
+    }
     if (profile.authorization === "t3-connect") {
       const authorized = yield* remote.authorizeDpop({
         expectedEnvironmentId: target.environmentId,
@@ -168,16 +194,19 @@ const makeBearerBroker = Effect.fn("clientRuntime.connection.broker.makeBearer")
             connectionId: credentialConnectionId(target.connectionId),
             httpBaseUrl: profile.httpBaseUrl,
             wsBaseUrl: profile.wsBaseUrl,
+            ...(pin === undefined ? {} : { expectedE2eeIdentityKey: pin }),
           })
         : yield* remote.authorizeBearer({
             expectedEnvironmentId: target.environmentId,
             httpBaseUrl: profile.httpBaseUrl,
             wsBaseUrl: profile.wsBaseUrl,
+            ...(pin === undefined ? {} : { expectedE2eeIdentityKey: pin }),
             bearerToken: credential.token,
             connectionMethod: "direct",
           });
     return {
       ...authorized,
+      ...(pin === undefined ? {} : { e2eeServerIdentityKey: pin }),
       target,
     } satisfies PreparedConnection;
   });
