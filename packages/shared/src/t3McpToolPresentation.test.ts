@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vite-plus/test";
 
 import {
-  T3_MCP_TOOL_NAMES,
+  VIBECODINGER_MCP_TOOL_NAMES,
   resolveT3McpSummaryAction,
   resolveT3McpToolDefinition,
   resolveT3McpToolPresentation,
@@ -9,7 +9,7 @@ import {
 
 describe("resolveT3McpToolPresentation", () => {
   it("recognizes every T3 tool across provider prefixes and completion suffixes", () => {
-    for (const tool of T3_MCP_TOOL_NAMES) {
+    for (const tool of VIBECODINGER_MCP_TOOL_NAMES) {
       const presentation = resolveT3McpToolPresentation(tool);
       for (const prefix of [
         "mcp__vibe-codinger__",

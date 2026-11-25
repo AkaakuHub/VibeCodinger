@@ -225,7 +225,7 @@ function ProviderLastChecked({ environmentId }: { environmentId: EnvironmentId }
   );
 }
 
-const T3_CONNECT_NAME = "T3 Connect";
+const VIBECODINGER_CONNECT_NAME = "T3 Connect";
 
 function providerEnvironmentDetail(
   environment: EnvironmentPresentation,
@@ -233,7 +233,7 @@ function providerEnvironmentDetail(
 ): string {
   if (environment.entry.target._tag === "PrimaryConnectionTarget")
     return resolve(msg("Primary device"));
-  if (environment.relayManaged) return T3_CONNECT_NAME;
+  if (environment.relayManaged) return VIBECODINGER_CONNECT_NAME;
   if (environment.entry.target._tag === "SshConnectionTarget") return "SSH";
   if (isDesktopLocalConnectionTarget(environment.entry.target)) return resolve(msg("Local device"));
   return environment.displayUrl ?? resolve(msg("Remote device"));

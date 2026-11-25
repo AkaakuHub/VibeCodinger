@@ -126,7 +126,7 @@ export class FeedbackStorageError extends Schema.TaggedError<FeedbackStorageErro
 export const FEEDBACK_CLI_CLIENT_LABEL = "vibecodinger feedback cli";
 
 /** Listed `vibecodinger` command paths a report may name. A CLI test keeps this in step with binCli. */
-export const T3_CLI_COMMANDS: ReadonlyArray<string> = [
+export const VIBECODINGER_CLI_COMMANDS: ReadonlyArray<string> = [
   "vibecodinger",
   "vibecodinger help",
   "vibecodinger serve",
@@ -205,12 +205,12 @@ export const FEEDBACK_SUBJECT_MESSAGE =
 
 // The shared resolver knows the presented tools; the prefix covers the rest, such as these.
 // Codex also registers `vibe-codinger-direct` for T3 tools it keeps out of Code Mode.
-const T3_PREFIX =
+const VIBECODINGER_PREFIX =
   /^(?:mcp__vibe[-_]?codinger(?:[-_]direct)?__|vibe[-_]?codinger(?:[-_]direct)?[.:/])/iu;
 
 /** The bare name of a registered T3 tool however a provider prefixed it, else undefined. */
 export const resolveT3ToolName = (name: string, toolNames: ReadonlyArray<string>) => {
-  const tool = resolveT3McpToolId(name) ?? name.replace(T3_PREFIX, "");
+  const tool = resolveT3McpToolId(name) ?? name.replace(VIBECODINGER_PREFIX, "");
   if (toolNames.includes(tool)) return tool;
   // OpenCode 2 prefixes tools with `vibe-codinger-<thread>_`, underscores and all: the longest name wins.
   if (!/^vibe-codinger-/iu.test(name)) return undefined;
@@ -222,6 +222,6 @@ export const resolveT3ToolName = (name: string, toolNames: ReadonlyArray<string>
 /** The stored subject, or undefined when the value names no T3 tool, `vibecodinger` command, or `general`. */
 export const resolveFeedbackSubject = (value: string, toolNames: ReadonlyArray<string>) => {
   const subject = value.trim();
-  if (subject === "general" || T3_CLI_COMMANDS.includes(subject)) return subject;
+  if (subject === "general" || VIBECODINGER_CLI_COMMANDS.includes(subject)) return subject;
   return resolveT3ToolName(subject, toolNames);
 };

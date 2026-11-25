@@ -466,10 +466,10 @@ it.live("adopts the checkouts a project's own layout command makes, and runs its
           worktreeLayout: {
             // A plain project's folder is no worktree, even when the command leaves a `.git` there.
             create:
-              'mkdir -p "$T3_WORKTREE_PROJECT_PATH/cache" && git init -q "$T3_WORKTREE_PROJECT_PATH" && printf %s "$T3_WORKTREE_REPOSITORIES" > "$T3_WORKTREE_PROJECT_PATH/chosen" && git -C "$T3_PROJECT_ROOT/api" worktree add -q -b "$T3_WORKTREE_BRANCH" "$T3_WORKTREE_PROJECT_PATH/api" "$T3_WORKTREE_BASE"',
+              'mkdir -p "$VIBECODINGER_WORKTREE_PROJECT_PATH/cache" && git init -q "$VIBECODINGER_WORKTREE_PROJECT_PATH" && printf %s "$VIBECODINGER_WORKTREE_REPOSITORIES" > "$VIBECODINGER_WORKTREE_PROJECT_PATH/chosen" && git -C "$VIBECODINGER_PROJECT_ROOT/api" worktree add -q -b "$VIBECODINGER_WORKTREE_BRANCH" "$VIBECODINGER_WORKTREE_PROJECT_PATH/api" "$VIBECODINGER_WORKTREE_BASE"',
             // Cleanup never deletes files that exist only here, so the teardown clears its own.
             remove:
-              'touch "$T3_PROJECT_ROOT/torn-down" && rm -rf "$T3_WORKTREE_PROJECT_PATH/cache" "$T3_WORKTREE_PROJECT_PATH/chosen" "$T3_WORKTREE_PROJECT_PATH/.git"',
+              'touch "$VIBECODINGER_PROJECT_ROOT/torn-down" && rm -rf "$VIBECODINGER_WORKTREE_PROJECT_PATH/cache" "$VIBECODINGER_WORKTREE_PROJECT_PATH/chosen" "$VIBECODINGER_WORKTREE_PROJECT_PATH/.git"',
           },
         }),
       );
@@ -520,7 +520,7 @@ it.live("leaves a project's layout commands out for a request that may not run t
         path.join(shop, "vibecodinger.json"),
         JSON.stringify({
           worktreeLayout: {
-            create: `echo create >> "${ran}" && mkdir -p "$T3_WORKTREE_PROJECT_PATH" && git -C "$T3_PROJECT_ROOT/api" worktree add -q -b "$T3_WORKTREE_BRANCH" "$T3_WORKTREE_PROJECT_PATH/api"`,
+            create: `echo create >> "${ran}" && mkdir -p "$VIBECODINGER_WORKTREE_PROJECT_PATH" && git -C "$VIBECODINGER_PROJECT_ROOT/api" worktree add -q -b "$VIBECODINGER_WORKTREE_BRANCH" "$VIBECODINGER_WORKTREE_PROJECT_PATH/api"`,
             remove: `echo remove >> "${ran}"`,
           },
         }),
@@ -597,26 +597,26 @@ it.live(
         });
 
         yield* attempt(
-          'mkdir -p "$T3_WORKTREE_PROJECT_PATH" && git -C "$T3_PROJECT_ROOT/api" worktree add -q -b "$T3_WORKTREE_BRANCH" "$T3_WORKTREE_PROJECT_PATH/api" && exit 1',
+          'mkdir -p "$VIBECODINGER_WORKTREE_PROJECT_PATH" && git -C "$VIBECODINGER_PROJECT_ROOT/api" worktree add -q -b "$VIBECODINGER_WORKTREE_BRANCH" "$VIBECODINGER_WORKTREE_PROJECT_PATH/api" && exit 1',
         );
         assert.equal(yield* worktreeCount(api), 1);
 
         // A clone has no worktree registration to remove, and no thread branch to rename.
         const refused = yield* attempt(
-          'mkdir -p "$T3_WORKTREE_PROJECT_PATH" && git clone -q "$T3_PROJECT_ROOT/api" "$T3_WORKTREE_PROJECT_PATH/api"',
+          'mkdir -p "$VIBECODINGER_WORKTREE_PROJECT_PATH" && git clone -q "$VIBECODINGER_PROJECT_ROOT/api" "$VIBECODINGER_WORKTREE_PROJECT_PATH/api"',
         );
         assert.include(refused.detail, "is not a Git worktree of");
 
         // The refused checkout's folder is deleted, so its registration must go too.
         const wrongBranch = yield* attempt(
-          'mkdir -p "$T3_WORKTREE_PROJECT_PATH" && git -C "$T3_PROJECT_ROOT/api" worktree add -q -b other "$T3_WORKTREE_PROJECT_PATH/api"',
+          'mkdir -p "$VIBECODINGER_WORKTREE_PROJECT_PATH" && git -C "$VIBECODINGER_PROJECT_ROOT/api" worktree add -q -b other "$VIBECODINGER_WORKTREE_PROJECT_PATH/api"',
         );
         assert.include(wrongBranch.detail, "is not on the branch feature");
         assert.equal(yield* worktreeCount(api), 1);
 
         // A branch that was there before the command checked it out outlives the rollback.
         yield* attempt(
-          'mkdir -p "$T3_WORKTREE_PROJECT_PATH" && git -C "$T3_PROJECT_ROOT/web" worktree add -q "$T3_WORKTREE_PROJECT_PATH/web" "$T3_WORKTREE_BRANCH" && exit 1',
+          'mkdir -p "$VIBECODINGER_WORKTREE_PROJECT_PATH" && git -C "$VIBECODINGER_PROJECT_ROOT/web" worktree add -q "$VIBECODINGER_WORKTREE_PROJECT_PATH/web" "$VIBECODINGER_WORKTREE_BRANCH" && exit 1',
         );
         assert.equal(yield* worktreeCount(web), 1);
         assert.deepEqual((yield* run(web, "branch", "--format=%(refname:short)")).split("\n"), [
@@ -642,7 +642,7 @@ it.live.each([{ linked: false }, { linked: true }])(
           JSON.stringify({
             worktreeLayout: {
               create:
-                '(git worktree add -q "$T3_WORKTREE_PROJECT_PATH" "$T3_WORKTREE_BRANCH" 2>/dev/null || git worktree add -q -b "$T3_WORKTREE_BRANCH" "$T3_WORKTREE_PROJECT_PATH") && touch "$T3_WORKTREE_PROJECT_PATH/prepared"',
+                '(git worktree add -q "$VIBECODINGER_WORKTREE_PROJECT_PATH" "$VIBECODINGER_WORKTREE_BRANCH" 2>/dev/null || git worktree add -q -b "$VIBECODINGER_WORKTREE_BRANCH" "$VIBECODINGER_WORKTREE_PROJECT_PATH") && touch "$VIBECODINGER_WORKTREE_PROJECT_PATH/prepared"',
             },
           }),
         );

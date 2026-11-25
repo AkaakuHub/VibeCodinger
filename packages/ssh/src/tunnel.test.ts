@@ -306,7 +306,7 @@ describe("ssh tunnel scripts", () => {
     }
     assert.include(
       SshTunnel.buildRemoteT3RunnerScript(ARCHIVE),
-      "T3_ARCHIVE_VERSION='1.2.3-preview.20260911.4'",
+      "VIBECODINGER_ARCHIVE_VERSION='1.2.3-preview.20260911.4'",
     );
   });
 
@@ -539,7 +539,7 @@ describe("ssh tunnel scripts", () => {
         yield* fs.chmod(bash, 0o755);
         yield* fs.writeFileString(
           startupFile,
-          "if shopt -q login_shell; then export T3_SSH_LOGIN_ENV=loaded; fi\n",
+          "if shopt -q login_shell; then export VIBECODINGER_SSH_LOGIN_ENV=loaded; fi\n",
         );
         const target = { alias: "login-test", hostname: "login-test", username: null, port: null };
         const remoteCommands: string[] = [];
@@ -558,7 +558,7 @@ describe("ssh tunnel scripts", () => {
         );
         yield* fs.writeFileString(
           `${directory}/.zprofile`,
-          "if [[ -o login ]]; then export T3_SSH_LOGIN_ENV=loaded; fi\n",
+          "if [[ -o login ]]; then export VIBECODINGER_SSH_LOGIN_ENV=loaded; fi\n",
         );
         const spawner = yield* ChildProcessSpawner.ChildProcessSpawner;
         const cases = [
@@ -595,11 +595,13 @@ describe("ssh tunnel scripts", () => {
                 SHELL: shell,
                 BASH_ENV: startupFile,
                 ZDOTDIR: directory,
-                T3_SSH_LOGIN_ENV: "",
+                VIBECODINGER_SSH_LOGIN_ENV: "",
               },
               stdin: {
                 stream: Stream.make(
-                  new TextEncoder().encode('printf "%s:%s" "${T3_SSH_LOGIN_ENV:-missing}" "$1"'),
+                  new TextEncoder().encode(
+                    'printf "%s:%s" "${VIBECODINGER_SSH_LOGIN_ENV:-missing}" "$1"',
+                  ),
                 ),
                 endOnDone: true,
               },

@@ -609,10 +609,11 @@ const CODEX_TEST_RUNTIME_POLICY = ProviderAdapter.ProviderAdapterV2RuntimePolicy
   interactionMode: "default",
   cwd: "/workspace",
 });
-const T3_THREAD_ENV_KEY = "shell_environment_policy.set.VIBECODINGER_THREAD_ID";
+const VIBECODINGER_THREAD_ENV_KEY = "shell_environment_policy.set.VIBECODINGER_THREAD_ID";
 const threadEnvOf = (params: unknown) =>
-  Predicate.hasProperty(params, "config") && Predicate.hasProperty(params.config, T3_THREAD_ENV_KEY)
-    ? params.config[T3_THREAD_ENV_KEY]
+  Predicate.hasProperty(params, "config") &&
+  Predicate.hasProperty(params.config, VIBECODINGER_THREAD_ENV_KEY)
+    ? params.config[VIBECODINGER_THREAD_ENV_KEY]
     : undefined;
 
 const CODEX_TEST_THREAD_TITLE = "Codex continuation test";

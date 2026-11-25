@@ -250,7 +250,7 @@ export const makeAcpClientTerminals = Effect.fn("makeAcpClientTerminals")(functi
           const inheritedEnvironment = Object.fromEntries(
             Object.entries(options.environment ?? (yield* HostProcess.Environment)).filter(
               ([name]) =>
-                !name.toUpperCase().startsWith("T3_ACP_MCP_") &&
+                !name.toUpperCase().startsWith("VIBECODINGER_ACP_MCP_") &&
                 name.toUpperCase() !== "VIBECODINGER_THREAD_ID",
             ),
           );

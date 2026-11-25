@@ -93,7 +93,7 @@ export default defineConfig({
   run: {
     cache: { scripts: false },
     tasks: {
-      ...cachedTestTasks(process.env.T3_CACHED_TESTS),
+      ...cachedTestTasks(process.env.VIBECODINGER_CACHED_TESTS),
       // The two knip passes read the same files and write nothing, so they run side by side.
       // The `knip:check` script runs this task, so `vp run knip:check` and `pnpm run knip:check` both use it.
       "knip:check:all": {

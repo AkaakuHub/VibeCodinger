@@ -3039,7 +3039,7 @@ it.live(
         path.join(shop, "vibecodinger.json"),
         JSON.stringify({
           worktreeLayout: {
-            create: `echo create >> "${ran}" && git worktree add -q -b "$T3_WORKTREE_BRANCH" "$T3_WORKTREE_PROJECT_PATH"`,
+            create: `echo create >> "${ran}" && git worktree add -q -b "$VIBECODINGER_WORKTREE_BRANCH" "$VIBECODINGER_WORKTREE_PROJECT_PATH"`,
           },
         }),
       );

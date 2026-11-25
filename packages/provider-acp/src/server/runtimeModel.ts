@@ -10,7 +10,7 @@ import {
   deriveToolActivityPresentation,
   mergeToolActivityData,
 } from "@vibecodinger/shared/toolActivity";
-import { T3_MCP_TOOL_NAMES } from "@vibecodinger/shared/t3McpToolPresentation";
+import { VIBECODINGER_MCP_TOOL_NAMES } from "@vibecodinger/shared/t3McpToolPresentation";
 import type {
   OrchestrationV2ProviderThreadNativeMetadata,
   ThreadTokenUsageSnapshot,
@@ -1112,10 +1112,10 @@ function acpMcpFallbackInput(value: string | undefined): Record<string, unknown>
 }
 
 // Known T3 inventory gates matches, so server-name separators can stay loose. Kiro titles "@vibe-codinger/<tool>".
-const T3_MCP_TITLE_CALL =
+const VIBECODINGER_MCP_TITLE_CALL =
   /^(?:@|mcp[-_]{1,2})?vibe[-_ ]?codinger[-_.:/ ]{1,3}(?<tool>[A-Za-z0-9][A-Za-z0-9_.-]*)(?::.*)?$/i;
 
-const T3_MCP_TITLE_SUFFIX_CALL =
+const VIBECODINGER_MCP_TITLE_SUFFIX_CALL =
   /^(?<tool>[A-Za-z0-9][A-Za-z0-9_.-]*?)(?: \(vibe[-_ ]?codinger MCP Server\)(?::|$)|[-_.]vibe[-_ ]?codinger$)/i;
 
 /**
@@ -1123,7 +1123,7 @@ const T3_MCP_TITLE_SUFFIX_CALL =
  * name or JSON opening brace so built-ins titled "<tool>: <description>" cannot
  * impersonate an inventory entry.
  */
-const T3_MCP_BARE_TITLE_CALL = /^(?<tool>[A-Za-z0-9_]+)(?::\s*\{|$)/;
+const VIBECODINGER_MCP_BARE_TITLE_CALL = /^(?<tool>[A-Za-z0-9_]+)(?::\s*\{|$)/;
 
 // Antigravity titles calls "Running <tool>" or, from agy 1.5.8, "Run mcp_<server>_<tool>"; prompts end in "?".
 const ANTIGRAVITY_TOOL_TITLE = /^Run(?:ning)? (?<name>[^\s?]+)\??$/;
@@ -1171,7 +1171,7 @@ export function extractMcpToolCallIdentity(
   const metaServerId = typeof meta?.serverId === "string" ? meta.serverId.trim() : "";
   const metaToolName = typeof meta?.toolName === "string" ? meta.toolName.trim() : "";
   if (/^vibe[-_ ]?codinger$/i.test(metaServerId) && metaToolName.length > 0) {
-    for (const knownTool of T3_MCP_TOOL_NAMES) {
+    for (const knownTool of VIBECODINGER_MCP_TOOL_NAMES) {
       const boundary = metaToolName.length - knownTool.length - 1;
       if (
         metaToolName === knownTool ||
@@ -1201,8 +1201,9 @@ export function extractMcpToolCallIdentity(
   // args; a read of the same path only fetches the tool's docs.
   const devicePath = typeof rawInput?.path === "string" ? rawInput.path : "";
   if (devicePath.startsWith("xd://") && typeof rawInput?.content === "string") {
-    const deviceTool = T3_MCP_TITLE_CALL.exec(devicePath.slice("xd://".length))?.groups?.tool;
-    if (deviceTool !== undefined && T3_MCP_TOOL_NAMES.has(deviceTool)) {
+    const deviceTool = VIBECODINGER_MCP_TITLE_CALL.exec(devicePath.slice("xd://".length))?.groups
+      ?.tool;
+    if (deviceTool !== undefined && VIBECODINGER_MCP_TOOL_NAMES.has(deviceTool)) {
       const input = acpMcpFallbackInput(rawInput.content);
       return {
         server: "vibe-codinger",
@@ -1225,7 +1226,7 @@ export function extractMcpToolCallIdentity(
       qualified?.[1] &&
       qualified[2] &&
       /^editor_vibe_?codinger_[0-9a-f]{8}$/.test(qualified[1]) &&
-      T3_MCP_TOOL_NAMES.has(qualified[2])
+      VIBECODINGER_MCP_TOOL_NAMES.has(qualified[2])
     ) {
       return { server: "vibe-codinger", tool: qualified[2] };
     }
@@ -1233,11 +1234,11 @@ export function extractMcpToolCallIdentity(
       return { server: qualified[1], tool: qualified[2] };
     const name = ANTIGRAVITY_TOOL_TITLE.exec(trimmed)?.groups?.name ?? trimmed;
     const match =
-      T3_MCP_TITLE_CALL.exec(name) ??
-      T3_MCP_TITLE_SUFFIX_CALL.exec(name) ??
-      T3_MCP_BARE_TITLE_CALL.exec(name);
+      VIBECODINGER_MCP_TITLE_CALL.exec(name) ??
+      VIBECODINGER_MCP_TITLE_SUFFIX_CALL.exec(name) ??
+      VIBECODINGER_MCP_BARE_TITLE_CALL.exec(name);
     const candidateTool = match?.groups?.tool;
-    if (candidateTool !== undefined && T3_MCP_TOOL_NAMES.has(candidateTool)) {
+    if (candidateTool !== undefined && VIBECODINGER_MCP_TOOL_NAMES.has(candidateTool)) {
       return { server: "vibe-codinger", tool: candidateTool };
     }
   }

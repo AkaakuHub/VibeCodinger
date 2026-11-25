@@ -2,10 +2,10 @@ import { assert, describe, expect, it } from "@effect/vitest";
 import { EnvironmentId, ProviderInstanceId, ThreadId } from "@vibecodinger/contracts";
 
 import {
-  T3_MCP_BEARER_ENV,
-  T3_MCP_URL_ENV,
-  T3_PI_RUNTIME_MODE_ENV,
-  T3_PI_MCP_EXTENSION_PATH_ENV,
+  VIBECODINGER_MCP_BEARER_ENV,
+  VIBECODINGER_MCP_URL_ENV,
+  VIBECODINGER_PI_RUNTIME_MODE_ENV,
+  VIBECODINGER_PI_MCP_EXTENSION_PATH_ENV,
 } from "./mcpExtensionSource.ts";
 import * as Effect from "effect/Effect";
 import * as Fiber from "effect/Fiber";
@@ -66,17 +66,20 @@ describe("pi T3 MCP injection", () => {
       "/tmp/cache/pi-t3-mcp-extension.ts",
     ]);
     assert.notInclude(launch.args, "--no-extensions");
-    assert.equal(launch.env[T3_MCP_URL_ENV], "http://127.0.0.1:43123/mcp");
-    assert.equal(launch.env[T3_MCP_BEARER_ENV], "secret-pi-token");
-    assert.equal(launch.env[T3_PI_RUNTIME_MODE_ENV], "approval-required");
-    assert.equal(launch.env[T3_PI_MCP_EXTENSION_PATH_ENV], "/tmp/cache/pi-t3-mcp-extension.ts");
+    assert.equal(launch.env[VIBECODINGER_MCP_URL_ENV], "http://127.0.0.1:43123/mcp");
+    assert.equal(launch.env[VIBECODINGER_MCP_BEARER_ENV], "secret-pi-token");
+    assert.equal(launch.env[VIBECODINGER_PI_RUNTIME_MODE_ENV], "approval-required");
+    assert.equal(
+      launch.env[VIBECODINGER_PI_MCP_EXTENSION_PATH_ENV],
+      "/tmp/cache/pi-t3-mcp-extension.ts",
+    );
 
     const permissionOnly = buildPiRpcLaunch({
       launchArgs: [],
       environment: {
-        [T3_MCP_URL_ENV]: "http://127.0.0.1:9999/stale",
-        [T3_MCP_BEARER_ENV]: "stale-token",
-        [T3_PI_MCP_EXTENSION_PATH_ENV]: "/stale/extension.ts",
+        [VIBECODINGER_MCP_URL_ENV]: "http://127.0.0.1:9999/stale",
+        [VIBECODINGER_MCP_BEARER_ENV]: "stale-token",
+        [VIBECODINGER_PI_MCP_EXTENSION_PATH_ENV]: "/stale/extension.ts",
       },
       mcpSession: undefined,
       extensionPath: "/tmp/cache/pi-t3-mcp-extension.ts",
@@ -88,11 +91,11 @@ describe("pi T3 MCP injection", () => {
       "--extension",
       "/tmp/cache/pi-t3-mcp-extension.ts",
     ]);
-    assert.isUndefined(permissionOnly.env[T3_MCP_URL_ENV]);
-    assert.isUndefined(permissionOnly.env[T3_MCP_BEARER_ENV]);
-    assert.equal(permissionOnly.env[T3_PI_RUNTIME_MODE_ENV], "auto-accept-edits");
+    assert.isUndefined(permissionOnly.env[VIBECODINGER_MCP_URL_ENV]);
+    assert.isUndefined(permissionOnly.env[VIBECODINGER_MCP_BEARER_ENV]);
+    assert.equal(permissionOnly.env[VIBECODINGER_PI_RUNTIME_MODE_ENV], "auto-accept-edits");
     assert.equal(
-      permissionOnly.env[T3_PI_MCP_EXTENSION_PATH_ENV],
+      permissionOnly.env[VIBECODINGER_PI_MCP_EXTENSION_PATH_ENV],
       "/tmp/cache/pi-t3-mcp-extension.ts",
     );
   });

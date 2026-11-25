@@ -382,12 +382,12 @@ const REMOTE_NODE_ENV_SCRIPT = `prepend_path_if_dir() {
 }
 
 remote_node_satisfies_engine() {
-  T3_NODE_ENGINE_RANGE=@@T3_NODE_ENGINE_RANGE@@
-  if [ -z "$T3_NODE_ENGINE_RANGE" ]; then
+  VIBECODINGER_NODE_ENGINE_RANGE=@@VIBECODINGER_NODE_ENGINE_RANGE@@
+  if [ -z "$VIBECODINGER_NODE_ENGINE_RANGE" ]; then
     return 0
   fi
-  node - "$T3_NODE_ENGINE_RANGE" <<'NODE'
-@@T3_NODE_ENGINE_CHECK_SCRIPT@@
+  node - "$VIBECODINGER_NODE_ENGINE_RANGE" <<'NODE'
+@@VIBECODINGER_NODE_ENGINE_CHECK_SCRIPT@@
 NODE
 }
 
@@ -454,9 +454,9 @@ ensure_remote_node_path() {
   fi
 
   if ! command -v node >/dev/null 2>&1 && [ -d "$NVM_DIR/versions/node" ]; then
-    for T3_NODE_BIN in "$NVM_DIR"/versions/node/*/bin; do
-      if [ -x "$T3_NODE_BIN/node" ]; then
-        PATH="$T3_NODE_BIN:$PATH"
+    for VIBECODINGER_NODE_BIN in "$NVM_DIR"/versions/node/*/bin; do
+      if [ -x "$VIBECODINGER_NODE_BIN/node" ]; then
+        PATH="$VIBECODINGER_NODE_BIN:$PATH"
         export PATH
       fi
     done
@@ -468,9 +468,9 @@ ensure_remote_node_path() {
 
 const REMOTE_RUNNER_SCRIPT = `#!/bin/sh
 set -eu
-@@T3_NODE_ENV_SCRIPT@@
-T3_NODE_SCRIPT_PATH=@@T3_NODE_SCRIPT_PATH@@
-if [ -n "$T3_NODE_SCRIPT_PATH" ]; then
+@@VIBECODINGER_NODE_ENV_SCRIPT@@
+VIBECODINGER_NODE_SCRIPT_PATH=@@VIBECODINGER_NODE_SCRIPT_PATH@@
+if [ -n "$VIBECODINGER_NODE_SCRIPT_PATH" ]; then
   # Dev mode: a source checkout on the remote. This is the only path that
   # needs Node, so Node discovery runs here and nowhere else.
   ensure_remote_node_path || true
@@ -478,114 +478,114 @@ if [ -n "$T3_NODE_SCRIPT_PATH" ]; then
     printf 'Remote host is missing node on PATH. Install Node or configure a supported version manager for non-interactive shells.\\n' >&2
     exit 1
   fi
-  exec node "$T3_NODE_SCRIPT_PATH" "$@"
+  exec node "$VIBECODINGER_NODE_SCRIPT_PATH" "$@"
 fi
-T3_ARCHIVE_VERSION=@@T3_ARCHIVE_VERSION@@
-if [ -z "$T3_ARCHIVE_VERSION" ]; then
+VIBECODINGER_ARCHIVE_VERSION=@@VIBECODINGER_ARCHIVE_VERSION@@
+if [ -z "$VIBECODINGER_ARCHIVE_VERSION" ]; then
   printf 'No vibecodinger release version was provided for the remote runtime.\\n' >&2
   exit 1
 fi
-T3_SYSTEM_EXECUTABLE="$(command -v vibecodinger 2>/dev/null || true)"
-if [ -n "$T3_SYSTEM_EXECUTABLE" ] && T3_SYSTEM_VERSION="$("$T3_SYSTEM_EXECUTABLE" --version 2>/dev/null)" && [ "$T3_SYSTEM_VERSION" = "vibecodinger v$T3_ARCHIVE_VERSION" ]; then
+VIBECODINGER_SYSTEM_EXECUTABLE="$(command -v vibecodinger 2>/dev/null || true)"
+if [ -n "$VIBECODINGER_SYSTEM_EXECUTABLE" ] && VIBECODINGER_SYSTEM_VERSION="$("$VIBECODINGER_SYSTEM_EXECUTABLE" --version 2>/dev/null)" && [ "$VIBECODINGER_SYSTEM_VERSION" = "vibecodinger v$VIBECODINGER_ARCHIVE_VERSION" ]; then
   # A matching host-provided runtime supports platforms such as musl Linux,
   # where the portable release archive cannot run.
-  exec "$T3_SYSTEM_EXECUTABLE" "$@"
+  exec "$VIBECODINGER_SYSTEM_EXECUTABLE" "$@"
 fi
 # Self-contained release archive: no Node, npm, or compiler on the remote.
 # Unpacked into the pinned-runtime layout so \`vibecodinger service install\` reuses it.
-T3_RELEASE_BASE_URL=@@T3_RELEASE_BASE_URL@@
-T3_RUNTIME_DIR="$HOME/.vibecodinger/runtime/versions/$T3_ARCHIVE_VERSION"
+VIBECODINGER_RELEASE_BASE_URL=@@VIBECODINGER_RELEASE_BASE_URL@@
+VIBECODINGER_RUNTIME_DIR="$HOME/.vibecodinger/runtime/versions/$VIBECODINGER_ARCHIVE_VERSION"
 vc_runtime_ready() {
-  [ -x "$T3_RUNTIME_DIR/vibecodinger" ] && [ "$(cat "$T3_RUNTIME_DIR/.install-complete" 2>/dev/null)" = "$T3_ARCHIVE_VERSION" ]
+  [ -x "$VIBECODINGER_RUNTIME_DIR/vibecodinger" ] && [ "$(cat "$VIBECODINGER_RUNTIME_DIR/.install-complete" 2>/dev/null)" = "$VIBECODINGER_ARCHIVE_VERSION" ]
 }
 if ! vc_runtime_ready; then
   mkdir -p "$HOME/.vibecodinger/runtime/versions"
-  T3_LOCK="$HOME/.vibecodinger/runtime/versions/.$T3_ARCHIVE_VERSION.install.lock"
+  VIBECODINGER_LOCK="$HOME/.vibecodinger/runtime/versions/.$VIBECODINGER_ARCHIVE_VERSION.install.lock"
   # uutils mkdir can report success on EEXIST, so use shell noclobber.
   # An empty lock gets a short grace period for its owner to publish a PID.
-  T3_LOCK_WAITED=0
-  T3_LOCK_UNOWNED=0
-  while ! (set -C; printf '%s\\n' "$$" > "$T3_LOCK") 2>/dev/null; do
-    T3_LOCK_OWNER="$(cat "$T3_LOCK" 2>/dev/null || true)"
-    if [ -n "$T3_LOCK_OWNER" ]; then
-      T3_LOCK_UNOWNED=0
-      if ! kill -0 "$T3_LOCK_OWNER" 2>/dev/null; then
-        rm -rf "$T3_LOCK"
+  VIBECODINGER_LOCK_WAITED=0
+  VIBECODINGER_LOCK_UNOWNED=0
+  while ! (set -C; printf '%s\\n' "$$" > "$VIBECODINGER_LOCK") 2>/dev/null; do
+    VIBECODINGER_LOCK_OWNER="$(cat "$VIBECODINGER_LOCK" 2>/dev/null || true)"
+    if [ -n "$VIBECODINGER_LOCK_OWNER" ]; then
+      VIBECODINGER_LOCK_UNOWNED=0
+      if ! kill -0 "$VIBECODINGER_LOCK_OWNER" 2>/dev/null; then
+        rm -rf "$VIBECODINGER_LOCK"
         continue
       fi
     else
-      T3_LOCK_UNOWNED=$((T3_LOCK_UNOWNED + 1))
-      if [ "$T3_LOCK_UNOWNED" -ge 5 ]; then
-        rm -rf "$T3_LOCK"
+      VIBECODINGER_LOCK_UNOWNED=$((VIBECODINGER_LOCK_UNOWNED + 1))
+      if [ "$VIBECODINGER_LOCK_UNOWNED" -ge 5 ]; then
+        rm -rf "$VIBECODINGER_LOCK"
         continue
       fi
     fi
-    if [ "$T3_LOCK_WAITED" -ge @@T3_ARCHIVE_LOCK_WAIT_SECONDS@@ ]; then
-      printf 'Another vibecodinger %s installation has held %s for too long.\\n' "$T3_ARCHIVE_VERSION" "$T3_LOCK" >&2
+    if [ "$VIBECODINGER_LOCK_WAITED" -ge @@VIBECODINGER_ARCHIVE_LOCK_WAIT_SECONDS@@ ]; then
+      printf 'Another vibecodinger %s installation has held %s for too long.\\n' "$VIBECODINGER_ARCHIVE_VERSION" "$VIBECODINGER_LOCK" >&2
       exit 1
     fi
     sleep 1
-    T3_LOCK_WAITED=$((T3_LOCK_WAITED + 1))
+    VIBECODINGER_LOCK_WAITED=$((VIBECODINGER_LOCK_WAITED + 1))
   done
-  trap 'rm -rf "$T3_LOCK"' EXIT
+  trap 'rm -rf "$VIBECODINGER_LOCK"' EXIT
 fi
 if ! vc_runtime_ready; then
   # Keep aligned with CLI_ARCHIVE_PLATFORM_KEYS in packages/shared/src/cliRelease.ts.
   case "$(uname -s) $(uname -m)" in
-    "Darwin arm64") T3_PLATFORM_KEY="darwin-arm64" ;;
-    "Linux arm64" | "Linux aarch64") T3_PLATFORM_KEY="linux-arm64" ;;
-    "Linux x86_64" | "Linux amd64") T3_PLATFORM_KEY="linux-x64" ;;
+    "Darwin arm64") VIBECODINGER_PLATFORM_KEY="darwin-arm64" ;;
+    "Linux arm64" | "Linux aarch64") VIBECODINGER_PLATFORM_KEY="linux-arm64" ;;
+    "Linux x86_64" | "Linux amd64") VIBECODINGER_PLATFORM_KEY="linux-x64" ;;
     *) printf 'Remote host %s has no vibecodinger release archive.\\n' "$(uname -s) $(uname -m)" >&2; exit 1 ;;
   esac
-  T3_ARCHIVE="vibecodinger-$T3_ARCHIVE_VERSION-$T3_PLATFORM_KEY.tar.gz"
+  VIBECODINGER_ARCHIVE="vibecodinger-$VIBECODINGER_ARCHIVE_VERSION-$VIBECODINGER_PLATFORM_KEY.tar.gz"
   if ! command -v tar >/dev/null 2>&1; then
-    printf 'Remote host needs tar to unpack %s. Install tar on it and try again.\\n' "$T3_ARCHIVE" >&2
+    printf 'Remote host needs tar to unpack %s. Install tar on it and try again.\\n' "$VIBECODINGER_ARCHIVE" >&2
     exit 1
   fi
-  T3_STAGING="$(mktemp -d "$HOME/.vibecodinger/runtime/versions/.staging-XXXXXX")"
-  trap 'rm -rf "$T3_STAGING" "$T3_LOCK"' EXIT
+  VIBECODINGER_STAGING="$(mktemp -d "$HOME/.vibecodinger/runtime/versions/.staging-XXXXXX")"
+  trap 'rm -rf "$VIBECODINGER_STAGING" "$VIBECODINGER_LOCK"' EXIT
   vc_fetch() {
     if command -v curl >/dev/null 2>&1; then curl -fsSL --connect-timeout 30 --max-time "$3" "$1" -o "$2"
     elif command -v wget >/dev/null 2>&1; then wget -q --timeout=30 --tries=1 "$1" -O "$2"
-    else printf 'Remote host needs curl or wget to download %s.\\n' "$T3_ARCHIVE" >&2; exit 1
+    else printf 'Remote host needs curl or wget to download %s.\\n' "$VIBECODINGER_ARCHIVE" >&2; exit 1
     fi || {
-      printf 'Could not download vibecodinger %s from %s. If this host cannot reach it, install vibecodinger %s on it with https://raw.githubusercontent.com/AkaakuHub/t3code/main/scripts/install.sh (VIBECODINGER_VERSION=%s; VIBECODINGER_RELEASE_BASE_URL selects a mirror).\\n' "$T3_ARCHIVE_VERSION" "$1" "$T3_ARCHIVE_VERSION" "$T3_ARCHIVE_VERSION" >&2
+      printf 'Could not download vibecodinger %s from %s. If this host cannot reach it, install vibecodinger %s on it with https://raw.githubusercontent.com/AkaakuHub/t3code/main/scripts/install.sh (VIBECODINGER_VERSION=%s; VIBECODINGER_RELEASE_BASE_URL selects a mirror).\\n' "$VIBECODINGER_ARCHIVE_VERSION" "$1" "$VIBECODINGER_ARCHIVE_VERSION" "$VIBECODINGER_ARCHIVE_VERSION" >&2
       exit 1
     }
   }
-  vc_fetch "$T3_RELEASE_BASE_URL/v$T3_ARCHIVE_VERSION/SHA256SUMS" "$T3_STAGING/SHA256SUMS" @@T3_ARCHIVE_CHECKSUMS_SECONDS@@
-  vc_fetch "$T3_RELEASE_BASE_URL/v$T3_ARCHIVE_VERSION/$T3_ARCHIVE" "$T3_STAGING/$T3_ARCHIVE" @@T3_ARCHIVE_DOWNLOAD_SECONDS@@
-  T3_EXPECTED="$(grep " \\*\\{0,1\\}$T3_ARCHIVE$" "$T3_STAGING/SHA256SUMS" | cut -d' ' -f1)"
+  vc_fetch "$VIBECODINGER_RELEASE_BASE_URL/v$VIBECODINGER_ARCHIVE_VERSION/SHA256SUMS" "$VIBECODINGER_STAGING/SHA256SUMS" @@VIBECODINGER_ARCHIVE_CHECKSUMS_SECONDS@@
+  vc_fetch "$VIBECODINGER_RELEASE_BASE_URL/v$VIBECODINGER_ARCHIVE_VERSION/$VIBECODINGER_ARCHIVE" "$VIBECODINGER_STAGING/$VIBECODINGER_ARCHIVE" @@VIBECODINGER_ARCHIVE_DOWNLOAD_SECONDS@@
+  VIBECODINGER_EXPECTED="$(grep " \\*\\{0,1\\}$VIBECODINGER_ARCHIVE$" "$VIBECODINGER_STAGING/SHA256SUMS" | cut -d' ' -f1)"
   if command -v sha256sum >/dev/null 2>&1; then
-    T3_ACTUAL="$(sha256sum < "$T3_STAGING/$T3_ARCHIVE" | cut -d' ' -f1)"
+    VIBECODINGER_ACTUAL="$(sha256sum < "$VIBECODINGER_STAGING/$VIBECODINGER_ARCHIVE" | cut -d' ' -f1)"
   else
-    T3_ACTUAL="$(shasum -a 256 < "$T3_STAGING/$T3_ARCHIVE" | cut -d' ' -f1)"
+    VIBECODINGER_ACTUAL="$(shasum -a 256 < "$VIBECODINGER_STAGING/$VIBECODINGER_ARCHIVE" | cut -d' ' -f1)"
   fi
-  if [ -z "$T3_EXPECTED" ] || [ "$T3_ACTUAL" != "$T3_EXPECTED" ]; then
-    printf 'Checksum mismatch for %s.\\n' "$T3_ARCHIVE" >&2; exit 1
+  if [ -z "$VIBECODINGER_EXPECTED" ] || [ "$VIBECODINGER_ACTUAL" != "$VIBECODINGER_EXPECTED" ]; then
+    printf 'Checksum mismatch for %s.\\n' "$VIBECODINGER_ARCHIVE" >&2; exit 1
   fi
-  if ! T3_TAR_ERROR="$(tar -xzf "$T3_STAGING/$T3_ARCHIVE" -C "$T3_STAGING" --strip-components=1 2>&1)"; then
+  if ! VIBECODINGER_TAR_ERROR="$(tar -xzf "$VIBECODINGER_STAGING/$VIBECODINGER_ARCHIVE" -C "$VIBECODINGER_STAGING" --strip-components=1 2>&1)"; then
     # Some tars (BusyBox) gunzip internally, so gzip is only blamed once extraction fails.
-    if command -v gzip >/dev/null 2>&1; then printf '%s\\n' "$T3_TAR_ERROR" >&2
-    else printf 'Remote host needs gzip to unpack %s. Install gzip on it and try again.\\n' "$T3_ARCHIVE" >&2
+    if command -v gzip >/dev/null 2>&1; then printf '%s\\n' "$VIBECODINGER_TAR_ERROR" >&2
+    else printf 'Remote host needs gzip to unpack %s. Install gzip on it and try again.\\n' "$VIBECODINGER_ARCHIVE" >&2
     fi
     exit 1
   fi
-  rm -f "$T3_STAGING/$T3_ARCHIVE" "$T3_STAGING/SHA256SUMS"
+  rm -f "$VIBECODINGER_STAGING/$VIBECODINGER_ARCHIVE" "$VIBECODINGER_STAGING/SHA256SUMS"
   # Prove the binary runs here (libc, arch) before marking it ready, or every
   # later launch would exec a broken install instead of retrying.
-  if ! "$T3_STAGING/vibecodinger" --version >/dev/null 2>&1; then
-    printf 'The vibecodinger %s executable does not run on this host.\\n' "$T3_ARCHIVE_VERSION" >&2; exit 1
+  if ! "$VIBECODINGER_STAGING/vibecodinger" --version >/dev/null 2>&1; then
+    printf 'The vibecodinger %s executable does not run on this host.\\n' "$VIBECODINGER_ARCHIVE_VERSION" >&2; exit 1
   fi
-  printf '%s\\n' "$T3_ARCHIVE_VERSION" > "$T3_STAGING/.install-complete"
-  rm -rf "$T3_RUNTIME_DIR"
-  mv "$T3_STAGING" "$T3_RUNTIME_DIR"
+  printf '%s\\n' "$VIBECODINGER_ARCHIVE_VERSION" > "$VIBECODINGER_STAGING/.install-complete"
+  rm -rf "$VIBECODINGER_RUNTIME_DIR"
+  mv "$VIBECODINGER_STAGING" "$VIBECODINGER_RUNTIME_DIR"
 fi
-if [ -n "\${T3_LOCK:-}" ]; then
-  rm -rf "$T3_LOCK"
+if [ -n "\${VIBECODINGER_LOCK:-}" ]; then
+  rm -rf "$VIBECODINGER_LOCK"
   trap - EXIT
 fi
-exec "$T3_RUNTIME_DIR/vibecodinger" "$@"
+exec "$VIBECODINGER_RUNTIME_DIR/vibecodinger" "$@"
 `;
 
 // kill -0 also passes for a zombie, a reused PID and, on Linux, a thread ID,
@@ -609,7 +609,7 @@ const REMOTE_ENSURE_APP_DATA_HOME_SCRIPT = `if [ -L "$HOME/.vibecodinger" ] && [
 fi`;
 
 const REMOTE_LAUNCH_SCRIPT = `set -eu
-@@T3_NODE_ENV_SCRIPT@@
+@@VIBECODINGER_NODE_ENV_SCRIPT@@
 STATE_KEY="$1"
 LAUNCHER_ID="\${2:-}"
 STATE_DIR="$HOME/.vibecodinger/ssh-launch/$STATE_KEY"
@@ -640,11 +640,11 @@ trap cleanup_launch EXIT
 # the lock is released.
 trap 'exit 1' HUP INT PIPE TERM
 cat >"$RUNNER_NEXT" <<'SH'
-@@T3_RUNNER_SCRIPT@@
+@@VIBECODINGER_RUNNER_SCRIPT@@
 SH
 chmod 700 "$RUNNER_NEXT"
-T3_ARCHIVE_MODE=@@T3_ARCHIVE_MODE@@
-if [ "$T3_ARCHIVE_MODE" = "1" ]; then
+VIBECODINGER_ARCHIVE_MODE=@@VIBECODINGER_ARCHIVE_MODE@@
+if [ "$VIBECODINGER_ARCHIVE_MODE" = "1" ]; then
   # The archive ships the helpers below inside the executable; the remote
   # needs no Node at all. Resolving the runner once here also downloads the
   # archive before the port and readiness probes rely on it.
@@ -686,7 +686,7 @@ while ! (set -C; printf '%s\\n' "$$" >"$LAUNCH_LOCK") 2>/dev/null; do
       continue
     fi
   fi
-  if [ "$LAUNCH_LOCK_WAITED" -ge @@T3_LAUNCH_LOCK_WAIT_SECONDS@@ ]; then
+  if [ "$LAUNCH_LOCK_WAITED" -ge @@VIBECODINGER_LAUNCH_LOCK_WAIT_SECONDS@@ ]; then
     if [ -e "$LAUNCH_BREAK_LOCK" ]; then
       printf 'A T3 server launch stopped while recovering %s. If no launch is running, delete %s.\\n' "$LAUNCH_LOCK" "$LAUNCH_BREAK_LOCK" >&2
     else
@@ -713,27 +713,27 @@ elif [ -n "$LAUNCHER_ID" ]; then
   printf '%s\\n' "$LAUNCHER_ID" >"$STATE_DIR/launcher"
 fi
 pick_port() {
-  if [ "$T3_ARCHIVE_MODE" = "1" ]; then
-    "$RUNNER_FILE" __ssh-helper pick-port "$PORT_FILE" "@@T3_DEFAULT_REMOTE_PORT@@" "@@T3_REMOTE_PORT_SCAN_WINDOW@@"
+  if [ "$VIBECODINGER_ARCHIVE_MODE" = "1" ]; then
+    "$RUNNER_FILE" __ssh-helper pick-port "$PORT_FILE" "@@VIBECODINGER_DEFAULT_REMOTE_PORT@@" "@@VIBECODINGER_REMOTE_PORT_SCAN_WINDOW@@"
     return
   fi
-  node - "$PORT_FILE" "@@T3_DEFAULT_REMOTE_PORT@@" "@@T3_REMOTE_PORT_SCAN_WINDOW@@" <<'NODE'
-@@T3_PICK_PORT_SCRIPT@@
+  node - "$PORT_FILE" "@@VIBECODINGER_DEFAULT_REMOTE_PORT@@" "@@VIBECODINGER_REMOTE_PORT_SCAN_WINDOW@@" <<'NODE'
+@@VIBECODINGER_PICK_PORT_SCRIPT@@
 NODE
 }
 wait_ready() {
-  if [ "$T3_ARCHIVE_MODE" = "1" ]; then
-    "$RUNNER_FILE" __ssh-helper wait-ready "$REMOTE_PORT" "$1" "@@T3_READY_PROBE_TIMEOUT_MS@@"
+  if [ "$VIBECODINGER_ARCHIVE_MODE" = "1" ]; then
+    "$RUNNER_FILE" __ssh-helper wait-ready "$REMOTE_PORT" "$1" "@@VIBECODINGER_READY_PROBE_TIMEOUT_MS@@"
     return
   fi
-  node - "$REMOTE_PORT" "$1" "@@T3_READY_PROBE_TIMEOUT_MS@@" <<'NODE'
-@@T3_WAIT_READY_SCRIPT@@
+  node - "$REMOTE_PORT" "$1" "@@VIBECODINGER_READY_PROBE_TIMEOUT_MS@@" <<'NODE'
+@@VIBECODINGER_WAIT_READY_SCRIPT@@
 NODE
 }
 wait_for_pid_exit() {
   PID_TO_WAIT="$1"
   WAIT_COUNT=0
-  while kill -0 "$PID_TO_WAIT" 2>/dev/null && [ "$WAIT_COUNT" -lt @@T3_PID_EXIT_WAIT_TICKS@@ ]; do
+  while kill -0 "$PID_TO_WAIT" 2>/dev/null && [ "$WAIT_COUNT" -lt @@VIBECODINGER_PID_EXIT_WAIT_TICKS@@ ]; do
     WAIT_COUNT=$((WAIT_COUNT + 1))
     sleep 0.1
   done
@@ -748,17 +748,17 @@ server_running() {
 }
 # An older client replacing a same-or-newer server would run below the database's migrations.
 keeps_running_server() {
-  [ "$T3_ARCHIVE_MODE" = "1" ] &&
+  [ "$VIBECODINGER_ARCHIVE_MODE" = "1" ] &&
     "$RUNNER_FILE" __ssh-helper keep-server "$DEFAULT_RUNTIME_FILE" "$REMOTE_PID" >/dev/null 2>&1
 }
-@@T3_MANAGED_SERVER_RUNNING_SCRIPT@@
+@@VIBECODINGER_MANAGED_SERVER_RUNNING_SCRIPT@@
 # The server publishes its runtime record only after it answers, so one that
 # has published and now refuses every connection has closed its listener to
 # shut down; a starting server has not published yet. Exit 2 means refused.
 managed_server_stopping() {
   [ "$DEFAULT_RUNTIME_PID" = "$REMOTE_PID" ] || return 1
   READY_STATUS=0
-  wait_ready "@@T3_REUSE_READY_TIMEOUT_MS@@" || READY_STATUS=$?
+  wait_ready "@@VIBECODINGER_REUSE_READY_TIMEOUT_MS@@" || READY_STATUS=$?
   [ "$READY_STATUS" -eq 2 ]
 }
 # Both are SQLite locks the OS drops with their holder: a server holds
@@ -766,7 +766,7 @@ managed_server_stopping() {
 # before it starts a server, between two of them during its own update, until
 # it stops or idles behind another server.
 home_owned() {
-  if [ "$T3_ARCHIVE_MODE" = "1" ]; then
+  if [ "$VIBECODINGER_ARCHIVE_MODE" = "1" ]; then
     "$RUNNER_FILE" __ssh-helper home-owned "$DEFAULT_SERVER_HOME" 2>/dev/null
     return
   fi
@@ -795,7 +795,7 @@ process.exitCode =
 NODE
 }
 resolve_default_runtime_port() {
-  if [ "$T3_ARCHIVE_MODE" = "1" ]; then
+  if [ "$VIBECODINGER_ARCHIVE_MODE" = "1" ]; then
     "$RUNNER_FILE" __ssh-helper runtime-port "$DEFAULT_RUNTIME_FILE"
     return
   fi
@@ -822,11 +822,11 @@ NODE
 }
 # This script ships with the SSH client; older clients do not honor this marker.
 update_remaining() {
-  if [ "$T3_ARCHIVE_MODE" = "1" ]; then
-    "$RUNNER_FILE" __ssh-helper update-remaining "$DEFAULT_SERVER_HOME/runtime/@@T3_UPDATE_MARKER_FILE@@"
+  if [ "$VIBECODINGER_ARCHIVE_MODE" = "1" ]; then
+    "$RUNNER_FILE" __ssh-helper update-remaining "$DEFAULT_SERVER_HOME/runtime/@@VIBECODINGER_UPDATE_MARKER_FILE@@"
     return
   fi
-  node - "$DEFAULT_SERVER_HOME/runtime/@@T3_UPDATE_MARKER_FILE@@" <<'NODE'
+  node - "$DEFAULT_SERVER_HOME/runtime/@@VIBECODINGER_UPDATE_MARKER_FILE@@" <<'NODE'
 const fs = require("node:fs");
 const path = process.argv[2];
 try {
@@ -834,7 +834,7 @@ try {
   const now = Date.now();
   if (Number.isFinite(startedAt) && Number.isFinite(expiresAt) &&
       startedAt <= now && expiresAt > now && expiresAt > startedAt) {
-    process.stdout.write(String(Math.min(expiresAt - now, @@T3_UPDATE_TTL_MS@@)));
+    process.stdout.write(String(Math.min(expiresAt - now, @@VIBECODINGER_UPDATE_TTL_MS@@)));
   }
 } catch {}
 NODE
@@ -860,7 +860,7 @@ if [ -n "$DEFAULT_REMOTE_PORT" ] && [ "$REMOTE_MANAGED" = "managed" ] && [ "$DEF
   return 0
 elif [ -n "$DEFAULT_REMOTE_PORT" ]; then
   REMOTE_PORT="$DEFAULT_REMOTE_PORT"
-  if wait_ready "@@T3_REUSE_READY_TIMEOUT_MS@@"; then
+  if wait_ready "@@VIBECODINGER_REUSE_READY_TIMEOUT_MS@@"; then
     ADOPTED_PID="$DEFAULT_RUNTIME_PID"
     if [ "$REMOTE_MANAGED" = "managed" ]; then
       if managed_server_running "$REMOTE_PID"; then
@@ -918,7 +918,7 @@ if [ "$REMOTE_MANAGED" = "external" ]; then
   # it again could catch a momentary stall and launch a second server beside it.
   if server_running "$ADOPTED_PID"; then
     :
-  elif [ -z "$REMOTE_PORT" ] || ! wait_ready "@@T3_REUSE_READY_TIMEOUT_MS@@"; then
+  elif [ -z "$REMOTE_PORT" ] || ! wait_ready "@@VIBECODINGER_REUSE_READY_TIMEOUT_MS@@"; then
     REMOTE_PID=""
     REMOTE_PORT=""
     REMOTE_MANAGED=""
@@ -941,7 +941,7 @@ elif [ -n "$REMOTE_PORT" ] && managed_server_running "$REMOTE_PID"; then
     REMOTE_PID=""
     REMOTE_PORT=""
     REMOTE_MANAGED=""
-  elif ! wait_ready "@@T3_READY_TIMEOUT_MS@@"; then
+  elif ! wait_ready "@@VIBECODINGER_READY_TIMEOUT_MS@@"; then
     printf 'Remote T3 server is still running but did not become ready. Retry the connection; the server was left running.\\n' >&2
     exit 1
   elif [ "$FOREIGN_LAUNCHER" -eq 1 ]; then
@@ -960,7 +960,7 @@ if [ -z "$REMOTE_PORT" ] && [ -z "$DEFAULT_RUNTIME_INFO" ]; then
     [ "$SIBLING_DIR" != "$STATE_DIR" ] && [ "$(cat "$SIBLING_DIR/managed" 2>/dev/null || true)" = "managed" ] || continue
     managed_server_running "$(cat "$SIBLING_DIR/pid" 2>/dev/null || true)" || continue
     REMOTE_PORT="$(cat "$SIBLING_DIR/port" 2>/dev/null || true)"
-    if [ -n "$REMOTE_PORT" ] && wait_ready "@@T3_REUSE_READY_TIMEOUT_MS@@"; then
+    if [ -n "$REMOTE_PORT" ] && wait_ready "@@VIBECODINGER_REUSE_READY_TIMEOUT_MS@@"; then
       REMOTE_MANAGED="external"
       rm -f "$PID_FILE"
       printf '%s\\n' "$REMOTE_PORT" >"$PORT_FILE"
@@ -975,11 +975,11 @@ if [ -z "$REMOTE_PORT" ]; then
   # The sleep count bounds a host clock that stops advancing.
   UPDATE_WAITED=0
   UPDATE_SAW_MARKER=0
-  while [ "$UPDATE_WAITED" -le @@T3_UPDATE_TTL_SECONDS@@ ]; do
+  while [ "$UPDATE_WAITED" -le @@VIBECODINGER_UPDATE_TTL_SECONDS@@ ]; do
     UPDATE_REMAINING="$(update_remaining 2>/dev/null || true)"
     [ -n "$UPDATE_REMAINING" ] || break
     UPDATE_SAW_MARKER=1
-    [ "$UPDATE_WAITED" -lt @@T3_UPDATE_TTL_SECONDS@@ ] || break
+    [ "$UPDATE_WAITED" -lt @@VIBECODINGER_UPDATE_TTL_SECONDS@@ ] || break
     if adopt_default_server; then break; fi
     REMOTE_PID=""
     REMOTE_PORT=""
@@ -1001,13 +1001,13 @@ fi
 # held and start one only once it is free. The managed server an update just
 # stopped may still be exiting. The sleep count bounds a host clock that stops.
 OWNER_WAITED=0
-OWNER_DEADLINE=$(($(date +%s) + @@T3_READY_TIMEOUT_SECONDS@@))
+OWNER_DEADLINE=$(($(date +%s) + @@VIBECODINGER_READY_TIMEOUT_SECONDS@@))
 while [ -z "$REMOTE_PORT" ] && ! managed_server_running "$(cat "$PID_FILE" 2>/dev/null || true)" && home_owned; do
   if adopt_default_server; then break; fi
   REMOTE_PID=""
   REMOTE_PORT=""
   REMOTE_MANAGED=""
-  if [ "$OWNER_WAITED" -ge @@T3_READY_TIMEOUT_SECONDS@@ ] || [ "$(date +%s)" -ge "$OWNER_DEADLINE" ]; then
+  if [ "$OWNER_WAITED" -ge @@VIBECODINGER_READY_TIMEOUT_SECONDS@@ ] || [ "$(date +%s)" -ge "$OWNER_DEADLINE" ]; then
     printf 'A T3 server or boot service holds %s but did not become ready, so no second server was started. Retry once it has started.\\n' "$DEFAULT_SERVER_HOME" >&2
     exit 1
   fi
@@ -1017,7 +1017,7 @@ done
 if [ -z "$REMOTE_PORT" ]; then
   REMOTE_PORT="$(pick_port)" || true
   if [ -z "$REMOTE_PORT" ]; then
-    if [ "$T3_ARCHIVE_MODE" = "1" ]; then
+    if [ "$VIBECODINGER_ARCHIVE_MODE" = "1" ]; then
       printf 'Failed to find an available port on the remote host.\\n' >&2
     else
       printf 'Failed to find an available port on the remote host. Ensure node is available on PATH.\\n' >&2
@@ -1039,7 +1039,7 @@ if [ -z "$REMOTE_PORT" ]; then
   else
     rm -f "$STATE_DIR/launcher"
   fi
-  if ! wait_ready "@@T3_READY_TIMEOUT_MS@@"; then
+  if ! wait_ready "@@VIBECODINGER_READY_TIMEOUT_MS@@"; then
     printf 'Remote T3 server did not become ready on 127.0.0.1:%s.\\n' "$REMOTE_PORT" >&2
     if [ -s "$LOG_FILE" ]; then
       tail -n 80 "$LOG_FILE" >&2 2>/dev/null || true
@@ -1053,7 +1053,7 @@ if [ -z "$REMOTE_PORT" ]; then
   fi
   # Keep the lock until another alias's launch can find this server, or it
   # would start a second one that loses the home's owner lock.
-  RECORD_DEADLINE=$(($(date +%s) + @@T3_RUNTIME_RECORD_WAIT_SECONDS@@))
+  RECORD_DEADLINE=$(($(date +%s) + @@VIBECODINGER_RUNTIME_RECORD_WAIT_SECONDS@@))
   while [ "$(date +%s)" -lt "$RECORD_DEADLINE" ]; do
     DEFAULT_RUNTIME_INFO="$(resolve_default_runtime_port 2>/dev/null || true)"
     [ "\${DEFAULT_RUNTIME_INFO%% *}" = "$REMOTE_PID" ] && break
@@ -1077,13 +1077,13 @@ printf '{"remotePort":%s,"serverKind":"%s"}\\n' "$REMOTE_PORT" "\${REMOTE_MANAGE
 `;
 
 const REMOTE_PAIRING_SCRIPT = `set -eu
-STATE_DIR="$HOME/.vibecodinger/ssh-launch/@@T3_STATE_KEY@@"
+STATE_DIR="$HOME/.vibecodinger/ssh-launch/@@VIBECODINGER_STATE_KEY@@"
 DEFAULT_SERVER_HOME="$HOME/.vibecodinger"
 RUNNER_FILE="$STATE_DIR/run-vibecodinger.sh"
 @@ENSURE_APP_DATA_HOME_SCRIPT@@
 mkdir -p "$STATE_DIR"
 cat >"$RUNNER_FILE" <<'SH'
-@@T3_RUNNER_SCRIPT@@
+@@VIBECODINGER_RUNNER_SCRIPT@@
 SH
 chmod 700 "$RUNNER_FILE"
 PAIRING_BASE_DIR="$DEFAULT_SERVER_HOME"
@@ -1091,11 +1091,11 @@ PAIRING_BASE_DIR="$DEFAULT_SERVER_HOME"
 `;
 
 const REMOTE_STOP_SCRIPT = `set -eu
-STATE_DIR="$HOME/.vibecodinger/ssh-launch/@@T3_STATE_KEY@@"
+STATE_DIR="$HOME/.vibecodinger/ssh-launch/@@VIBECODINGER_STATE_KEY@@"
 PID_FILE="$STATE_DIR/pid"
 PORT_FILE="$STATE_DIR/port"
 MANAGED_FILE="$STATE_DIR/managed"
-LAUNCHER_ID="@@T3_LAUNCHER_ID@@"
+LAUNCHER_ID="@@VIBECODINGER_LAUNCHER_ID@@"
 RECORDED_LAUNCHER="$(cat "$STATE_DIR/launcher" 2>/dev/null || true)"
 # Another desktop with the same connection details launched this server.
 if [ -n "$LAUNCHER_ID" ] && [ -n "$RECORDED_LAUNCHER" ] && [ "$RECORDED_LAUNCHER" != "$LAUNCHER_ID" ]; then
@@ -1104,7 +1104,7 @@ if [ -n "$LAUNCHER_ID" ] && [ -n "$RECORDED_LAUNCHER" ] && [ "$RECORDED_LAUNCHER
 fi
 REMOTE_MANAGED="$(cat "$MANAGED_FILE" 2>/dev/null || true)"
 REMOTE_PID="$(cat "$PID_FILE" 2>/dev/null || true)"
-@@T3_MANAGED_SERVER_RUNNING_SCRIPT@@
+@@VIBECODINGER_MANAGED_SERVER_RUNNING_SCRIPT@@
 if [ "$REMOTE_MANAGED" != "external" ] && managed_server_running "$REMOTE_PID"; then
   kill "$REMOTE_PID" 2>/dev/null || true
   WAIT_COUNT=0
@@ -1122,7 +1122,7 @@ printf '{"stopped":true}\\n'
 `;
 
 const REMOTE_LOG_TAIL_SCRIPT = `set -eu
-STATE_DIR="$HOME/.vibecodinger/ssh-launch/@@T3_STATE_KEY@@"
+STATE_DIR="$HOME/.vibecodinger/ssh-launch/@@VIBECODINGER_STATE_KEY@@"
 LOG_FILE="$STATE_DIR/server.log"
 if [ -f "$LOG_FILE" ]; then
   tail -n 80 "$LOG_FILE" 2>/dev/null || true
@@ -1168,13 +1168,13 @@ export function buildRemoteT3RunnerScript(input?: RemoteT3RunnerOptions): string
   );
   return stripTrailingNewlines(
     applyScriptPlaceholders(REMOTE_RUNNER_SCRIPT, {
-      T3_NODE_SCRIPT_PATH: shellSingleQuote(nodeScriptPath),
-      T3_ARCHIVE_VERSION: shellSingleQuote(archiveVersion),
-      T3_RELEASE_BASE_URL: shellSingleQuote(releaseBaseUrl),
-      T3_ARCHIVE_LOCK_WAIT_SECONDS: String(REMOTE_ARCHIVE_LOCK_WAIT_SECONDS),
-      T3_ARCHIVE_DOWNLOAD_SECONDS: String(REMOTE_ARCHIVE_DOWNLOAD_SECONDS),
-      T3_ARCHIVE_CHECKSUMS_SECONDS: String(REMOTE_ARCHIVE_CHECKSUMS_SECONDS),
-      T3_NODE_ENV_SCRIPT: buildRemoteNodeEnvScript(input),
+      VIBECODINGER_NODE_SCRIPT_PATH: shellSingleQuote(nodeScriptPath),
+      VIBECODINGER_ARCHIVE_VERSION: shellSingleQuote(archiveVersion),
+      VIBECODINGER_RELEASE_BASE_URL: shellSingleQuote(releaseBaseUrl),
+      VIBECODINGER_ARCHIVE_LOCK_WAIT_SECONDS: String(REMOTE_ARCHIVE_LOCK_WAIT_SECONDS),
+      VIBECODINGER_ARCHIVE_DOWNLOAD_SECONDS: String(REMOTE_ARCHIVE_DOWNLOAD_SECONDS),
+      VIBECODINGER_ARCHIVE_CHECKSUMS_SECONDS: String(REMOTE_ARCHIVE_CHECKSUMS_SECONDS),
+      VIBECODINGER_NODE_ENV_SCRIPT: buildRemoteNodeEnvScript(input),
     }),
   );
 }
@@ -1182,41 +1182,43 @@ export function buildRemoteT3RunnerScript(input?: RemoteT3RunnerOptions): string
 export function buildRemoteNodeEnvScript(input?: RemoteT3RunnerOptions): string {
   return stripTrailingNewlines(
     applyScriptPlaceholders(REMOTE_NODE_ENV_SCRIPT, {
-      T3_NODE_ENGINE_RANGE: shellSingleQuote(input?.nodeEngineRange?.trim() || ""),
-      T3_NODE_ENGINE_CHECK_SCRIPT: stripTrailingNewlines(buildRemoteNodeEngineCheckScript()),
+      VIBECODINGER_NODE_ENGINE_RANGE: shellSingleQuote(input?.nodeEngineRange?.trim() || ""),
+      VIBECODINGER_NODE_ENGINE_CHECK_SCRIPT: stripTrailingNewlines(
+        buildRemoteNodeEngineCheckScript(),
+      ),
     }),
   );
 }
 
 export function buildRemoteLaunchScript(input?: RemoteT3RunnerOptions): string {
   return applyScriptPlaceholders(REMOTE_LAUNCH_SCRIPT, {
-    T3_UPDATE_MARKER_FILE: DESKTOP_UPDATE_IN_PROGRESS_MARKER_FILE,
-    T3_UPDATE_TTL_MS: String(DESKTOP_UPDATE_IN_PROGRESS_TTL_MS),
-    T3_UPDATE_TTL_SECONDS: String(DESKTOP_UPDATE_IN_PROGRESS_TTL_MS / 1000),
-    T3_ARCHIVE_MODE: isNodeScriptRunner(input) ? "0" : "1",
-    T3_NODE_ENV_SCRIPT: buildRemoteNodeEnvScript(input),
-    T3_RUNNER_SCRIPT: stripTrailingNewlines(buildRemoteT3RunnerScript(input)),
-    T3_PICK_PORT_SCRIPT: stripTrailingNewlines(REMOTE_PICK_PORT_SCRIPT),
-    T3_WAIT_READY_SCRIPT: stripTrailingNewlines(REMOTE_WAIT_READY_SCRIPT),
-    T3_MANAGED_SERVER_RUNNING_SCRIPT: REMOTE_MANAGED_SERVER_RUNNING_SCRIPT,
+    VIBECODINGER_UPDATE_MARKER_FILE: DESKTOP_UPDATE_IN_PROGRESS_MARKER_FILE,
+    VIBECODINGER_UPDATE_TTL_MS: String(DESKTOP_UPDATE_IN_PROGRESS_TTL_MS),
+    VIBECODINGER_UPDATE_TTL_SECONDS: String(DESKTOP_UPDATE_IN_PROGRESS_TTL_MS / 1000),
+    VIBECODINGER_ARCHIVE_MODE: isNodeScriptRunner(input) ? "0" : "1",
+    VIBECODINGER_NODE_ENV_SCRIPT: buildRemoteNodeEnvScript(input),
+    VIBECODINGER_RUNNER_SCRIPT: stripTrailingNewlines(buildRemoteT3RunnerScript(input)),
+    VIBECODINGER_PICK_PORT_SCRIPT: stripTrailingNewlines(REMOTE_PICK_PORT_SCRIPT),
+    VIBECODINGER_WAIT_READY_SCRIPT: stripTrailingNewlines(REMOTE_WAIT_READY_SCRIPT),
+    VIBECODINGER_MANAGED_SERVER_RUNNING_SCRIPT: REMOTE_MANAGED_SERVER_RUNNING_SCRIPT,
     ENSURE_APP_DATA_HOME_SCRIPT: REMOTE_ENSURE_APP_DATA_HOME_SCRIPT,
-    T3_DEFAULT_REMOTE_PORT: String(DEFAULT_REMOTE_PORT),
-    T3_REMOTE_PORT_SCAN_WINDOW: String(REMOTE_PORT_SCAN_WINDOW),
-    T3_READY_TIMEOUT_MS: String(REMOTE_READY_TIMEOUT_MS),
-    T3_READY_TIMEOUT_SECONDS: String(REMOTE_READY_TIMEOUT_MS / 1000),
-    T3_REUSE_READY_TIMEOUT_MS: String(REMOTE_REUSE_READY_TIMEOUT_MS),
-    T3_READY_PROBE_TIMEOUT_MS: String(SSH_READY_PROBE_TIMEOUT_MS),
-    T3_PID_EXIT_WAIT_TICKS: String(REMOTE_PID_EXIT_WAIT_MS / 100),
-    T3_LAUNCH_LOCK_WAIT_SECONDS: String(REMOTE_LAUNCH_LOCK_WAIT_SECONDS),
-    T3_RUNTIME_RECORD_WAIT_SECONDS: String(REMOTE_RUNTIME_RECORD_WAIT_SECONDS),
+    VIBECODINGER_DEFAULT_REMOTE_PORT: String(DEFAULT_REMOTE_PORT),
+    VIBECODINGER_REMOTE_PORT_SCAN_WINDOW: String(REMOTE_PORT_SCAN_WINDOW),
+    VIBECODINGER_READY_TIMEOUT_MS: String(REMOTE_READY_TIMEOUT_MS),
+    VIBECODINGER_READY_TIMEOUT_SECONDS: String(REMOTE_READY_TIMEOUT_MS / 1000),
+    VIBECODINGER_REUSE_READY_TIMEOUT_MS: String(REMOTE_REUSE_READY_TIMEOUT_MS),
+    VIBECODINGER_READY_PROBE_TIMEOUT_MS: String(SSH_READY_PROBE_TIMEOUT_MS),
+    VIBECODINGER_PID_EXIT_WAIT_TICKS: String(REMOTE_PID_EXIT_WAIT_MS / 100),
+    VIBECODINGER_LAUNCH_LOCK_WAIT_SECONDS: String(REMOTE_LAUNCH_LOCK_WAIT_SECONDS),
+    VIBECODINGER_RUNTIME_RECORD_WAIT_SECONDS: String(REMOTE_RUNTIME_RECORD_WAIT_SECONDS),
   });
 }
 
 function buildRemotePairingScript(stateKey: string, input?: RemoteT3RunnerOptions): string {
   return applyScriptPlaceholders(REMOTE_PAIRING_SCRIPT, {
-    T3_STATE_KEY: stateKey,
+    VIBECODINGER_STATE_KEY: stateKey,
     ENSURE_APP_DATA_HOME_SCRIPT: REMOTE_ENSURE_APP_DATA_HOME_SCRIPT,
-    T3_RUNNER_SCRIPT: stripTrailingNewlines(buildRemoteT3RunnerScript(input)),
+    VIBECODINGER_RUNNER_SCRIPT: stripTrailingNewlines(buildRemoteT3RunnerScript(input)),
   });
 }
 
@@ -1226,15 +1228,15 @@ const validLauncherId = (launcherId: string | null | undefined) =>
 
 function buildRemoteStopScript(stateKey: string, launcherId: string | null): string {
   return applyScriptPlaceholders(REMOTE_STOP_SCRIPT, {
-    T3_STATE_KEY: stateKey,
-    T3_LAUNCHER_ID: launcherId ?? "",
-    T3_MANAGED_SERVER_RUNNING_SCRIPT: REMOTE_MANAGED_SERVER_RUNNING_SCRIPT,
+    VIBECODINGER_STATE_KEY: stateKey,
+    VIBECODINGER_LAUNCHER_ID: launcherId ?? "",
+    VIBECODINGER_MANAGED_SERVER_RUNNING_SCRIPT: REMOTE_MANAGED_SERVER_RUNNING_SCRIPT,
   });
 }
 
 function buildRemoteLogTailScript(stateKey: string): string {
   return applyScriptPlaceholders(REMOTE_LOG_TAIL_SCRIPT, {
-    T3_STATE_KEY: stateKey,
+    VIBECODINGER_STATE_KEY: stateKey,
   });
 }
 

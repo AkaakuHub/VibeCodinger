@@ -379,8 +379,8 @@ describe("ACP Registry probe", () => {
             args: [mockAgentPath],
             env: {
               ...process.env,
-              T3_ACP_SESSION_LIFECYCLE: "1",
-              T3_ACP_AUTH_METHOD_ID: "mock-login",
+              VIBECODINGER_ACP_SESSION_LIFECYCLE: "1",
+              VIBECODINGER_ACP_AUTH_METHOD_ID: "mock-login",
             },
           },
         }),
@@ -440,9 +440,11 @@ describe("ACP Registry probe", () => {
                 args: [mockAgentPath],
                 env: {
                   ...process.env,
-                  T3_ACP_V2_MANAGEMENT: "1",
-                  T3_ACP_REQUEST_LOG_PATH: requestLogPath,
-                  ...(deleteOutcome === "fails" ? { T3_ACP_FAIL_DELETE_SESSION: "1" } : {}),
+                  VIBECODINGER_ACP_V2_MANAGEMENT: "1",
+                  VIBECODINGER_ACP_REQUEST_LOG_PATH: requestLogPath,
+                  ...(deleteOutcome === "fails"
+                    ? { VIBECODINGER_ACP_FAIL_DELETE_SESSION: "1" }
+                    : {}),
                 },
               },
             }),

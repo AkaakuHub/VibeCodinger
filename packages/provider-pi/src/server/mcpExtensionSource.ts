@@ -4,10 +4,10 @@ import { PULL_REQUEST_LINKING_INSTRUCTIONS } from "@vibecodinger/provider-core/s
 
 export const PI_T3_MCP_EXTENSION_FILENAME = "pi-t3-mcp-extension.ts";
 
-export const T3_MCP_URL_ENV = "T3_MCP_URL";
-export const T3_MCP_BEARER_ENV = "T3_MCP_BEARER_TOKEN";
-export const T3_PI_RUNTIME_MODE_ENV = "T3_PI_RUNTIME_MODE";
-export const T3_PI_MCP_EXTENSION_PATH_ENV = "T3_PI_MCP_EXTENSION_PATH";
+export const VIBECODINGER_MCP_URL_ENV = "VIBECODINGER_MCP_URL";
+export const VIBECODINGER_MCP_BEARER_ENV = "VIBECODINGER_MCP_BEARER_TOKEN";
+export const VIBECODINGER_PI_RUNTIME_MODE_ENV = "VIBECODINGER_PI_RUNTIME_MODE";
+export const VIBECODINGER_PI_MCP_EXTENSION_PATH_ENV = "VIBECODINGER_PI_MCP_EXTENSION_PATH";
 export const PI_T3_SERVICE_TIER_COMMAND = "vibecodinger-service-tier";
 
 // These tools trigger file-change approvals, bypassed by Auto-accept edits.
@@ -20,10 +20,10 @@ import * as NodeFSP from "node:fs/promises";
 import * as NodePath from "node:path";
 import { Type } from "typebox";
 
-const URL_ENV = ${JSON.stringify(T3_MCP_URL_ENV)};
-const TOKEN_ENV = ${JSON.stringify(T3_MCP_BEARER_ENV)};
-const RUNTIME_MODE_ENV = ${JSON.stringify(T3_PI_RUNTIME_MODE_ENV)};
-const EXTENSION_PATH_ENV = ${JSON.stringify(T3_PI_MCP_EXTENSION_PATH_ENV)};
+const URL_ENV = ${JSON.stringify(VIBECODINGER_MCP_URL_ENV)};
+const TOKEN_ENV = ${JSON.stringify(VIBECODINGER_MCP_BEARER_ENV)};
+const RUNTIME_MODE_ENV = ${JSON.stringify(VIBECODINGER_PI_RUNTIME_MODE_ENV)};
+const EXTENSION_PATH_ENV = ${JSON.stringify(VIBECODINGER_PI_MCP_EXTENSION_PATH_ENV)};
 const ORCHESTRATION_INSTRUCTIONS = ${JSON.stringify(VIBECODINGER_ORCHESTRATION_INSTRUCTIONS.trim())};
 const PULL_REQUEST_LINKING_INSTRUCTIONS = ${JSON.stringify(PULL_REQUEST_LINKING_INSTRUCTIONS)};
 const SERVICE_TIER_COMMAND = ${JSON.stringify(PI_T3_SERVICE_TIER_COMMAND)};
@@ -386,7 +386,7 @@ export default async function t3McpExtension(pi: ExtensionAPI) {
   if (endpoint === undefined || token === undefined) {
     pi.on("session_start", async (_event, ctx) => {
       ctx.ui.notify(
-        "vibe-codinger MCP unavailable: T3_MCP_URL or T3_MCP_BEARER_TOKEN is missing.",
+        "vibe-codinger MCP unavailable: VIBECODINGER_MCP_URL or VIBECODINGER_MCP_BEARER_TOKEN is missing.",
         "warning",
       );
     });

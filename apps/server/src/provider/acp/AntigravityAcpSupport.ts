@@ -29,7 +29,7 @@ import {
   type AcpRuntimePolicy,
 } from "@vibecodinger/provider-acp/server/clientPolicy";
 import type { AcpSessionModeState } from "@vibecodinger/provider-acp/server/runtimeModel";
-import { T3_MCP_TOOL_NAMES } from "@vibecodinger/shared/t3McpToolPresentation";
+import { VIBECODINGER_MCP_TOOL_NAMES } from "@vibecodinger/shared/t3McpToolPresentation";
 import packageJson from "../../../package.json" with { type: "json" };
 import { normalizeAntigravitySessionUpdate } from "./AntigravityProtocol.ts";
 
@@ -188,12 +188,12 @@ function isAntigravityT3McpRequest(request: EffectAcpSchema.RequestPermissionReq
     return (
       rawInput?.ServerName === "vibe-codinger" &&
       rawInput.ToolName === proxiedTool &&
-      T3_MCP_TOOL_NAMES.has(proxiedTool)
+      VIBECODINGER_MCP_TOOL_NAMES.has(proxiedTool)
     );
   }
   if (typeof rawInput?.CommandLine === "string") return false;
   const tool = ANTIGRAVITY_T3_MCP_TITLE.exec(title)?.groups?.tool;
-  return tool !== undefined && T3_MCP_TOOL_NAMES.has(tool);
+  return tool !== undefined && VIBECODINGER_MCP_TOOL_NAMES.has(tool);
 }
 
 export function antigravityPermissionDisposition(

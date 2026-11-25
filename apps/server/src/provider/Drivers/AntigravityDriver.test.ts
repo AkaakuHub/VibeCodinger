@@ -110,12 +110,12 @@ const makeHarness = Effect.fn("makeAntigravityDriverHarness")(function* (
         ...(options.newSessionErrorData === undefined
           ? []
           : [
-              `export T3_ACP_NEW_SESSION_ERROR_DATA=${shellQuote(JSON.stringify(options.newSessionErrorData))}`,
+              `export VIBECODINGER_ACP_NEW_SESSION_ERROR_DATA=${shellQuote(JSON.stringify(options.newSessionErrorData))}`,
             ]),
         ...(options.initialMode === undefined
           ? []
-          : [`export T3_ACP_INITIAL_MODE=${shellQuote(options.initialMode)}`]),
-        `export T3_ACP_AGENT_VERSION=${shellQuote(options.agentVersion ?? "1.5.12")}`,
+          : [`export VIBECODINGER_ACP_INITIAL_MODE=${shellQuote(options.initialMode)}`]),
+        `export VIBECODINGER_ACP_AGENT_VERSION=${shellQuote(options.agentVersion ?? "1.5.12")}`,
         `exec ${shellQuote(nodePath)} ${shellQuote(mockAgentPath)} "$@"`,
         "",
       ].join("\n"),
@@ -228,8 +228,8 @@ const makeHarness = Effect.fn("makeAntigravityDriverHarness")(function* (
     config: { ...AntigravityDriver.defaultConfig(), ...options.config },
     environment: [
       { name: "PATH", value: instancePath },
-      { name: "T3_ACP_ANTIGRAVITY", value: "1" },
-      { name: "T3_ACP_REQUEST_LOG_PATH", value: requestLog },
+      { name: "VIBECODINGER_ACP_ANTIGRAVITY", value: "1" },
+      { name: "VIBECODINGER_ACP_REQUEST_LOG_PATH", value: requestLog },
       { name: "GEMINI_API_KEY", value: "must-not-be-used" },
       { name: "google_api_key", value: "must-not-be-used" },
       { name: "GOOGLE_APPLICATION_CREDENTIALS", value: "/must-not-be-used.json" },
@@ -469,10 +469,10 @@ it.layer(layerTest)("AntigravityDriver", (it) => {
         const h = yield* makeHarness({
           environment: [
             { name: "VIBECODINGER_THREAD_ID", value: "thread-antigravity-ambient" },
-            { name: "T3_ACP_MCP_ENDPOINT", value: "http://127.0.0.1:9/ambient" },
-            { name: "T3_ACP_MCP_AUTHORIZATION", value: "Bearer ambient-token" },
-            { name: "T3_ACP_MCP_NODE", value: "/ambient/node" },
-            { name: "T3_ACP_MCP_ENTRYPOINT", value: "/ambient/entrypoint.mjs" },
+            { name: "VIBECODINGER_ACP_MCP_ENDPOINT", value: "http://127.0.0.1:9/ambient" },
+            { name: "VIBECODINGER_ACP_MCP_AUTHORIZATION", value: "Bearer ambient-token" },
+            { name: "VIBECODINGER_ACP_MCP_NODE", value: "/ambient/node" },
+            { name: "VIBECODINGER_ACP_MCP_ENTRYPOINT", value: "/ambient/entrypoint.mjs" },
           ],
         });
         yield* h.refresh();
@@ -520,18 +520,18 @@ it.layer(layerTest)("AntigravityDriver", (it) => {
         expect(agentLaunches).toHaveLength(2);
         expect(agentLaunches[1]?.environment).toMatchObject({
           VIBECODINGER_THREAD_ID: threadId,
-          T3_ACP_MCP_ENDPOINT: endpoint,
-          T3_ACP_MCP_AUTHORIZATION: "Bearer antigravity-thread-token",
-          T3_ACP_MCP_NODE: process.execPath,
-          T3_ACP_MCP_ENTRYPOINT: entrypoint,
+          VIBECODINGER_ACP_MCP_ENDPOINT: endpoint,
+          VIBECODINGER_ACP_MCP_AUTHORIZATION: "Bearer antigravity-thread-token",
+          VIBECODINGER_ACP_MCP_NODE: process.execPath,
+          VIBECODINGER_ACP_MCP_ENTRYPOINT: entrypoint,
         });
         // Model refresh and sign-in launches are not part of a thread.
         expect(agentLaunches[0]?.environment).toMatchObject({
           VIBECODINGER_THREAD_ID: "thread-antigravity-ambient",
-          T3_ACP_MCP_ENDPOINT: "http://127.0.0.1:9/ambient",
-          T3_ACP_MCP_AUTHORIZATION: "Bearer ambient-token",
-          T3_ACP_MCP_NODE: "/ambient/node",
-          T3_ACP_MCP_ENTRYPOINT: "/ambient/entrypoint.mjs",
+          VIBECODINGER_ACP_MCP_ENDPOINT: "http://127.0.0.1:9/ambient",
+          VIBECODINGER_ACP_MCP_AUTHORIZATION: "Bearer ambient-token",
+          VIBECODINGER_ACP_MCP_NODE: "/ambient/node",
+          VIBECODINGER_ACP_MCP_ENTRYPOINT: "/ambient/entrypoint.mjs",
         });
         yield* h.assertClosed;
       }),

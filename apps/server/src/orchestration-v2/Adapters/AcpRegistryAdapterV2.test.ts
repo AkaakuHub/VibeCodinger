@@ -1525,7 +1525,7 @@ describe("AcpRegistryAdapterV2", () => {
                   spawn: {
                     command: process.execPath,
                     args: [mockAgentPath],
-                    env: { T3_ACP_SESSION_LIFECYCLE: "1", ...agentEnvironment },
+                    env: { VIBECODINGER_ACP_SESSION_LIFECYCLE: "1", ...agentEnvironment },
                   },
                 }),
             }),
@@ -1593,21 +1593,24 @@ describe("AcpRegistryAdapterV2", () => {
           args: [...selfInvocationArgs(selfInvocation, ["acp-mcp-bridge"])],
           env: [
             { name: "ELECTRON_RUN_AS_NODE", value: "1" },
-            { name: "T3_ACP_MCP_ENDPOINT", value: endpoint },
-            { name: "T3_ACP_MCP_AUTHORIZATION", value: authorization },
+            { name: "VIBECODINGER_ACP_MCP_ENDPOINT", value: endpoint },
+            { name: "VIBECODINGER_ACP_MCP_AUTHORIZATION", value: authorization },
           ],
         },
       ];
 
       assert.deepEqual(
-        yield* sessionMcpServers({ agentId: "github-copilot-cli" }, { T3_ACP_MCP_HTTP: "1" }),
+        yield* sessionMcpServers(
+          { agentId: "github-copilot-cli" },
+          { VIBECODINGER_ACP_MCP_HTTP: "1" },
+        ),
         { new: http("Bearer opened-token"), load: http("Bearer rotated-token") },
       );
       const acp = [{ type: "acp", name: "vibe-codinger", serverId: "vibe-codinger" }];
       assert.deepEqual(
         yield* sessionMcpServers(
           { agentId: "github-copilot-cli" },
-          { T3_ACP_MCP_HTTP: "1", T3_ACP_MCP_ACP: "1" },
+          { VIBECODINGER_ACP_MCP_HTTP: "1", VIBECODINGER_ACP_MCP_ACP: "1" },
         ),
         { new: acp, load: acp },
       );
@@ -1615,10 +1618,13 @@ describe("AcpRegistryAdapterV2", () => {
         new: stdio("Bearer opened-token"),
         load: stdio("Bearer rotated-token"),
       });
-      assert.deepEqual(yield* sessionMcpServers({ agentId: "gemini" }, { T3_ACP_MCP_HTTP: "1" }), {
-        new: stdio("Bearer opened-token"),
-        load: stdio("Bearer rotated-token"),
-      });
+      assert.deepEqual(
+        yield* sessionMcpServers({ agentId: "gemini" }, { VIBECODINGER_ACP_MCP_HTTP: "1" }),
+        {
+          new: stdio("Bearer opened-token"),
+          load: stdio("Bearer rotated-token"),
+        },
+      );
       // Command Code cannot start the stdio bridge on Windows: it spawns MCP commands through
       // cmd.exe, which splits the unquoted T3 executable path at the space.
       const commandCode = {
@@ -1627,7 +1633,7 @@ describe("AcpRegistryAdapterV2", () => {
         commandArgs: ["acp"],
       };
       // Command Code is not Copilot: no deferred tool-exposure header.
-      assert.deepEqual(yield* sessionMcpServers(commandCode, { T3_ACP_MCP_HTTP: "1" }), {
+      assert.deepEqual(yield* sessionMcpServers(commandCode, { VIBECODINGER_ACP_MCP_HTTP: "1" }), {
         new: plainHttp("Bearer opened-token"),
         load: plainHttp("Bearer rotated-token"),
       });
@@ -1639,7 +1645,7 @@ describe("AcpRegistryAdapterV2", () => {
       assert.deepEqual(
         yield* sessionMcpServers(
           { source: "local", commandPath: "C:\\tools\\node.exe", commandArgs: ["agent.mjs"] },
-          { T3_ACP_MCP_HTTP: "1" },
+          { VIBECODINGER_ACP_MCP_HTTP: "1" },
         ),
         { new: stdio("Bearer opened-token"), load: stdio("Bearer rotated-token") },
       );
@@ -1693,7 +1699,7 @@ describe("AcpRegistryAdapterV2", () => {
                   spawn: {
                     command: process.execPath,
                     args: [mockAgentPath],
-                    env: { T3_ACP_SESSION_LIFECYCLE: "1" },
+                    env: { VIBECODINGER_ACP_SESSION_LIFECYCLE: "1" },
                   },
                 }),
             }),
@@ -1716,12 +1722,12 @@ describe("AcpRegistryAdapterV2", () => {
       );
       yield* withCapturedSpawns(runtime.ensureThread({ threadId, modelSelection, runtimePolicy }));
       const agentEnvironment = spawnEnvironments.find(
-        (environment) => environment?.T3_ACP_SESSION_LIFECYCLE === "1",
+        (environment) => environment?.VIBECODINGER_ACP_SESSION_LIFECYCLE === "1",
       );
       assert.isDefined(agentEnvironment, "the agent itself must have been spawned");
       assert.equal(agentEnvironment?.VIBECODINGER_THREAD_ID, "thread-acp-registry-thread-env");
-      assert.equal(agentEnvironment?.T3_ACP_MCP_ENDPOINT, endpoint);
-      assert.equal(agentEnvironment?.T3_ACP_MCP_AUTHORIZATION, "Bearer thread-env-token");
+      assert.equal(agentEnvironment?.VIBECODINGER_ACP_MCP_ENDPOINT, endpoint);
+      assert.equal(agentEnvironment?.VIBECODINGER_ACP_MCP_AUTHORIZATION, "Bearer thread-env-token");
     }).pipe(Effect.provide(layerTest)),
   );
 

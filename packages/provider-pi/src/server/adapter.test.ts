@@ -2209,9 +2209,9 @@ describe("PiAdapterV2", () => {
       assert.notInclude(spawn.args, "--offline");
       assert.isUndefined(spawn.env.PI_OFFLINE);
       assert.isTrue(extensions.some((path) => path?.endsWith("pi-t3-mcp-extension.ts")));
-      assert.equal(spawn.env.T3_MCP_URL, "http://127.0.0.1:43123/mcp");
-      assert.equal(spawn.env.T3_MCP_BEARER_TOKEN, "secret-pi-token");
-      assert.equal(spawn.env.T3_PI_RUNTIME_MODE, "full-access");
+      assert.equal(spawn.env.VIBECODINGER_MCP_URL, "http://127.0.0.1:43123/mcp");
+      assert.equal(spawn.env.VIBECODINGER_MCP_BEARER_TOKEN, "secret-pi-token");
+      assert.equal(spawn.env.VIBECODINGER_PI_RUNTIME_MODE, "full-access");
       assert.equal(spawn.env.VIBECODINGER_THREAD_ID, THREAD_ID);
     }).pipe(Effect.scoped, Effect.provide(layerTest)),
   );

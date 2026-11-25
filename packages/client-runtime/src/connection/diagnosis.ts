@@ -358,7 +358,7 @@ function helpSection(
   }
 }
 
-const T3_CONNECT_NAME = "T3 Connect";
+const VIBECODINGER_CONNECT_NAME = "T3 Connect";
 
 const HOP_ORDER = {
   relay: ["device", "relay", "tunnel", "server"],
@@ -370,7 +370,7 @@ function hopLabel(hop: ConnectionHop, host: string, resolve: MFunctionType): str
     case "device":
       return resolve(msg("This device"));
     case "relay":
-      return T3_CONNECT_NAME;
+      return VIBECODINGER_CONNECT_NAME;
     case "tunnel":
       return resolve(msg("{host} tunnel", { host }));
     case "server":

@@ -111,7 +111,7 @@ function writeScratch(baseDir: string) {
         [EVAL_INSTANCE]: {
           driver: "fx",
           displayName: "Eval Bot",
-          environment: [{ name: "T3_EVAL_FX_CONTROL_DIR", value: control }],
+          environment: [{ name: "VIBECODINGER_EVAL_FX_CONTROL_DIR", value: control }],
           config: { enabled: true, binaryPath: launcher },
         },
       },

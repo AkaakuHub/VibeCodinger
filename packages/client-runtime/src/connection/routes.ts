@@ -197,13 +197,13 @@ function routeAddressKey(route: ConnectionRoute): string | null {
   }
 }
 
-const T3_CONNECT_NAME = "T3 Connect";
+const VIBECODINGER_CONNECT_NAME = "T3 Connect";
 
 /** The route's label in English. Display sites use `connectionRouteLabelText`. */
 export function connectionRouteLabel(route: ConnectionRoute): string {
   switch (connectionRouteKind(route)) {
     case "relay":
-      return T3_CONNECT_NAME;
+      return VIBECODINGER_CONNECT_NAME;
     case "loopback":
       return msg("This device");
     case "lan":

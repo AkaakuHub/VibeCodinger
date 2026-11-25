@@ -6,10 +6,10 @@ import type { McpProviderSessionConfig } from "@vibecodinger/provider-core/serve
 import {
   PI_T3_MCP_EXTENSION_FILENAME,
   PI_T3_MCP_EXTENSION_SOURCE,
-  T3_MCP_BEARER_ENV,
-  T3_MCP_URL_ENV,
-  T3_PI_RUNTIME_MODE_ENV,
-  T3_PI_MCP_EXTENSION_PATH_ENV,
+  VIBECODINGER_MCP_BEARER_ENV,
+  VIBECODINGER_MCP_URL_ENV,
+  VIBECODINGER_PI_RUNTIME_MODE_ENV,
+  VIBECODINGER_PI_MCP_EXTENSION_PATH_ENV,
 } from "./mcpExtensionSource.ts";
 
 const RESERVED_PI_LAUNCH_ARGUMENTS = new Set([
@@ -297,27 +297,27 @@ export function buildPiRpcLaunch(input: {
   }
   const environment = { ...input.environment };
   // MCP credentials belong to this T3 session; discard inherited server/parent credentials.
-  delete environment[T3_MCP_URL_ENV];
-  delete environment[T3_MCP_BEARER_ENV];
-  delete environment[T3_PI_MCP_EXTENSION_PATH_ENV];
+  delete environment[VIBECODINGER_MCP_URL_ENV];
+  delete environment[VIBECODINGER_MCP_BEARER_ENV];
+  delete environment[VIBECODINGER_PI_MCP_EXTENSION_PATH_ENV];
 
   return {
     args,
     env: {
       ...environment,
       ...(hasT3Extension && input.extensionPath !== undefined
-        ? { [T3_PI_MCP_EXTENSION_PATH_ENV]: input.extensionPath }
+        ? { [VIBECODINGER_PI_MCP_EXTENSION_PATH_ENV]: input.extensionPath }
         : {}),
       ...(hasT3Extension && input.runtimeMode !== undefined
         ? {
-            [T3_PI_RUNTIME_MODE_ENV]:
+            [VIBECODINGER_PI_RUNTIME_MODE_ENV]:
               input.runtimeMode === "auto" ? "approval-required" : input.runtimeMode,
           }
         : {}),
       ...(hasT3Mcp && input.mcpSession !== undefined
         ? {
-            [T3_MCP_URL_ENV]: input.mcpSession.endpoint,
-            [T3_MCP_BEARER_ENV]: bearerTokenFromAuthorizationHeader(
+            [VIBECODINGER_MCP_URL_ENV]: input.mcpSession.endpoint,
+            [VIBECODINGER_MCP_BEARER_ENV]: bearerTokenFromAuthorizationHeader(
               input.mcpSession.authorizationHeader,
             ),
           }

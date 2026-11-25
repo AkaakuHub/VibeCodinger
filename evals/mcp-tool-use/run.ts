@@ -131,7 +131,7 @@ type PricedModel = keyof typeof PRICES;
 const PROXY_SHELL_MODELS = ["gpt-6-luna", "gpt-6.1-terra"] as const;
 type ShellModel = PricedModel | (typeof PROXY_SHELL_MODELS)[number];
 const isPricedModel = (model: ShellModel): model is PricedModel => model in PRICES;
-const T3_PREFIX = "mcp__vibe-codinger__";
+const VIBECODINGER_PREFIX = "mcp__vibe-codinger__";
 const RUNTIME_MARKER = "<runtime_info>";
 const TOOL_LOADED = "Tool loaded.";
 
@@ -463,7 +463,7 @@ const toolResult = (id: string, content: unknown): Block => ({
 const texts = (content: typeof Content.Type) =>
   typeof content === "string" ? [content] : content.flatMap((block) => block.text ?? []);
 const isT3Name = (name: string) =>
-  name.startsWith(T3_PREFIX) || name.startsWith("mcp__vibe_codinger__");
+  name.startsWith(VIBECODINGER_PREFIX) || name.startsWith("mcp__vibe_codinger__");
 const hasTool = (tools: ReadonlyArray<ApiTool>, name: string) =>
   tools.some((tool) => tool.name === name);
 
@@ -482,7 +482,7 @@ const CODEX_NAMES: Readonly<Record<string, string>> = {
 export const normalizeToolName = (name: string) => {
   const bare = name.slice(name.lastIndexOf(".") + 1);
   return isT3Name(bare)
-    ? bare.slice(T3_PREFIX.length)
+    ? bare.slice(VIBECODINGER_PREFIX.length)
     : (CODEX_NAMES[bare] ?? bare.slice(bare.lastIndexOf("_") + 1));
 };
 export const normalizeToolInput = (name: string, input: unknown) => {
@@ -524,7 +524,7 @@ const t3InputDecoders = new Map(
   ]),
 );
 const t3Tools: ReadonlyArray<ApiTool> = t3SourceTools.map((tool) => ({
-  name: `${T3_PREFIX}${tool.name}`,
+  name: `${VIBECODINGER_PREFIX}${tool.name}`,
   description: Tool.getDescription(tool) ?? "",
   input_schema: advertisedJsonSchema(tool),
 }));
@@ -542,7 +542,7 @@ const enabledWhen = (predicate: () => boolean) =>
       .filter(
         (tool) => Context.getOrUndefined(tool.annotations, McpSchema.EnabledWhen) === predicate,
       )
-      .map((tool) => `${T3_PREFIX}${tool.name}`),
+      .map((tool) => `${VIBECODINGER_PREFIX}${tool.name}`),
   );
 // Claude Code loads a tool whose `_meta` sets anthropic/alwaysLoad up front instead of deferring it.
 const alwaysLoaded = new Set(
@@ -551,12 +551,12 @@ const alwaysLoaded = new Set(
       const meta = Context.getOrUndefined(tool.annotations, Tool.Meta);
       return meta !== undefined && meta["anthropic/alwaysLoad"] === true;
     })
-    .map((tool) => `${T3_PREFIX}${tool.name}`),
+    .map((tool) => `${VIBECODINGER_PREFIX}${tool.name}`),
 );
 // Refs whose request_secret takes `value` save a secret the user already pasted, with no card.
 export const savesPastedSecrets = t3Tools.some(
   (tool) =>
-    tool.name === `${T3_PREFIX}request_secret` &&
+    tool.name === `${VIBECODINGER_PREFIX}request_secret` &&
     isRecord(tool.input_schema) &&
     isRecord(tool.input_schema.properties) &&
     "value" in tool.input_schema.properties,
@@ -580,7 +580,7 @@ export const ARMS = ["tools", "raw"] as const;
 export type Arm = (typeof ARMS)[number];
 const forgeToolNames = new Set(
   [PullRequestsToolkit, IssuesToolkit].flatMap((toolkit) =>
-    Object.values(toolkit.tools).map((tool: Tool.Any) => `${T3_PREFIX}${tool.name}`),
+    Object.values(toolkit.tools).map((tool: Tool.Any) => `${VIBECODINGER_PREFIX}${tool.name}`),
   ),
 );
 /** T3's text for an arm: `raw` drops the PR linking block that names T3's PR tools. */
@@ -3250,7 +3250,9 @@ const main = Effect.gen(function* () {
   // The raw arm has no PR or issue tools, so a case whose prior turns call one cannot be replayed.
   const replaysForgeTool = (testCase: McpToolUseCase) =>
     (testCase.setup.priorTurns ?? []).some((turn) =>
-      (turn.toolCalls ?? []).some((call) => forgeToolNames.has(`${T3_PREFIX}${call.tool}`)),
+      (turn.toolCalls ?? []).some((call) =>
+        forgeToolNames.has(`${VIBECODINGER_PREFIX}${call.tool}`),
+      ),
     );
   const unreplayable =
     flags.arm === "raw" ? selectedCases.filter(replaysForgeTool).map(({ id }) => id) : [];

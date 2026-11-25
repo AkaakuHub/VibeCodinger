@@ -205,7 +205,7 @@ function wireToEntries(wire: ReadonlyArray<WireMessage>): {
   return { entries, droppedFrames };
 }
 
-const T3_INSTRUCTIONS_BODY =
+const VIBECODINGER_INSTRUCTIONS_BODY =
   /<vibe_codinger_instructions>\n[\s\S]*?\n<\/vibe_codinger_instructions>/u;
 
 function normalizeOutboundFrame(frame: Record<string, unknown>, runtimeInstructions: string) {
@@ -242,7 +242,7 @@ function normalizeOutboundFrame(frame: Record<string, unknown>, runtimeInstructi
               ? {
                   ...part,
                   text: part.text.replace(
-                    T3_INSTRUCTIONS_BODY,
+                    VIBECODINGER_INSTRUCTIONS_BODY,
                     "<vibe_codinger_instructions>\n<any>\n</vibe_codinger_instructions>",
                   ),
                 }
@@ -375,7 +375,10 @@ function normalizeEntries(input: {
 const DEFAULT_GROK_SETTINGS = Schema.decodeSync(GrokSettings)({});
 
 const RecorderEnv = Config.all({
-  T3_GROK_BIN: Config.String("T3_GROK_BIN").pipe(Config.option, Config.map(Option.getOrUndefined)),
+  VIBECODINGER_GROK_BIN: Config.String("VIBECODINGER_GROK_BIN").pipe(
+    Config.option,
+    Config.map(Option.getOrUndefined),
+  ),
   HOME: Config.String("HOME").pipe(Config.option, Config.map(Option.getOrUndefined)),
   USER: Config.String("USER").pipe(Config.option, Config.map(Option.getOrUndefined)),
 });
@@ -415,7 +418,10 @@ const recordScenario = Effect.fn("recordGrokScenario")(function* (fixtureName: s
   };
 
   const tee = makeWireTee();
-  const settings = { ...DEFAULT_GROK_SETTINGS, binaryPath: recorderEnv.T3_GROK_BIN ?? "grok" };
+  const settings = {
+    ...DEFAULT_GROK_SETTINGS,
+    binaryPath: recorderEnv.VIBECODINGER_GROK_BIN ?? "grok",
+  };
   const layerRegistry = ProviderAdapterRegistry.layerFromAdaptersEffect(
     Effect.gen(function* () {
       const environment = yield* HostProcess.Environment;

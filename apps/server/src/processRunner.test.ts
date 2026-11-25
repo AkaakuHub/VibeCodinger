@@ -448,12 +448,12 @@ describe("ProcessRunner.layer", () => {
       Effect.gen(function* () {
         const runner = yield* ProcessRunner.ProcessRunner;
         const error = yield* runner
-          .run({ command: "true", args: [], env: { T3_TOKEN: "secret\0value" } })
+          .run({ command: "true", args: [], env: { VIBECODINGER_TOKEN: "secret\0value" } })
           .pipe(Effect.flip);
 
         expect(error._tag).toBe("ProcessSpawnError");
         expect((error.cause as PlatformError.PlatformError).reason._tag).toBe("BadArgument");
-        expect(String(error.cause)).toContain("T3_TOKEN");
+        expect(String(error.cause)).toContain("VIBECODINGER_TOKEN");
         expect(String(error.cause)).not.toContain("secret");
       }).pipe(Effect.provide(layerLaunched.pipe(Layer.provide(NodeServices.layer)))),
   );

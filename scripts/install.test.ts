@@ -619,9 +619,9 @@ describe.skipIf(HostProcess.Platform.defaultValue() !== "linux")("concurrent ins
         wrapper,
         `
 import { execFileSync } from 'node:child_process';
-await fetch(process.env.T3_TEST_ORIGIN + '/ready/' + process.env.T3_TEST_INSTALLER);
+await fetch(process.env.VIBECODINGER_TEST_ORIGIN + '/ready/' + process.env.VIBECODINGER_TEST_INSTALLER);
 execFileSync(${JSON.stringify(realMv)}, process.argv.slice(2));
-if (process.env.T3_TEST_INSTALLER === 'first') await fetch(process.env.T3_TEST_ORIGIN + '/published');
+if (process.env.VIBECODINGER_TEST_INSTALLER === 'first') await fetch(process.env.VIBECODINGER_TEST_ORIGIN + '/published');
 `,
       );
       await NodeFSP.writeFile(
@@ -642,8 +642,8 @@ if (process.env.T3_TEST_INSTALLER === 'first') await fetch(process.env.T3_TEST_O
                 VIBECODINGER_HOME: NodePath.join(root, "home"),
                 VIBECODINGER_INSTALL_BIN_DIR: NodePath.join(root, "bin", id),
                 VIBECODINGER_RELEASE_BASE_URL: origin,
-                T3_TEST_ORIGIN: origin,
-                T3_TEST_INSTALLER: id,
+                VIBECODINGER_TEST_ORIGIN: origin,
+                VIBECODINGER_TEST_INSTALLER: id,
               },
               stdio: ["ignore", "pipe", "pipe"],
             },

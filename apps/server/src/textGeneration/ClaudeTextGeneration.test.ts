@@ -81,25 +81,26 @@ function withFakeClaudeEnv<A, E, R>(
     const pathDelimiter = (yield* HostProcess.isWindows) ? ";" : ":";
     const hostEnv = yield* HostProcess.Environment;
     const fakeClaudeEnv: Record<string, string | undefined> = {
-      T3_FAKE_CLAUDE_OUTPUT: input.output,
-      T3_FAKE_CLAUDE_REJECTS_NO_SESSION_PERSISTENCE: input.rejectsNoSessionPersistence
+      VIBECODINGER_FAKE_CLAUDE_OUTPUT: input.output,
+      VIBECODINGER_FAKE_CLAUDE_REJECTS_NO_SESSION_PERSISTENCE: input.rejectsNoSessionPersistence
         ? "1"
         : undefined,
-      T3_FAKE_CLAUDE_EXIT_CODE: input.exitCode === undefined ? undefined : String(input.exitCode),
-      T3_FAKE_CLAUDE_STDERR: input.stderr,
-      T3_FAKE_CLAUDE_EXPECTED_TOOLS: input.expectedTools,
-      T3_FAKE_CLAUDE_ARGS_MUST_CONTAIN: input.argsMustContain,
-      T3_FAKE_CLAUDE_ARGS_MUST_NOT_CONTAIN: input.argsMustNotContain,
-      T3_FAKE_CLAUDE_STDIN_MUST_CONTAIN: input.stdinMustContain,
-      T3_FAKE_CLAUDE_IMAGE_REJECTION: input.imageRejection,
-      T3_FAKE_CLAUDE_IMAGE_ATTEMPT_LOG: input.imageAttemptLog,
-      T3_FAKE_CLAUDE_CWD_MUST_NOT_BE: input.cwdMustNotBe,
-      T3_FAKE_CLAUDE_SETTINGS_LOG: input.settingsLog,
-      T3_FAKE_CLAUDE_CONFIG_DIR_MUST_BE: input.configDirMustBe,
+      VIBECODINGER_FAKE_CLAUDE_EXIT_CODE:
+        input.exitCode === undefined ? undefined : String(input.exitCode),
+      VIBECODINGER_FAKE_CLAUDE_STDERR: input.stderr,
+      VIBECODINGER_FAKE_CLAUDE_EXPECTED_TOOLS: input.expectedTools,
+      VIBECODINGER_FAKE_CLAUDE_ARGS_MUST_CONTAIN: input.argsMustContain,
+      VIBECODINGER_FAKE_CLAUDE_ARGS_MUST_NOT_CONTAIN: input.argsMustNotContain,
+      VIBECODINGER_FAKE_CLAUDE_STDIN_MUST_CONTAIN: input.stdinMustContain,
+      VIBECODINGER_FAKE_CLAUDE_IMAGE_REJECTION: input.imageRejection,
+      VIBECODINGER_FAKE_CLAUDE_IMAGE_ATTEMPT_LOG: input.imageAttemptLog,
+      VIBECODINGER_FAKE_CLAUDE_CWD_MUST_NOT_BE: input.cwdMustNotBe,
+      VIBECODINGER_FAKE_CLAUDE_SETTINGS_LOG: input.settingsLog,
+      VIBECODINGER_FAKE_CLAUDE_CONFIG_DIR_MUST_BE: input.configDirMustBe,
     };
     const environment: NodeJS.ProcessEnv = {
       ...Object.fromEntries(
-        Object.entries(hostEnv).filter(([name]) => !name.startsWith("T3_FAKE_CLAUDE_")),
+        Object.entries(hostEnv).filter(([name]) => !name.startsWith("VIBECODINGER_FAKE_CLAUDE_")),
       ),
       ...Object.fromEntries(
         Object.entries(fakeClaudeEnv).filter(([, value]) => value !== undefined),

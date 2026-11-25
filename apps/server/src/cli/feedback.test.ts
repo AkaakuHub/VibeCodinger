@@ -18,7 +18,7 @@ import { vi } from "vite-plus/test";
 
 import { makeCli } from "../binCli.ts";
 import * as SqlitePersistence from "../persistence/Sqlite.ts";
-import { FEEDBACK_OFF_MESSAGE, T3_CLI_COMMANDS } from "../feedback/FeedbackReport.ts";
+import { FEEDBACK_OFF_MESSAGE, VIBECODINGER_CLI_COMMANDS } from "../feedback/FeedbackReport.ts";
 import * as McpBridge from "../mcp/AcpMcpStdioBridge.ts";
 import {
   makePersistedServerRuntimeState,
@@ -52,7 +52,9 @@ const listedPaths = (command: Command.Command.Any, path: string): ReadonlyArray<
 ];
 
 it("feedback subjects name every listed vibecodinger command", () => {
-  expect([...T3_CLI_COMMANDS].sort()).toEqual([...listedPaths(makeCli(), "vibecodinger")].sort());
+  expect([...VIBECODINGER_CLI_COMMANDS].sort()).toEqual(
+    [...listedPaths(makeCli(), "vibecodinger")].sort(),
+  );
 });
 
 const hidden = (tool: string) =>
