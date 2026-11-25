@@ -16,36 +16,35 @@ describe("shouldHandleAppLink", () => {
     "vibecodinger-dev://",
     "vibecodinger-preview://",
   ])("ignores scheme-only URL %s", (url) => {
-    expect(shouldHandleAppLink(url, true)).toBe(false);
+    expect(shouldHandleAppLink(url)).toBe(false);
   });
 
   it.each([
     "vibecodinger://threads/env-1/thread-1",
     "vibecodinger://pair?pairingUrl=x",
     "vibecodinger-dev://settings/usage?tab=limits",
-    "https://app.t3.codes/threads/env/thread?prompt=Fix%20expo-development-client%20and%20t3code://expo-sharing",
+    "https://example.test/threads/env/thread?prompt=Fix%20expo-development-client%20and%20vibecodinger://expo-sharing",
   ])("handles path-bearing URL %s", (url) => {
-    expect(shouldHandleAppLink(url, true)).toBe(true);
+    expect(shouldHandleAppLink(url)).toBe(true);
   });
 
   it.each([
     "vibecodinger://expo-development-client/?url=x",
     "vibecodinger://expo-sharing/anything",
   ])("ignores lifecycle URL %s", (url) => {
-    expect(shouldHandleAppLink(url, true)).toBe(false);
+    expect(shouldHandleAppLink(url)).toBe(false);
   });
 });
 
-describe("cloud-only deep links", () => {
+describe("removed deep links", () => {
   it.each([
     "vibecodinger://connect-onboarding",
     "vibecodinger-dev://connect-onboarding/?source=x",
     "vibecodinger://settings/waitlist",
     "vibecodinger://settings/auth",
     "exp://192.168.1.2:8081/--/settings/auth",
-  ])("ignores %s without cloud config", (url) => {
-    expect(shouldHandleAppLink(url, false)).toBe(false);
-    expect(shouldHandleAppLink(url, true)).toBe(true);
+  ])("ignores %s", (url) => {
+    expect(shouldHandleAppLink(url)).toBe(false);
   });
 
   it.each([
@@ -55,8 +54,8 @@ describe("cloud-only deep links", () => {
     "vibecodinger://threads/env/thread/files/scripts/connect-onboarding",
     "vibecodinger://new/draft/files/settings/auth",
     "exp://192.168.1.2:8081/--/threads/env/thread/files/settings/waitlist",
-  ])("still handles %s without cloud config", (url) => {
-    expect(shouldHandleAppLink(url, false)).toBe(true);
+  ])("still handles %s", (url) => {
+    expect(shouldHandleAppLink(url)).toBe(true);
   });
 });
 
