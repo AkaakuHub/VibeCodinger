@@ -103,6 +103,8 @@ PROTECTED_PATHS = (
     "apps/web/src/components/auth/ApproveAgentSurface.tsx",
     "apps/web/src/components/cloud/ConnectOnboardingDialog.tsx",
     "apps/web/src/components/InstallT3Commands.tsx",
+    "apps/web/src/components/GitHubStarPrompt.tsx",
+    "apps/web/src/components/GitHubStarPrompt.test.ts",
     "apps/web/src/state/connectMcpApproval.ts",
     "packages/client-runtime/src/state/connectMcpApproval.ts",
     "infra/relay",
@@ -130,7 +132,7 @@ FORBIDDEN = re.compile(
     rb"GuestShareService\.layer|guestShareCreate|guestShare\.create|CloudManagedEndpointRuntime|/api/guest/|"
     rb"cloudGetRelayClientStatus|cloudInstallRelayClient|cloud\.(?:getRelayClientStatus|installRelayClient)|RelayClientInstallDialog|"
     rb"CloudHttp\.layer|HttpApiBuilder\.layer\(EnvironmentHttpApi\).*connect|"
-    rb"CODEX_INTERNAL_ORIGINATOR_OVERRIDE\s*:|CLAUDE_CODE_ENTRYPOINT\s*:\s*['\x22]t3-code|"
+    rb"recordPromptSent\(|GROK_OAUTH2_REFERRER|CODEX_INTERNAL_ORIGINATOR_OVERRIDE\s*:|CLAUDE_CODE_ENTRYPOINT\s*:\s*['\x22]t3-code|"
     rb"com\.t3tools\.t3code|"
     rb"VIBECODINGER_REPOSITORY_URL.{0,64}github\.com/pingdotgg/t3code|"
     rb"usePrimaryCloudLinkState|useCloudLinkState|PhoneConnectLink|WebhookDeliveryMode|"

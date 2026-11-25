@@ -1448,7 +1448,6 @@
   "a0c0f225d63f2870": "Kunde inte läsa in den lokala anslutningskatalogen: {cause}",
   "364d160e3fb7d011": "Kunde inte spara den lokala anslutningskatalogen: {cause}",
   "27172ec7f27db0fb": "Kunde inte ta bort den lokala anslutningskatalogen: {cause}",
-  "c4909e67a74f9cfe": "Kunde inte migrera den lokala anslutningskatalogen: {cause}",
   "23b1dfa942028e49": "Kunde inte läsa in den mobila enhetsidentiteten: {cause}",
   "9e3ddc12ab6f7982": "{feature}-miljöer är bara tillgängliga i skrivbordsappen.",
   "648d9c9d195935df": "Återanslut till den här miljön och försök igen.",

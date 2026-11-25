@@ -26,7 +26,7 @@ import {
 import * as ModelCatalog from "@vibecodinger/provider-core/server/ModelCatalog";
 
 const MODEL_MANIFEST_URL =
-  "https://raw.githubusercontent.com/pingdotgg/t3code/main/apps/server/src/provider/model-manifest.json";
+  "https://raw.githubusercontent.com/AkaakuHub/t3code/main/apps/server/src/provider/model-manifest.json";
 
 const MANIFEST_TTL_MS = 60 * 60 * 1000;
 

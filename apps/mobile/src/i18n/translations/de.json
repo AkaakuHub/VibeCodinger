@@ -1448,7 +1448,6 @@
   "a0c0f225d63f2870": "Der lokale Verbindungskatalog konnte nicht geladen werden: {cause}",
   "364d160e3fb7d011": "Der lokale Verbindungskatalog konnte nicht gespeichert werden: {cause}",
   "27172ec7f27db0fb": "Der lokale Verbindungskatalog konnte nicht gelöscht werden: {cause}",
-  "c4909e67a74f9cfe": "Der lokale Verbindungskatalog konnte nicht migriert werden: {cause}",
   "23b1dfa942028e49": "Die Identität des Mobilgeräts konnte nicht geladen werden: {cause}",
   "9e3ddc12ab6f7982": "{feature}-Umgebungen sind nur in der Desktop-App verfügbar.",
   "648d9c9d195935df": "Verbinde dich erneut mit dieser Umgebung und versuche es noch einmal.",

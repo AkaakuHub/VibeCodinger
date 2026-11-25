@@ -1448,7 +1448,6 @@
   "a0c0f225d63f2870": "Could not load the local connection catalog: {cause}",
   "364d160e3fb7d011": "Could not save the local connection catalog: {cause}",
   "27172ec7f27db0fb": "Could not delete the local connection catalog: {cause}",
-  "c4909e67a74f9cfe": "Could not migrate the local connection catalog: {cause}",
   "23b1dfa942028e49": "Could not load the mobile device identity: {cause}",
   "9e3ddc12ab6f7982": "{feature} environments are only available in the desktop app.",
   "648d9c9d195935df": "Reconnect to this environment and try again.",

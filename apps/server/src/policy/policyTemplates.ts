@@ -77,7 +77,7 @@ const policies = (): ReadonlyArray<Policy> => [
   {
     id: "Clients",
     title: "Allowed clients",
-    help: "What may connect to VibeCodinger on this machine.\n\nWithout Remote, VibeCodinger only listens on this machine, does not create pairing links, signs out devices that paired earlier, and turns T3 Connect off. Check at least one client.\n\nDisabled or Not Configured: no restriction.",
+    help: "What may connect to VibeCodinger on this machine.\n\nWithout Remote, VibeCodinger only listens on this machine, does not create pairing links, signs out devices that paired earlier. Check at least one client.\n\nDisabled or Not Configured: no restriction.",
     elements: [
       {
         kind: "checkbox",
@@ -97,16 +97,10 @@ const policies = (): ReadonlyArray<Policy> => [
         kind: "checkbox",
         list: "Clients",
         name: "remote",
-        label: "Remote: phones, other computers, app.t3.codes",
+        label: "Remote: phones and other computers",
         defaultChecked: false,
       },
     ],
-  },
-  {
-    id: "Connect",
-    title: "Allow T3 Connect",
-    help: "Disabled turns T3 Connect off and unlinks this machine. Other remote access still follows Allowed clients.\n\nEnabled or Not Configured leaves T3 Connect available.",
-    toggle: "Connect",
   },
   {
     id: "WebhookTasks",

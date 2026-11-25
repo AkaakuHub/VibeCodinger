@@ -1448,7 +1448,6 @@
   "a0c0f225d63f2870": "Impossible de charger le catalogue de connexions local : {cause}",
   "364d160e3fb7d011": "Impossible d’enregistrer le catalogue de connexions local : {cause}",
   "27172ec7f27db0fb": "Impossible de supprimer le catalogue local des connexions : {cause}",
-  "c4909e67a74f9cfe": "Impossible de migrer le catalogue local des connexions : {cause}",
   "23b1dfa942028e49": "Impossible de charger l’identité de l’appareil mobile : {cause}",
   "9e3ddc12ab6f7982": "Les environnements {feature} ne sont disponibles que dans l’app de bureau.",
   "648d9c9d195935df": "Reconnectez-vous à cet environnement et réessayez.",

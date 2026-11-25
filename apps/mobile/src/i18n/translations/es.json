@@ -1448,7 +1448,6 @@
   "a0c0f225d63f2870": "No se pudo cargar el catálogo de conexiones local: {cause}",
   "364d160e3fb7d011": "No se pudo guardar el catálogo de conexiones local: {cause}",
   "27172ec7f27db0fb": "No se pudo eliminar el catálogo de conexiones local: {cause}",
-  "c4909e67a74f9cfe": "No se pudo migrar el catálogo de conexiones local: {cause}",
   "23b1dfa942028e49": "No se pudo cargar la identidad del dispositivo móvil: {cause}",
   "9e3ddc12ab6f7982": "Los entornos de {feature} solo están disponibles en la app de escritorio.",
   "648d9c9d195935df": "Vuelve a conectarte a este entorno e inténtalo de nuevo.",

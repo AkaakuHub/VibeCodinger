@@ -51,7 +51,7 @@ function isRepositoryPath(repository: string): boolean {
 export const APP_SIGN_IN: SourceControlAppSignIn = {
   appName: "VibeCodinger for GitHub",
   hosts: ["github.com"],
-  installUrl: "https://github.com/apps/vibe-codinger-for-github/installations/new",
+  installUrl: "https://github.com/settings/installations",
   revokeUrl: "https://github.com/settings/apps/authorizations",
 };
 
