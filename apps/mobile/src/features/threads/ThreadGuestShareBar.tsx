@@ -14,12 +14,11 @@ import {
 } from "@t3tools/contracts";
 import { Atom } from "effect/reactivity";
 import { msg, useGT } from "gt-react-native";
-import { type ReactNode, useEffect, useMemo, useState } from "react";
+import { type ReactNode, useMemo, useState } from "react";
 import { View } from "react-native";
 
 import { Button } from "../../components/ui/Button";
 import { AppText as Text } from "../../components/ui/AppText";
-import { SymbolView } from "../../components/ui/AppSymbol";
 import * as Dialog from "../../components/ui/Dialog";
 import { m } from "../../i18n/messages";
 import { useEnvironmentScope } from "../../state/session";
@@ -53,71 +52,6 @@ function alertOnFailure(failureTitle: string, result: AtomCommandResult<unknown,
     const error = squashAtomCommandFailure(result);
     Dialog.alert(failureTitle, errorDisplayMessage(error, m) ?? m(msg("Try again.")));
   }
-}
-
-/**
- * Owner controls for a guest link, above the composer: who the link is for and a way to stop
- * sharing. Links are created from the thread's menu, see `ThreadGuestShareSheet`. Waiting
- * messages show in the feed, see `ThreadGuestPendingMessage`.
- */
-export function ThreadGuestShareBar(props: {
-  readonly threadRef: ScopedThreadRef | null;
-  readonly canOperateThread: boolean;
-}) {
-  const { threadRef } = props;
-  const gt = useGT();
-  const share = useThreadGuestShare(threadRef);
-  const closeGuestShare = useAtomCommand(threadEnvironment.closeGuestShare, "stop guest sharing");
-  const [busy, setBusy] = useState(false);
-  // The server keeps an expired link so waiting messages stay resolvable; the label flips when
-  // it expires.
-  // Keyed by the expiry, so a replaced link (even one already expired) gets its own timer.
-  const [expiredAt, setExpiredAt] = useState<string | null>(null);
-  const expiresAt = share?.expiresAt;
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- arms a timer that flips the share label when the guest link expires
-  useEffect(() => {
-    if (expiresAt === undefined) return;
-    const timer = setTimeout(
-      () => setExpiredAt(expiresAt),
-      Math.max(0, Date.parse(expiresAt) - Date.now()),
-    );
-    return () => clearTimeout(timer);
-  }, [expiresAt]);
-  if (threadRef === null || !share) return null;
-
-  const disabled = busy || !props.canOperateThread;
-  const stopSharing = () =>
-    Dialog.confirm({
-      title: gt("Stop sharing?"),
-      message: gt("The guest loses access and the link stops working."),
-      confirmText: gt("Stop sharing"),
-      destructive: true,
-      onConfirm: () => {
-        if (disabled) return;
-        setBusy(true);
-        void closeGuestShare({
-          environmentId: threadRef.environmentId,
-          input: { threadId: threadRef.threadId },
-        }).then((result) => {
-          setBusy(false);
-          alertOnFailure(gt("Could not stop sharing"), result);
-        });
-      },
-    });
-
-  return (
-    <View className="flex-row items-center gap-2 px-4 pb-2">
-      <SymbolView name="person.2" size={12} tintColorClassName="accent-foreground-muted" />
-      <Text className="min-w-0 flex-1 text-xs text-foreground-muted" numberOfLines={1}>
-        {expiredAt === share.expiresAt
-          ? gt("Guest link expired")
-          : share.guestName === null
-            ? gt("Guest link active")
-            : gt("{guestName} is a guest", { guestName: share.guestName })}
-      </Text>
-      <Button label={gt("Stop sharing")} tone="text" disabled={disabled} onPress={stopSharing} />
-    </View>
-  );
 }
 
 /**

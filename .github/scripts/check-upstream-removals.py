@@ -12,6 +12,12 @@ PROTECTED_PATHS = (
     ".github/scripts",
     ".github/workflows",
     ".github/triage/PLAYBOOK.md",
+    "apps/server/src/guest",
+    "apps/web/src/routes/guest.tsx",
+    "apps/web/src/components/guest",
+    "apps/server/src/cloud/ManagedEndpointRuntime.ts",
+    "apps/server/src/cloud/RelayClientLedger.ts",
+    "packages/shared/src/relayClient.ts",
     "apps/server/src/triage/triagePrompt.ts",
     "apps/server/src/triage/triagePrompt.test.ts",
     "apps/desktop/src/app/ClerkTokenStore.ts",
@@ -64,6 +70,7 @@ FORBIDDEN = re.compile(
     rb"t3-task-cache\.pinglabs\.workers\.dev|"
     rb"@clerk/(?:expo|react|electron)|cloudAuthProvider|managedAuthShell|"
     rb"layerCloudDesiredLinkReconcile|managedTunnelStartup|watchManagedTunnelOrigin|hostedApprovalUrl|agentApprovalAppUrlConfig|"
+    rb"GuestShareService\.layer|guestShareCreate|guestShare\.create|CloudManagedEndpointRuntime|/api/guest/|"
     rb"cloudGetRelayClientStatus|cloudInstallRelayClient|cloud\.(?:getRelayClientStatus|installRelayClient)|RelayClientInstallDialog|"
     rb"CloudHttp\.layer|HttpApiBuilder\.layer\(EnvironmentHttpApi\).*connect|"
     rb"VIBECODINGER_REPOSITORY_URL.{0,64}github\.com/pingdotgg/t3code|"

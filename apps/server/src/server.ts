@@ -170,10 +170,7 @@ import * as McpOAuth from "./auth/McpOAuth.ts";
 import * as McpOAuthHttp from "./auth/mcpOAuthHttp.ts";
 import * as EnvironmentAuth from "./auth/EnvironmentAuth.ts";
 import * as EnvironmentAuthPolicy from "./auth/EnvironmentAuthPolicy.ts";
-import * as GuestHttp from "./guest/http.ts";
 import * as LinkThreadHttp from "./peer/linkThreadHttp.ts";
-import * as CloudManagedEndpointRuntime from "./cloud/ManagedEndpointRuntime.ts";
-import * as RelayClientLedger from "./cloud/RelayClientLedger.ts";
 import * as ServerSelfUpdate from "./cloud/selfUpdate.ts";
 import * as DesktopAppUpdate from "./desktopUpdate/DesktopAppUpdate.ts";
 import * as ServiceLauncherClient from "./cloud/serviceLauncherClient.ts";
@@ -211,7 +208,6 @@ import { closeNonPrivateNetworkConnections, loopbackUrlHostForAddress } from "./
 import * as OrchestrationHttp from "./orchestration-v2/http.ts";
 import * as ProjectHttp from "./project/http.ts";
 import * as NetService from "@t3tools/shared/Net";
-import * as RelayClient from "@t3tools/shared/relayClient";
 import {
   disableTailscaleServe,
   ensureTailscaleServe,
@@ -309,33 +305,6 @@ const layerResourceDiagnostics = Layer.mergeAll(
   ProcessResourceMonitor.layer.pipe(Layer.provide(layerResourceTelemetry)),
   ProcessGroupMetrics.layer.pipe(Layer.provide(layerResourceTelemetry)),
 );
-
-const layerRelayClient = Layer.unwrap(
-  Effect.gen(function* () {
-    const config = yield* ServerConfig.ServerConfig;
-    const policy = yield* ManagedPolicy.ManagedPolicy;
-    const layerCloudflared = RelayClient.layerCloudflared({ baseDir: config.baseDir });
-    if (ManagedLimits.allowsConnect(policy)) return layerCloudflared;
-    // The connector only carries T3 Connect, so a policy without Connect never installs one.
-    const refused = Effect.fn("RelayClient.installRefusedByPolicy")(function* () {
-      return yield* new RelayClient.RelayClientInstallError({
-        reason: "managed_by_policy",
-        message: ManagedLimits.refuseConnect(policy).message,
-      });
-    });
-    return Layer.effect(
-      RelayClient.RelayClient,
-      Effect.gen(function* () {
-        const relayClient = yield* RelayClient.RelayClient;
-        return RelayClient.RelayClient.of({
-          ...relayClient,
-          install: refused(),
-          installWithProgress: refused,
-        });
-      }),
-    ).pipe(Layer.provide(layerCloudflared));
-  }),
-).pipe(Layer.provide(ManagedPolicy.layer));
 
 // NodeServices and NodeHttpServer each output Node's own spawner, so each is followed by this one.
 const layerSpawner = SpawnWorker.layerServer.pipe(Layer.provide(NodeServices.layer));
@@ -558,22 +527,6 @@ const layerAuth = EnvironmentAuth.layer.pipe(
   Layer.provide(ServerSecretStore.layer),
 );
 
-const layerCloudManagedEndpointRuntime = Layer.mergeAll(
-  layerRelayClient,
-  CloudManagedEndpointRuntime.layer.pipe(
-    Layer.provide(ServerSecretStore.layer),
-    Layer.provide(layerRelayClient),
-    Layer.provide(
-      Layer.unwrap(
-        Effect.gen(function* () {
-          const config = yield* ServerConfig.ServerConfig;
-          return RelayClientLedger.layer({ stateDir: config.stateDir });
-        }),
-      ),
-    ),
-  ),
-);
-
 const layerTaskFolders = TaskFolders.layer.pipe(
   Layer.provide(
     Layer.mergeAll(
@@ -791,7 +744,6 @@ const layerRuntimeCoreDependencies = layerRuntimeCoreDependenciesBase.pipe(
   ),
   Layer.provideMerge(ServerE2eeIdentity.layer),
   Layer.provideMerge(ServerSecretStore.layer),
-  Layer.provideMerge(layerCloudManagedEndpointRuntime),
 );
 
 const layerRuntimeDependencies = layerRuntimeCoreDependencies.pipe(
@@ -839,7 +791,6 @@ const layerMakeRoutes = Layer.mergeAll(
     ServerHttp.layerDesktopReadinessProofRoute,
     ServerHttp.layerAssetRoute,
     ServerHttp.layerAttachmentUploadRoute,
-    GuestHttp.layer,
     LinkThreadHttp.layer,
     DeviceHubProxy.layer,
     ServerBrowserStream.routeLayer,

@@ -130,7 +130,6 @@ import * as ThreadIssueService from "./orchestration-v2/ThreadIssueService.ts";
 import * as IssueTrackerConnections from "./issue/IssueTrackerConnections.ts";
 import * as PullRequestService from "./pullRequest/PullRequestService.ts";
 import * as PullRequestSyncReactor from "./orchestration-v2/PullRequestSyncReactor.ts";
-import * as RelayClient from "@t3tools/shared/relayClient";
 import * as RemoteOpenTargets from "./environment/RemoteOpenTargets.ts";
 import * as RepositoryIdentityResolver from "./project/RepositoryIdentityResolver.ts";
 import * as ResourceTelemetry from "./resourceTelemetry/ResourceTelemetry.ts";
@@ -140,7 +139,6 @@ import * as Workflows from "./workflows/Workflows.ts";
 import * as WorkflowRuntime from "./workflows/WorkflowRuntime.ts";
 import * as SecretRequests from "./secrets/SecretRequests.ts";
 import * as FeedbackStore from "./feedback/FeedbackStore.ts";
-import * as GuestShareService from "./guest/GuestShareService.ts";
 import * as ServerEnvironment from "./environment/ServerEnvironment.ts";
 import * as ServerLifecycleEvents from "./serverLifecycleEvents.ts";
 import * as ServerRuntimeStartup from "./serverRuntimeStartup.ts";
@@ -886,7 +884,6 @@ const layerUnusedConfigRpcServices = Layer.mergeAll(
   Layer.mock(ThreadIssueService.ThreadIssueService)({}),
   Layer.mock(IssueTrackerConnections.IssueTrackerConnections)({}),
   Layer.mock(PullRequestSyncReactor.PullRequestSyncReactor)({}),
-  Layer.mock(RelayClient.RelayClient)({}),
   Layer.mock(RepositoryIdentityResolver.RepositoryIdentityResolver)({}),
   Layer.mock(ResourceTelemetry.ResourceTelemetry)({}),
   Layer.mock(ReviewService.ReviewService)({}),
@@ -896,7 +893,6 @@ const layerUnusedConfigRpcServices = Layer.mergeAll(
   Layer.mock(SecretRequests.SecretRequests)({}),
   Layer.mock(FeedbackStore.FeedbackStore)({}),
   Layer.mock(SecretResolver.SecretResolver)({}),
-  Layer.mock(GuestShareService.GuestShareService)({}),
   Layer.mock(ServerLifecycleEvents.ServerLifecycleEvents)({}),
   Layer.mock(ServerRuntimeStartup.ServerRuntimeStartup)({}),
   Layer.mock(ServerSelfUpdate.ServerSelfUpdate)({}),

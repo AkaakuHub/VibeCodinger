@@ -69,7 +69,6 @@ import { GitOverviewSheet } from "./features/threads/git/GitOverviewSheet";
 import { ThreadPullRequestsSheet } from "./features/threads/ThreadPullRequestsSheet";
 import { ThreadAgentsSheet } from "./features/threads/ThreadAgentsSheet";
 import { LinkedThreadSheet } from "./features/threads/LinkedThreadSheet";
-import { ThreadGuestShareSheet } from "./features/threads/ThreadGuestShareSheet";
 import { ThreadBackgroundWorkSheet } from "./features/threads/ThreadBackgroundWorkSheet";
 import { ThreadQueueSheet } from "./features/threads/ThreadQueueControl";
 import {
@@ -792,10 +791,6 @@ const RootStackConfig = createWorkspaceStackNavigator({
     LinkedThreadFullscreen: createNativeStackScreen({
       screen: LinkedThreadSheet,
       options: modalRoute({ header: "glass", itemStyle: "editor", duoMinimize: "onScrollUp" }),
-    }),
-    ThreadGuestShare: createNativeStackScreen({
-      screen: ThreadGuestShareSheet,
-      options: sheetRoute({ detent: 0.5 }),
     }),
     GitOverview: createNativeStackScreen({
       screen: GitOverviewSheet,
