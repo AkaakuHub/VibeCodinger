@@ -1,5 +1,5 @@
 import { AgentFeedbackKind, AgentFeedbackTrace } from "@vibecodinger/contracts";
-import { resolveT3McpToolId } from "@vibecodinger/shared/t3McpToolPresentation";
+import { resolveVibeCodingerMcpToolId } from "@vibecodinger/shared/vibeCodingerMcpToolPresentation";
 import * as Effect from "effect/Effect";
 import * as Schema from "effect/Schema";
 import * as Struct from "effect/Struct";
@@ -209,8 +209,8 @@ const VIBECODINGER_PREFIX =
   /^(?:mcp__vibe[-_]?codinger(?:[-_]direct)?__|vibe[-_]?codinger(?:[-_]direct)?[.:/])/iu;
 
 /** The bare name of a registered T3 tool however a provider prefixed it, else undefined. */
-export const resolveT3ToolName = (name: string, toolNames: ReadonlyArray<string>) => {
-  const tool = resolveT3McpToolId(name) ?? name.replace(VIBECODINGER_PREFIX, "");
+export const resolveVibeCodingerToolName = (name: string, toolNames: ReadonlyArray<string>) => {
+  const tool = resolveVibeCodingerMcpToolId(name) ?? name.replace(VIBECODINGER_PREFIX, "");
   if (toolNames.includes(tool)) return tool;
   // OpenCode 2 prefixes tools with `vibe-codinger-<thread>_`, underscores and all: the longest name wins.
   if (!/^vibe-codinger-/iu.test(name)) return undefined;
@@ -223,5 +223,5 @@ export const resolveT3ToolName = (name: string, toolNames: ReadonlyArray<string>
 export const resolveFeedbackSubject = (value: string, toolNames: ReadonlyArray<string>) => {
   const subject = value.trim();
   if (subject === "general" || VIBECODINGER_CLI_COMMANDS.includes(subject)) return subject;
-  return resolveT3ToolName(subject, toolNames);
+  return resolveVibeCodingerToolName(subject, toolNames);
 };

@@ -189,7 +189,7 @@ const make = Effect.fn("FeedbackService.make")(function* (
           turns: input.turns,
           withText,
           sensitive,
-          t3Tools: mcpToolNames(),
+          vibeCodingerTools: mcpToolNames(),
           driverOf: (candidate) =>
             providerList.find((provider) => provider.instanceId === candidate.providerInstanceId)
               ?.driver,

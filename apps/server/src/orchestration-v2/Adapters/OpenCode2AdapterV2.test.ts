@@ -49,7 +49,7 @@ import * as ProviderContinuationRequests from "@vibecodinger/provider-core/serve
 import {
   OPENCODE_2_STILL_STOPPING,
   OPENCODE_PROVIDER,
-  t3McpServerName,
+  vibeCodingerMcpServerName,
 } from "@vibecodinger/provider-opencode/testing";
 import { resolveAttachmentPath } from "../../attachmentStore.ts";
 import { openCode2ReplayRuntime } from "./OpenCode2AdapterV2.testkit.ts";
@@ -5955,12 +5955,15 @@ it.layer(McpProviderSessions.layer)("OpenCode2 adapter", (it) => {
         "thread:delegated-task:command%3Amcp%3A48bef2bf-6d0e-4f7a-9c3b-2e5d8a1f7c40%3Adelegate-task%3Around1",
         "thread:delegated-task:command%3Amcp%3A48bef2bf-6d0e-4f7a-9c3b-2e5d8a1f7c40%3Adelegate-task%3Around2",
       ];
-      const names = yield* Effect.forEach(ids, t3McpServerName);
+      const names = yield* Effect.forEach(ids, vibeCodingerMcpServerName);
       for (const name of names) assert.match(name, /^vibe-codinger-[A-Za-z0-9_-]{1,56}$/);
       assert.equal(new Set(names).size, ids.length);
-      assert.deepEqual(yield* Effect.forEach(ids, t3McpServerName), names);
+      assert.deepEqual(yield* Effect.forEach(ids, vibeCodingerMcpServerName), names);
       assert.equal(names[0], "vibe-codinger-63abb5df2b188bdd");
-      assert.equal(yield* t3McpServerName(threadId), "vibe-codinger-thread_opencode2-adapter");
+      assert.equal(
+        yield* vibeCodingerMcpServerName(threadId),
+        "vibe-codinger-thread_opencode2-adapter",
+      );
     }).pipe(Effect.provide(NodeCrypto.layer)),
   );
 

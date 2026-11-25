@@ -158,8 +158,8 @@ describe("CodexAdapterV2 assistant message streaming", () => {
 
 describe("CodexAdapterV2 runtime policy", () => {
   it.effect.each([undefined, false, true])(
-    "selects native collaboration modes without prompt overrides with hasT3Mcp=%s",
-    (hasT3Mcp) =>
+    "selects native collaboration modes without prompt overrides with hasVibeCodingerMcp=%s",
+    (hasVibeCodingerMcp) =>
       Effect.gen(function* () {
         for (const interactionMode of ["plan", "default"] as const) {
           for (const reasoningEffort of [undefined, "high"] as const) {
@@ -174,7 +174,7 @@ describe("CodexAdapterV2 runtime policy", () => {
                   ? {}
                   : { options: [{ id: "reasoningEffort", value: reasoningEffort }] }),
               },
-              ...(hasT3Mcp === undefined ? {} : { hasT3Mcp }),
+              ...(hasVibeCodingerMcp === undefined ? {} : { hasVibeCodingerMcp }),
             });
 
             assert.deepEqual(params.collaborationMode, {
@@ -187,7 +187,7 @@ describe("CodexAdapterV2 runtime policy", () => {
             assert.equal(params.effort, reasoningEffort);
             // Some Responses providers reject `detailed`; `auto` is the most detailed a model supports.
             assert.equal(params.summary, "auto");
-            assert.equal(params.additionalContext !== undefined, hasT3Mcp === true);
+            assert.equal(params.additionalContext !== undefined, hasVibeCodingerMcp === true);
           }
         }
       }),
@@ -252,7 +252,7 @@ describe("CodexAdapterV2 runtime policy", () => {
           codexInput: [{ type: "text", text: "test" }],
           runtimePolicy: { runtimeMode, interactionMode: "default", cwd: "/work/app", workspace },
           modelSelection: { instanceId: ProviderInstanceId.make("codex"), model: "gpt-5.4" },
-          hasT3Mcp: false,
+          hasVibeCodingerMcp: false,
         });
 
       const autoAcceptEdits = yield* build("auto-accept-edits");
@@ -321,7 +321,7 @@ describe("CodexAdapterV2 runtime policy", () => {
         codexInput: [{ type: "text", text: "what's on my list?" }],
         runtimePolicy: policy,
         modelSelection,
-        hasT3Mcp: true,
+        hasVibeCodingerMcp: true,
         appContext,
       });
       assert.deepEqual(withT3.additionalContext?.["mcp_app_todos_list_todos_item-1"], {
@@ -4422,7 +4422,7 @@ describe("CodexAdapterV2 post-settle continuation", () => {
         codexInput: [{ type: "text", text: "work" }],
         runtimePolicy: CODEX_TEST_RUNTIME_POLICY,
         modelSelection,
-        hasT3Mcp: true,
+        hasVibeCodingerMcp: true,
         cyberAccess: { defaultProgram: "daybreakBlue" },
       });
       assert.include(
@@ -12799,7 +12799,7 @@ describe("CodexAdapterV2 post-settle continuation", () => {
               codexInput: [{ type: "text", text }],
               runtimePolicy: CODEX_TEST_RUNTIME_POLICY,
               modelSelection: CODEX_TEST_MODEL_SELECTION,
-              hasT3Mcp: true,
+              hasVibeCodingerMcp: true,
             }),
             (params): CodexReplay.CodexAppServerReplayEntry => ({
               type: "expect_outbound",

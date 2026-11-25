@@ -74,7 +74,7 @@ Investigate with read-only actions and do not edit files or otherwise execute th
 
 export interface T3AcpInstructionState {
   readonly interactionMode: ProviderInteractionMode;
-  readonly hasT3Mcp: boolean;
+  readonly hasVibeCodingerMcp: boolean;
   readonly hasDeviceTools: boolean;
 }
 
@@ -88,7 +88,7 @@ export function t3AcpPromptWithInstructions(input: {
   if (input.prompt.trimStart().startsWith("/")) return input.prompt;
   if (
     input.previousState?.interactionMode === input.state.interactionMode &&
-    input.previousState.hasT3Mcp === input.state.hasT3Mcp &&
+    input.previousState.hasVibeCodingerMcp === input.state.hasVibeCodingerMcp &&
     input.previousState.hasDeviceTools === input.state.hasDeviceTools
   ) {
     return input.prompt;
@@ -97,7 +97,7 @@ export function t3AcpPromptWithInstructions(input: {
     input.state.interactionMode === "plan"
       ? VIBECODINGER_ACP_PLAN_MODE_INSTRUCTIONS
       : VIBECODINGER_ACP_DEFAULT_MODE_INSTRUCTIONS,
-    ...(input.state.hasT3Mcp
+    ...(input.state.hasVibeCodingerMcp
       ? [
           VIBECODINGER_BROWSER_TOOL_INSTRUCTIONS.trim(),
           ...(input.state.hasDeviceTools ? [VIBECODINGER_DEVICE_TOOL_INSTRUCTIONS] : []),
@@ -121,7 +121,7 @@ function prependT3OrchestrationInstructions(prompt: string, instructions: string
 /** For providers whose instructions ride on the prompt, so a compacted conversation loses them. */
 export function t3OrchestrationPrompt(input: {
   readonly prompt: string;
-  readonly hasT3Mcp: boolean;
+  readonly hasVibeCodingerMcp: boolean;
   readonly hasDeviceTools: boolean;
   readonly orchestrationDelivered: boolean;
   readonly deviceInstructionsDelivered: boolean;
@@ -129,7 +129,7 @@ export function t3OrchestrationPrompt(input: {
   readonly providerInstructions?: string;
   readonly providerInstructionsDelivered?: boolean;
 }): string {
-  if (!input.hasT3Mcp) return input.prompt;
+  if (!input.hasVibeCodingerMcp) return input.prompt;
   const instructions = [
     !input.orchestrationDelivered
       ? orchestrationInstructions(input.hasDeviceTools)
@@ -144,8 +144,8 @@ export function t3OrchestrationPrompt(input: {
 }
 
 export function t3OrchestrationSystemPrompt(
-  hasT3Mcp: boolean,
+  hasVibeCodingerMcp: boolean,
   hasDeviceTools: boolean,
 ): string | undefined {
-  return hasT3Mcp ? orchestrationInstructions(hasDeviceTools) : undefined;
+  return hasVibeCodingerMcp ? orchestrationInstructions(hasDeviceTools) : undefined;
 }

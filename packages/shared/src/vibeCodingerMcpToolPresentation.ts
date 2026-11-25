@@ -1,11 +1,11 @@
-export type T3McpToolLogo = "vibe-codinger";
+export type VibeCodingerMcpToolLogo = "vibe-codinger";
 
-export interface T3McpToolPresentation {
+export interface VibeCodingerMcpToolPresentation {
   readonly displayName: string;
-  readonly logo: T3McpToolLogo;
+  readonly logo: VibeCodingerMcpToolLogo;
 }
 
-export type T3McpToolSummaryAction =
+export type VibeCodingerMcpToolSummaryAction =
   | "capabilities"
   | "delegate"
   | "task-status"
@@ -90,19 +90,19 @@ export type T3McpToolSummaryAction =
   | "html-render"
   | "send-to-user";
 
-export interface T3McpToolDefinition {
+export interface VibeCodingerMcpToolDefinition {
   readonly displayName: string;
   readonly labels: readonly [action: string, running: string, completed: string, detail: string];
   readonly icon: "vibe-codinger" | "browser" | "device" | "pull-request";
-  readonly summaryAction: T3McpToolSummaryAction;
+  readonly summaryAction: VibeCodingerMcpToolSummaryAction;
 }
 
 function tool(
-  labels: T3McpToolDefinition["labels"],
-  summaryAction: T3McpToolSummaryAction,
-  icon: T3McpToolDefinition["icon"] = "vibe-codinger",
+  labels: VibeCodingerMcpToolDefinition["labels"],
+  summaryAction: VibeCodingerMcpToolSummaryAction,
+  icon: VibeCodingerMcpToolDefinition["icon"] = "vibe-codinger",
   displayName = `${labels[0]} ${labels[3]}`,
-): T3McpToolDefinition {
+): VibeCodingerMcpToolDefinition {
   return { displayName, labels, icon, summaryAction };
 }
 
@@ -115,7 +115,7 @@ const VIBECODINGER_MCP_SERVER_ALIASES = new Set([
   "vibe_codinger_direct",
 ]);
 
-const VIBECODINGER_MCP_TOOLS: Readonly<Record<string, T3McpToolDefinition>> = {
+const VIBECODINGER_MCP_TOOLS: Readonly<Record<string, VibeCodingerMcpToolDefinition>> = {
   link_pull_request: tool(
     ["Link", "Linking", "Linked", "a pull request"],
     "link-pr",
@@ -447,7 +447,7 @@ export const VIBECODINGER_MCP_TOOL_NAMES: ReadonlySet<string> = new Set(
   Object.keys(VIBECODINGER_MCP_TOOLS),
 );
 
-function normalizeT3McpToolLabel(value: string): string {
+function normalizeVibeCodingerMcpToolLabel(value: string): string {
   return value.replace(/\s+(?:complete|completed)\s*$/i, "").trim();
 }
 
@@ -457,19 +457,19 @@ const toolNameCache = new Map<string, string | null>();
 const TOOL_NAME_CACHE_LIMIT = 10_000;
 const TOOL_NAME_CACHE_MAX_KEY_LENGTH = 256;
 
-function resolveT3McpToolName(value: string): string | null {
-  if (value.length > TOOL_NAME_CACHE_MAX_KEY_LENGTH) return parseT3McpToolName(value);
+function resolveVibeCodingerMcpToolName(value: string): string | null {
+  if (value.length > TOOL_NAME_CACHE_MAX_KEY_LENGTH) return parseVibeCodingerMcpToolName(value);
   const cached = toolNameCache.get(value);
   if (cached !== undefined) return cached;
-  const name = parseT3McpToolName(value);
+  const name = parseVibeCodingerMcpToolName(value);
   if (toolNameCache.size >= TOOL_NAME_CACHE_LIMIT) toolNameCache.clear();
   toolNameCache.set(value, name);
   return name;
 }
 
 // ACP tool prefixes vary; match loosely but require a known display-name entry.
-function parseT3McpToolName(value: string): string | null {
-  const label = normalizeT3McpToolLabel(value);
+function parseVibeCodingerMcpToolName(value: string): string | null {
+  const label = normalizeVibeCodingerMcpToolLabel(value);
   const mcpMatch = /^mcp__(?<server>.+?)__(?<tool>.+)$/i.exec(label);
   if (mcpMatch?.groups) {
     const { server, tool } = mcpMatch.groups;
@@ -500,8 +500,8 @@ function parseT3McpToolName(value: string): string | null {
   return longest;
 }
 
-export function resolveT3McpToolId(toolName: string | null | undefined): string | null {
-  const name = toolName == null ? null : resolveT3McpToolName(toolName);
+export function resolveVibeCodingerMcpToolId(toolName: string | null | undefined): string | null {
+  const name = toolName == null ? null : resolveVibeCodingerMcpToolName(toolName);
   return name !== null && Object.hasOwn(VIBECODINGER_MCP_TOOLS, name) ? name : null;
 }
 
@@ -522,11 +522,11 @@ const ACTION_TOOLS: Readonly<Record<string, (action: string) => string | undefin
 };
 
 /** Pass the call's input so an action tool resolves to the labels and summary of its action. */
-export function resolveT3McpToolDefinition(
+export function resolveVibeCodingerMcpToolDefinition(
   toolName: string | null | undefined,
   input?: unknown,
-): T3McpToolDefinition | null {
-  const name = toolName == null ? null : resolveT3McpToolName(toolName);
+): VibeCodingerMcpToolDefinition | null {
+  const name = toolName == null ? null : resolveVibeCodingerMcpToolName(toolName);
   if (name === null || !Object.hasOwn(VIBECODINGER_MCP_TOOLS, name)) return null;
   const action = asSummaryInput(input)?.action;
   const actionTool = typeof action === "string" ? ACTION_TOOLS[name]?.(action) : undefined;
@@ -537,7 +537,7 @@ export function resolveT3McpToolDefinition(
 
 /** Tools whose summary depends on which fields a call sets. */
 const ACTION_SUMMARIES: Readonly<
-  Record<string, (input: SummaryInput) => T3McpToolSummaryAction | undefined>
+  Record<string, (input: SummaryInput) => VibeCodingerMcpToolSummaryAction | undefined>
 > = {
   vc_thread_configure: ({ modelSelection }) =>
     modelSelection === undefined ? "thread-configuration" : "thread-configure",
@@ -545,22 +545,22 @@ const ACTION_SUMMARIES: Readonly<
     scheduledTaskId === undefined ? "schedule-create" : "schedule-update",
 };
 
-export function resolveT3McpSummaryAction(
+export function resolveVibeCodingerMcpSummaryAction(
   toolName: string | null | undefined,
   input: unknown,
-): T3McpToolSummaryAction | null {
-  const definition = resolveT3McpToolDefinition(toolName, input);
+): VibeCodingerMcpToolSummaryAction | null {
+  const definition = resolveVibeCodingerMcpToolDefinition(toolName, input);
   if (definition === null) return null;
-  const summarize = ACTION_SUMMARIES[resolveT3McpToolName(toolName!) ?? ""];
+  const summarize = ACTION_SUMMARIES[resolveVibeCodingerMcpToolName(toolName!) ?? ""];
   const fields = asSummaryInput(input);
   return (fields && summarize?.(fields)) ?? definition.summaryAction;
 }
 
-export function resolveT3McpToolPresentation(
+export function resolveVibeCodingerMcpToolPresentation(
   toolName: string | null | undefined,
   input?: unknown,
-): T3McpToolPresentation | null {
-  const definition = resolveT3McpToolDefinition(toolName, input);
+): VibeCodingerMcpToolPresentation | null {
+  const definition = resolveVibeCodingerMcpToolDefinition(toolName, input);
   return definition === null
     ? null
     : { displayName: definition.displayName, logo: "vibe-codinger" };

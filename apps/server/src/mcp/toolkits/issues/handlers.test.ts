@@ -65,11 +65,11 @@ const project: OrchestrationProjectShell = {
     locator: {
       source: "git-remote",
       remoteName: "origin",
-      remoteUrl: "git@github.com:T3Tools/T3Code.git",
+      remoteUrl: "git@github.com:VibeCodingerTools/T3Code.git",
     },
     provider: SourceControlProviderKind.make("github"),
-    displayName: "T3Tools/T3Code",
-    owner: "T3Tools",
+    displayName: "VibeCodingerTools/T3Code",
+    owner: "VibeCodingerTools",
     name: "T3Code",
   },
   createdAt: "2026-08-01T00:00:00.000Z",
@@ -106,7 +106,7 @@ const detail: IssueDetail = {
   key: "7",
   displayKey: "#7",
   title: "Seven",
-  url: "https://github.com/T3Tools/T3Code/issues/7",
+  url: "https://github.com/VibeCodingerTools/T3Code/issues/7",
   author: null,
   state: { category: "open", name: "open" },
   createdAt: "2026-08-01T00:00:00.000Z",
@@ -376,7 +376,7 @@ describe("issue toolkit handlers", () => {
     Effect.gen(function* () {
       const harness = yield* makeHarness();
       const result = yield* harness.call("link_issue", {
-        url: "https://github.com/T3Tools/T3Code/issues/7",
+        url: "https://github.com/VibeCodingerTools/T3Code/issues/7",
       });
       expect(result).toEqual({
         projectId: PROJECT_ID,
@@ -384,7 +384,7 @@ describe("issue toolkit handlers", () => {
         host: "github.com",
         scope: "t3tools/t3code",
         key: "7",
-        url: "https://github.com/T3Tools/T3Code/issues/7",
+        url: "https://github.com/VibeCodingerTools/T3Code/issues/7",
         alreadyLinked: false,
       });
       expect(yield* Ref.get(harness.links)).toEqual([
@@ -397,7 +397,7 @@ describe("issue toolkit handlers", () => {
             scope: "t3tools/t3code",
             key: "7",
           },
-          url: "https://github.com/T3Tools/T3Code/issues/7",
+          url: "https://github.com/VibeCodingerTools/T3Code/issues/7",
           displayKey: detail.displayKey,
           title: detail.title,
           source: "agent",

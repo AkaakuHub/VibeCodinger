@@ -15,7 +15,7 @@ layer("095_TurnItemInlineWorkOutput", (it) => {
       const rows: ReadonlyArray<readonly [string, string, object, number]> = [
         ["delegate", "dynamic_tool", { toolName: "mcp__vibe_codinger__delegate_task" }, 1],
         ["html", "dynamic_tool", { toolName: "x", output: { htmlRender: {} } }, 1],
-        ["mcp-app", "dynamic_tool", { toolName: "x", output: { t3McpApp: {} } }, 1],
+        ["mcp-app", "dynamic_tool", { toolName: "x", output: { vibeCodingerMcpApp: {} } }, 1],
         ["image", "dynamic_tool", { toolName: "view_image", viewedImagePath: "/a.png" }, 1],
         ["send", "dynamic_tool", { toolName: "mcp__vibe-codinger__send_to_user" }, 1],
         ["sent", "dynamic_tool", { toolName: "execute", output: '{"sentMessage":"Hi"}' }, 1],

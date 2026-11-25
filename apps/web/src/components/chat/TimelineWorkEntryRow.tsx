@@ -20,7 +20,7 @@ import {
   toolGroupAction,
   workEntryViewedImagePath,
 } from "@vibecodinger/client-runtime/work-log/presentation";
-import { t3ToolResultIndicatesFailure } from "@vibecodinger/client-runtime/t3ToolSummary";
+import { vibeCodingerToolResultIndicatesFailure } from "@vibecodinger/client-runtime/vibeCodingerToolSummary";
 import {
   turnItemHasDetail,
   turnItemNeedsDetailFetch,
@@ -96,7 +96,7 @@ function threadReadStatus(
 ): ThreadReadStatus | null {
   const payload = entry.structuredPayload;
   if (payload?.type !== "dynamic_tool") return null;
-  if (t3ToolResultIndicatesFailure(payload.output)) return "failed";
+  if (vibeCodingerToolResultIndicatesFailure(payload.output)) return "failed";
   for (const resolver of [resolve, undefined]) {
     for (const status of THREAD_READ_STATUSES) {
       const presentation = resolveWorkEntryToolPresentation(

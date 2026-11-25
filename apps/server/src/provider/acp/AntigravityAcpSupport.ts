@@ -29,7 +29,7 @@ import {
   type AcpRuntimePolicy,
 } from "@vibecodinger/provider-acp/server/clientPolicy";
 import type { AcpSessionModeState } from "@vibecodinger/provider-acp/server/runtimeModel";
-import { VIBECODINGER_MCP_TOOL_NAMES } from "@vibecodinger/shared/t3McpToolPresentation";
+import { VIBECODINGER_MCP_TOOL_NAMES } from "@vibecodinger/shared/vibeCodingerMcpToolPresentation";
 import packageJson from "../../../package.json" with { type: "json" };
 import { normalizeAntigravitySessionUpdate } from "./AntigravityProtocol.ts";
 
@@ -180,7 +180,9 @@ const ANTIGRAVITY_T3_MCP_TITLE = /^Run mcp_vibe-codinger_(?<tool>[A-Za-z0-9_]+)\
 // rawInput is the tool's own arguments.
 const ANTIGRAVITY_PROXIED_MCP_TITLE = /^MCP Tool (?<tool>[A-Za-z0-9_]+)\??$/;
 
-function isAntigravityT3McpRequest(request: EffectAcpSchema.RequestPermissionRequest): boolean {
+function isAntigravityVibeCodingerMcpRequest(
+  request: EffectAcpSchema.RequestPermissionRequest,
+): boolean {
   const title = request.toolCall.title?.trim() ?? "";
   const rawInput = unknownRecord(request.toolCall.rawInput);
   const proxiedTool = ANTIGRAVITY_PROXIED_MCP_TITLE.exec(title)?.groups?.tool;
@@ -206,7 +208,7 @@ export function antigravityPermissionDisposition(
   if (
     (policy.runtimeMode === "auto" || policy.runtimeMode === "auto-accept-edits") &&
     (policy.approvalPolicy === undefined || policy.approvalPolicy === "never") &&
-    isAntigravityT3McpRequest(request)
+    isAntigravityVibeCodingerMcpRequest(request)
   ) {
     return "allow";
   }

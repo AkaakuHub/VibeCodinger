@@ -38,11 +38,11 @@ import {
 } from "@vibecodinger/client-runtime/work-log/presentation";
 import type { ToolCallVisibility } from "@vibecodinger/contracts/settings";
 import {
-  resolveT3McpToolDefinition,
-  type T3McpToolLogo,
-  type T3McpToolPresentation,
-} from "@vibecodinger/shared/t3McpToolPresentation";
-import { resolveT3McpToolPresentation } from "@vibecodinger/shared/t3McpToolPresentationCopy";
+  resolveVibeCodingerMcpToolDefinition,
+  type VibeCodingerMcpToolLogo,
+  type VibeCodingerMcpToolPresentation,
+} from "@vibecodinger/shared/vibeCodingerMcpToolPresentation";
+import { resolveVibeCodingerMcpToolPresentation } from "@vibecodinger/shared/vibeCodingerMcpToolPresentationCopy";
 import type {
   ChatAttachment,
   MessageId,
@@ -127,7 +127,7 @@ export interface ThreadFeedActivity {
     | "warning"
     | "wrench"
     | "zap";
-  readonly logo: T3McpToolLogo | null;
+  readonly logo: VibeCodingerMcpToolLogo | null;
   readonly toolLike: boolean;
   readonly prominent: boolean;
   readonly status: "success" | "failure" | "neutral" | null;
@@ -644,19 +644,19 @@ function itemIcon(item: OrchestrationV2TurnItem): ThreadFeedActivity["icon"] {
 function itemToolPresentation(
   item: OrchestrationV2TurnItem,
   resolve: MessageResolver,
-): T3McpToolPresentation | null {
+): VibeCodingerMcpToolPresentation | null {
   if (item.type !== "dynamic_tool") {
     return null;
   }
   return (
-    resolveT3McpToolPresentation(item.toolName, item.input, resolve) ??
-    resolveT3McpToolPresentation(item.title, item.input, resolve)
+    resolveVibeCodingerMcpToolPresentation(item.toolName, item.input, resolve) ??
+    resolveVibeCodingerMcpToolPresentation(item.title, item.input, resolve)
   );
 }
 
 function itemSummary(
   item: OrchestrationV2TurnItem,
-  toolPresentation: T3McpToolPresentation | null,
+  toolPresentation: VibeCodingerMcpToolPresentation | null,
   resolve: MessageResolver,
 ): string {
   if (item.type === "notification") return item.summary;
@@ -1031,7 +1031,7 @@ function groupAdjacentActivities(
         item.type === "dynamic_tool" &&
         item.runId !== null &&
         (item.status === "running" || item.status === "completed") &&
-        resolveT3McpToolDefinition(item.toolName)?.summaryAction === "delegate" &&
+        resolveVibeCodingerMcpToolDefinition(item.toolName)?.summaryAction === "delegate" &&
         !workEntryDisplayIndicatesToolFailure(entry.activity.workEntry)
       ) {
         const output = compactDynamicToolOutput(item.output);

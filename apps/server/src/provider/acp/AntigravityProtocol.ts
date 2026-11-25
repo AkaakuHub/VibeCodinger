@@ -4,7 +4,7 @@ import type {
   UserInputQuestion,
 } from "@vibecodinger/contracts";
 import { isWorkspaceImagePreviewPath } from "@vibecodinger/shared/filePreview";
-import { resolveT3McpToolId } from "@vibecodinger/shared/t3McpToolPresentation";
+import { resolveVibeCodingerMcpToolId } from "@vibecodinger/shared/vibeCodingerMcpToolPresentation";
 import * as Option from "effect/Option";
 import * as Predicate from "effect/Predicate";
 import * as Schema from "effect/Schema";
@@ -400,7 +400,7 @@ function stripAntigravityToolSummary(value: unknown): unknown {
  * arguments it received, so the summary is dropped before the shared adapter matches them.
  * Untitled updates cannot be identified and are stripped too; titled non-T3 calls keep it.
  */
-function withoutT3McpToolSummary(
+function withoutVibeCodingerMcpToolSummary(
   update: Extract<
     EffectAcpSchema.SessionNotification["update"],
     { readonly sessionUpdate: "tool_call" | "tool_call_update" }
@@ -420,7 +420,7 @@ function withoutT3McpToolSummary(
     });
     if (
       identity === undefined ||
-      resolveT3McpToolId(`${identity.server}.${identity.tool}`) === null
+      resolveVibeCodingerMcpToolId(`${identity.server}.${identity.tool}`) === null
     ) {
       return rawInput;
     }
@@ -449,7 +449,7 @@ export function normalizeAntigravitySessionUpdate(
       ...update,
       ...(typeof update.title === "string" ? { title: boundText(update.title) } : {}),
       ...(update.rawInput !== undefined
-        ? { rawInput: sanitizeAntigravityToolPayload(withoutT3McpToolSummary(update)) }
+        ? { rawInput: sanitizeAntigravityToolPayload(withoutVibeCodingerMcpToolSummary(update)) }
         : {}),
       ...(update.rawOutput !== undefined
         ? { rawOutput: sanitizeAntigravityToolPayload(update.rawOutput) }

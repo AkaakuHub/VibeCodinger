@@ -120,7 +120,7 @@ it("says so when the report asks for more turns than a trace can hold", () => {
       turns,
       withText: true,
       sensitive: [],
-      t3Tools: [],
+      vibeCodingerTools: [],
       driverOf: () => undefined,
       submittingRunId: many.at(-1)!.id,
     });

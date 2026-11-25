@@ -433,7 +433,9 @@ interface PendingRequest {
 const rule = (action: string, effect: Rule["effect"]): Rule => ({ action, resource: "*", effect });
 
 /** OpenCode hides tools for names over 64 chars and rejects names over 100; hash long thread IDs. */
-export const t3McpServerName = Effect.fn("t3McpServerName")(function* (threadId: string) {
+export const vibeCodingerMcpServerName = Effect.fn("vibeCodingerMcpServerName")(function* (
+  threadId: string,
+) {
   const name = `vibe-codinger-${threadId.replaceAll(/[^a-zA-Z0-9_-]/g, "_")}`;
   if (name.length <= 64) return name;
   const crypto = yield* Digest.Digest;
@@ -848,7 +850,7 @@ export const make = Effect.fn("OpenCode2Adapter.make")(function* (instanceId: Pr
   const driver = OPENCODE_PROVIDER;
   let nativeGoalSupport: boolean | undefined;
   const mcpServerNameFor = (threadId: string) =>
-    t3McpServerName(threadId).pipe(Effect.provideService(Digest.Digest, crypto));
+    vibeCodingerMcpServerName(threadId).pipe(Effect.provideService(Digest.Digest, crypto));
 
   const borrow = Effect.gen(function* () {
     const lent = yield* Deferred.make<

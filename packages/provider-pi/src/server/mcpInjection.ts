@@ -223,16 +223,16 @@ function withoutToolSelectionArgs(args: ReadonlyArray<string>): ReadonlyArray<st
   return filtered;
 }
 
-function piT3McpExtensionDestPath(cacheDir: string): string {
+function piVibeCodingerMcpExtensionDestPath(cacheDir: string): string {
   return `${cacheDir.replace(/\\/g, "/")}/${PI_T3_MCP_EXTENSION_FILENAME}`;
 }
 
-export const materializePiT3McpExtension = Effect.fn("materializePiT3McpExtension")(function* (
-  cacheDir: string,
-) {
+export const materializePiVibeCodingerMcpExtension = Effect.fn(
+  "materializePiVibeCodingerMcpExtension",
+)(function* (cacheDir: string) {
   const fs = yield* FileSystem.FileSystem;
   yield* fs.makeDirectory(cacheDir, { recursive: true });
-  const dest = piT3McpExtensionDestPath(cacheDir);
+  const dest = piVibeCodingerMcpExtensionDestPath(cacheDir);
   const existing = yield* fs.readFileString(dest).pipe(Effect.orElseSucceed(() => ""));
   if (existing !== PI_T3_MCP_EXTENSION_SOURCE) {
     // Concurrent pi launches read this file: stage it in a per-call directory
@@ -267,7 +267,7 @@ export function buildPiRpcLaunch(input: {
   readonly env: NodeJS.ProcessEnv;
 } {
   const hasT3Extension = input.disableExtensions !== true && input.extensionPath !== undefined;
-  const hasT3Mcp = hasT3Extension && input.mcpSession !== undefined;
+  const hasVibeCodingerMcp = hasT3Extension && input.mcpSession !== undefined;
   const extensionSafeArgs =
     input.disableExtensions === true
       ? withoutExplicitExtensions(input.launchArgs)
@@ -314,7 +314,7 @@ export function buildPiRpcLaunch(input: {
               input.runtimeMode === "auto" ? "approval-required" : input.runtimeMode,
           }
         : {}),
-      ...(hasT3Mcp && input.mcpSession !== undefined
+      ...(hasVibeCodingerMcp && input.mcpSession !== undefined
         ? {
             [VIBECODINGER_MCP_URL_ENV]: input.mcpSession.endpoint,
             [VIBECODINGER_MCP_BEARER_ENV]: bearerTokenFromAuthorizationHeader(

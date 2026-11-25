@@ -39,7 +39,7 @@ async function loadHooks(
       "async function",
     ),
   );
-  await NodeVM.runInNewContext(`${source}\nt3McpExtension(pi)`, {
+  await NodeVM.runInNewContext(`${source}\nvibeCodingerMcpExtension(pi)`, {
     process: { env: {}, argv },
     NodeFSP,
     NodePath,
@@ -506,7 +506,7 @@ describe("Pi tool discovery permissions", () => {
         "async function",
       ),
     );
-    await NodeVM.runInNewContext(`${source}\nt3McpExtension(pi)`, {
+    await NodeVM.runInNewContext(`${source}\nvibeCodingerMcpExtension(pi)`, {
       process: { env: { VIBECODINGER_PI_RUNTIME_MODE: "approval-required" } },
       pi: {
         on: (name: string, handler: ToolCallHook) => {
@@ -585,7 +585,7 @@ async function loadRequestHook() {
       "async function",
     ),
   );
-  await NodeVM.runInNewContext(`${source}\nt3McpExtension(pi)`, {
+  await NodeVM.runInNewContext(`${source}\nvibeCodingerMcpExtension(pi)`, {
     process: { env: {} },
     pi: {
       on: (name: string, handler: RequestHook) => handlers.set(name, handler),

@@ -11,11 +11,11 @@ import {
 } from "@vibecodinger/contracts";
 import type { ToolCallVisibility } from "@vibecodinger/contracts/settings";
 import {
-  resolveT3McpSummaryAction,
-  resolveT3McpToolDefinition,
-  type T3McpToolDefinition,
-  type T3McpToolSummaryAction,
-} from "@vibecodinger/shared/t3McpToolPresentation";
+  resolveVibeCodingerMcpSummaryAction,
+  resolveVibeCodingerMcpToolDefinition,
+  type VibeCodingerMcpToolDefinition,
+  type VibeCodingerMcpToolSummaryAction,
+} from "@vibecodinger/shared/vibeCodingerMcpToolPresentation";
 import { classifyMarkdownImageSource } from "@vibecodinger/client-runtime/markdown-images";
 import { resolveMediaSource } from "@vibecodinger/client-runtime/media-source";
 import { sourceControlClients } from "@vibecodinger/client-runtime/source-control-clients";
@@ -25,12 +25,12 @@ import { classifyToolActivity } from "@vibecodinger/shared/toolActivity";
 import { toolOutputIndicatesFailure } from "@vibecodinger/shared/toolOutput";
 
 import {
-  summarizeT3ToolCalls,
-  t3ToolResultIndicatesFailure,
-  type T3ToolSummaryCall,
-} from "@vibecodinger/client-runtime/t3ToolSummary";
+  summarizeVibeCodingerToolCalls,
+  vibeCodingerToolResultIndicatesFailure,
+  type VibeCodingerToolSummaryCall,
+} from "@vibecodinger/client-runtime/vibeCodingerToolSummary";
 import { mFallback, msg } from "gt-i18n";
-import { t3ToolSentence } from "./t3ToolSentences.ts";
+import { vibeCodingerToolSentence } from "./vibeCodingerToolSentences.ts";
 import type { MFunctionType } from "gt-i18n/types";
 
 export type WorkLogToolLifecycleStatus = RuntimeItemStatus | "stopped" | "idle";
@@ -148,7 +148,7 @@ function workEntryToolName(
     return `${data.server}.${data.tool}`;
   }
   if (typeof data?.toolName === "string") return data.toolName;
-  return resolveT3McpToolDefinition(entry.toolTitle) ? entry.toolTitle : entry.label;
+  return resolveVibeCodingerMcpToolDefinition(entry.toolTitle) ? entry.toolTitle : entry.label;
 }
 
 function workEntryToolInput(
@@ -171,7 +171,7 @@ function workEntryToolOutput(
     : (data?.output ?? data?.result ?? data?.rawOutput ?? data?.content);
 }
 
-function t3ToolStatusKey(status: string | undefined) {
+function vibeCodingerToolStatusKey(status: string | undefined) {
   return status === "inProgress" ||
     status === "completed" ||
     status === "failed" ||
@@ -181,8 +181,8 @@ function t3ToolStatusKey(status: string | undefined) {
     : "other";
 }
 
-function resolveT3McpToolPresentation(
-  definition: T3McpToolDefinition | null,
+function resolveVibeCodingerMcpToolPresentation(
+  definition: VibeCodingerMcpToolDefinition | null,
   status: string | undefined,
   data: unknown,
   resolve: MFunctionType,
@@ -214,9 +214,9 @@ function resolveT3McpToolPresentation(
     number > 0
       ? number
       : null;
-  const sentence = t3ToolSentence(definition.labels);
-  const statusKey = t3ToolStatusKey(status);
-  // A tool added to the shared table after `t3ToolSentences.ts` was generated.
+  const sentence = vibeCodingerToolSentence(definition.labels);
+  const statusKey = vibeCodingerToolStatusKey(status);
+  // A tool added to the shared table after `vibeCodingerToolSentences.ts` was generated.
   const [action, running, completed] = definition.labels;
   const fallbackVerb =
     status === "inProgress"
@@ -300,14 +300,16 @@ export function resolveWorkEntryToolPresentation(
   fallbackStatus?: "inProgress" | "completed",
   resolve: MFunctionType = mFallback,
 ) {
-  const definition = resolveT3McpToolDefinition(
+  const definition = resolveVibeCodingerMcpToolDefinition(
     workEntryToolName(entry),
     workEntryToolInput(entry),
   );
   const status = entry.toolLifecycleStatus ?? fallbackStatus;
-  return resolveT3McpToolPresentation(
+  return resolveVibeCodingerMcpToolPresentation(
     definition,
-    definition && t3ToolResultIndicatesFailure(workEntryToolOutput(entry)) ? "failed" : status,
+    definition && vibeCodingerToolResultIndicatesFailure(workEntryToolOutput(entry))
+      ? "failed"
+      : status,
     entry.toolData,
     resolve,
   );
@@ -342,8 +344,8 @@ function workEntryIndicatesToolFailureFromOutput(
   // "that exit code 2 is expected" as a failed tool.
   if (!workLogEntryIsToolLike(entry) || entry.itemType === "reasoning") return false;
   if (
-    resolveT3McpToolDefinition(workEntryToolName(entry)) &&
-    t3ToolResultIndicatesFailure(workEntryToolOutput(entry))
+    resolveVibeCodingerMcpToolDefinition(workEntryToolName(entry)) &&
+    vibeCodingerToolResultIndicatesFailure(workEntryToolOutput(entry))
   ) {
     return true;
   }
@@ -651,7 +653,7 @@ function joinClauses(items: ReadonlyArray<string>, resolve: MFunctionType): stri
   );
 }
 
-function t3ToolSummaryCall(entry: WorkLogPresentationEntry): T3ToolSummaryCall {
+function vibeCodingerToolSummaryCall(entry: WorkLogPresentationEntry): VibeCodingerToolSummaryCall {
   return {
     input: workEntryToolInput(entry),
     output: workEntryToolOutput(entry),
@@ -666,7 +668,7 @@ function t3ToolSummaryCall(entry: WorkLogPresentationEntry): T3ToolSummaryCall {
   };
 }
 
-function summaryActionPriority(action: ToolGroupAction | T3McpToolSummaryAction): number {
+function summaryActionPriority(action: ToolGroupAction | VibeCodingerMcpToolSummaryAction): number {
   switch (action) {
     case "command":
     case "edit":
@@ -729,18 +731,18 @@ export function summarizeToolGroup(
   }
   entries = toolEntries;
   const groups = new Map<
-    ToolGroupAction | T3McpToolSummaryAction,
+    ToolGroupAction | VibeCodingerMcpToolSummaryAction,
     {
       action: ToolGroupAction;
-      t3Action: T3McpToolSummaryAction | null;
+      t3Action: VibeCodingerMcpToolSummaryAction | null;
       entries: WorkLogPresentationEntry[];
     }
   >();
   const sources = new Map<string, ToolActivitySource>();
   for (const entry of entries) {
-    const t3Action = resolveT3McpSummaryAction(
+    const t3Action = resolveVibeCodingerMcpSummaryAction(
       workEntryToolName(entry),
-      t3ToolSummaryCall(entry).input,
+      vibeCodingerToolSummaryCall(entry).input,
     );
     if (entry.toolSource && t3Action === null) {
       sources.set(entry.toolSource.key, entry.toolSource);
@@ -757,7 +759,11 @@ export function summarizeToolGroup(
     count: group.entries.length,
     priority: summaryActionPriority(action),
     ...(group.t3Action
-      ? summarizeT3ToolCalls(group.t3Action, group.entries.map(t3ToolSummaryCall), resolve)
+      ? summarizeVibeCodingerToolCalls(
+          group.t3Action,
+          group.entries.map(vibeCodingerToolSummaryCall),
+          resolve,
+        )
       : {
           label: toolGroupActionLabel(
             group.action,
@@ -791,7 +797,7 @@ export function summarizeToolGroup(
   const sourcedCount = entries.filter(
     (entry) =>
       entry.toolSource !== undefined &&
-      resolveT3McpToolDefinition(workEntryToolName(entry)) === null,
+      resolveVibeCodingerMcpToolDefinition(workEntryToolName(entry)) === null,
   ).length;
   const remainingCount =
     entries.length - sourcedCount - selected.reduce((count, group) => count + group.count, 0);

@@ -2,21 +2,23 @@ import { msg } from "gt-i18n";
 
 /**
  * Whole sentences for each T3 MCP tool row, keyed by the tool's labels from
- * `@vibecodinger/shared/t3McpToolPresentation`. Resolve with `{ status }`, and for
+ * `@vibecodinger/shared/vibeCodingerMcpToolPresentation`. Resolve with `{ status }`, and for
  * `changeRequest` also `{ changeRequest, number }`.
  */
-export interface T3ToolSentence {
+export interface VibeCodingerToolSentence {
   readonly detail: string;
   readonly changeRequest?: string;
 }
 
-export function t3ToolSentence(labels: ReadonlyArray<string>): T3ToolSentence | undefined {
+export function vibeCodingerToolSentence(
+  labels: ReadonlyArray<string>,
+): VibeCodingerToolSentence | undefined {
   return VIBECODINGER_TOOL_SENTENCES.get(labels.join("\n"));
 }
 
-const VIBECODINGER_TOOL_SENTENCES: ReadonlyMap<string, T3ToolSentence> = new Map<
+const VIBECODINGER_TOOL_SENTENCES: ReadonlyMap<string, VibeCodingerToolSentence> = new Map<
   string,
-  T3ToolSentence
+  VibeCodingerToolSentence
 >([
   [
     "Link\nLinking\nLinked\na pull request",

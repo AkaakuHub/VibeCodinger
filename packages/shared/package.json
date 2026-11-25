@@ -447,13 +447,13 @@
       "types": "./src/orchestrationV2Timeline.ts",
       "import": "./src/orchestrationV2Timeline.ts"
     },
-    "./t3McpToolPresentation": {
-      "types": "./src/t3McpToolPresentation.ts",
-      "import": "./src/t3McpToolPresentation.ts"
+    "./vibeCodingerMcpToolPresentation": {
+      "types": "./src/vibeCodingerMcpToolPresentation.ts",
+      "import": "./src/vibeCodingerMcpToolPresentation.ts"
     },
-    "./t3McpToolPresentationCopy": {
-      "types": "./src/t3McpToolPresentationCopy.ts",
-      "import": "./src/t3McpToolPresentationCopy.ts"
+    "./vibeCodingerMcpToolPresentationCopy": {
+      "types": "./src/vibeCodingerMcpToolPresentationCopy.ts",
+      "import": "./src/vibeCodingerMcpToolPresentationCopy.ts"
     },
     "./Array": {
       "types": "./src/Array.ts",

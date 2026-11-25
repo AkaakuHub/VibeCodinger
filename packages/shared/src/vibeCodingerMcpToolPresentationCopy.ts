@@ -1,7 +1,10 @@
 import { mFallback, msg } from "gt-i18n";
 import type { MFunctionType } from "gt-i18n/types";
 
-import { resolveT3McpToolDefinition, type T3McpToolPresentation } from "./t3McpToolPresentation.ts";
+import {
+  resolveVibeCodingerMcpToolDefinition,
+  type VibeCodingerMcpToolPresentation,
+} from "./vibeCodingerMcpToolPresentation.ts";
 
 // Same English as each tool's displayName; a name missing here shows as authored.
 const DISPLAY_NAMES: ReadonlyMap<string, string> = new Map([
@@ -122,12 +125,12 @@ const DISPLAY_NAMES: ReadonlyMap<string, string> = new Map([
 ]);
 
 /** @public */
-export function resolveT3McpToolPresentation(
+export function resolveVibeCodingerMcpToolPresentation(
   toolName: string | null | undefined,
   input?: unknown,
   resolve: MFunctionType = mFallback,
-): T3McpToolPresentation | null {
-  const definition = resolveT3McpToolDefinition(toolName, input);
+): VibeCodingerMcpToolPresentation | null {
+  const definition = resolveVibeCodingerMcpToolDefinition(toolName, input);
   if (definition === null) return null;
   const displayName = DISPLAY_NAMES.get(definition.displayName);
   return {

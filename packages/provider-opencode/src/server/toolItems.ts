@@ -1,6 +1,6 @@
 import type { OrchestrationV2TurnItem } from "@vibecodinger/contracts";
 import { HTML_RENDER_TOOL_NAME } from "@vibecodinger/shared/htmlRender";
-import { resolveT3McpToolId } from "@vibecodinger/shared/t3McpToolPresentation";
+import { resolveVibeCodingerMcpToolId } from "@vibecodinger/shared/vibeCodingerMcpToolPresentation";
 import { formatReadToolLabel, formatSearchToolLabel } from "@vibecodinger/shared/toolActivity";
 import {
   MAX_TOOL_OUTPUT_IMAGES,
@@ -39,7 +39,8 @@ type ToolItemBase = Omit<
 function openCodeToolProjectionKind(
   toolName: string,
 ): "command_execution" | "file_change" | "file_search" | "web_search" | "dynamic_tool" {
-  if (toolName.startsWith("mcp__") || resolveT3McpToolId(toolName) !== null) return "dynamic_tool";
+  if (toolName.startsWith("mcp__") || resolveVibeCodingerMcpToolId(toolName) !== null)
+    return "dynamic_tool";
   const normalized = toolName.toLowerCase();
   if (normalized === "todowrite") {
     return "dynamic_tool";

@@ -47,7 +47,7 @@ describe("T3 device instructions", () => {
     const firstRun = (hasDeviceTools: boolean) =>
       t3OrchestrationPrompt({
         prompt: "Check the login screen.",
-        hasT3Mcp: true,
+        hasVibeCodingerMcp: true,
         hasDeviceTools,
         orchestrationDelivered: false,
         deviceInstructionsDelivered: false,
@@ -58,7 +58,7 @@ describe("T3 device instructions", () => {
     const laterRun = (deviceInstructionsDelivered: boolean) =>
       t3OrchestrationPrompt({
         prompt: "Check the login screen.",
-        hasT3Mcp: true,
+        hasVibeCodingerMcp: true,
         hasDeviceTools: true,
         orchestrationDelivered: true,
         deviceInstructionsDelivered,
@@ -71,7 +71,7 @@ describe("T3 device instructions", () => {
     const providerRun = (providerInstructionsDelivered: boolean) =>
       t3OrchestrationPrompt({
         prompt: "Check the login screen.",
-        hasT3Mcp: true,
+        hasVibeCodingerMcp: true,
         hasDeviceTools: false,
         orchestrationDelivered: true,
         deviceInstructionsDelivered: false,
@@ -84,7 +84,11 @@ describe("T3 device instructions", () => {
   });
 
   it("reach ACP agents again when device access changes mid-thread", () => {
-    const state = { interactionMode: "default", hasT3Mcp: true, hasDeviceTools: false } as const;
+    const state = {
+      interactionMode: "default",
+      hasVibeCodingerMcp: true,
+      hasDeviceTools: false,
+    } as const;
     const withDevices = t3AcpPromptWithInstructions({
       prompt: "Check the login screen.",
       state: { ...state, hasDeviceTools: true },

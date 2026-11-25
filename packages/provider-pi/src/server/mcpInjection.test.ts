@@ -15,7 +15,7 @@ import * as NodeFS from "effect/FileSystem";
 import * as NodeServices from "@effect/platform-node/NodeServices";
 import {
   buildPiRpcLaunch,
-  materializePiT3McpExtension,
+  materializePiVibeCodingerMcpExtension,
   resolvePiLaunchArgs,
 } from "./mcpInjection.ts";
 import { PI_T3_MCP_EXTENSION_SOURCE } from "./mcpExtensionSource.ts";
@@ -161,7 +161,7 @@ describe("pi T3 MCP injection", () => {
   });
 });
 
-describe("materializePiT3McpExtension", () => {
+describe("materializePiVibeCodingerMcpExtension", () => {
   // A pi launch concurrent with the materialize reads the extension file from
   // disk; a truncate-then-write exposes an empty or partial file mid-write and
   // the launch loads a broken extension.
@@ -179,7 +179,10 @@ describe("materializePiT3McpExtension", () => {
               .remove(path.join(directory, "pi-t3-mcp-extension.ts"), { force: true })
               .pipe(Effect.ignore);
             yield* Effect.all(
-              [materializePiT3McpExtension(directory), materializePiT3McpExtension(directory)],
+              [
+                materializePiVibeCodingerMcpExtension(directory),
+                materializePiVibeCodingerMcpExtension(directory),
+              ],
               { concurrency: "unbounded" },
             );
           }

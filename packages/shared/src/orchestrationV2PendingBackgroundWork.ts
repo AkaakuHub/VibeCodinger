@@ -10,7 +10,7 @@ import type {
 import { isOrchestrationV2WorkActive } from "@vibecodinger/contracts";
 import * as Predicate from "effect/Predicate";
 
-import { resolveT3McpToolId } from "./t3McpToolPresentation.ts";
+import { resolveVibeCodingerMcpToolId } from "./vibeCodingerMcpToolPresentation.ts";
 
 const BACKGROUND_TURN_ITEM_TYPES = new Set<OrchestrationV2TurnItem["type"]>([
   "command_execution",
@@ -71,7 +71,7 @@ export function deriveBlockedOnThreadWait(input: {
       continue;
     }
     if (item.type !== "dynamic_tool") return false;
-    const tool = resolveT3McpToolId(item.toolName);
+    const tool = resolveVibeCodingerMcpToolId(item.toolName);
     if (
       tool !== "vc_thread_wait" &&
       !(

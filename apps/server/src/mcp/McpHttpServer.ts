@@ -47,7 +47,7 @@ import * as McpToolAccess from "./McpToolAccess.ts";
 import * as McpToolExposure from "./McpToolExposure.ts";
 import * as McpWebhookTransport from "./McpWebhookTransport.ts";
 import { HTML_RENDER_TOOL_NAME } from "@vibecodinger/shared/htmlRender";
-import { compactT3McpToolOutput } from "@vibecodinger/shared/toolOutput";
+import { compactVibeCodingerMcpToolOutput } from "@vibecodinger/shared/toolOutput";
 import * as McpProviderSessions from "@vibecodinger/provider-core/server/McpProviderSessions";
 import { MCP_TOOL_EXPOSURE_HEADER } from "@vibecodinger/provider-core/server/mcpSession";
 import * as OrchestratorMcpService from "./OrchestratorMcpService.ts";
@@ -1058,7 +1058,7 @@ const withToolResultCapture = Effect.fn("McpHttpServer.withToolResultCapture")(f
               }
               const output =
                 exit._tag === "Success"
-                  ? compactT3McpToolOutput(toolName, exit.value)
+                  ? compactVibeCodingerMcpToolOutput(toolName, exit.value)
                   : { isError: true };
               return output === undefined
                 ? Effect.void

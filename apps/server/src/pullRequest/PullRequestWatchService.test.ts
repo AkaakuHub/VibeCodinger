@@ -35,11 +35,11 @@ function makeProject(
     locator: {
       source: "git-remote",
       remoteName: "origin",
-      remoteUrl: "git@github.com:T3Tools/T3Code.git",
+      remoteUrl: "git@github.com:VibeCodingerTools/T3Code.git",
     },
     provider: SourceControlProviderKind.make("github"),
-    displayName: "T3Tools/T3Code",
-    owner: "T3Tools",
+    displayName: "VibeCodingerTools/T3Code",
+    owner: "VibeCodingerTools",
     name: "T3Code",
   },
 ): OrchestrationProjectShell {

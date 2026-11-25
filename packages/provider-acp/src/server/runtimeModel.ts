@@ -10,7 +10,7 @@ import {
   deriveToolActivityPresentation,
   mergeToolActivityData,
 } from "@vibecodinger/shared/toolActivity";
-import { VIBECODINGER_MCP_TOOL_NAMES } from "@vibecodinger/shared/t3McpToolPresentation";
+import { VIBECODINGER_MCP_TOOL_NAMES } from "@vibecodinger/shared/vibeCodingerMcpToolPresentation";
 import type {
   OrchestrationV2ProviderThreadNativeMetadata,
   ThreadTokenUsageSnapshot,

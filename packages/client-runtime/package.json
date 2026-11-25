@@ -203,9 +203,9 @@
       "types": "./src/voice-input/index.ts",
       "default": "./src/voice-input/index.ts"
     },
-    "./t3ToolSummary": {
-      "types": "./src/t3ToolSummary.ts",
-      "default": "./src/t3ToolSummary.ts"
+    "./vibeCodingerToolSummary": {
+      "types": "./src/vibeCodingerToolSummary.ts",
+      "default": "./src/vibeCodingerToolSummary.ts"
     },
     "./relay": {
       "types": "./src/relay/index.ts",

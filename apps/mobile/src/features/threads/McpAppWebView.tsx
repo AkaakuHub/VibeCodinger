@@ -73,7 +73,7 @@ window.addEventListener("message",function(e){if(!live||e.source!==frame.content
 if(!port&&!plain){if(e.data&&e.data[${JSON.stringify(MCP_APP_DOCUMENT_MESSAGE_KEY)}]===${JSON.stringify(MCP_APP_DOCUMENT_MESSAGE)}&&e.ports[0]){port=e.ports[0];
 port.onmessage=function(r){var k=r.data&&r.data.alive;if(live&&k in unconfirmed){var m=unconfirmed[k];delete unconfirmed[k];waiting-=1;send(m);}};return;}plain=true;}
 if(plain)send(e.data);else if(waiting<256){unconfirmed[probe]=e.data;waiting+=1;port.postMessage({alive:probe++});}});
-window.__t3McpAppReceive=function(m){if(!live)return;if(port)port.postMessage({message:m,origin:location.origin});else if(plain&&frame.contentWindow)frame.contentWindow.postMessage(m,"*");};
+window.__vibeCodingerMcpAppReceive=function(m){if(!live)return;if(port)port.postMessage({message:m,origin:location.origin});else if(plain&&frame.contentWindow)frame.contentWindow.postMessage(m,"*");};
 frame.src=${JSON.stringify(src).replace(/</g, "\\u003c")};})();</script></body></html>`;
 }
 
@@ -329,7 +329,7 @@ export function ThreadMcpApp(props: {
       hostVersion: Constants.expoConfig?.version ?? "0.0.0",
       post: (message) =>
         view.injectJavaScript(
-          `window.__t3McpAppReceive&&window.__t3McpAppReceive(${JSON.stringify(message)});true;`,
+          `window.__vibeCodingerMcpAppReceive&&window.__vibeCodingerMcpAppReceive(${JSON.stringify(message)});true;`,
         ),
       hostContext,
       callTool: async ({ name, arguments: args }) => {

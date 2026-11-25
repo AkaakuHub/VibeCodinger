@@ -919,7 +919,7 @@ export const buildCodexTurnStartParams = Effect.fn("CodexAdapterV2.buildCodexTur
     readonly codexInput: ReadonlyArray<CodexSchema.V2TurnStartParams__UserInput>;
     readonly runtimePolicy: ProviderAdapter.ProviderAdapterV2RuntimePolicy;
     readonly modelSelection: ModelSelection;
-    readonly hasT3Mcp?: boolean;
+    readonly hasVibeCodingerMcp?: boolean;
     readonly agentFeedback?: AgentFeedbackMode;
     readonly browserToolsAvailable?: boolean;
     readonly deviceToolsAvailable?: boolean;
@@ -975,7 +975,7 @@ export const buildCodexTurnStartParams = Effect.fn("CodexAdapterV2.buildCodexTur
       ]),
     );
     const t3Context =
-      input.hasT3Mcp === true
+      input.hasVibeCodingerMcp === true
         ? buildCodexAdditionalContext(
             {
               model: input.modelSelection.model,
@@ -1684,7 +1684,7 @@ export const CODEX_THREAD_CONFIG = {
 // request_secret can wait an hour; keep Codex's MCP timeout above that.
 const CODEX_T3_MCP_TOOL_TIMEOUT_SEC = 65 * 60;
 // Holds T3 tools Codex must call directly, never from Code Mode. Calls arrive as
-// `vibe-codinger-direct.<tool>`; t3McpToolPresentation.ts must keep resolving that form.
+// `vibe-codinger-direct.<tool>`; vibeCodingerMcpToolPresentation.ts must keep resolving that form.
 const CODEX_T3_DIRECT_MCP_SERVER = "vibe-codinger-direct";
 const CODEX_DIRECT_ONLY_T3_TOOLS = ["vc_thread_wait", "delegate_task"];
 
@@ -8048,7 +8048,7 @@ export const makeCodexAdapterV2 = Effect.fn("makeCodexAdapterV2")(function* (
               codexInput,
               runtimePolicy: turnInput.runtimePolicy,
               modelSelection: turnInput.modelSelection,
-              hasT3Mcp: mcpSession !== undefined,
+              hasVibeCodingerMcp: mcpSession !== undefined,
               agentFeedback: turnInput.agentFeedback ?? "off",
               browserToolsAvailable: mcpSession?.browserToolsAvailable ?? true,
               deviceToolsAvailable: mcpSession?.capabilities?.has("device") ?? false,

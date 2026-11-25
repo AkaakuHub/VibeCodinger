@@ -1,7 +1,11 @@
 import type { OrchestrationV2Run, OrchestrationV2TurnItem } from "@vibecodinger/contracts";
 import * as DateTime from "effect/DateTime";
 
-import { FEEDBACK_TRACE_TURNS, type FeedbackTrace, resolveT3ToolName } from "./FeedbackReport.ts";
+import {
+  FEEDBACK_TRACE_TURNS,
+  type FeedbackTrace,
+  resolveVibeCodingerToolName,
+} from "./FeedbackReport.ts";
 import { scrubFeedbackText } from "./scrubFeedback.ts";
 
 const MAX_ENTRIES = 80;
@@ -31,13 +35,13 @@ type Entry = FeedbackTrace["entries"][number];
 
 const toolName = (
   item: OrchestrationV2TurnItem,
-  t3Tools: ReadonlyArray<string>,
+  vibeCodingerTools: ReadonlyArray<string>,
   namesBuiltIns: boolean,
 ): string => {
   if (item.type === "command_execution") return "shell";
   if (item.type !== "dynamic_tool") return item.type;
   const name = item.toolName ?? "";
-  const vibecodinger = resolveT3ToolName(name, t3Tools);
+  const vibecodinger = resolveVibeCodingerToolName(name, vibeCodingerTools);
   if (vibecodinger !== undefined) return vibecodinger;
   return namesBuiltIns &&
     item.toolSource?.kind !== "integration" &&
@@ -72,7 +76,7 @@ export const buildFeedbackTrace = (input: {
   readonly turns: number;
   readonly withText: boolean;
   readonly sensitive: ReadonlyArray<string>;
-  readonly t3Tools: ReadonlyArray<string>;
+  readonly vibeCodingerTools: ReadonlyArray<string>;
   readonly driverOf: (run: OrchestrationV2Run) => string | undefined;
   readonly submittingRunId: OrchestrationV2Run["id"];
 }): FeedbackTrace => {
@@ -88,7 +92,7 @@ export const buildFeedbackTrace = (input: {
     item.runId === input.submittingRunId &&
     item.type === "dynamic_tool" &&
     outcome(item) === "unfinished" &&
-    resolveT3ToolName(item.toolName ?? "", input.t3Tools) === "vc_feedback";
+    resolveVibeCodingerToolName(item.toolName ?? "", input.vibeCodingerTools) === "vc_feedback";
   // Asked for more turns than the window holds, in a thread long enough to have them.
   let truncated = input.turns > window && started.length >= window;
   const entries = input.items
@@ -119,7 +123,11 @@ export const buildFeedbackTrace = (input: {
       return {
         turn,
         type: "tool",
-        tool: toolName(item, input.t3Tools, NAMES_BUILT_IN_TOOLS.has(input.driverOf(run) ?? "")),
+        tool: toolName(
+          item,
+          input.vibeCodingerTools,
+          NAMES_BUILT_IN_TOOLS.has(input.driverOf(run) ?? ""),
+        ),
         outcome: outcome(item),
         ...(started !== null && completed !== null
           ? {

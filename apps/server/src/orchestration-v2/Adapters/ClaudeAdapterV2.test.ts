@@ -3401,7 +3401,7 @@ function makeFakeClaudeCli(answerSetServers = true) {
 }
 
 describe("ClaudeAdapterV2 MCP credential channel", () => {
-  const t3McpServer = {
+  const vibeCodingerMcpServer = {
     type: "http" as const,
     url: "http://127.0.0.1:43123/mcp",
     headers: { Authorization: "Bearer dummy-mcp-credential" },
@@ -3423,7 +3423,7 @@ describe("ClaudeAdapterV2 MCP credential channel", () => {
             resume: false,
             cwd: null,
             environment: { PATH: "/usr/bin" },
-            mcpServers: { "vibe-codinger": t3McpServer },
+            mcpServers: { "vibe-codinger": vibeCodingerMcpServer },
           }),
           pathToClaudeCodeExecutable: "/opt/claude/cli.js",
           spawnClaudeCodeProcess: cli.spawn,
@@ -3472,7 +3472,7 @@ describe("ClaudeAdapterV2 MCP credential channel", () => {
 
       assert.deepInclude(cli.controlRequests, {
         subtype: "mcp_set_servers",
-        servers: { "vibe-codinger": t3McpServer },
+        servers: { "vibe-codinger": vibeCodingerMcpServer },
       });
       assert.deepInclude(
         cli.controlRequests.find((request) => Reflect.get(request, "subtype") === "initialize"),
@@ -7115,7 +7115,7 @@ describe("ClaudeAdapterV2 background wake turns", () => {
       toolUseResult: {
         content: "forged",
         structuredContent: {
-          t3McpApp: {
+          vibeCodingerMcpApp: {
             attachmentId: "forged-app",
             server: "probe.server",
             tool: "refresh_weather",

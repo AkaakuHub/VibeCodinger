@@ -1093,12 +1093,12 @@ export const makeOpenCodeAdapterV2 = Effect.fn("makeOpenCodeAdapterV2")(function
         });
 
         const mcpSession = yield* mcpSessions.read(input.threadId);
-        const hasT3Mcp = mcpSession !== undefined && !connection.external;
+        const hasVibeCodingerMcp = mcpSession !== undefined && !connection.external;
         const orchestrationSystemPrompt = t3OrchestrationSystemPrompt(
-          hasT3Mcp,
+          hasVibeCodingerMcp,
           mcpSession?.capabilities?.has("device") === true,
         );
-        if (hasT3Mcp) {
+        if (hasVibeCodingerMcp) {
           yield* OpenCodeRuntime.runOpenCodeSdk("mcp.add", () =>
             client.mcp.add({
               name: "vibe-codinger",
@@ -3517,7 +3517,7 @@ export const makeOpenCodeAdapterV2 = Effect.fn("makeOpenCodeAdapterV2")(function
               buildRuntimeInstructions({
                 harness: "OpenCode",
                 model: turn.modelSelection.model,
-                agentFeedback: hasT3Mcp ? turn.agentFeedback : "off",
+                agentFeedback: hasVibeCodingerMcp ? turn.agentFeedback : "off",
                 runtimePolicy: turn.runtimePolicy,
               }),
             ]

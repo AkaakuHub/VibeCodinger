@@ -252,7 +252,7 @@ function createMcpClient(endpoint: string, token: string) {
   };
 }
 
-export default async function t3McpExtension(pi: ExtensionAPI) {
+export default async function vibeCodingerMcpExtension(pi: ExtensionAPI) {
   // RPC has no trust prompt, so Pi skips an untrusted folder's protected resources. Session
   // replacement reruns this factory without project_trust, and T3 drops notices outside a turn,
   // so check each session's first turn. An explicit --no-approve is deliberate and stays quiet.

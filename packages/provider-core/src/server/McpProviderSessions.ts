@@ -3,7 +3,7 @@ import * as NodeCrypto from "node:crypto";
 import type { ThreadId } from "@vibecodinger/contracts";
 import type { HtmlRenderReference } from "@vibecodinger/shared/htmlRender";
 import { stableStringify } from "@vibecodinger/shared/relaySigning";
-import { resolveT3McpToolId } from "@vibecodinger/shared/t3McpToolPresentation";
+import { resolveVibeCodingerMcpToolId } from "@vibecodinger/shared/vibeCodingerMcpToolPresentation";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
@@ -284,7 +284,7 @@ const make = Effect.gen(function* () {
             return;
           }
         }
-        const canonicalTool = resolveT3McpToolId(toolName) ?? toolName;
+        const canonicalTool = resolveVibeCodingerMcpToolId(toolName) ?? toolName;
         const entry: KeptToolResult = {
           toolName: canonicalTool,
           inputHash: hashToolInput(input),
@@ -308,7 +308,7 @@ const make = Effect.gen(function* () {
     ),
     takeToolResult: Effect.fn("McpProviderSessions.takeToolResult")(
       function (threadId, toolName, input, reported) {
-        const canonicalTool = resolveT3McpToolId(toolName) ?? toolName;
+        const canonicalTool = resolveVibeCodingerMcpToolId(toolName) ?? toolName;
         return Ref.modify(toolResultState, (state) => {
           const kept = state.entries.get(threadId) ?? [];
           const index = matchingToolResultIndex(kept, canonicalTool, input, reported);

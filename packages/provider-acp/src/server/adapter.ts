@@ -39,10 +39,10 @@ import * as HostProcess from "@vibecodinger/shared/HostProcess";
 import { HTML_RENDER_TOOL_NAME } from "@vibecodinger/shared/htmlRender";
 import { modelSelectionsEqual } from "@vibecodinger/shared/model";
 import { type SelfInvocation, selfInvocationArgs } from "@vibecodinger/shared/nodeRuntime";
-import { resolveT3McpToolId } from "@vibecodinger/shared/t3McpToolPresentation";
+import { resolveVibeCodingerMcpToolId } from "@vibecodinger/shared/vibeCodingerMcpToolPresentation";
 import {
   compactDynamicToolOutput,
-  compactT3McpToolOutput,
+  compactVibeCodingerMcpToolOutput,
   htmlRenderFromToolItem,
   mcpToolResultOutput,
 } from "@vibecodinger/shared/toolOutput";
@@ -4825,18 +4825,18 @@ export const makeAcpAdapterV2 = Effect.fn("makeAcpAdapterV2")(function* (
             const input =
               mcpIdentity.input ?? unknownRecord(rawInputRecord?.arguments) ?? rawInputRecord ?? {};
             let output = rawOutput === undefined ? undefined : acpMcpToolCallOutput(rawOutput);
-            const resolvedT3Tool = resolveT3McpToolId(toolName);
-            const isHtmlRender = resolvedT3Tool === HTML_RENDER_TOOL_NAME;
+            const resolvedVibeCodingerTool = resolveVibeCodingerMcpToolId(toolName);
+            const isHtmlRender = resolvedVibeCodingerTool === HTML_RENDER_TOOL_NAME;
             const isError =
               compactDynamicToolOutput(output)?.isError === true ||
               compactDynamicToolOutput(rawOutputRecord?.result)?.isError === true;
             const callInputKey =
-              resolvedT3Tool !== null && !isHtmlRender
-                ? `${toolCall.toolCallId}\0${resolvedT3Tool}\0${McpProviderSessions.hashToolInput(input)}`
+              resolvedVibeCodingerTool !== null && !isHtmlRender
+                ? `${toolCall.toolCallId}\0${resolvedVibeCodingerTool}\0${McpProviderSessions.hashToolInput(input)}`
                 : undefined;
             if (
               status === "completed" &&
-              resolvedT3Tool !== null &&
+              resolvedVibeCodingerTool !== null &&
               callInputKey !== undefined &&
               isError
             ) {
@@ -4860,7 +4860,7 @@ export const makeAcpAdapterV2 = Effect.fn("makeAcpAdapterV2")(function* (
               context.claimedToolResults.set(callInputKey, output);
             }
             if (
-              resolvedT3Tool !== null &&
+              resolvedVibeCodingerTool !== null &&
               (status === "failed" || (status === "completed" && isError))
             ) {
               // A failed call may have completed on T3's MCP server before the provider lost its result.
@@ -4873,7 +4873,10 @@ export const makeAcpAdapterV2 = Effect.fn("makeAcpAdapterV2")(function* (
                   );
                 }
               } else if (callInputKey !== undefined) {
-                const reportedError = compactT3McpToolOutput(resolvedT3Tool, output);
+                const reportedError = compactVibeCodingerMcpToolOutput(
+                  resolvedVibeCodingerTool,
+                  output,
+                );
                 context.blockedInputRecoveryKeys.add(callInputKey);
                 // Only drain when the failed call reported an explicit output to match;
                 // a bare failure without output must not consume a sibling's cached record.
@@ -4883,7 +4886,7 @@ export const makeAcpAdapterV2 = Effect.fn("makeAcpAdapterV2")(function* (
                 ) {
                   const drained = yield* mcpSessions.takeToolResult(
                     context.input.threadId,
-                    resolvedT3Tool,
+                    resolvedVibeCodingerTool,
                     input,
                     reportedError,
                   );
@@ -4914,11 +4917,14 @@ export const makeAcpAdapterV2 = Effect.fn("makeAcpAdapterV2")(function* (
             }
             if (
               status === "completed" &&
-              resolvedT3Tool !== null &&
+              resolvedVibeCodingerTool !== null &&
               callInputKey !== undefined &&
               !isError
             ) {
-              const reportedOutput = compactT3McpToolOutput(resolvedT3Tool, output);
+              const reportedOutput = compactVibeCodingerMcpToolOutput(
+                resolvedVibeCodingerTool,
+                output,
+              );
               // ACP runtimes may omit or summarize MCP results, including across repeated or
               // interleaved in_progress updates. Claims are keyed by (callId, tool, inputHash).
               const claimedOutput = context.claimedToolResults.get(callInputKey);
@@ -4927,7 +4933,7 @@ export const makeAcpAdapterV2 = Effect.fn("makeAcpAdapterV2")(function* (
                 if (!context.drainedToolResultKeys.has(callInputKey)) {
                   const drained = yield* mcpSessions.takeToolResult(
                     context.input.threadId,
-                    resolvedT3Tool,
+                    resolvedVibeCodingerTool,
                     input,
                     reportedOutput,
                   );
@@ -4946,7 +4952,7 @@ export const makeAcpAdapterV2 = Effect.fn("makeAcpAdapterV2")(function* (
                   context.attemptedInputRecoveryKeys.add(callInputKey);
                   recoveredOutput = yield* mcpSessions.takeToolResult(
                     context.input.threadId,
-                    resolvedT3Tool,
+                    resolvedVibeCodingerTool,
                     input,
                     undefined,
                   );
@@ -9257,7 +9263,7 @@ export const makeAcpAdapterV2 = Effect.fn("makeAcpAdapterV2")(function* (
           const mcpSession = yield* mcpSessions.read(turnInput.threadId);
           const instructionState = {
             interactionMode: turnInput.runtimePolicy.interactionMode,
-            hasT3Mcp: mcpSession !== undefined,
+            hasVibeCodingerMcp: mcpSession !== undefined,
             hasDeviceTools: mcpSession?.capabilities?.has("device") === true,
           } satisfies T3AcpInstructionState;
           const userText =
@@ -9301,7 +9307,9 @@ export const makeAcpAdapterV2 = Effect.fn("makeAcpAdapterV2")(function* (
           });
           const sessionSetup = yield* Ref.get(activeSessionSetup);
           const runtimeInstructions = buildRuntimeInstructions({
-            agentFeedback: instructionState.hasT3Mcp ? (turnInput.agentFeedback ?? "off") : "off",
+            agentFeedback: instructionState.hasVibeCodingerMcp
+              ? (turnInput.agentFeedback ?? "off")
+              : "off",
             harness: flavor.runtimeHarness ?? driver,
             model: turnInput.modelSelection.model,
             runtimePolicy: turnInput.runtimePolicy,
