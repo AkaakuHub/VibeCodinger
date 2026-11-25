@@ -31,9 +31,9 @@ describe("versionSkew", () => {
       manualServerUpdateCommand("0.0.45", {
         kind: "t3-launcher",
         launcher: "t3",
-        baseDir: "/home/u/.t3",
+        baseDir: "/home/u/.vibecodinger",
       }),
-    ).toBe("'t3' update --base-dir '/home/u/.t3' 0.0.45");
+    ).toBe("'t3' update --base-dir '/home/u/.vibecodinger' 0.0.45");
     expect(
       manualServerUpdateCommand("0.0.45", {
         kind: "t3-launcher",

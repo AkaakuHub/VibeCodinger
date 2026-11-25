@@ -389,7 +389,7 @@ export const AntigravityDriver: ProviderDriver<
       input: Pick<AntigravityAcpRuntimeInput, "onAuthorizationUrl">,
     ) {
       const cwd = yield* fileSystem
-        .makeTempDirectoryScoped({ prefix: "t3-antigravity-setup-" })
+        .makeTempDirectoryScoped({ prefix: "vibecodinger-antigravity-setup-" })
         .pipe(
           Effect.mapError(
             () =>
@@ -436,7 +436,7 @@ export const AntigravityDriver: ProviderDriver<
     }) {
       if (auth.authMethod !== "oauth-personal") return undefined;
       const cwd = yield* fileSystem
-        .makeTempDirectoryScoped({ prefix: "t3-antigravity-login-" })
+        .makeTempDirectoryScoped({ prefix: "vibecodinger-antigravity-login-" })
         .pipe(
           Effect.mapError(
             () =>

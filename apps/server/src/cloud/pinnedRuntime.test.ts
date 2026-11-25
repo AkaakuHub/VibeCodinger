@@ -1027,7 +1027,7 @@ it.layer(NodeServices.layer)("launcher lookup on PATH", (it) => {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-launcher-path-" });
-      const versionsDir = path.join(root, ".t3", "runtime", "versions");
+      const versionsDir = path.join(root, ".vibecodinger", "runtime", "versions");
       const executable = path.join(versionsDir, "1.0.0", "t3");
       yield* fs.makeDirectory(path.dirname(executable), { recursive: true });
       yield* fs.writeFileString(executable, "", { mode: 0o755 });

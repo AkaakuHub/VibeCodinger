@@ -61,8 +61,8 @@ const SERVICE = {
   supported: true,
   installed: true,
   current: true,
-  unitPath: "/home/me/.config/systemd/user/t3code.service",
-  logPath: "/home/me/.t3/userdata/logs/boot-service.log",
+  unitPath: "/home/me/.config/systemd/user/vibecodinger.service",
+  logPath: "/home/me/.vibecodinger/userdata/logs/boot-service.log",
 } as const;
 
 it.each([

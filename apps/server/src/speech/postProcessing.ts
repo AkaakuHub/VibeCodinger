@@ -40,7 +40,9 @@ const make = Effect.gen(function* () {
           (mode === "custom" ? customInstructions.trim() : "") ||
           DEFAULT_SPEECH_POST_PROCESSING_PROMPT;
         // Providers run in a working directory; cleanup must not read a checkout.
-        const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-voice-cleanup-" });
+        const cwd = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-voice-cleanup-",
+        });
         const generated = yield* textGeneration.generateTranscriptionPostProcessing({
           cwd,
           prompt: buildTranscriptionPostProcessingPrompt(

@@ -341,7 +341,7 @@ describe.skipIf(HostProcess.Platform.defaultValue() !== "win32")("install.ps1 t3
     const root = await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "t3-install-ps1-"));
     try {
       // Windows PowerShell 5.1 reads files as ANSI by default and expands wildcards in paths.
-      const home = NodePath.join(root, "José", ".t3");
+      const home = NodePath.join(root, "José", ".vibecodinger");
       const binDir = NodePath.join(root, "bin[t3]");
       const shim = NodePath.join(binDir, "t3.cmd");
       await NodeFSP.mkdir(binDir, { recursive: true });

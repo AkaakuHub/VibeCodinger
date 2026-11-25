@@ -605,7 +605,7 @@ it.effect.each(["failure", "interrupt"] as const)(
       assert.strictEqual((yield* git(["show-ref"])).stdout, previous);
       assert.deepEqual(
         (yield* fs.readDirectory(path.join(cwd, ".git/objects"))).filter((name) =>
-          name.startsWith("tmp_objdir-t3-checkpoint-"),
+          name.startsWith("tmp_objdir-vibecodinger-checkpoint-"),
         ),
         [],
       );

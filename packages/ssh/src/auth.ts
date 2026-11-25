@@ -188,7 +188,7 @@ const ensureDefaultSshAskpassHelpers = Effect.fn("ssh/auth.ensureDefaultSshAskpa
       }
     }
     runtimeDirectory ??= yield* fs.realPath(
-      yield* fs.makeTempDirectory({ prefix: "t3code-ssh-runtime-" }),
+      yield* fs.makeTempDirectory({ prefix: "vibecodinger-ssh-runtime-" }),
     );
     const helperPath = yield* ensureSshAskpassHelpers({
       directory: path.join(runtimeDirectory, SSH_ASKPASS_DIR_NAME),

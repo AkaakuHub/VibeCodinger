@@ -136,7 +136,10 @@ if (directory && !isLauncher) {
 if (isLauncher) {
   const output = NodePath.resolve(
     directory ??
-      NodePath.join(".t3/startup-profiles", new Date().toISOString().replaceAll(":", "-")),
+      NodePath.join(
+        ".vibecodinger/startup-profiles",
+        new Date().toISOString().replaceAll(":", "-"),
+      ),
   );
   console.log(`[profile-startup] Writing CPU profiles and timeline events to ${output}`);
   const child = NodeChildProcess.spawn(

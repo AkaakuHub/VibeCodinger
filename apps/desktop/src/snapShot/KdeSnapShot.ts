@@ -217,7 +217,9 @@ export async function captureKdeWindow(
   const state = await new KdeCaptureSetup(paths).state();
   if (state.status !== "ready") throw new CaptureSetupRequiredError({ state: state.message });
   const { executable } = kdeCapturePaths(paths);
-  const directory = await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "t3-kde-capture-"));
+  const directory = await NodeFSP.mkdtemp(
+    NodePath.join(NodeOS.tmpdir(), "vibecodinger-kde-capture-"),
+  );
   let retained = false;
   const cleanup = () => NodeFSP.rm(directory, { recursive: true, force: true });
   try {
@@ -251,7 +253,7 @@ export async function captureKdeWindow(
         activate: async (title) => {
           targetTitle = title;
           const activation = await NodeFSP.mkdtemp(
-            NodePath.join(NodeOS.tmpdir(), "t3-kde-activate-"),
+            NodePath.join(NodeOS.tmpdir(), "vibecodinger-kde-activate-"),
           );
           try {
             await run(

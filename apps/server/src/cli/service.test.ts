@@ -21,8 +21,8 @@ const status = {
   supported: true,
   installed: true,
   current: true,
-  unitPath: "/home/me/.config/systemd/user/t3code.service",
-  logPath: "/home/me/.t3/userdata/logs/boot-service.log",
+  unitPath: "/home/me/.config/systemd/user/vibecodinger.service",
+  logPath: "/home/me/.vibecodinger/userdata/logs/boot-service.log",
 } as const;
 
 const newerServiceStatus = { ...status, current: false, installedVersion: "999.0.0" };
@@ -287,8 +287,8 @@ it.layer(Layer.mergeAll(NodeServices.layer, NetService.layer))("service commands
       const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-service-cli-test-" });
       const { service, uninstalls } = makeTestService({
         ...status,
-        installedBaseDir: input.otherHome ? "/home/me/.t3" : baseDir,
-        ...(input.otherHome ? { otherBaseDir: "/home/me/.t3" } : {}),
+        installedBaseDir: input.otherHome ? "/home/me/.vibecodinger" : baseDir,
+        ...(input.otherHome ? { otherBaseDir: "/home/me/.vibecodinger" } : {}),
       });
       vi.spyOn(BootService, "layer").mockReturnValue(
         Layer.succeed(
@@ -318,7 +318,7 @@ it.layer(Layer.mergeAll(NodeServices.layer, NetService.layer))("service commands
         ),
       );
       expect(uninstalls).toEqual(input.removed);
-      expect(output).toContain(input.otherHome ? "--base-dir '/home/me/.t3'" : "Removed");
+      expect(output).toContain(input.otherHome ? "--base-dir '/home/me/.vibecodinger'" : "Removed");
     }),
   );
 });

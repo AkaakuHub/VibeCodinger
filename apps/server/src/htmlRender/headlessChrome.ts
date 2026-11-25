@@ -559,7 +559,7 @@ const launchBrowser = Effect.fnUntraced(function* (input: {
 const scratchDirectory = Effect.gen(function* () {
   const fileSystem = yield* FileSystem.FileSystem;
   return yield* Effect.acquireRelease(
-    fileSystem.makeTempDirectory({ prefix: "t3-html-preview-" }),
+    fileSystem.makeTempDirectory({ prefix: "vibecodinger-html-preview-" }),
     (directory) => fileSystem.remove(directory, { recursive: true }).pipe(Effect.ignore),
   ).pipe(
     Effect.mapError(
