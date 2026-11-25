@@ -1,4 +1,4 @@
-package expo.modules.t3agentnotifications
+package expo.modules.vibecodingeragentnotifications
 
 import android.content.Context
 import android.graphics.Typeface

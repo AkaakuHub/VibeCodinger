@@ -26,6 +26,8 @@ PROTECTED_PATHS = (
     "apps/desktop/src/app/DesktopClerk.ts",
     "apps/desktop/src/app/DesktopClerk.test.ts",
     "apps/mobile/src/features/cloud",
+    "apps/mobile/modules/t3-agent-notifications",
+    "apps/mobile/src/features/agent-awareness/notificationNavigation.ts",
     "apps/mobile/src/features/agent-awareness/remoteRegistration.ts",
     "apps/mobile/src/features/agent-awareness/registrationPayload.ts",
     "apps/mobile/src/features/agent-awareness/liveActivityPreferences.ts",
@@ -72,6 +74,8 @@ FORBIDDEN = re.compile(
     rb"otlp.{0,48}(?:endpoint|exporter)|cloudflared|"
     rb"relay_public_config|relay.client.tracing.config|VIBECODINGER_TELEMETRY_CHANNEL|"
     rb"armAgentAwarenessLiveActivityForLocalWork|setAgentAwarenessRelayTokenProvider|registerLiveActivityWithRelay|"
+    rb"expo-notifications|firebase-messaging|com\.google\.firebase\.MESSAGING_EVENT|"
+    rb"VIBECODINGER_ANDROID_GOOGLE_SERVICES_FILE|AgentMessagingService|enablePushNotifications\s*[:=]\s*true|"
     rb"tailscale.{0,48}funnel|--allow-funnel|https?://[^\s'\x22]*(?:relay|clerk)\.t3\.codes|"
     rb"t3-task-cache\.pinglabs\.workers\.dev|"
     rb"@clerk/(?:expo|react|electron)|cloudAuthProvider|managedAuthShell|"
@@ -87,7 +91,10 @@ FORBIDDEN = re.compile(
     rb"relayHookBaseUrl|RelayDeliveryProof|traceAuthenticatedRelayRequest|connectSubcommands|writeHeapSnapshot\s*\(",
     re.IGNORECASE,
 )
-SOURCE_SUFFIXES = (".js", ".ts", ".mjs", ".cjs", ".tsx", ".jsx", ".json", ".yml", ".yaml", ".sh", ".ps1", ".swift", ".kt")
+SOURCE_SUFFIXES = (
+    ".js", ".ts", ".mjs", ".cjs", ".tsx", ".jsx", ".json", ".yml", ".yaml",
+    ".sh", ".ps1", ".swift", ".kt", ".gradle", ".kts", ".xml",
+)
 FORK_GUARDS = (
     ("apps/server/src/server.ts", b"HttpApiBuilder.layer(EnvironmentServerHttpApi)"),
     ("apps/server/src/policy/ManagedPolicy.ts", b"connectDisabled: true"),

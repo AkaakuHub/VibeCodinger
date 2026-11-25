@@ -3,11 +3,11 @@ plugins {
   id 'expo-module-gradle-plugin'
 }
 
-group = 'com.t3tools.agentnotifications'
+group = 'net.akaaku.vibecodinger.agentnotifications'
 version = '0.0.0'
 
 android {
-  namespace 'expo.modules.t3agentnotifications'
+  namespace 'expo.modules.vibecodingeragentnotifications'
   defaultConfig {
     versionCode 1
     versionName '0.0.0'
@@ -18,10 +18,7 @@ android {
 }
 
 dependencies {
-  implementation project(':expo-notifications')
-  implementation 'com.google.firebase:firebase-messaging:25.0.1'
   implementation 'androidx.core:core:1.17.0'
-  implementation 'androidx.lifecycle:lifecycle-process:2.9.3'
   testImplementation 'junit:junit:4.13.2'
   testImplementation 'org.robolectric:robolectric:4.16.1'
 }

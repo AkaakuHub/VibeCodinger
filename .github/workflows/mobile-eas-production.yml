@@ -163,26 +163,6 @@ jobs:
           # ignored build script (no allowBuilds config outside the repo).
           packager: npm
 
-      - name: Pull production environment variables
-        if: steps.expo-token.outputs.present == 'true'
-        working-directory: apps/mobile
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_PRODUCTION_TOKEN }}
-        run: |
-          eas env:pull production --non-interactive
-          # EAS commands skip dotenv, and the Android fingerprint hashes this
-          # file. Without it every merge misses the build's hash and rebuilds.
-          node --input-type=module <<'NODE'
-          import { appendFileSync, readFileSync } from "node:fs";
-          import { parseEnv } from "node:util";
-          const env = parseEnv(readFileSync(".env.local", "utf8"));
-          const googleServicesFile = env.VIBECODINGER_ANDROID_GOOGLE_SERVICES_FILE;
-          if (!googleServicesFile) {
-            throw new Error("VIBECODINGER_ANDROID_GOOGLE_SERVICES_FILE is missing from the production environment");
-          }
-          appendFileSync(process.env.GITHUB_ENV, `VIBECODINGER_ANDROID_GOOGLE_SERVICES_FILE=${googleServicesFile}\n`);
-          NODE
-
       # Only so the versions and fingerprints below are read from the tree that
       # will be built. This job installs dependencies, so it gets no token that can
       # push: the version job makes the same commit as the Release App afterwards.

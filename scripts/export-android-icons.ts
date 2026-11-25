@@ -14,7 +14,6 @@ import sharp from "sharp";
 type IconVariant = "dev" | "nightly" | "prod";
 
 const ADAPTIVE_CANVAS = 432;
-const NOTIFICATION_CANVAS = 96;
 const SPLASH_CANVAS = 1152;
 const TEXT = { x: 16.75, y: 37, width: 94.5, height: 57 };
 const WORDMARK_FRACTION = 0.48;
@@ -192,7 +191,6 @@ const exportAndroidIcons = Effect.gen(function* () {
   const outputs = [
     ["android-icon-foreground.png", foreground],
     ["android-icon-mark.png", foreground],
-    ["android-notification-icon.png", yield* renderForeground(repositoryRoot, NOTIFICATION_CANVAS)],
     [
       "android-icon-background-dev.png",
       yield* renderDevelopmentBackground(repositoryRoot, ADAPTIVE_CANVAS),

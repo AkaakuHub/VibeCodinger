@@ -3,13 +3,12 @@ import { requireOptionalNativeModule } from "expo";
 import { Platform } from "react-native";
 
 interface AndroidAgentNotifications {
-  setThreadOnScreen?(path: string | null): void;
-  showShowcaseActivity?(scheme: string, data: Record<string, string>): void;
+  showShowcaseActivity(scheme: string, data: Record<string, string>): boolean;
 }
 
 const native =
   Platform.OS === "android"
-    ? requireOptionalNativeModule<AndroidAgentNotifications>("T3AgentNotifications")
+    ? requireOptionalNativeModule<AndroidAgentNotifications>("VibeCodingerAgentNotifications")
     : null;
 
 function appScheme(): string {
@@ -18,11 +17,5 @@ function appScheme(): string {
 }
 
 export function showAndroidShowcaseAgentActivity(data: Record<string, string>): boolean {
-  if (!native?.showShowcaseActivity) return false;
-  native.showShowcaseActivity(appScheme(), data);
-  return true;
-}
-
-export function setAndroidThreadOnScreen(path: string | null): void {
-  native?.setThreadOnScreen?.(path);
+  return native?.showShowcaseActivity(appScheme(), data) ?? false;
 }

@@ -138,29 +138,6 @@ runs:
         pod --version
         fastlane --version | tail -1
 
-    # EAS commands skip dotenv, and the Android fingerprint hashes this file.
-    - name: Pull ${{ inputs.environment }} environment variables
-      shell: bash
-      working-directory: apps/mobile
-      env:
-        EXPO_TOKEN: ${{ inputs.expo-token }}
-        ENVIRONMENT: ${{ inputs.environment }}
-        PLATFORM: ${{ inputs.platform }}
-      run: |
-        eas env:pull "$ENVIRONMENT" --non-interactive
-        node --input-type=module <<'NODE'
-        import { appendFileSync, readFileSync } from "node:fs";
-        import { parseEnv } from "node:util";
-        const env = parseEnv(readFileSync(".env.local", "utf8"));
-        const googleServicesFile = env.VIBECODINGER_ANDROID_GOOGLE_SERVICES_FILE;
-        if (!googleServicesFile && process.env.PLATFORM === "android") {
-          throw new Error(`VIBECODINGER_ANDROID_GOOGLE_SERVICES_FILE is missing from the ${process.env.ENVIRONMENT} environment`);
-        }
-        if (googleServicesFile) {
-          appendFileSync(process.env.GITHUB_ENV, `VIBECODINGER_ANDROID_GOOGLE_SERVICES_FILE=${googleServicesFile}\n`);
-        }
-        NODE
-
     - name: Build
       shell: bash
       working-directory: apps/mobile

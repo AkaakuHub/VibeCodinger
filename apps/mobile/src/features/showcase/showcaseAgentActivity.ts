@@ -70,7 +70,7 @@ export function buildShowcaseAgentActivity(
     });
   }
   return {
-    title: "T3 Code",
+    title: "VibeCodinger",
     subtitle: m(msg("Agent work in progress")),
     activeCount: rows.filter((row) => ACTIVE_PHASES.has(row.phase)).length,
     updatedAt: new Date(now).toISOString(),
@@ -85,24 +85,16 @@ function showcaseAgentAlert(activity: AgentActivityProps) {
     title: row.threadTitle,
     body: `${row.status}: ${row.projectTitle}`,
     path: row.deepLink,
-    environmentId: row.environmentId,
-    threadId: row.threadId,
   };
 }
 
-/** Matches the relay's androidActivityData FCM map for native rendering. */
-export function showcaseAndroidActivityData(
-  activity: AgentActivityProps,
-  now: number,
-): Record<string, string> {
+export function showcaseAndroidActivityData(activity: AgentActivityProps): Record<string, string> {
   const attentionCount = activity.activities.filter(
     (row) => row.phase === "waiting_for_approval" || row.phase === "waiting_for_input",
   ).length;
   const hero = activity.activities[0];
   const alert = showcaseAgentAlert(activity);
   return {
-    t3_kind: "agent_activity",
-    updated_at: String(now),
     active: String(activity.activeCount > 0),
     activity_chip: attentionCount > 0 ? "Review" : "Active",
     activity_title: `${activity.activeCount} active agents · ${attentionCount} need attention`,
@@ -117,7 +109,6 @@ export function showcaseAndroidActivityData(
       ]),
     ),
     activity_path: hero?.deepLink ?? "/",
-    activity_expires_at: String(now + 2 * 60 * 60_000),
     ...(alert
       ? {
           alert_id: "showcase-alert",

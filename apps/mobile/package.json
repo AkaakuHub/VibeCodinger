@@ -104,7 +104,6 @@
     "expo-keep-awake": "~58.0.3",
     "expo-linking": "~58.0.16",
     "expo-network": "~58.0.4",
-    "expo-notifications": "~58.1.8",
     "expo-paste-input": "^0.2.2",
     "expo-quick-actions": "^6.0.2",
     "expo-secure-store": "~58.0.2",
@@ -174,7 +173,6 @@
       "buildFromSource": [
         "@expo/ui",
         "expo-ui",
-        "expo-notifications",
         "react-native-screens",
         "react-native-reanimated",
         "@react-native-menu/menu",

@@ -73,12 +73,12 @@ project. pnpm gives each patch hash a new package path; Pods can otherwise keep 
 previous directory.
 
 If your Xcode account only has a Personal Team, use a bundle identifier you control and opt into the
-reduced-capability local build. Personal Team builds omit the widget and share extensions, push
-entitlement, and native Sign in with Apple entitlement; builds without this opt-in are unchanged.
+reduced-capability local build. Personal Team builds omit the widget and share extensions and the
+native Sign in with Apple entitlement.
 
 ```bash
 VIBECODINGER_IOS_PERSONAL_TEAM=1 \
-VIBECODINGER_IOS_PERSONAL_TEAM_BUNDLE_ID=com.example.t3code.dev \
+VIBECODINGER_IOS_PERSONAL_TEAM_BUNDLE_ID=com.example.vibecodinger.dev \
 vp run ios:dev
 ```
 

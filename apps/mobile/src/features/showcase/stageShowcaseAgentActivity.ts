@@ -1,5 +1,4 @@
-import * as Notifications from "expo-notifications";
-import { Platform } from "react-native";
+import { PermissionsAndroid, Platform } from "react-native";
 
 import type { AgentActivityProps } from "../../widgets/AgentActivity";
 import {
@@ -11,24 +10,24 @@ import { showcaseAndroidActivityData } from "./showcaseAgentActivity";
 
 export async function stageShowcaseAgentActivity(
   activity: AgentActivityProps,
-  now: number,
 ): Promise<true | string> {
-  const permission = await Notifications.requestPermissionsAsync({
-    ios: { allowAlert: true, allowBadge: true, allowSound: true },
-  });
-  if (!permission.granted) return `notification permission ${permission.status}`;
-  await Notifications.dismissAllNotificationsAsync();
-
   if (Platform.OS === "android") {
+    if (Platform.Version >= 33) {
+      const permission = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+      );
+      if (permission !== PermissionsAndroid.RESULTS.GRANTED) {
+        return `notification permission ${permission}`;
+      }
+    }
     return (
-      showAndroidShowcaseAgentActivity(showcaseAndroidActivityData(activity, now)) ||
-      "native showShowcaseActivity missing"
+      showAndroidShowcaseAgentActivity(showcaseAndroidActivityData(activity)) ||
+      "android-notification-unavailable"
     );
   }
   if (Platform.OS !== "ios") return `unsupported platform ${Platform.OS}`;
 
   await Promise.all(getAgentLiveActivities().map((existing) => existing.end("immediate")));
   // ActivityKit needs foreground startup; the runner locks only after this scene is ready.
-  // oxlint-disable-next-line t3code/no-untranslated-copy -- showcase runner failure, read by the screenshot runner
-  return startAgentLiveActivity(activity) !== null || "Live Activity did not start";
+  return startAgentLiveActivity(activity) !== null || "live-activity-start-failed";
 }
