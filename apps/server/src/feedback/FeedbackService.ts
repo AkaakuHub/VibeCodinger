@@ -12,7 +12,6 @@ import * as Threads from "../orchestration-v2/ThreadManagementService.ts";
 import * as Projects from "../project/ProjectService.ts";
 import * as Providers from "../provider/ProviderRegistry.ts";
 import * as Settings from "../serverSettings.ts";
-import { providerDimensions } from "../telemetry/ProviderDimensions.ts";
 import {
   FEEDBACK_AWAITING_APPROVAL_NOTE,
   FEEDBACK_SUBJECT_MESSAGE,
@@ -62,8 +61,7 @@ export class FeedbackService extends Context.Service<
   FeedbackService,
   {
     /**
-     * Sends an unprompted report at once. A requested one is shown to the user in a card and
-     * returns at once; it is stored and sent only if they choose Send.
+     * Stores an unprompted report locally. A requested report is stored after the user approves it.
      */
     readonly submit: (
       input: FeedbackInput,
@@ -145,7 +143,6 @@ const make = Effect.fn("FeedbackService.make")(function* (
     };
     const id = yield* random.uuidV7();
     const runId = thread?.activeRunId ?? null;
-    const providerList = yield* providers.getProviders;
     if (!input.userRequested) {
       return yield* store.store({
         id,
@@ -153,10 +150,6 @@ const make = Effect.fn("FeedbackService.make")(function* (
         source: caller.source,
         threadId: caller.threadId ?? null,
         runId,
-        dimensions:
-          caller.source === "mcp" && thread !== undefined
-            ? providerDimensions(providerList, thread.modelSelection)
-            : {},
       });
     }
 
@@ -188,6 +181,7 @@ const make = Effect.fn("FeedbackService.make")(function* (
         turnItemRunIds: runs.map((candidate) => candidate.id),
         turnItemTypes: FEEDBACK_TRACE_ITEM_TYPES,
       });
+      const providerList = yield* providers.getProviders;
       const build = (withText: boolean) =>
         buildFeedbackTrace({
           runs,

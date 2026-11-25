@@ -1,28 +1,6 @@
-import type {
-  ModelSelection,
-  OrchestrationV2ThreadShell,
-  ServerProvider,
-} from "@vibecodinger/contracts";
+import type { ServerProvider } from "@vibecodinger/contracts";
 
 import { BUNDLED_MODEL_MANIFEST } from "../provider/ModelManifest.ts";
-
-export interface ProviderDimensions {
-  readonly provider: string;
-  readonly model?: string;
-}
-
-/**
- * Anonymous provider and model for a model selection. Instance ids are
- * user-defined, so only the driver kind is reported.
- */
-export function providerDimensions(
-  providers: ReadonlyArray<ServerProvider>,
-  selection: Pick<ModelSelection, "instanceId" | "model">,
-): ProviderDimensions {
-  const provider = providers.find((candidate) => candidate.instanceId === selection.instanceId);
-  if (provider === undefined) return { provider: "unknown" };
-  return { provider: provider.driver, model: modelLabel(providers, selection.model) };
-}
 
 const DATED_SNAPSHOT = /-\d{8}$/u;
 // Absolute, home, relative, or Windows paths, such as a local GGUF file. Directories can name the user.
