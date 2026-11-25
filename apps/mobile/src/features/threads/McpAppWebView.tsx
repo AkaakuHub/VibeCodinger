@@ -67,7 +67,7 @@ function outerDocument(src: string, allow: string, secret: string) {
 <body><iframe id="app" sandbox="allow-scripts allow-forms" allow="${attribute(allow)}"></iframe>
 <script>(function(){var frame=document.getElementById("app"),secret=${JSON.stringify(secret)},loads=0,live=true;
 var send=function(m){var u=navigator.userActivation;window.ReactNativeWebView.postMessage(JSON.stringify({secret:secret,active:!!(u&&u.isActive)&&document.activeElement===frame,message:m}));};
-frame.addEventListener("load",function(){loads+=1;if(loads>1&&live){live=false;send({t3:"navigated"});}});
+frame.addEventListener("load",function(){loads+=1;if(loads>1&&live){live=false;send({vc:"navigated"});}});
 var port=null,plain=false,unconfirmed=Object.create(null),waiting=0,probe=0;
 window.addEventListener("message",function(e){if(!live||e.source!==frame.contentWindow)return;
 if(!port&&!plain){if(e.data&&e.data[${JSON.stringify(MCP_APP_DOCUMENT_MESSAGE_KEY)}]===${JSON.stringify(MCP_APP_DOCUMENT_MESSAGE)}&&e.ports[0]){port=e.ports[0];
@@ -607,7 +607,7 @@ export function ThreadMcpApp(props: {
             }
             if (!Predicate.isObject(envelope) || envelope.secret !== secret) return;
             const message = envelope.message;
-            if (Predicate.isObject(message) && message.t3 === "navigated") {
+            if (Predicate.isObject(message) && message.vc === "navigated") {
               host?.dispose();
               setNavigatedAway(true);
               return;

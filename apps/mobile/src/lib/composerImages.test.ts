@@ -127,7 +127,7 @@ vi.mock("./uuid", () => ({
 
 import { convertPastedImagesToAttachments, persistComposerAttachmentFile } from "./composerImages";
 
-const STORED = "file:///documents/t3-composer-attachments/attachment-id";
+const STORED = "file:///documents/vc-composer-attachments/attachment-id";
 
 function oversizedPng(): string {
   const png = Buffer.alloc(PROVIDER_SEND_TURN_MAX_IMAGE_BYTES + 1);

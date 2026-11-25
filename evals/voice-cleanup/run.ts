@@ -98,7 +98,7 @@ await Effect.runPromise(
     }
   }).pipe(
     Effect.provide(
-      ServerConfig.layerTest(process.cwd(), { prefix: "t3-voice-eval-state-" }).pipe(
+      ServerConfig.layerTest(process.cwd(), { prefix: "vc-voice-eval-state-" }).pipe(
         Layer.provideMerge(NodeServices.layer),
       ),
     ),
