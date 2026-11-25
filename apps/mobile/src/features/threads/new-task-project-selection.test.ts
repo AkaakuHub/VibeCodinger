@@ -158,7 +158,9 @@ describe("newTaskFilteredProject", () => {
 
 describe("resolveEnvironmentProjectMatch", () => {
   it("follows the same repository onto the target machine", () => {
-    const selected = makeProject("vibecodinger", "mac", { repositoryKey: "github.com/t3tools/t3code" });
+    const selected = makeProject("vibecodinger", "mac", {
+      repositoryKey: "github.com/t3tools/t3code",
+    });
     const target = [
       makeProject("other", "server", { repositoryKey: "github.com/t3tools/other" }),
       makeProject("t3code-clone", "server", { repositoryKey: "github.com/t3tools/t3code" }),

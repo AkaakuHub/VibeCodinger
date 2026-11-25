@@ -381,7 +381,8 @@ describe("AgentScope service", () => {
         const memoryLimits = () =>
           calls
             .filter(
-              ([, verb, , slice]) => verb === "set-property" && slice === "app-vibecodinger-agents.slice",
+              ([, verb, , slice]) =>
+                verb === "set-property" && slice === "app-vibecodinger-agents.slice",
             )
             .map((args) => args.slice(4));
         yield* launch;
