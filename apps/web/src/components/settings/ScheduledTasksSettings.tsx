@@ -303,7 +303,7 @@ function WebhookFiltersField({
               <div className="grid min-w-0 flex-1 grid-cols-1">
                 <Input
                   aria-label={gt("Filter {number} value", { number: index + 1 })}
-                  // oxlint-disable-next-line t3code/no-untranslated-copy -- webhook action values, matched literally
+                  // oxlint-disable-next-line vibecodinger/no-untranslated-copy -- webhook action values, matched literally
                   placeholder={filter.op === "in" ? "opened, reopened" : "opened"}
                   value={filter.value}
                   onChange={(event) => update(index, { value: event.target.value })}

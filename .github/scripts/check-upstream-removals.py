@@ -1,6 +1,8 @@
 """Preserve fork-owned routes and check upstream proposals without executing their code."""
 
 import argparse
+import base64
+import hashlib
 import os
 import re
 import subprocess
@@ -11,6 +13,13 @@ from tempfile import TemporaryDirectory
 
 OLD_PACKAGE_SCOPE = b"@" + b"t3tools/"
 PACKAGE_SCOPE = b"@vibecodinger/"
+
+OLD_LINT_PLUGIN = b"oxlint-plugin-" + b"t3code"
+LINT_PLUGIN = b"oxlint-plugin-vibecodinger"
+OLD_LINT_RULE = b"t3code/" + rb"(no|max|prefer|require|namespace)-"
+LINT_PLUGIN_METADATA = (b"index.ts", b"test/utils.ts")
+PNPMFILE = b".pnpmfile.cjs"
+PNPM_LOCKFILE = b"pnpm-lock.yaml"
 
 PROTECTED_PATHS = (
     ".env.example",
@@ -145,32 +154,75 @@ def git(*args, data=None, env=None):
     return subprocess.run(["git", *args], input=data, env=env, capture_output=True, check=True).stdout
 
 
+def normalized_names(contents, *, lint_metadata=False):
+    contents = contents.replace(OLD_PACKAGE_SCOPE, PACKAGE_SCOPE)
+    contents = contents.replace(OLD_LINT_PLUGIN, LINT_PLUGIN)
+    contents = re.sub(OLD_LINT_RULE, rb"vibecodinger/\1-", contents)
+    if lint_metadata:
+        contents = contents.replace(b'name: "t3code"', b'name: "vibecodinger"')
+    return contents
+
+
 @cache
-def renamed_package_blob(object_id):
-    contents = git("cat-file", "blob", object_id)
-    return git("hash-object", "-w", "--stdin", data=contents.replace(OLD_PACKAGE_SCOPE, PACKAGE_SCOPE)).strip()
+def renamed_package_blob(object_id, lint_metadata=False, pnpmfile_checksum=None):
+    contents = normalized_names(git("cat-file", "blob", object_id), lint_metadata=lint_metadata)
+    if pnpmfile_checksum is not None:
+        contents = re.sub(
+            rb"(?m)^pnpmfileChecksum: sha256-.*$",
+            b"pnpmfileChecksum: sha256-" + pnpmfile_checksum,
+            contents,
+            count=1,
+        )
+    return git("hash-object", "-w", "--stdin", data=contents).strip()
 
 
 def normalize_package_names(tree):
+    pattern = b"|".join((OLD_PACKAGE_SCOPE, OLD_LINT_PLUGIN, OLD_LINT_RULE))
     matches = subprocess.run(
-        ["git", "grep", "-I", "-l", "-z", "-F", "--no-textconv", OLD_PACKAGE_SCOPE.decode(), tree, "--"],
+        ["git", "grep", "-I", "-l", "-z", "-E", "--no-textconv", pattern.decode(), tree, "--"],
         capture_output=True,
     )
     if matches.returncode == 1:
         return git("rev-parse", f"{tree}^{{tree}}").decode().strip()
     matches.check_returncode()
     paths = {record.split(b":", 1)[1] for record in matches.stdout.split(b"\0") if record}
-    updates = []
+
+    entries = {}
     for entry in git("ls-tree", "-r", "-z", tree).split(b"\0"):
-        if not entry:
-            continue
-        metadata, path = entry.split(b"\t", 1)
-        mode, _, object_id = metadata.split()
-        if path in paths and mode in (b"100644", b"100755"):
-            updates.append(mode + b" " + renamed_package_blob(object_id) + b"\t" + path + b"\0")
+        if entry:
+            metadata, path = entry.split(b"\t", 1)
+            mode, _, object_id = metadata.split()
+            entries[path] = (mode, object_id)
+
+    pnpmfile_checksum = None
+    if PNPMFILE in paths and PNPM_LOCKFILE in entries:
+        contents = normalized_names(git("cat-file", "blob", entries[PNPMFILE][1]))
+        pnpmfile_checksum = base64.b64encode(hashlib.sha256(contents).digest())
+        paths.add(PNPM_LOCKFILE)
+
+    updates = []
+    obsolete_paths = []
+    for path, (mode, object_id) in entries.items():
+        target = path
+        lint_metadata = False
+        if path.startswith(OLD_LINT_PLUGIN + b"/"):
+            obsolete_paths.append(path)
+            relative = path.removeprefix(OLD_LINT_PLUGIN + b"/")
+            target = LINT_PLUGIN + b"/" + relative
+            lint_metadata = relative in LINT_PLUGIN_METADATA
+        if (path in paths or lint_metadata) and mode in (b"100644", b"100755"):
+            object_id = renamed_package_blob(
+                object_id,
+                lint_metadata=lint_metadata,
+                pnpmfile_checksum=pnpmfile_checksum if path == PNPM_LOCKFILE else None,
+            )
+        if path in paths or target != path:
+            updates.append(mode + b" " + object_id + b"\t" + target + b"\0")
     with TemporaryDirectory(prefix="vibecodinger-upstream-index-") as temp:
         env = {**os.environ, "GIT_INDEX_FILE": str(Path(temp) / "index")}
         git("read-tree", tree, env=env)
+        if obsolete_paths:
+            git("update-index", "--force-remove", "-z", "--stdin", data=b"\0".join(obsolete_paths) + b"\0", env=env)
         git("update-index", "-z", "--index-info", data=b"".join(updates), env=env)
         return git("write-tree", env=env).decode().strip()
 

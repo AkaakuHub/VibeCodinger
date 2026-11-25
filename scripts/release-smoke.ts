@@ -22,7 +22,7 @@ const workspaceFiles = [
   "apps/mobile/modules/vibecodinger-review-diff/package.json",
   "apps/mobile/modules/vibecodinger-terminal/package.json",
   "apps/marketing/package.json",
-  "oxlint-plugin-t3code/package.json",
+  "oxlint-plugin-vibecodinger/package.json",
   "packages/client-runtime/package.json",
   "packages/contracts/package.json",
   "packages/shared/package.json",

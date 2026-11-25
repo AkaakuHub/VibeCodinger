@@ -224,13 +224,13 @@ function SplashScreenCoordinator() {
   const [waitEnded, setWaitEnded] = useState(false);
   const hidden = useRef(false);
 
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- starts the limit on how long the native splash screen waits for cached shells and their rows
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- starts the limit on how long the native splash screen waits for cached shells and their rows
   useEffect(() => {
     const timer = setTimeout(() => setWaitEnded(true), SPLASH_WAIT_MS);
     return () => clearTimeout(timer);
   }, []);
 
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- hides the native splash screen once preferences have loaded and the cached rows are laid out
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- hides the native splash screen once preferences have loaded and the cached rows are laid out
   useEffect(() => {
     const canHide = splashCanHide({
       preferencesReady: isReady,
@@ -253,7 +253,7 @@ function QuickActionsLanguage() {
   const locale = useLocale();
   // Shortcuts published before the catalog loaded are English.
   const publishedLocale = useRef(DEFAULT_LOCALE);
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- the launcher keeps quick action titles from the last publish, so a language switch republishes them
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- the launcher keeps quick action titles from the last publish, so a language switch republishes them
   useEffect(() => {
     if (Platform.OS !== "android" || publishedLocale.current === locale) return;
     publishedLocale.current = locale;
@@ -278,7 +278,7 @@ function AppContent() {
   const { themeAppearance } = useAppearancePreferences();
   const navigationTheme = useMobileNavigationTheme();
 
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- matches the Android navigation bar to the app theme, as StatusBar does for the status bar
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- matches the Android navigation bar to the app theme, as StatusBar does for the status bar
   useEffect(() => {
     if (Platform.OS !== "android") return;
     void requireNativeModule<{ setNavigationBarStyle(light: boolean): Promise<void> }>(

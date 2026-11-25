@@ -661,7 +661,7 @@ function PullRequestCodeTab({
     for (const path of withheldPaths) atomRegistry.refresh(withheldFileDiff(path));
   });
   const appliedRefreshToken = useRef(refreshToken);
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- a new refresh token clears loaded slices and refetches the first diff page and viewed files
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- a new refresh token clears loaded slices and refetches the first diff page and viewed files
   useEffect(() => {
     if (appliedRefreshToken.current === refreshToken) return;
     appliedRefreshToken.current = refreshToken;
@@ -674,7 +674,7 @@ function PullRequestCodeTab({
     refreshFilesViewed();
   }, [refreshToken, scopeKey, refreshFirstDiffPage, refreshFilesViewed]);
   const appliedBackgroundRefreshToken = useRef(backgroundRefreshToken);
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- a background refresh token refetches the first diff page and viewed files while keeping slices
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- a background refresh token refetches the first diff page and viewed files while keeping slices
   useEffect(() => {
     if (appliedBackgroundRefreshToken.current === backgroundRefreshToken) return;
     appliedBackgroundRefreshToken.current = backgroundRefreshToken;
@@ -1156,7 +1156,7 @@ function PullRequestCodeTab({
         : buildDiffReviewComment({
             id: `pull-request-selection:${diffReviewSelectionId(draftFileKey, anchor.range)}`,
             sectionId: `pull-request:${detail.number}`,
-            // oxlint-disable-next-line t3code/no-untranslated-copy -- context title sent to the agent
+            // oxlint-disable-next-line vibecodinger/no-untranslated-copy -- context title sent to the agent
             sectionTitle: `PR #${detail.number} review`,
             filePath: anchor.path,
             fileDiff: draftFile,
@@ -1806,7 +1806,7 @@ function PullRequestCodeTab({
     answeredRevealNonce.current = revealRequest.nonce;
     revealFile(revealRequest.path);
   });
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- scrolls the code view to a requested file once loaded, or pages forward until it arrives
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- scrolls the code view to a requested file once loaded, or pages forward until it arrives
   useEffect(() => {
     // oxlint-disable-next-line react/set-state-in-effect -- A reveal for a file not loaded yet pages forward, which sets the slice cursor.
     answerReveal();
@@ -1858,7 +1858,7 @@ function PullRequestCodeTab({
         : undefined,
     );
   });
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- pages and scrolls the virtual diff to a clicked file or line range
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- pages and scrolls the virtual diff to a clicked file or line range
   useEffect(() => {
     // oxlint-disable-next-line react/set-state-in-effect -- revealing unfolds the target and may request the next diff page
     revealLink();

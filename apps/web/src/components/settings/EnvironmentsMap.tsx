@@ -668,7 +668,7 @@ function FleetCanvas({
       false,
     );
   });
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- measures the canvas with ResizeObserver, and React's wheel listener is passive so it cannot stop the page zooming
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- measures the canvas with ResizeObserver, and React's wheel listener is passive so it cannot stop the page zooming
   useEffect(() => {
     if (canvas === null) return;
     const stopObserving = observeResize(canvas, ([entry]) => {

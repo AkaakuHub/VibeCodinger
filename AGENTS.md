@@ -149,8 +149,8 @@ Read the matching doc before changing code in that area; code review enforces th
 - Server features are Effect services using `Effect.fn("Service.operation")` with thin transport handlers; see [02_effect-services.md](docs/internals/02_effect-services.md).
 - `apps/web/src/components/ui` exports own their look (`shadcn/no-restyle` enforces this); see [10_web-ui.md](docs/internals/10_web-ui.md).
 - Inferred types over annotations. `any` is the enemy.
-- Default to no comment. Write one only for a constraint, external quirk, or invariant the code can't show (1–4 lines max; `t3code/no-low-value-comments` enforces this).
-- React effects are only for synchronizing with external systems. Derive in render and act in handlers; any remaining effect states its reason via `// oxlint-disable-next-line t3code/no-unreasoned-state-sync -- <why>`.
+- Default to no comment. Write one only for a constraint, external quirk, or invariant the code can't show (1–4 lines max; `vibecodinger/no-low-value-comments` enforces this).
+- React effects are only for synchronizing with external systems. Derive in render and act in handlers; any remaining effect states its reason via `// oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- <why>`.
 - No continuously repainting animations; they peg the GPU on high-refresh displays.
 - Security matters, but do not over-index on dev-mode or maintainer-only features. Read [SECURITY.md](SECURITY.md) before auditing or triaging reports.
 - If a rule here fights the task in front of you, say so loudly and get a human sign-off before breaking it.

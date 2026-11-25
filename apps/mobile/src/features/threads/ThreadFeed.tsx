@@ -1910,7 +1910,7 @@ function RunFoldButton({
     );
   };
   const loadOnExpand = useEffectEvent(load);
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- Restored expanded folds load their deferred server history on mount.
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- Restored expanded folds load their deferred server history on mount.
   useEffect(() => {
     if (entry.expanded && anchorsKey && environmentId && threadId) loadOnExpand();
   }, [entry.expanded, anchorsKey, environmentId, threadId]);
@@ -3164,7 +3164,7 @@ export const ThreadFeed = memo(function ThreadFeed(props: ThreadFeedProps) {
     props.threadId,
     props.contentPresentation.kind,
   ]);
-  // oxlint-disable-next-line react/exhaustive-effect-dependencies, t3code/no-unreasoned-state-sync -- A scope change (thread or presentation) aborts the pending link lookup opened from the old scope.
+  // oxlint-disable-next-line react/exhaustive-effect-dependencies, vibecodinger/no-unreasoned-state-sync -- A scope change (thread or presentation) aborts the pending link lookup opened from the old scope.
   useLayoutEffect(() => () => markdownLinkRequest.current?.abort(), [markdownLinkScope]);
   const [preview, setPreview] = useState<{
     readonly scope: string;
@@ -3792,7 +3792,7 @@ export const ThreadFeed = memo(function ThreadFeed(props: ThreadFeedProps) {
     );
     handleMetricsChange();
   };
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- subscribes to the list's end state to report it to the parent
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- subscribes to the list's end state to report it to the parent
   useLayoutEffect(() => {
     const state = listRef.current?.getState();
     if (!state) return;
@@ -3808,7 +3808,7 @@ export const ThreadFeed = memo(function ThreadFeed(props: ThreadFeedProps) {
       for (const stop of stops) stop();
     };
   }, [listRef, handleMetricsChange]);
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- clears the landing fallback timer when the feed unmounts
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- clears the landing fallback timer when the feed unmounts
   useEffect(
     () => () => {
       if (landingFallback.current !== null) clearTimeout(landingFallback.current);
@@ -3893,7 +3893,7 @@ export const ThreadFeed = memo(function ThreadFeed(props: ThreadFeedProps) {
     };
   });
   // A jump can unfold a run; keep end maintenance off until its position settles.
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- scrolls the native list to the jump target after the commit that rendered its row
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- scrolls the native list to the jump target after the commit that rendered its row
   useEffect(() => {
     if (jumpIndex !== null) return landJump(jumpIndex);
     // oxlint-disable-next-line react/exhaustive-effect-dependencies -- Jumping to a different message whose row index is unchanged must still land the jump.
@@ -3947,7 +3947,7 @@ export const ThreadFeed = memo(function ThreadFeed(props: ThreadFeedProps) {
     }
   }
 
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- clears copy feedback and disclosure animation timers and frames on unmount
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- clears copy feedback and disclosure animation timers and frames on unmount
   useEffect(
     () => () => {
       if (copyFeedbackTimeoutRef.current) clearTimeout(copyFeedbackTimeoutRef.current);
@@ -4167,7 +4167,7 @@ export const ThreadFeed = memo(function ThreadFeed(props: ThreadFeedProps) {
   const { textSizeKey } = workRowSizing;
   const hasHtmlRenders = presentedFeed.some((entry) => entry.type === "html-render");
   const previousRowGeometry = useRef({ textSizeKey, contentWidth });
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- clears LegendList size caches after the commit that brings new row geometry
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- clears LegendList size caches after the commit that brings new row geometry
   useLayoutEffect(() => {
     const previous = previousRowGeometry.current;
     if (previous.textSizeKey === textSizeKey && previous.contentWidth === contentWidth) return;
@@ -4300,7 +4300,7 @@ export const ThreadFeed = memo(function ThreadFeed(props: ThreadFeedProps) {
           className="flex-1"
           style={splitLayout && viewportWidth > 0 ? { width: viewportWidth } : undefined}
         >
-          {/* oxlint-disable-next-line t3code/require-registered-list-scroll -- ThreadFeedScrollView is passed through the iOS-only spread below; the prop rejects undefined. */}
+          {/* oxlint-disable-next-line vibecodinger/require-registered-list-scroll -- ThreadFeedScrollView is passed through the iOS-only spread below; the prop rejects undefined. */}
           <KeyboardAwareLegendList
             ref={attachList}
             dataKey={feedThreadKey}

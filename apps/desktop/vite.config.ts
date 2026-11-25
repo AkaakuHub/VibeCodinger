@@ -15,7 +15,7 @@ const shouldLaunchElectronAfterPack = process.env.VIBECODINGER_DESKTOP_DEV === "
 // tsdown runs onSuccess through a shell. dash forks instead of exec'ing the last command, which
 // would leave an `sh` between `vp pack` and the supervisor and hide `vp pack` dying from it.
 const devElectronCommand =
-  // oxlint-disable-next-line t3code/no-global-process-runtime -- Build config has no Effect runtime.
+  // oxlint-disable-next-line vibecodinger/no-global-process-runtime -- Build config has no Effect runtime.
   NodeOS.platform() === "win32"
     ? "node scripts/dev-electron.mjs"
     : "exec node scripts/dev-electron.mjs";

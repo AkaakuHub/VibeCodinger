@@ -433,7 +433,7 @@ export function IssuesPage() {
   };
 
   // A link into the page names an issue before any row was pressed.
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- opens the URL-linked issue in the right panel store
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- opens the URL-linked issue in the right panel store
   useEffect(() => {
     if (
       rightPanelRef === null ||
@@ -493,7 +493,7 @@ export function IssuesPage() {
     if (!event.repeat) toggleRightPanel();
   });
 
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- subscribes to the document right panel shortcut
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- subscribes to the document right panel shortcut
   useEffect(() => {
     document.addEventListener("keydown", onRightPanelKeyDown);
     return () => document.removeEventListener("keydown", onRightPanelKeyDown);

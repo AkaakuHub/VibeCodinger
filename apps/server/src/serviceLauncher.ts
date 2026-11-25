@@ -76,7 +76,7 @@ interface ManagedChild {
 
 const runtimePaths = (baseDir: string, version: string) => {
   const versionDir = NodePath.join(baseDir, "runtime", "versions", version);
-  // oxlint-disable-next-line t3code/no-global-process-runtime -- Standalone launcher has no Effect runtime.
+  // oxlint-disable-next-line vibecodinger/no-global-process-runtime -- Standalone launcher has no Effect runtime.
   const executableName = process.platform === "win32" ? "vibecodinger.exe" : "vibecodinger";
   return {
     versionDir,
@@ -396,7 +396,7 @@ async function copyDatabaseFile(
   destination: string,
   signal?: AbortSignal,
 ): Promise<void> {
-  // oxlint-disable-next-line t3code/no-global-process-runtime -- Standalone launcher has no Effect runtime.
+  // oxlint-disable-next-line vibecodinger/no-global-process-runtime -- Standalone launcher has no Effect runtime.
   const platform = process.platform;
   // cp -c replaces files and breaks hard links; copy into hard-linked destinations instead.
   const hardLinked =
@@ -434,7 +434,7 @@ async function statDatabaseFiles(dbPath: string): Promise<ReadonlyArray<NodeFS.S
 
 // cp -c silently copies across volumes; require one device matching the APFS system volume's filesystem type.
 async function backupCanClone(dbPath: string, backupRoot: string): Promise<boolean> {
-  // oxlint-disable-next-line t3code/no-global-process-runtime -- Standalone launcher has no Effect runtime.
+  // oxlint-disable-next-line vibecodinger/no-global-process-runtime -- Standalone launcher has no Effect runtime.
   const platform = process.platform;
   if (platform === "darwin") {
     const [backupDirectory, backupFs, systemFs] = await Promise.all([
@@ -514,7 +514,7 @@ export async function databaseBackupBlocker(
 
 // A child-process copy: closing any descriptor this process opens on the database drops the snapshot's POSIX locks.
 async function copyWithoutOpening(source: string, destination: string): Promise<void> {
-  // oxlint-disable-next-line t3code/no-global-process-runtime -- Standalone launcher has no Effect runtime.
+  // oxlint-disable-next-line vibecodinger/no-global-process-runtime -- Standalone launcher has no Effect runtime.
   if (process.platform === "win32") return NodeFSP.copyFile(source, destination);
   if (!(await runCp([source, destination]))) throw new Error(`cp ${source} failed.`);
 }
@@ -882,7 +882,7 @@ export async function stateDirOwned(baseDir: string): Promise<boolean> {
     "startedAt" in record && typeof record.startedAt === "string" ? record.startedAt : "",
   );
   if (!Number.isFinite(recordedAt)) return true;
-  // oxlint-disable-next-line t3code/no-global-process-runtime -- Standalone launcher has no Effect runtime.
+  // oxlint-disable-next-line vibecodinger/no-global-process-runtime -- Standalone launcher has no Effect runtime.
   const platform = process.platform;
   const { command, args, env } = legacyOwnerStartTimeCommand(pid, platform, process.env);
   const output = await new Promise<string | undefined>((resolve) =>
@@ -946,7 +946,7 @@ export class Launcher {
     this.#environment = { ...(options.environment ?? process.env) };
     this.#output = options.output;
     this.#lockPath = options.lockPath;
-    // oxlint-disable-next-line t3code/no-global-process-runtime -- Standalone launcher has no Effect runtime.
+    // oxlint-disable-next-line vibecodinger/no-global-process-runtime -- Standalone launcher has no Effect runtime.
     this.#stopChildOverIpc = options.stopChildOverIpc ?? process.platform === "win32";
     this.#statePath = NodePath.join(baseDir, "runtime", SERVICE_STATE_FILE);
     this.#state = state;
@@ -1594,7 +1594,7 @@ export async function main(options: LauncherOptions = {}): Promise<void> {
   }
   const output =
     options.logFile === undefined ? undefined : NodeFS.openSync(options.logFile, "a", 0o600);
-  // oxlint-disable-next-line t3code/no-global-process-runtime -- Standalone launcher has no Effect runtime.
+  // oxlint-disable-next-line vibecodinger/no-global-process-runtime -- Standalone launcher has no Effect runtime.
   const windows = process.platform === "win32";
   let logTimer: NodeJS.Timeout | undefined;
   // A failed stderr write (ENOSPC on a redirected log) is emitted asynchronously; without a listener it is fatal.

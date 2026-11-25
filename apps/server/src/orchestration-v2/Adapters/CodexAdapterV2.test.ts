@@ -13875,7 +13875,7 @@ describe("CodexAdapterV2 app-server process", () => {
         // Scope.close cannot be interrupted, so a regression is ended by this rescue instead of
         // hanging the test; the deadline under test must make it unnecessary.
         let rescued = false;
-        // oxlint-disable-next-line t3code/no-real-time-wait-in-tests -- a watchdog for a hung child, not a wait for a milestone; it must never fire.
+        // oxlint-disable-next-line vibecodinger/no-real-time-wait-in-tests -- a watchdog for a hung child, not a wait for a milestone; it must never fire.
         const rescue = yield* Effect.sleep("10 seconds").pipe(
           Effect.andThen(
             Effect.sync(() => {

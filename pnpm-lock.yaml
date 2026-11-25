@@ -347,7 +347,7 @@ overrides:
 
 packageExtensionsChecksum: sha256-+v8ntounVLrYFu5whiqOiF5wsCM8sIM8cT3HaXVONag=
 
-pnpmfileChecksum: sha256-G0L7+qfid3Wo9BlLIlMyF/+fqBnAnqHKSe0HlWAtlg8=
+pnpmfileChecksum: sha256-cpZyThmbjO7b4TfYbocKOeUZHEs3JKyJF0oJFZhGjTs=
 
 patchedDependencies:
   '@cursor/sdk@1.4.2': caa7fd9ce847cbae996855b9c6035055f7d0acc542234032aa3585c39818d918
@@ -1311,7 +1311,7 @@ importers:
         specifier: 1.4.0
         version: 1.4.0(@astrojs/compiler-rs@0.5.1)(@types/node@24.12.4)(@vitest/browser-playwright@5.0.5)(@vitest/ui@5.0.5)(@volar/typescript@2.4.28(typescript@6.0.3))(bufferutil@4.1.0)(esbuild@0.28.2)(jiti@2.7.0)(jsdom@30.1.0(@noble/hashes@1.8.0))(playwright@1.64.1)(terser@5.48.0)(typescript@6.0.3)(unrun@0.2.39)(utf-8-validate@6.0.6)(yaml@2.9.0)
 
-  oxlint-plugin-t3code:
+  oxlint-plugin-vibecodinger:
     dependencies:
       '@oxlint/plugins':
         specifier: ^1.63.0

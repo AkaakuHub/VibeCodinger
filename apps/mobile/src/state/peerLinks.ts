@@ -45,7 +45,7 @@ export function useLinkedEnvironments(
   const refreshLacking = useEffectEvent(() => {
     if (queried !== null) peerLinkEnvironment.refreshNamesLacking(registry, queried, missing);
   });
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- links made outside this app are not pushed, so meeting an unknown machine asks the server again
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- links made outside this app are not pushed, so meeting an unknown machine asks the server again
   useEffect(() => {
     if (refreshKey !== "") refreshLacking();
   }, [refreshKey]);
@@ -71,7 +71,7 @@ export function useLinkableMachines(environmentId: EnvironmentId, enabled: boole
   const discoverIfUnasked = useEffectEvent(() => {
     if (discovery.environments.size === 0 && !discovery.refreshing) void refreshDiscovery();
   });
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- discovery follows the picker's visibility, which a card's mount or a dialog's open sets
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- discovery follows the picker's visibility, which a card's mount or a dialog's open sets
   useEffect(() => {
     if (enabled) discoverIfUnasked();
   }, [enabled]);

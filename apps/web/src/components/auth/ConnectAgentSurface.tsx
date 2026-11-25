@@ -165,7 +165,7 @@ function McpConsent({
   const [errorMessage, setErrorMessage] = useState("");
   const [pending, setPending] = useState<"approve" | "deny" | null>(null);
 
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- fetches the MCP OAuth approval and redirects the window or stores details, ignoring stale answers
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- fetches the MCP OAuth approval and redirects the window or stores details, ignoring stale answers
   useEffect(() => {
     let cancelled = false;
     void transport.load(authorization).then((answer) => {
@@ -187,7 +187,7 @@ function McpConsent({
     };
   }, [authorization, transport]);
 
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- keeps Approve off briefly after the page shows or regains focus, so a click aimed at another window cannot land on it
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- keeps Approve off briefly after the page shows or regains focus, so a click aimed at another window cannot land on it
   useEffect(() => {
     if (loaded.status !== "ready") return;
     let timer = window.setTimeout(() => setArmed(true), ARM_DELAY_MS);

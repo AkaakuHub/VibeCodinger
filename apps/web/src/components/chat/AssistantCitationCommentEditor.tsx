@@ -53,7 +53,7 @@ export function AssistantCitationCommentEditor({
     onTextChange: updateComment,
   });
   const setupOpen = speech.setup.open;
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- keeps the citation popover open while the voice setup dialog owns focus
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- keeps the citation popover open while the voice setup dialog owns focus
   useEffect(() => {
     onVoiceSetupOpenChange?.(setupOpen);
     return () => onVoiceSetupOpenChange?.(false);

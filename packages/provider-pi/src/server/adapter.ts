@@ -4457,7 +4457,7 @@ const rpivField = (input: unknown, key: string) =>
   recordString(input, key)?.replace(/\r\n/g, "\n").replace(/\r/g, "");
 
 const rpivOptionLine = (option: unknown, index: number) =>
-  // oxlint-disable-next-line t3code/no-em-dash-copy -- Matches the extension's option line format.
+  // oxlint-disable-next-line vibecodinger/no-em-dash-copy -- Matches the extension's option line format.
   `${index + 1}. ${rpivField(option, "label")} — ${rpivField(option, "description")}`;
 
 /** The extension folds option previews into the select title, the only place clients show them. */

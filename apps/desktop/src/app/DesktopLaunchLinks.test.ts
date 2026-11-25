@@ -117,7 +117,7 @@ describe("DesktopLaunchLinks", () => {
     "sets the profile and registers launch listeners synchronously ($name)",
     ({ isDevelopment, platform, userData }) => {
       const events: string[] = [];
-      // oxlint-disable-next-line t3code/no-manual-effect-runtime-in-tests -- This verifies the pre-ready layer builds synchronously.
+      // oxlint-disable-next-line vibecodinger/no-manual-effect-runtime-in-tests -- This verifies the pre-ready layer builds synchronously.
       Effect.runSync(
         Effect.scoped(Layer.build(layerDesktopLaunchLinks(isDevelopment, events, platform))),
       );

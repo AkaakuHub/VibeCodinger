@@ -458,7 +458,7 @@ function AgentsSection({
   const [codexSetupId, setCodexSetupId] = useState<ProviderInstanceId | null>(null);
   const [cliTerminalFor, setCliTerminalFor] = useState<ProviderInstanceId | null>(null);
 
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- asks the environment to refresh its provider list when the environment changes
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- asks the environment to refresh its provider list when the environment changes
   useEffect(() => {
     void refreshProviders({ environmentId, input: {} });
   }, [environmentId, refreshProviders]);
@@ -1218,7 +1218,7 @@ function AgentInstallTerminal({
   const commandStartedRef = useRef(false);
   const handleCommandFinished = useEffectEvent(onCommandFinished);
 
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- the shell stays open after an install or sign-in, so its command exiting is the only signal to check the agent again
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- the shell stays open after an install or sign-in, so its command exiting is the only signal to check the agent again
   useEffect(() => {
     if (commandRunning) {
       commandStartedRef.current = true;
@@ -1230,7 +1230,7 @@ function AgentInstallTerminal({
 
   // StrictMode can finish a cancelled open after replacement setup; it must not close or pre-type into that
   // session.
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- opens the setup PTY, types the command into it, and closes it on cleanup
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- opens the setup PTY, types the command into it, and closes it on cleanup
   useEffect(() => {
     const generation = setupGenerationRef.current + 1;
     setupGenerationRef.current = generation;
@@ -1405,7 +1405,7 @@ function useProjectImport({
   );
   const importGenerationRef = useRef(0);
 
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- bumps the import generation on mount and unmount so in-flight imports drop stale results
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- bumps the import generation on mount and unmount so in-flight imports drop stale results
   useEffect(() => {
     importGenerationRef.current += 1;
     return () => {

@@ -132,7 +132,7 @@ function ThemeJsonEditor({
         onChange={(event) => onChange(event.currentTarget.value)}
         onScroll={syncScroll}
         placeholder={
-          // oxlint-disable-next-line t3code/no-untranslated-copy -- example theme JSON
+          // oxlint-disable-next-line vibecodinger/no-untranslated-copy -- example theme JSON
           '{\n  "version": 1,\n  "name": "Aurora",\n  "appearance": "light",\n  "colors": { ... }\n}'
         }
         spellCheck={false}
@@ -178,7 +178,7 @@ export function ThemeImportDialog({
   // so StrictMode's replayed cleanup, undone by its replayed setup, keeps it alive.
   const { controller } = session;
   const mountedController = useRef<AbortController | null>(null);
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- unmounting must abort in-flight Open VSX installs
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- unmounting must abort in-flight Open VSX installs
   useEffect(() => {
     mountedController.current = controller;
     return () => {

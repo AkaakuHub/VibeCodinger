@@ -827,7 +827,7 @@ function OpenCommandPaletteDialog(props: {
     });
   };
 
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- invalidates the browse navigation coordinator and in-flight clone lookups when the palette session unmounts
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- invalidates the browse navigation coordinator and in-flight clone lookups when the palette session unmounts
   useEffect(
     () => () => {
       browseNavigation.invalidate();

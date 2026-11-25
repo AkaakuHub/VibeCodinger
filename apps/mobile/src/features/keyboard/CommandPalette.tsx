@@ -569,7 +569,7 @@ export function CommandPalette(props: {
   // The native list follows the highlighted row. Key presses move it, but so do
   // live thread updates and late message matches that reorder or drop the
   // selected row under a kept selection, so no single handler owns the scroll.
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- scrolls the native list to the highlighted row, which key presses and live result updates both move
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- scrolls the native list to the highlighted row, which key presses and live result updates both move
   useEffect(() => {
     if (selectedIndex === 0) {
       // Centering before the list measures its height scrolls half the first row out of view.
@@ -590,7 +590,7 @@ export function CommandPalette(props: {
     props.onClose();
     pendingAction.current?.();
   };
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- clears the dismiss fallback timer on unmount
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- clears the dismiss fallback timer on unmount
   useEffect(
     () => () => {
       if (dismissFallback.current !== null) clearTimeout(dismissFallback.current);
@@ -687,7 +687,7 @@ export function CommandPalette(props: {
                   />
                 </View>
               </View>
-              {/* oxlint-disable-next-line t3code/require-registered-list-scroll -- The palette is a modal with no navigation header to register with. */}
+              {/* oxlint-disable-next-line vibecodinger/require-registered-list-scroll -- The palette is a modal with no navigation header to register with. */}
               <LegendList
                 ref={listRef}
                 data={results}
