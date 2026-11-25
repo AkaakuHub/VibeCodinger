@@ -33,7 +33,7 @@ runs:
       env:
         CACHE_NAME: ${{ inputs.environment == 'production' && 'store' || 'preview' }}
       run: |
-        cache="$HOME/.cache/t3-android-$CACHE_NAME"
+        cache="$HOME/.cache/vibecodinger-android-$CACHE_NAME"
         {
           echo "GRADLE_USER_HOME=$cache/gradle"
           echo "CCACHE_DIR=$cache/ccache"
@@ -55,7 +55,7 @@ runs:
       uses: useblacksmith/stickydisk@3f6be1451e3cad893b778bc93495c80452a5da26 # v1.7.2
       with:
         key: ${{ github.repository }}-android-${{ inputs.environment == 'production' && 'store' || 'preview' }}-build
-        path: ~/.cache/t3-android-${{ inputs.environment == 'production' && 'store' || 'preview' }}
+        path: ~/.cache/vibecodinger-android-${{ inputs.environment == 'production' && 'store' || 'preview' }}
 
     - name: Configure Gradle and ccache
       if: inputs.platform == 'android' && inputs.cache == 'true'
