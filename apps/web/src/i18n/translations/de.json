@@ -2232,34 +2232,13 @@
   "5bbf199afe39d5e1": "Verwerfen",
   "6df5a5badc04a75a": "Dieser Computer ist aus",
   "ae659281075cedc6": "Kein Computer verbunden",
-  "3ad17519c118edf8": "Schalte ihn wieder ein oder verbinde einen anderen Computer.",
-  "1fa714c0c7855545": "Deine Agenten laufen auf deinem Computer.",
-  "5ba39b13f1bfe4f5": "Deine Agenten laufen auf deinem Computer. Starte dort zuerst T3 Code.",
   "0e2f68b7c6915c72": "Umgebungen öffnen",
   "6b4bbecf3df324fa": "Anmeldung wiederholen",
   "83be7aade7ff6360": "Angemeldet",
   "ec21b232e0eacd4a": "Anmelden",
-  "665d27df5960e6b2": "Warte auf deinen Computer…",
   "c65de112b48a66ed": "Kopplungslink hinzufügen",
   "bc8ab792af1d656f": "Auf deinem Computer ausführen:",
   "0ba14e4e920cfa00": "Oder lade die Desktop-App herunter",
-  "0e79b7a6508a6286": "Dann",
-  "363b9991fa23d36b": [
-    "Überspringe die Installation, wenn du ",
-    {
-      "t": "code",
-      "i": 1,
-      "c": "t3"
-    },
-    " bereits hast. Wenn",
-    " ",
-    {
-      "t": "code",
-      "i": 2,
-      "c": "t3"
-    },
-    " nach der Installation nicht gefunden wird, füge den Ordner, den das Installationsprogramm nennt, zu deinem PATH hinzu."
-  ],
   "87b24d00c08f54bb": "Tastenkürzel-Datei kann nicht geöffnet werden",
   "0ee16208cbfcdbf4": "Unbekannter Fehler beim Öffnen der Datei.",
   "9e20856550715c74": [

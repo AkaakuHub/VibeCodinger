@@ -1,8 +1,7 @@
 import type { DesktopBridge, DesktopUpdateState } from "@t3tools/contracts";
 
-const FALLBACK_TRIAGE_COMMAND = "npx t3 triage";
-const DOWNLOAD_URL = "https://t3.codes/download";
-const ISSUE_URL = "https://github.com/pingdotgg/t3code/issues/new";
+import { RELEASES_URL, TRIAGE_CLI_COMMAND } from "../branding.logic";
+
 const LAST_FAILURE_KEY = "vibecodinger:boot-failed-at";
 const REPEAT_FAILURE_MS = 5 * 60_000;
 const MAX_CAUSES = 3;
@@ -23,18 +22,18 @@ function launcherCommand(launcherPath: string) {
     : `'${launcherPath.replaceAll("'", `'"'"'`)}'`;
 }
 
-/** Desktop can run its bundled launcher without Node; everything else falls back to npx. */
+/** Desktop can run its bundled launcher without Node. */
 export async function resolveTriageCommand(bridge: DesktopBridge | undefined) {
   try {
     const state = await bridge?.cliCommand.getState();
     // Windows reports onPath from its PATH entry alone; only an existing launcher proves it runs.
     if (state?.launcherPath) {
-      return state.onPath ? "t3 triage" : `${launcherCommand(state.launcherPath)} triage`;
+      return state.onPath ? TRIAGE_CLI_COMMAND : `${launcherCommand(state.launcherPath)} triage`;
     }
   } catch (error) {
     console.warn("Could not read the desktop CLI state.", error);
   }
-  return FALLBACK_TRIAGE_COMMAND;
+  return TRIAGE_CLI_COMMAND;
 }
 
 /** The update button only appears when the desktop updater has a newer build to offer. */
@@ -296,7 +295,7 @@ export function showBootError(error: unknown) {
   const updateNote = element("p", { id: "boot-error-update-note", hidden: true });
   if (bridge) mountUpdateButton(bridge, update, updateNote, announce);
 
-  const command = element("code", { textContent: FALLBACK_TRIAGE_COMMAND });
+  const command = element("code", { textContent: TRIAGE_CLI_COMMAND });
   const copyCommand = element("button", {
     className: "boot-error-icon",
     type: "button",
@@ -350,32 +349,16 @@ export function showBootError(error: unknown) {
     ),
   );
 
-  const issue = new URL(ISSUE_URL);
-  issue.searchParams.set("template", "bug_report.yml");
-  issue.searchParams.set("title", "T3 Code failed to start");
-  issue.searchParams.set("area", "apps/web");
-  issue.searchParams.set("version", `${environment.version} (${environment.channel})`);
-  issue.searchParams.set("environment", `${environment.surface}, ${environment.platform}`);
   const link = (href: string, textContent: string) =>
     element("a", { href, textContent, target: "_blank", rel: "noreferrer" });
-  const nightly = environment.channel === "nightly";
 
   const more = element("details", { open: isRepeatFailure(Date.now()) }, [
     element("summary", { textContent: "More options if it keeps failing" }),
-    ...(bridge
-      ? [
-          link(
-            nightly ? `${DOWNLOAD_URL}?channel=nightly` : DOWNLOAD_URL,
-            nightly
-              ? "Download and reinstall the latest nightly build"
-              : "Download and reinstall T3 Code",
-          ),
-        ]
-      : []),
+    ...(bridge ? [link(RELEASES_URL, "Download and reinstall VibeCodinger")] : []),
     element("div", {}, [
       element("p", {
         textContent:
-          "Run this on the computer that runs T3 Code. Your agent can check the local logs and help you file a bug report.",
+          "Run this on the computer that runs VibeCodinger. Your agent can check the local logs and diagnose the error.",
       }),
       element("div", { id: "boot-error-command" }, [command, copyCommand]),
     ]),
@@ -384,10 +367,7 @@ export function showBootError(error: unknown) {
       element("p", {
         textContent: "Details may include local file paths and names. Check before sharing.",
       }),
-      element("div", { id: "boot-error-report" }, [
-        copyDetails,
-        link(issue.href, "File a bug report on GitHub"),
-      ]),
+      element("div", { id: "boot-error-report" }, [copyDetails]),
     ]),
   ]);
 

@@ -2232,34 +2232,13 @@
   "5bbf199afe39d5e1": "Stäng",
   "6df5a5badc04a75a": "Den här datorn är avstängd",
   "ae659281075cedc6": "Ingen dator ansluten",
-  "3ad17519c118edf8": "Slå på den igen eller anslut en annan dator.",
-  "1fa714c0c7855545": "Dina agenter körs på din dator.",
-  "5ba39b13f1bfe4f5": "Dina agenter körs på din dator. Starta T3 Code där först.",
   "0e2f68b7c6915c72": "Öppna Miljöer",
   "6b4bbecf3df324fa": "Försök logga in igen",
   "83be7aade7ff6360": "Inloggad",
   "ec21b232e0eacd4a": "Logga in",
-  "665d27df5960e6b2": "Väntar på din dator…",
   "c65de112b48a66ed": "Lägg till parkopplingslänk",
   "bc8ab792af1d656f": "Kör på din dator:",
   "0ba14e4e920cfa00": "Eller ladda ned skrivbordsappen",
-  "0e79b7a6508a6286": "Sedan",
-  "363b9991fa23d36b": [
-    "Hoppa över installationen om du redan har ",
-    {
-      "t": "code",
-      "i": 1,
-      "c": "t3"
-    },
-    ". Om",
-    " ",
-    {
-      "t": "code",
-      "i": 2,
-      "c": "t3"
-    },
-    " inte hittas efter installationen, lägg till mappen som installationsprogrammet anger i din PATH."
-  ],
   "87b24d00c08f54bb": "Det gick inte att öppna filen med kortkommandon",
   "0ee16208cbfcdbf4": "Okänt fel när filen öppnades.",
   "9e20856550715c74": [

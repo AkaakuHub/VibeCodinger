@@ -1,3 +1,7 @@
+export const RELEASES_URL = "https://github.com/AkaakuHub/t3code/releases";
+
+export const TRIAGE_CLI_COMMAND = "vibecodinger triage";
+
 const NIGHTLY_SERVER_VERSION_PATTERN = /^[^-+]+-(?:nightly|preview)\.\d{8}\.\d+$/;
 
 export function formatAppDisplayName(input: {

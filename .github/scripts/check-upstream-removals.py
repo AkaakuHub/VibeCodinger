@@ -47,6 +47,7 @@ PROTECTED_PATHS = (
     "apps/web/src/routes/approve-agent.tsx",
     "apps/web/src/components/auth/ApproveAgentSurface.tsx",
     "apps/web/src/components/cloud/ConnectOnboardingDialog.tsx",
+    "apps/web/src/components/InstallT3Commands.tsx",
     "apps/web/src/state/connectMcpApproval.ts",
     "packages/client-runtime/src/state/connectMcpApproval.ts",
     "infra/relay",
@@ -62,7 +63,7 @@ FORBIDDEN = re.compile(
     rb"layerCloudDesiredLinkReconcile|managedTunnelStartup|watchManagedTunnelOrigin|hostedApprovalUrl|agentApprovalAppUrlConfig|"
     rb"CloudHttp\.layer|HttpApiBuilder\.layer\(EnvironmentHttpApi\).*connect|"
     rb"Outside MCP clients get app\.t3\.codes|"
-    rb"buildHostedPairingUrl|resolveHostedPairingUrl|https://app\.t3\.codes/pair|"
+    rb"https://t3\.codes/(?:install[.]|download|mobile)|buildHostedPairingUrl|resolveHostedPairingUrl|https://app\.t3\.codes/pair|"
     rb"relayHookBaseUrl|RelayDeliveryProof|traceAuthenticatedRelayRequest|connectSubcommands|writeHeapSnapshot\s*\(",
     re.IGNORECASE,
 )

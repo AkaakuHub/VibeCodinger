@@ -9,6 +9,7 @@ import type { EnvironmentId } from "@t3tools/contracts";
 import { useRouter } from "@tanstack/react-router";
 import { msg } from "gt-react";
 
+import { TRIAGE_CLI_COMMAND } from "~/branding.logic";
 import { stackedThreadToast, toastManager } from "~/components/ui/toast";
 import { currentClientMetadata } from "~/connection/platform";
 import { m } from "~/i18n/messages";
@@ -18,8 +19,6 @@ import { useAtomCommand } from "~/state/use-atom-command";
 import { writeTextToClipboard } from "./useCopyToClipboard";
 import { useNewThreadHandler } from "./useHandleNewThread";
 import { useScratchProject } from "./useScratchProject";
-
-export const TRIAGE_CLI_COMMAND = "npx t3 triage";
 
 const copyTriageCliCommand = () =>
   writeTextToClipboard(TRIAGE_CLI_COMMAND, {
