@@ -31,7 +31,7 @@ export interface EarlyLinuxElectronOptions {
 }
 
 export const resolveLinuxDesktopEntryName = (isDevelopment: boolean): string =>
-  isDevelopment ? "com.t3tools.T3Code.Development.desktop" : "net.akaaku.vibecodinger.desktop";
+  isDevelopment ? "net.akaaku.vibecodinger.dev.desktop" : "net.akaaku.vibecodinger.desktop";
 
 const trimNonEmpty = (value: string | undefined): string | null => {
   const trimmed = value?.trim();

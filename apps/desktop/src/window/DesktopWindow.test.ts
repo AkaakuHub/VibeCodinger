@@ -378,8 +378,8 @@ function layerTest(input: {
           getBrowserSession: () => Effect.succeed({} as Electron.Session),
           setMainWindow: input.setPreviewMainWindow ?? (() => Effect.void),
           prepareWebview: () => Effect.void,
-          isBrowserPartition: (partition) => partition.startsWith("persist:t3code-preview-"),
-          getBrowserPartition: () => Effect.succeed("persist:t3code-preview-test"),
+          isBrowserPartition: (partition) => partition.startsWith("persist:vibecodinger-preview-"),
+          getBrowserPartition: () => Effect.succeed("persist:vibecodinger-preview-test"),
           reapplyZoom: () =>
             Effect.sync(() => {
               input.previewZoomReapplies?.push(input.window.webContents.getZoomLevel());
@@ -489,8 +489,9 @@ const makeSplashScenario = (createOutcomes: readonly (Electron.BrowserWindow | n
           Layer.mock(PreviewManager.PreviewManager)({
             getBrowserSession: () => Effect.succeed({} as Electron.Session),
             setMainWindow: () => Effect.void,
-            isBrowserPartition: (partition) => partition.startsWith("persist:t3code-preview-"),
-            getBrowserPartition: () => Effect.succeed("persist:t3code-preview-test"),
+            isBrowserPartition: (partition) =>
+              partition.startsWith("persist:vibecodinger-preview-"),
+            getBrowserPartition: () => Effect.succeed("persist:vibecodinger-preview-test"),
           }),
         ),
       ),
@@ -1559,7 +1560,7 @@ describe("DesktopWindow", () => {
           }
           const webPreferences: Electron.WebPreferences = {};
           willAttachWebview({ preventDefault: () => {} }, webPreferences, {
-            partition: "persist:t3code-preview-test",
+            partition: "persist:vibecodinger-preview-test",
           });
 
           assert.deepEqual(webPreferences.additionalArguments, expected);

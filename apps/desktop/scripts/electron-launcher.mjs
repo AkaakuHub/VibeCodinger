@@ -15,7 +15,7 @@ const devBundleIdSuffix = NodePath.basename(repoRoot)
   .replaceAll(/[^a-z0-9]+/g, "");
 const APP_DISPLAY_NAME = isDevelopment ? "VibeCodinger (Dev)" : "VibeCodinger (Beta)";
 const APP_BUNDLE_ID = isDevelopment
-  ? `com.t3tools.t3code.dev.${devBundleIdSuffix || "local"}`
+  ? `net.akaaku.vibecodinger.dev.${devBundleIdSuffix || "local"}`
   : "net.akaaku.vibecodinger";
 const APP_PROTOCOL_SCHEMES = isDevelopment ? ["vibecodinger-dev"] : ["vibecodinger"];
 const LAUNCHER_VERSION = 20;
@@ -136,7 +136,7 @@ export function makeDevelopmentLauncherScript({
   return [
     "#!/bin/sh",
     `if [ -f ${shellSingleQuote(environmentFilePath)} ]; then . ${shellSingleQuote(environmentFilePath)}; fi`,
-    `exec ${shellSingleQuote(electronBinaryPath)} --t3code-dev-root=${shellSingleQuote(desktopRoot)} ${shellSingleQuote(mainEntryPath)} "$@"`,
+    `exec ${shellSingleQuote(electronBinaryPath)} --vibecodinger-dev-root=${shellSingleQuote(desktopRoot)} ${shellSingleQuote(mainEntryPath)} "$@"`,
     "",
   ].join("\n");
 }

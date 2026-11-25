@@ -164,7 +164,7 @@ describe("BrowserSession", () => {
       const first = yield* browserSessions.getSession("scope-a");
       const second = yield* browserSessions.getSession("scope-a");
 
-      assert.strictEqual(partition, "persist:t3code-preview-f051bb2c68cb7b2fe969");
+      assert.strictEqual(partition, "persist:vibecodinger-preview-f051bb2c68cb7b2fe969");
       assert.strictEqual(first, second);
       assert.strictEqual(fromPartition.mock.calls.length, 1);
     }).pipe(Effect.provide(layer)),
@@ -183,7 +183,7 @@ describe("BrowserSession", () => {
 
       assert.strictEqual(
         yield* browserSessions.getPartition("scope-a"),
-        "persist:t3code-preview-f051bb2c68cb7b2fe969",
+        "persist:vibecodinger-preview-f051bb2c68cb7b2fe969",
       );
     }).pipe(Effect.provide(layer)),
   );
@@ -195,8 +195,11 @@ describe("BrowserSession", () => {
       const legacyDefault = yield* browserSessions.getPartition("a::b");
       const nondefaultProfile = yield* browserSessions.getPartition("a::b", true, "profile");
 
-      assert.strictEqual(legacyDefault, "persist:t3code-preview-78f0be89237d77f7a70e");
-      assert.strictEqual(nondefaultProfile, "persist:t3code-preview-profile-78f0be89237d77f7a70e");
+      assert.strictEqual(legacyDefault, "persist:vibecodinger-preview-78f0be89237d77f7a70e");
+      assert.strictEqual(
+        nondefaultProfile,
+        "persist:vibecodinger-preview-profile-78f0be89237d77f7a70e",
+      );
       assert.notStrictEqual(nondefaultProfile, legacyDefault);
       assert.isTrue(browserSessions.isPartition(legacyDefault));
       assert.isTrue(browserSessions.isPartition(nondefaultProfile));
@@ -567,7 +570,7 @@ describe("BrowserSession", () => {
       assert.strictEqual(showMessageBox.mock.calls.length, 1);
       assert.isFalse(
         yield* (yield* FileSystem.FileSystem).exists(
-          `${browserSession!.storagePath}/t3code-certificate-approvals.json`,
+          `${browserSession!.storagePath}/vibecodinger-certificate-approvals.json`,
         ),
       );
     }).pipe(Effect.scoped, Effect.provide(Layer.merge(layer, NodeServices.layer))),
@@ -639,7 +642,7 @@ describe("BrowserSession", () => {
       yield* browserSessions.getSession("scope-a");
       const browserSession = sessions.get(partition);
       // What a clear whose removal failed leaves behind: memory forgot, the file did not.
-      const file = `${browserSession!.storagePath}/t3code-certificate-approvals.json`;
+      const file = `${browserSession!.storagePath}/vibecodinger-certificate-approvals.json`;
       yield* fileSystem.makeDirectory(browserSession!.storagePath!, { recursive: true });
       yield* fileSystem.writeFileString(
         file,

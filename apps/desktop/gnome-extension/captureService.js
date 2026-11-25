@@ -1,6 +1,6 @@
 export const CLIENT_NAMES = [
   "net.akaaku.vibecodinger.SnapShot",
-  "com.t3tools.T3Code.Development.SnapShot",
+  "net.akaaku.vibecodinger.dev.SnapShot",
 ];
 
 export function isWaylandSession(meta) {
