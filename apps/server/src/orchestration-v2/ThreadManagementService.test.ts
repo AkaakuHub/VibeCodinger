@@ -1242,7 +1242,7 @@ it.effect("previews the completed run's answer without its commentary", () =>
                 {
                   type: "assistant_message",
                   phase: "final_answer",
-                  text: "修正しました。\\n" + "🐈".repeat(250),
+                  text: "修正しました。\n" + "🐈".repeat(250),
                   streaming: false,
                   messageId,
                 },
