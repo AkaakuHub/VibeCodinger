@@ -226,7 +226,7 @@ describe("vibecodinger server command safety", () => {
             ),
             Effect.flip,
           );
-          expect(String(error)).toContain("A T3 Code server is already running");
+          expect(String(error)).toContain("A VibeCodinger server is already running");
           expect(yield* Effect.promise(() => NodeFSP.readFile(statePath, "utf8"))).toBe(record);
           expect(yield* pathExists(newDirectory)).toBe(false);
           expect(yield* Effect.promise(() => NodeFSP.readdir(stateDir))).toEqual([
@@ -337,20 +337,22 @@ describe("vibecodinger app", () => {
     ),
   );
 
-  it.effect("never searches a dev state directory for an explicit T3 home", () =>
-    withTempDirectory("t3-app-explicit-test-", (root) =>
-      Effect.gen(function* () {
-        const baseDir = NodePath.join(root, ".vibecodinger");
-        const development = yield* fakeDesktop({ baseDir, stateSubdirectory: "dev" });
+  it.effect(
+    "never searches a dev state directory for an explicit VibeCodinger data directory",
+    () =>
+      withTempDirectory("t3-app-explicit-test-", (root) =>
+        Effect.gen(function* () {
+          const baseDir = NodePath.join(root, ".vibecodinger");
+          const development = yield* fakeDesktop({ baseDir, stateSubdirectory: "dev" });
 
-        const flagError = yield* runCli(["app", "--base-dir", baseDir]).pipe(Effect.flip);
-        const envError = yield* runCli(["app"], { VIBECODINGER_HOME: baseDir }).pipe(Effect.flip);
+          const flagError = yield* runCli(["app", "--base-dir", baseDir]).pipe(Effect.flip);
+          const envError = yield* runCli(["app"], { VIBECODINGER_HOME: baseDir }).pipe(Effect.flip);
 
-        expect(flagError).toMatchObject({ _tag: "DesktopAppUnreachableError" });
-        expect(envError).toMatchObject({ _tag: "DesktopAppUnreachableError" });
-        expect(development.received).toHaveLength(0);
-      }).pipe(Effect.provideService(HostProcess.HomeDirectory, root), Effect.scoped),
-    ),
+          expect(flagError).toMatchObject({ _tag: "DesktopAppUnreachableError" });
+          expect(envError).toMatchObject({ _tag: "DesktopAppUnreachableError" });
+          expect(development.received).toHaveLength(0);
+        }).pipe(Effect.provideService(HostProcess.HomeDirectory, root), Effect.scoped),
+      ),
   );
 
   it.effect.each(["failure", "invalid"] as const)(

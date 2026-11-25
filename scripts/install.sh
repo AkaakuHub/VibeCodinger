@@ -8,7 +8,7 @@
 #   VIBECODINGER_CHANNEL           release train to follow: stable, nightly, or preview
 #                            (default: stable; preview is a maintainers' test train)
 #   VIBECODINGER_VERSION           exact version to install (overrides VIBECODINGER_CHANNEL)
-#   VIBECODINGER_HOME              T3 home directory (default: ~/.vibecodinger)
+#   VIBECODINGER_HOME              VibeCodinger data directory directory (default: ~/.vibecodinger)
 #   VIBECODINGER_INSTALL_BIN_DIR   where the `vibecodinger` command goes (default: ~/.local/bin)
 #   VIBECODINGER_RELEASE_BASE_URL  mirror for releases/download (default: GitHub)
 #
@@ -311,7 +311,7 @@ if [ -e "${bin_dir}/vibecodinger" ] || [ -L "${bin_dir}/vibecodinger" ]; then
     existing="$(script_t3 "${bin_dir}/vibecodinger")"
   fi
   if [ -n "$existing" ]; then
-    # Through a symlinked T3 home the path names the alias; resolve its folder to compare.
+    # Through a symlinked VibeCodinger data directory the path names the alias; resolve its folder to compare.
     existing_dir="$(CDPATH='' cd -P -- "$(dirname -- "$existing")" 2>/dev/null && pwd || true)"
     # The text alone counts only without . or .. segments (a pruned version leaves a dangling path).
     case "$existing" in

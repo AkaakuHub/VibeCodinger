@@ -14,7 +14,7 @@ import { installCli, isForegroundProcStat, isForegroundPs, offerCliInstall } fro
 
 const VERSION = packageJson.version;
 
-/** A standalone runtime in a temp T3 home, started by the npm launcher from an npx cache. */
+/** A standalone runtime in a temp VibeCodinger data directory, started by the npm launcher from an npx cache. */
 const setup = Effect.gen(function* () {
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
@@ -71,7 +71,7 @@ it.layer(NodeServices.layer)("vibecodinger install", (it) => {
         assert.isFalse(installed.onPath);
         assert.include(installed.pathCommand, "$HOME/bin");
 
-        // A link written through a symlinked T3 home is still ours.
+        // A link written through a symlinked VibeCodinger data directory is still ours.
         const alias = path.join(root, "alias");
         yield* fs.symlink(path.join(root, ".vibecodinger"), alias);
         yield* fs.remove(link);
@@ -163,7 +163,7 @@ it.layer(NodeServices.layer)("vibecodinger install", (it) => {
         const windows = <A, E, R>(effect: Effect.Effect<A, E, R>) =>
           provide(effect.pipe(Effect.provideService(HostProcess.Platform, "win32")));
         const desktopShim =
-          '@echo off\r\nrem Written by T3 Code\r\n"C:\\T3 Code\\T3 Code.exe" "x" %*\r\n';
+          '@echo off\r\nrem Written by VibeCodinger\r\n"C:\\VibeCodinger\\VibeCodinger.exe" "x" %*\r\n';
         yield* fs.writeFileString(shim, desktopShim);
         const foreignShim = yield* windows(installCli()).pipe(Effect.flip);
         assert.include(foreignShim.message, "Another vibecodinger is already at");

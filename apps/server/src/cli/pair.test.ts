@@ -437,7 +437,7 @@ describe("vibecodinger pair", () => {
         const rendered = String(
           typeof error === "object" && error !== null && "cause" in error ? error.cause : error,
         );
-        assert.include(rendered, "No running T3 Code server found.");
+        assert.include(rendered, "No running VibeCodinger server found.");
         const { command } = yield* resolveHostCliCommand("serve", ["--base-dir", baseDir]);
         assert.include(rendered, `\`${command}\``);
       }),
@@ -479,7 +479,7 @@ describe("vibecodinger pair", () => {
           ),
         );
 
-        assert.include(String(error), "No running T3 Code server found.");
+        assert.include(String(error), "No running VibeCodinger server found.");
         assert.notInclude(String(error), sharedHome);
         assert.deepEqual(NodeFS.readdirSync(NodePath.join(sharedHome, "userdata")), [
           "server-runtime.json",

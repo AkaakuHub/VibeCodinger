@@ -7,7 +7,7 @@
 #   VIBECODINGER_CHANNEL           release train to follow: stable, nightly, or preview
 #                            (default: stable; preview is a maintainers' test train)
 #   VIBECODINGER_VERSION           exact version to install (overrides VIBECODINGER_CHANNEL)
-#   VIBECODINGER_HOME              T3 home directory (default: ~\.vibecodinger)
+#   VIBECODINGER_HOME              VibeCodinger data directory directory (default: ~\.vibecodinger)
 #   VIBECODINGER_INSTALL_BIN_DIR   where vibecodinger.exe is linked (default: ~\.local\bin)
 #   VIBECODINGER_RELEASE_BASE_URL  mirror for releases/download (default: GitHub)
 #

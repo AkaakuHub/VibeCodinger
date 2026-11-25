@@ -58,7 +58,7 @@ it.layer(NodeServices.layer)("root CLI commands", (it) => {
     }),
   );
 
-  it.effect("keeps the arguments, so root runs setup on the same T3 home", () =>
+  it.effect("keeps the arguments, so root runs setup on the same VibeCodinger data directory", () =>
     Effect.gen(function* () {
       const args = ["--base-dir", "/srv/vibecodinger home"];
       expect(
@@ -170,11 +170,11 @@ it.layer(NodeServices.layer)("host CLI commands", (it) => {
         resolveHostCliCommand("doctor", ["--base-dir", "C:\\Users\\Jane Doe\\.vibecodinger"]).pipe(
           Effect.provideService(
             HostProcess.ExecutablePath,
-            "C:\\Program Files\\T3 Code\\vibecodinger.exe",
+            "C:\\Program Files\\VibeCodinger\\vibecodinger.exe",
           ),
           Effect.provideService(HostProcess.Arguments, [
-            "C:\\Program Files\\T3 Code\\vibecodinger.exe",
-            "C:\\Program Files\\T3 Code\\resources\\app.asar\\apps\\server\\dist\\bin.mjs",
+            "C:\\Program Files\\VibeCodinger\\vibecodinger.exe",
+            "C:\\Program Files\\VibeCodinger\\resources\\app.asar\\apps\\server\\dist\\bin.mjs",
           ]),
           Effect.provideService(HostProcess.IsExecutable, false),
           Effect.provideService(HostProcess.Platform, platform),

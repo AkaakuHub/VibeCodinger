@@ -119,7 +119,7 @@ it.layer(Layer.mergeAll(NodeServices.layer, NetService.layer))(
         label: "leaves a service that serves another home by the time it is removed",
         otherFromRead: 2,
         removed: [],
-        output: "Left the background service: it now serves another T3 home.",
+        output: "Left the background service: it now serves another VibeCodinger data directory.",
       },
     ])("$label", (input) =>
       Effect.gen(function* () {

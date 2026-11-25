@@ -47,7 +47,7 @@ const layerCliRuntime = Layer.mergeAll(NodeServices.layer, NodeCrypto.layer, Net
 export const makeCli = () =>
   Command.make("vibecodinger", { ...sharedServerCommandFlags }).pipe(
     Command.withDescription(
-      "Run T3 Code in this terminal and open it in your browser. To use it from your other devices, run `vibecodinger up`.",
+      "Run VibeCodinger in this terminal and open it in your browser. To use it from your other devices, run `vibecodinger up`.",
     ),
     Command.withHandler(runDefaultServerCommand),
     Command.withSubcommands([
