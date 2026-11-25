@@ -250,7 +250,7 @@ describe("DesktopBackendConfiguration", () => {
         assert.equal(first.bootstrap.noBrowser, true);
         assert.equal(first.bootstrap.port, 4888);
         assert.equal(first.bootstrap.host, "0.0.0.0");
-        assert.equal(first.bootstrap.t3Home, environment.baseDir);
+        assert.equal(first.bootstrap.appDataHome, environment.baseDir);
         assert.equal(first.bootstrap.tailscaleServeEnabled, true);
         assert.equal(first.bootstrap.tailscaleServePort, 8443);
         assert.match(first.bootstrap.desktopBootstrapSecret ?? "", /^[0-9a-f]{64}$/i);
@@ -357,7 +357,7 @@ describe("DesktopBackendConfiguration", () => {
                     ok: true,
                     nodePath: "/usr/bin/node",
                     resolvedPath: "/usr/bin:/bin",
-                    t3Home: null,
+                    appDataHome: null,
                   };
                 },
                 getDistroIp: (distro) => {
@@ -389,12 +389,12 @@ describe("DesktopBackendConfiguration", () => {
       windowsArchivePath: string;
       runtimeId: string;
       sha256: string;
-      t3Home: string | null;
+      appDataHome: string | null;
     }> = [];
     let probeCount = 0;
     let legacyCleanupCount = 0;
-    const t3Home = "/home/test/.config/vibecodinger";
-    const linuxAppRoot = `${t3Home}/wsl-runtime/1.2.3-x64`;
+    const appDataHome = "/home/test/.config/vibecodinger";
+    const linuxAppRoot = `${appDataHome}/wsl-runtime/1.2.3-x64`;
     const resolvedPath = "/home/test/.local/bin:/usr/bin:/bin";
 
     return withPackagedWslHarness(
@@ -405,18 +405,18 @@ describe("DesktopBackendConfiguration", () => {
           legacyCleanupCount += 1;
         }),
         wsl: () => ({
-          prepareRuntime: (_distro, archive, archiveT3Home) => {
+          prepareRuntime: (_distro, archive, archiveAppDataHome) => {
             observedArchives.push({
               windowsArchivePath: archive.windowsPath,
               runtimeId: archive.runtimeId,
               sha256: archive.sha256,
-              t3Home: archiveT3Home,
+              appDataHome: archiveAppDataHome,
             });
             return { ok: true, linuxAppRoot };
           },
           probeRuntime: () => {
             probeCount += 1;
-            return { ok: true, resolvedPath, t3Home };
+            return { ok: true, resolvedPath, appDataHome };
           },
           ensureNodePty: () => {
             throw new Error("the staged runtime must not probe for node-pty");
@@ -434,7 +434,7 @@ describe("DesktopBackendConfiguration", () => {
               windowsArchivePath: archivePath,
               runtimeId: `sha256-${archiveHash}`,
               sha256: archiveHash,
-              t3Home,
+              appDataHome,
             },
           ]);
           assert.equal(probeCount, 1);
@@ -450,14 +450,14 @@ describe("DesktopBackendConfiguration", () => {
             "--exec",
             "env",
             `PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${resolvedPath}`,
-            `VIBECODINGER_HOME=${t3Home}`,
+            `VIBECODINGER_HOME=${appDataHome}`,
             `${linuxAppRoot}/vibecodinger`,
             "--bootstrap-fd",
             "0",
           ]);
           assert.notInclude(config.args, "/usr/bin/node");
           assert.equal(config.wslRuntimeId, `sha256-${archiveHash}`);
-          assert.equal(config.wslT3Home, t3Home);
+          assert.equal(config.wslAppDataHome, appDataHome);
           assert.equal(legacyCleanupCount, 1);
           assert.isTrue(Option.isNone(config.preflightFailure));
         }),
@@ -480,7 +480,7 @@ describe("DesktopBackendConfiguration", () => {
             ok: true,
             nodePath: "/usr/bin/node",
             resolvedPath: "/usr/bin:/bin",
-            t3Home: null,
+            appDataHome: null,
           }),
         }),
       },
@@ -519,7 +519,7 @@ describe("DesktopBackendConfiguration", () => {
               ok: true,
               nodePath: "/usr/bin/node",
               resolvedPath: "/usr/bin:/bin",
-              t3Home: null,
+              appDataHome: null,
             };
           },
         }),
@@ -561,7 +561,7 @@ describe("DesktopBackendConfiguration", () => {
               ok: true,
               nodePath: "/usr/bin/node",
               resolvedPath: "/usr/bin:/bin",
-              t3Home: null,
+              appDataHome: null,
             };
           },
         }),
@@ -643,7 +643,7 @@ describe("DesktopBackendConfiguration", () => {
                   isAvailable: true,
                   distros: [{ name: "Ubuntu", isDefault: true, version: 2 }],
                   windowsToWslPath: () => Option.some(linuxAppRoot),
-                  ensureNodePty: () => ({ ok: true, nodePath, resolvedPath, t3Home: null }),
+                  ensureNodePty: () => ({ ok: true, nodePath, resolvedPath, appDataHome: null }),
                   getDistroIp: () => Option.some("172.27.0.99"),
                 }),
               ),
@@ -840,7 +840,7 @@ describe("DesktopBackendConfiguration", () => {
           const config = yield* configuration.resolvePrimary;
 
           assert.equal(config.executablePath, process.execPath);
-          assert.equal(config.bootstrap.t3Home, environment.baseDir);
+          assert.equal(config.bootstrap.appDataHome, environment.baseDir);
           assert.isTrue(Option.isNone(config.preflightFailure));
         }).pipe(
           Effect.provide(

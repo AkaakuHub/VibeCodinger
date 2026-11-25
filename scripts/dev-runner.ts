@@ -5,7 +5,7 @@ import * as NodeOS from "node:os";
 import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
 import * as NodeServices from "@effect/platform-node/NodeServices";
 import * as NetService from "@t3tools/shared/Net";
-import { resolveGitWorktreePath, resolveWorktreeT3Home } from "@t3tools/shared/devHome";
+import { resolveGitWorktreePath, resolveWorktreeAppDataHome } from "@t3tools/shared/devHome";
 import * as HostProcess from "@t3tools/shared/HostProcess";
 import { resolveSpawnCommand } from "@t3tools/shared/shell";
 import * as Config from "effect/Config";
@@ -67,7 +67,7 @@ function sharedBackendTargetHost(host: string | undefined): string {
   return "127.0.0.1";
 }
 
-export const DEFAULT_T3_HOME = Effect.map(Effect.service(Path.Path), (path) =>
+export const DEFAULT_APP_DATA_HOME = Effect.map(Effect.service(Path.Path), (path) =>
   path.join(NodeOS.homedir(), ".vibecodinger"),
 );
 
@@ -285,7 +285,7 @@ const resolveBaseDir = Effect.fn("dev-runner.resolveBaseDir")(function* (
     return path.resolve(configured);
   }
 
-  return yield* DEFAULT_T3_HOME;
+  return yield* DEFAULT_APP_DATA_HOME;
 });
 
 interface CreateDevRunnerEnvInput {
@@ -293,7 +293,7 @@ interface CreateDevRunnerEnvInput {
   readonly baseEnv: NodeJS.ProcessEnv;
   readonly serverOffset: number;
   readonly webOffset: number;
-  readonly t3Home: string | undefined;
+  readonly appDataHome: string | undefined;
   readonly browser: boolean | undefined;
   readonly autoBootstrapProjectFromCwd: boolean | undefined;
   readonly logWebSocketEvents: boolean | undefined;
@@ -307,7 +307,7 @@ export const createDevRunnerEnv = Effect.fn("dev-runner.createDevRunnerEnv")(fun
   baseEnv,
   serverOffset,
   webOffset,
-  t3Home,
+  appDataHome,
   browser,
   autoBootstrapProjectFromCwd,
   logWebSocketEvents,
@@ -317,7 +317,7 @@ export const createDevRunnerEnv = Effect.fn("dev-runner.createDevRunnerEnv")(fun
 }: CreateDevRunnerEnvInput): Effect.fn.Return<NodeJS.ProcessEnv, never, Path.Path> {
   const serverPort = port ?? BASE_SERVER_PORT + serverOffset;
   const webPort = BASE_WEB_PORT + webOffset;
-  const configuredBaseDir = t3Home?.trim() || undefined;
+  const configuredBaseDir = appDataHome?.trim() || undefined;
   const resolvedBaseDir = yield* resolveBaseDir(configuredBaseDir);
   const isDesktopMode = mode === "dev:desktop";
 
@@ -724,7 +724,7 @@ const prepareFirstStart = Effect.fn("dev-runner.prepareFirstStart")(function* (i
 
 interface DevRunnerCliInput {
   readonly mode: DevMode;
-  readonly t3Home: string | undefined;
+  readonly appDataHome: string | undefined;
   readonly browser: boolean | undefined;
   readonly autoBootstrapProjectFromCwd: boolean | undefined;
   readonly logWebSocketEvents: boolean | undefined;
@@ -784,12 +784,12 @@ export const runDevRunnerWithInput = Effect.fn("dev-runner.runDevRunnerWithInput
   // A dev server started inside a worktree defaults to that worktree's own
   // (gitignored) `.vibecodinger` — see @t3tools/shared/devHome for why this must
   // outrank an ambient VIBECODINGER_HOME. `--home-dir` still wins.
-  const worktreeHome = yield* resolveWorktreeT3Home(yield* HostProcess.WorkingDirectory);
+  const worktreeHome = yield* resolveWorktreeAppDataHome(yield* HostProcess.WorkingDirectory);
   // Trim before choosing: `--home-dir ""` is not a selection, and treating it
   // as one would skip the worktree default and land on the shared home —
   // exactly the outcome this precedence exists to prevent.
-  const resolvedT3Home =
-    (input.t3Home?.trim() || undefined) ??
+  const resolvedAppDataHome =
+    (input.appDataHome?.trim() || undefined) ??
     worktreeHome ??
     (hostEnvironment.VIBECODINGER_HOME?.trim() || undefined);
   const env = yield* createDevRunnerEnv({
@@ -797,7 +797,7 @@ export const runDevRunnerWithInput = Effect.fn("dev-runner.runDevRunnerWithInput
     baseEnv: hostEnvironment,
     serverOffset,
     webOffset,
-    t3Home: resolvedT3Home,
+    appDataHome: resolvedAppDataHome,
     browser: input.browser,
     autoBootstrapProjectFromCwd: input.autoBootstrapProjectFromCwd,
     logWebSocketEvents: input.logWebSocketEvents,
@@ -810,7 +810,7 @@ export const runDevRunnerWithInput = Effect.fn("dev-runner.runDevRunnerWithInput
     serverOffset !== offset || webOffset !== offset
       ? ` selectedOffset(server=${serverOffset},web=${webOffset})`
       : "";
-  const baseDir = env.VIBECODINGER_HOME ?? (yield* DEFAULT_T3_HOME);
+  const baseDir = env.VIBECODINGER_HOME ?? (yield* DEFAULT_APP_DATA_HOME);
 
   yield* Effect.logInfo(
     `[dev-runner] mode=${input.mode} source=${source}${selectionSuffix} serverPort=${String(env.VIBECODINGER_PORT)} webPort=${String(env.PORT)} baseDir=${baseDir}`,
@@ -977,7 +977,7 @@ const devRunnerCli = Command.make("dev-runner", {
   mode: Argument.Literals("mode", DEV_RUNNER_MODES).pipe(
     Argument.withDescription("Development mode to run."),
   ),
-  t3Home: Flag.String("home-dir").pipe(
+  appDataHome: Flag.String("home-dir").pipe(
     Flag.withDescription(
       "Explicit T3 Code data directory; runtime state is stored under userdata (equivalent to VIBECODINGER_HOME). Inside a git worktree this defaults to that worktree's own .vibecodinger so dev state stays off the shared home.",
     ),

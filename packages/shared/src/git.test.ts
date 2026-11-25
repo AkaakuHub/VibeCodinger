@@ -409,7 +409,7 @@ describe("formatGeneratedBranchName", () => {
     expect(
       formatGeneratedBranchName("feat/Add Search", {
         mode: "semantic",
-        prefix: "t3code",
+        prefix: "vibecodinger",
         instructions: "",
       }),
     ).toBe("feat/add-search");

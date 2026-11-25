@@ -246,7 +246,7 @@ describe("vibecodinger app", () => {
         const platform = yield* HostProcess.Platform;
         if (platform === "win32") return;
         yield* withTempDirectory(
-          "t3-app-unsafe-",
+          "vibecodinger-app-unsafe-",
           (root) =>
             Effect.gen(function* () {
               yield* Effect.acquireRelease(
@@ -287,9 +287,9 @@ describe("vibecodinger app", () => {
   );
 
   it.effect("uses VIBECODINGER_HOME or --base-dir and sends the default or explicit path", () =>
-    withTempDirectory("t3-app-command-test-", (root) =>
+    withTempDirectory("vibecodinger-app-command-test-", (root) =>
       Effect.gen(function* () {
-        const baseDir = NodePath.join(root, "t3-home");
+        const baseDir = NodePath.join(root, "app-data-home");
         const explicitPath = NodePath.join(root, "project");
         const platform = yield* HostProcess.Platform;
         const workingDirectory = yield* HostProcess.WorkingDirectory;
@@ -308,7 +308,7 @@ describe("vibecodinger app", () => {
   );
 
   it.effect("prefers the installed desktop app when a dev desktop is also running", () =>
-    withTempDirectory("t3-app-preferred-test-", (root) =>
+    withTempDirectory("vibecodinger-app-preferred-test-", (root) =>
       Effect.gen(function* () {
         const baseDir = NodePath.join(root, ".vibecodinger");
         const desktop = yield* fakeDesktop({ baseDir });
@@ -323,7 +323,7 @@ describe("vibecodinger app", () => {
   );
 
   it.effect("finds the dev desktop when the default desktop socket is absent", () =>
-    withTempDirectory("t3-app-dev-test-", (root) =>
+    withTempDirectory("vibecodinger-app-dev-test-", (root) =>
       Effect.gen(function* () {
         const baseDir = NodePath.join(root, ".vibecodinger");
         const development = yield* fakeDesktop({ baseDir, stateSubdirectory: "dev" });
@@ -340,7 +340,7 @@ describe("vibecodinger app", () => {
   it.effect(
     "never searches a dev state directory for an explicit VibeCodinger data directory",
     () =>
-      withTempDirectory("t3-app-explicit-test-", (root) =>
+      withTempDirectory("vibecodinger-app-explicit-test-", (root) =>
         Effect.gen(function* () {
           const baseDir = NodePath.join(root, ".vibecodinger");
           const development = yield* fakeDesktop({ baseDir, stateSubdirectory: "dev" });
@@ -358,7 +358,7 @@ describe("vibecodinger app", () => {
   it.effect.each(["failure", "invalid"] as const)(
     "never falls back after the default desktop sends a %s response",
     (responseKind) =>
-      withTempDirectory("t3-app-response-test-", (root) =>
+      withTempDirectory("vibecodinger-app-response-test-", (root) =>
         Effect.gen(function* () {
           const baseDir = NodePath.join(root, ".vibecodinger");
           const desktop = yield* fakeDesktop({

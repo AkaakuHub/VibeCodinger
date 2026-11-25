@@ -68,7 +68,7 @@ it.effect("reports a deleted worktree's scan as finished, not pending", () =>
       yield* decodeClaudeSettings({}),
       { skills: [], slashCommands: [] } as unknown as ServerProvider,
       "/nonexistent/t3-deleted-worktree",
-      { HOME: "/nonexistent/t3-home" },
+      { HOME: "/nonexistent/app-data-home" },
     );
     assert.strictEqual(snapshot.slashCommandsPending, false);
   }).pipe(Effect.provide(NodeServices.layer)),

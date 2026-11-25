@@ -10,11 +10,11 @@ import * as Exit from "effect/Exit";
 import * as Fiber from "effect/Fiber";
 import * as Path from "effect/Path";
 
-import { APP_DIR, T3_HOME } from "../e2e.config.ts";
+import { APP_DIR, APP_DATA_HOME } from "../e2e.config.ts";
 import { ScenarioError } from "./shell.ts";
 import { prepareHome, SCENARIO_MACHINE_ENV, start } from "./start-app.ts";
 
-export const SECOND_HOME = `${T3_HOME}-second-environment`;
+export const SECOND_HOME = `${APP_DATA_HOME}-second-environment`;
 
 /** A second server on its own T3 home, running until interrupted. `--dev-url` admits the web
  * origin through CORS and registers the replay agent; `paired` gets the Add environment input. */

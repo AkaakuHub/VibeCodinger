@@ -18,7 +18,7 @@ $ErrorActionPreference = "Stop"
 
 $repo = "AkaakuHub/t3code"
 $baseUrl = if ($env:VIBECODINGER_RELEASE_BASE_URL) { $env:VIBECODINGER_RELEASE_BASE_URL.TrimEnd("/") } else { "https://github.com/$repo/releases/download" }
-$t3Home = if ($env:VIBECODINGER_HOME) { $env:VIBECODINGER_HOME } else { Join-Path $HOME ".vibecodinger" }
+$appDataHome = if ($env:VIBECODINGER_HOME) { $env:VIBECODINGER_HOME } else { Join-Path $HOME ".vibecodinger" }
 $binDir = if ($env:VIBECODINGER_INSTALL_BIN_DIR) { $env:VIBECODINGER_INSTALL_BIN_DIR } else { Join-Path $HOME ".local\bin" }
 # Absolute, so PATH never gets a folder that changes with the working directory.
 $binDir = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($binDir)
@@ -178,7 +178,7 @@ if ($version -match '-preview\.') {
 
 $stem = "vibecodinger-$version-win32-$arch"
 $archive = "$stem.zip"
-$versionsDir = Join-Path $t3Home "runtime\versions"
+$versionsDir = Join-Path $appDataHome "runtime\versions"
 $targetDir = Join-Path $versionsDir $version
 $marker = Join-Path $targetDir ".install-complete"
 
@@ -257,7 +257,7 @@ if (Test-Path -LiteralPath $shim) {
 # non-ASCII characters in the user's home path.
 [System.IO.File]::WriteAllText($shim, "@echo off`r`n`"$(Join-Path $targetDir 'vibecodinger.exe')`" %*", (New-Object System.Text.UTF8Encoding $false))
 # Pruning keeps what this shim points at; a background service cannot see $binDir otherwise.
-$launchers = Join-Path $t3Home "runtime\launchers"
+$launchers = Join-Path $appDataHome "runtime\launchers"
 $shimPath = (Resolve-Path -LiteralPath $shim).Path
 if (-not ((Test-Path $launchers) -and ((Get-Content $launchers) -contains $shimPath))) {
   [System.IO.File]::AppendAllText($launchers, "$shimPath`r`n", (New-Object System.Text.UTF8Encoding $false))

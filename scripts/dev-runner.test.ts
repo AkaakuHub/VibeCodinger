@@ -57,7 +57,7 @@ function mockProcess(exit: number | PlatformError.PlatformError) {
 
 const devServerInput = {
   mode: "dev:server",
-  t3Home: "/tmp/t3code-dev-runner",
+  appDataHome: "/tmp/vibecodinger-dev-runner",
   browser: undefined,
   autoBootstrapProjectFromCwd: undefined,
   logWebSocketEvents: undefined,
@@ -78,7 +78,7 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
           baseEnv: { VIBECODINGER_DEV_AUTH_TOKEN: "reusable-dev-auth-token-that-is-long-enough" },
           serverOffset: 0,
           webOffset: 0,
-          t3Home: undefined,
+          appDataHome: undefined,
           browser: undefined,
           autoBootstrapProjectFromCwd: undefined,
           logWebSocketEvents: undefined,
@@ -100,7 +100,7 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
           mode: "dev",
           serverOffset: 0,
           webOffset: 0,
-          t3Home: undefined,
+          appDataHome: undefined,
           browser: undefined,
           autoBootstrapProjectFromCwd: undefined,
           logWebSocketEvents: undefined,
@@ -129,7 +129,7 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
           },
           serverOffset: 0,
           webOffset: 0,
-          t3Home: undefined,
+          appDataHome: undefined,
           browser: undefined,
           autoBootstrapProjectFromCwd: undefined,
           logWebSocketEvents: undefined,
@@ -155,7 +155,7 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
             },
             serverOffset: 0,
             webOffset: 0,
-            t3Home: undefined,
+            appDataHome: undefined,
             browser: undefined,
             autoBootstrapProjectFromCwd: undefined,
             logWebSocketEvents: undefined,
@@ -178,7 +178,7 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
           baseEnv: { HOST: "0.0.0.0" },
           serverOffset: 0,
           webOffset: 0,
-          t3Home: undefined,
+          appDataHome: undefined,
           browser: undefined,
           autoBootstrapProjectFromCwd: undefined,
           logWebSocketEvents: undefined,
@@ -204,7 +204,7 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
             },
             serverOffset: 0,
             webOffset: 0,
-            t3Home: undefined,
+            appDataHome: undefined,
             browser: undefined,
             autoBootstrapProjectFromCwd: undefined,
             logWebSocketEvents: undefined,
@@ -514,7 +514,7 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
           baseEnv: { VIBECODINGER_HOME: "/home/user/.vibecodinger" },
           serverOffset: 0,
           webOffset: 0,
-          t3Home: undefined,
+          appDataHome: undefined,
           browser: undefined,
           autoBootstrapProjectFromCwd: undefined,
           logWebSocketEvents: undefined,
@@ -530,13 +530,13 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
     it.effect("expands a home-relative T3 home the way the server does", () =>
       Effect.gen(function* () {
         const path = yield* Path.Path;
-        const homeFor = (t3Home: string) =>
+        const homeFor = (appDataHome: string) =>
           createDevRunnerEnv({
             mode: "dev",
             baseEnv: {},
             serverOffset: 0,
             webOffset: 0,
-            t3Home,
+            appDataHome,
             browser: undefined,
             autoBootstrapProjectFromCwd: undefined,
             logWebSocketEvents: undefined,
@@ -783,7 +783,7 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
       );
 
       const spawnedHome = (input: {
-        readonly t3Home: string | undefined;
+        readonly appDataHome: string | undefined;
         readonly cwd: string;
         readonly ambientHome: string | undefined;
       }) =>
@@ -801,7 +801,7 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
             }),
           );
 
-          yield* runDevRunnerWithInput({ ...devServerInput, t3Home: input.t3Home }).pipe(
+          yield* runDevRunnerWithInput({ ...devServerInput, appDataHome: input.appDataHome }).pipe(
             Effect.provide(Layer.mergeAll(emptyConfigLayer, netServiceLayer, spawnerLayer)),
             Effect.provideService(HostProcess.Platform, "linux"),
             Effect.provideService(HostProcess.WorkingDirectory, input.cwd),
@@ -821,7 +821,7 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
           const path = yield* Path.Path;
           const root = yield* makeWorktree;
           const home = yield* spawnedHome({
-            t3Home: "/tmp/explicit-home",
+            appDataHome: "/tmp/explicit-home",
             cwd: root,
             ambientHome: "/home/user/.vibecodinger",
           });
@@ -834,7 +834,7 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
           const path = yield* Path.Path;
           const root = yield* makeWorktree;
           const home = yield* spawnedHome({
-            t3Home: "   ",
+            appDataHome: "   ",
             cwd: root,
             ambientHome: "/home/user/.vibecodinger",
           });
@@ -847,7 +847,7 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
           const path = yield* Path.Path;
           const root = yield* makeWorktree;
           const home = yield* spawnedHome({
-            t3Home: undefined,
+            appDataHome: undefined,
             cwd: root,
             ambientHome: "/home/user/.vibecodinger",
           });
@@ -875,7 +875,11 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
                   return Effect.succeed(mockProcess(0));
                 }),
               );
-              yield* runDevRunnerWithInput({ ...devServerInput, t3Home: undefined, seed }).pipe(
+              yield* runDevRunnerWithInput({
+                ...devServerInput,
+                appDataHome: undefined,
+                seed,
+              }).pipe(
                 Effect.provide(Layer.mergeAll(emptyConfigLayer, netServiceLayer, spawnerLayer)),
                 Effect.provideService(HostProcess.Platform, "linux"),
                 Effect.provideService(HostProcess.WorkingDirectory, root),
@@ -930,7 +934,7 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
               }),
             );
 
-            yield* runDevRunnerWithInput({ ...devServerInput, t3Home: undefined }).pipe(
+            yield* runDevRunnerWithInput({ ...devServerInput, appDataHome: undefined }).pipe(
               Effect.provide([
                 emptyConfigLayer,
                 netServiceLayer,
@@ -983,7 +987,7 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
         Effect.gen(function* () {
           const path = yield* Path.Path;
           const home = yield* spawnedHome({
-            t3Home: undefined,
+            appDataHome: undefined,
             cwd: NodeOS.tmpdir(),
             ambientHome: "/home/user/.vibecodinger",
           });

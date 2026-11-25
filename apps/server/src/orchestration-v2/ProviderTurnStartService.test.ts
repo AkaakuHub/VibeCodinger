@@ -419,8 +419,16 @@ effectIt.effect("restores into a leftover worktree folder that cannot itself be 
 });
 
 it.each([
-  { label: "directly in the scratch root", folder: "/tmp/t3-home/scratch/notes", recreated: true },
-  { label: "below another folder", folder: "/tmp/t3-home/scratch/notes/deep", recreated: false },
+  {
+    label: "directly in the scratch root",
+    folder: "/tmp/app-data-home/scratch/notes",
+    recreated: true,
+  },
+  {
+    label: "below another folder",
+    folder: "/tmp/app-data-home/scratch/notes/deep",
+    recreated: false,
+  },
   {
     label: "in another project",
     folder: "/tmp/elsewhere/notes",
@@ -450,7 +458,7 @@ it.each([
             } as never),
             Path.layer,
             Layer.mock(ServerConfig.ServerConfig)({
-              baseDir: "/tmp/t3-home",
+              baseDir: "/tmp/app-data-home",
               worktreesDir: managedWorktreesDir,
             } as ServerConfig.ServerConfig["Service"]),
             ServerSettings.layerTest(),
@@ -458,7 +466,7 @@ it.each([
             Layer.mock(ProjectService.ProjectService)({
               getById: () =>
                 Effect.succeedSome({
-                  workspaceRoot: input.workspaceRoot ?? "/tmp/t3-home/scratch",
+                  workspaceRoot: input.workspaceRoot ?? "/tmp/app-data-home/scratch",
                 } as never),
             }),
           ),

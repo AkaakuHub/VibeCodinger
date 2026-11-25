@@ -25,7 +25,7 @@ import {
   buildWslRuntimePruneScript,
   buildWslRuntimeProbeScript,
   parseResolvedPath,
-  parseT3Home,
+  parseAppDataHome,
   parseWslRuntimeRoot,
   windowsToWslPathImpl,
 } from "./DesktopWslEnvironment.ts";
@@ -138,11 +138,15 @@ describe.skipIf(posixShellRunner === null)("WSL runtime install script (executed
     const archiveSha = readField(result.stdout, "archiveSha");
     const runtimeId = `sha256-${archiveSha}`;
     // WSL does not inherit HOME; embed the fixture's override in the script.
-    const installScript = (archive = archivePath, sha = archiveSha, t3Home: string | null = null) =>
+    const installScript = (
+      archive = archivePath,
+      sha = archiveSha,
+      appDataHome: string | null = null,
+    ) =>
       [
         `HOME=${sh(`${work}/home`)}`,
         "export HOME",
-        buildWslRuntimeInstallScript(archive, runtimeId, sha, t3Home),
+        buildWslRuntimeInstallScript(archive, runtimeId, sha, appDataHome),
       ].join("\n");
     return {
       work,
@@ -153,8 +157,8 @@ describe.skipIf(posixShellRunner === null)("WSL runtime install script (executed
       runtimeRoot: `${work}/home/.vibecodinger/wsl-runtime/${runtimeId}`,
       serverEntry: `${work}/home/.vibecodinger/wsl-runtime/${runtimeId}/vibecodinger`,
       installScript,
-      install: (archive?: string, sha?: string, t3Home?: string | null) =>
-        runShell(installScript(archive, sha, t3Home)),
+      install: (archive?: string, sha?: string, appDataHome?: string | null) =>
+        runShell(installScript(archive, sha, appDataHome)),
     };
   };
 
@@ -202,20 +206,22 @@ describe.skipIf(posixShellRunner === null)("WSL runtime install script (executed
 
   it("stages the runtime under the login shell's VIBECODINGER_HOME and reports it to the launcher", () => {
     const fixture = createFixture();
-    const t3Home = `${fixture.work}/home/.config/vibecodinger home`;
-    const install = fixture.install(undefined, undefined, t3Home);
+    const appDataHome = `${fixture.work}/home/.config/vibecodinger home`;
+    const install = fixture.install(undefined, undefined, appDataHome);
     expect(install.status, install.stderr).toBe(0);
-    expect(parseWslRuntimeRoot(install.stdout)).toBe(`${t3Home}/wsl-runtime/${fixture.runtimeId}`);
+    expect(parseWslRuntimeRoot(install.stdout)).toBe(
+      `${appDataHome}/wsl-runtime/${fixture.runtimeId}`,
+    );
     expect(runShell(`test ! -e ${sh(`${fixture.work}/home/.vibecodinger`)}`).status).toBe(0);
 
     const probe = runShell(
       [
-        `bash() { ( export VIBECODINGER_HOME=${sh(t3Home)}; eval "$2" ); }`,
+        `bash() { ( export VIBECODINGER_HOME=${sh(appDataHome)}; eval "$2" ); }`,
         buildWslRuntimeProbeScript(),
       ].join("\n"),
     );
     expect(probe.status, probe.stderr).toBe(0);
-    expect(parseT3Home(probe.stdout)).toBe(t3Home);
+    expect(parseAppDataHome(probe.stdout)).toBe(appDataHome);
   });
 
   it("keeps the inherited PATH when bash is unavailable", () => {

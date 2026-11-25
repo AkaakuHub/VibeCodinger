@@ -192,7 +192,10 @@ async function sendDesktopAppActivationRequest(input: {
 }
 
 const appEnvironment = Config.all({
-  t3Home: Config.String("VIBECODINGER_HOME").pipe(Config.option, Config.map(Option.getOrUndefined)),
+  appDataHome: Config.String("VIBECODINGER_HOME").pipe(
+    Config.option,
+    Config.map(Option.getOrUndefined),
+  ),
   sshConnection: Config.String("SSH_CONNECTION").pipe(Config.option),
   sshTty: Config.String("SSH_TTY").pipe(Config.option),
 });
@@ -211,9 +214,9 @@ const runAppCommand = Effect.fn("cli.app")(function* (flags: {
   }
 
   const path = yield* Path.Path;
-  const configuredBaseDir = Option.getOrUndefined(flags.baseDir) ?? environment.t3Home;
+  const configuredBaseDir = Option.getOrUndefined(flags.baseDir) ?? environment.appDataHome;
   const baseDir = yield* resolveBaseDir(configuredBaseDir);
-  const allowDevFallback = Option.isNone(flags.baseDir) && !environment.t3Home?.trim();
+  const allowDevFallback = Option.isNone(flags.baseDir) && !environment.appDataHome?.trim();
   const rawWorkspaceRoot =
     Option.getOrUndefined(flags.workspaceRoot) ?? (yield* HostProcess.WorkingDirectory);
   const workspaceRoot = path.resolve(yield* expandHomePath(rawWorkspaceRoot));

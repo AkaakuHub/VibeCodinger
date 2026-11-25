@@ -183,7 +183,7 @@ it.effect("names a database file that is not SQLite", () => {
   );
 });
 
-const ownT3Home = Effect.fn(function* () {
+const ownAppDataHome = Effect.fn(function* () {
   const { serverRuntimeStatePath } = yield* ServerConfig.ServerConfig;
   // An empty home, so no boot service installed on this machine is read.
   const home = yield* (yield* FileSystem.FileSystem).makeTempDirectoryScoped();
@@ -213,14 +213,16 @@ const latestRecordedMigrationId = Effect.gen(function* () {
   return rows[0]?.id;
 });
 
-const layerT3Home = ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-sqlite-cli-" });
+const layerAppDataHome = ServerConfig.layerTest(process.cwd(), {
+  prefix: "vibecodinger-sqlite-cli-",
+});
 
 it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("layerCliConfig", (it) => {
   it.effect("does not migrate a T3 home a running server owns", () =>
     Effect.gen(function* () {
       const recorded = Math.max(...migrationManifest.map(([id]) => id)) - 1;
       yield* migrateTo(recorded);
-      yield* ownT3Home();
+      yield* ownAppDataHome();
 
       const opened = yield* Effect.void.pipe(
         Effect.provide(SqlitePersistence.layerCliConfig),
@@ -232,15 +234,15 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("layerCliConfig",
       if (opened._tag === "Failure") {
         assert.instanceOf(opened.failure, SqlitePersistence.ServerOwnsDatabaseError);
       }
-    }).pipe(Effect.scoped, Effect.provide(layerT3Home)),
+    }).pipe(Effect.scoped, Effect.provide(layerAppDataHome)),
   );
 
   it.effect("opens a current T3 home while a running server owns it", () =>
     Effect.gen(function* () {
       yield* migrateTo();
-      yield* ownT3Home();
+      yield* ownAppDataHome();
 
       yield* Effect.void.pipe(Effect.provide(SqlitePersistence.layerCliConfig));
-    }).pipe(Effect.scoped, Effect.provide(layerT3Home)),
+    }).pipe(Effect.scoped, Effect.provide(layerAppDataHome)),
   );
 });

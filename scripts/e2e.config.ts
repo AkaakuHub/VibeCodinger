@@ -48,8 +48,8 @@ const resolved = await Effect.gen(function* () {
 
 export const APP_DIR = resolved.appDir;
 /** T3 homes only scenarios use, recreated on every run. `.vibecodinger` is gitignored. */
-export const T3_HOME = resolved.home;
-export const MOBILE_T3_HOME = `${T3_HOME}-mobile`;
+export const APP_DATA_HOME = resolved.home;
+export const MOBILE_APP_DATA_HOME = `${APP_DATA_HOME}-mobile`;
 export const MOBILE = resolved.mobile;
 const startApp = resolved.startApp;
 /**
@@ -161,7 +161,7 @@ export default {
         readyUrl: `http://${LOOPBACK}:{port}/.well-known/vibecodinger/environment`,
         command: {
           executable: resolved.node,
-          args: [startApp, "web", T3_HOME, LOOPBACK, "{port}"],
+          args: [startApp, "web", APP_DATA_HOME, LOOPBACK, "{port}"],
           cwd: APP_DIR,
           inheritEnv: resolved.inheritEnv,
           startupTimeout: 300_000,
@@ -185,7 +185,7 @@ export default {
           args: [
             startApp,
             "mobile",
-            MOBILE_T3_HOME,
+            MOBILE_APP_DATA_HOME,
             String(MOBILE.serverPort),
             String(MOBILE.metroPort),
             MOBILE.host,

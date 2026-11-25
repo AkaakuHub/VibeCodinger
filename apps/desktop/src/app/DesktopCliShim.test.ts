@@ -28,7 +28,7 @@ const writeExecutable = (path: string, content: string) => {
 
 const writeShim = (root: string, target: CliShimTarget) => {
   const shim = NodePath.join(root, "bin", "vibecodinger");
-  writeExecutable(shim, renderCliShim({ target, shimPath: shim, t3Home: `${root}/home` }));
+  writeExecutable(shim, renderCliShim({ target, shimPath: shim, appDataHome: `${root}/home` }));
   return shim;
 };
 
@@ -207,7 +207,7 @@ describe("renderCliShim", () => {
     const script = renderCliShim({
       target: { kind: "windows", executable, entry: "C:\\Apps\\server.asar\\bin.mjs" },
       shimPath: "C:\\Users\\José\\.vibecodinger\\bin\\vibecodinger.cmd",
-      t3Home: "C:\\Users\\José\\.vibecodinger",
+      appDataHome: "C:\\Users\\José\\.vibecodinger",
     });
     const lines = script.split("\r\n");
     expect(lines).toContain("setlocal EnableExtensions DisableDelayedExpansion");

@@ -7,7 +7,7 @@ import * as Effect from "effect/Effect";
 import * as Path from "effect/Path";
 import * as Schema from "effect/Schema";
 
-import { APP_DIR, MOBILE, MOBILE_T3_HOME } from "../e2e.config.ts";
+import { APP_DIR, MOBILE, MOBILE_APP_DATA_HOME } from "../e2e.config.ts";
 import { run, ScenarioError } from "./shell.ts";
 import { makeState, runPromise, type T3State } from "./t3.ts";
 
@@ -46,7 +46,7 @@ let paired = false;
 
 export const test = base.extend<{ t3: MobileT3 }>({
   t3: async ({ device, screen }, use) => {
-    const { state, cli, cleanup } = makeState(MOBILE_T3_HOME, {
+    const { state, cli, cleanup } = makeState(MOBILE_APP_DATA_HOME, {
       VIBECODINGER_PORT: String(MOBILE.serverPort),
     });
     const pairingUrl = Effect.gen(function* () {

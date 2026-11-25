@@ -604,7 +604,7 @@ const REMOTE_MANAGED_SERVER_RUNNING_SCRIPT = `managed_server_running() {
 
 // NFS-shared homes can link ~/.vibecodinger to a directory that does not exist yet, and
 // mkdir -p fails with EEXIST on a dangling symlink, so create its target first.
-const REMOTE_ENSURE_T3_HOME_SCRIPT = `if [ -L "$HOME/.vibecodinger" ] && [ ! -e "$HOME/.vibecodinger" ]; then
+const REMOTE_ENSURE_APP_DATA_HOME_SCRIPT = `if [ -L "$HOME/.vibecodinger" ] && [ ! -e "$HOME/.vibecodinger" ]; then
   (cd "$HOME" && mkdir -p "$(readlink .vibecodinger)")
 fi`;
 
@@ -623,7 +623,7 @@ RUNNER_FILE="$STATE_DIR/run-vibecodinger.sh"
 RUNNER_NEXT="$STATE_DIR/run-vibecodinger.next.$$"
 LAUNCH_LOCK="$DEFAULT_SERVER_HOME/ssh-launch/.launch.lock"
 LAUNCH_BREAK_LOCK="$LAUNCH_LOCK.break"
-@@T3_ENSURE_T3_HOME_SCRIPT@@
+@@ENSURE_APP_DATA_HOME_SCRIPT@@
 mkdir -p "$STATE_DIR"
 # The state directory and log are for their owner only. A umask set here would reach the server.
 chmod 700 "$STATE_DIR"
@@ -1080,7 +1080,7 @@ const REMOTE_PAIRING_SCRIPT = `set -eu
 STATE_DIR="$HOME/.vibecodinger/ssh-launch/@@T3_STATE_KEY@@"
 DEFAULT_SERVER_HOME="$HOME/.vibecodinger"
 RUNNER_FILE="$STATE_DIR/run-vibecodinger.sh"
-@@T3_ENSURE_T3_HOME_SCRIPT@@
+@@ENSURE_APP_DATA_HOME_SCRIPT@@
 mkdir -p "$STATE_DIR"
 cat >"$RUNNER_FILE" <<'SH'
 @@T3_RUNNER_SCRIPT@@
@@ -1199,7 +1199,7 @@ export function buildRemoteLaunchScript(input?: RemoteT3RunnerOptions): string {
     T3_PICK_PORT_SCRIPT: stripTrailingNewlines(REMOTE_PICK_PORT_SCRIPT),
     T3_WAIT_READY_SCRIPT: stripTrailingNewlines(REMOTE_WAIT_READY_SCRIPT),
     T3_MANAGED_SERVER_RUNNING_SCRIPT: REMOTE_MANAGED_SERVER_RUNNING_SCRIPT,
-    T3_ENSURE_T3_HOME_SCRIPT: REMOTE_ENSURE_T3_HOME_SCRIPT,
+    ENSURE_APP_DATA_HOME_SCRIPT: REMOTE_ENSURE_APP_DATA_HOME_SCRIPT,
     T3_DEFAULT_REMOTE_PORT: String(DEFAULT_REMOTE_PORT),
     T3_REMOTE_PORT_SCAN_WINDOW: String(REMOTE_PORT_SCAN_WINDOW),
     T3_READY_TIMEOUT_MS: String(REMOTE_READY_TIMEOUT_MS),
@@ -1215,7 +1215,7 @@ export function buildRemoteLaunchScript(input?: RemoteT3RunnerOptions): string {
 function buildRemotePairingScript(stateKey: string, input?: RemoteT3RunnerOptions): string {
   return applyScriptPlaceholders(REMOTE_PAIRING_SCRIPT, {
     T3_STATE_KEY: stateKey,
-    T3_ENSURE_T3_HOME_SCRIPT: REMOTE_ENSURE_T3_HOME_SCRIPT,
+    ENSURE_APP_DATA_HOME_SCRIPT: REMOTE_ENSURE_APP_DATA_HOME_SCRIPT,
     T3_RUNNER_SCRIPT: stripTrailingNewlines(buildRemoteT3RunnerScript(input)),
   });
 }

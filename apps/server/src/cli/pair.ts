@@ -5,7 +5,7 @@ import {
   ORCHESTRATION_PROTOCOL_VERSION,
   PortSchema,
 } from "@t3tools/contracts";
-import { resolveWorktreeT3Home } from "@t3tools/shared/devHome";
+import { resolveWorktreeAppDataHome } from "@t3tools/shared/devHome";
 import * as HostProcess from "@t3tools/shared/HostProcess";
 import { formatHostForUrl, isWildcardHost } from "@t3tools/shared/hostClassification";
 import { buildPairingAppLink } from "@t3tools/shared/remote";
@@ -279,7 +279,7 @@ const discoverPairTarget = Effect.fn("pair.discoverPairTarget")(function* (
     // `.vibecodinger` counts. Minting opens the target database with this checkout's
     // migrations, so falling back to the shared home could migrate the live
     // install with unreleased schema.
-    const worktreeHome = yield* resolveWorktreeT3Home(yield* HostProcess.WorkingDirectory);
+    const worktreeHome = yield* resolveWorktreeAppDataHome(yield* HostProcess.WorkingDirectory);
     if (worktreeHome !== undefined) {
       bases.push(worktreeHome);
       inLinkedWorktree = true;

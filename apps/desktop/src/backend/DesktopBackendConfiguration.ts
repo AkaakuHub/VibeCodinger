@@ -198,7 +198,7 @@ interface WslPreflightSuccess {
   readonly windowsEntryPath: string;
   readonly runtime: WslPreflightRuntime;
   readonly resolvedPath: string;
-  readonly t3Home: string | null;
+  readonly appDataHome: string | null;
   readonly runtimeId?: string;
 }
 
@@ -334,7 +334,7 @@ const runWslPreflight = Effect.fn("desktop.backendConfiguration.wslPreflight")(f
       const runtime = yield* wslEnv.prepareRuntime(
         runningDistro,
         input.runtimeArchive,
-        stagedProbe.t3Home,
+        stagedProbe.appDataHome,
       );
       if (runtime.ok) {
         yield* wslServerTree.cleanupLegacy;
@@ -344,7 +344,7 @@ const runWslPreflight = Effect.fn("desktop.backendConfiguration.wslPreflight")(f
           windowsEntryPath: environment.backendEntryPath,
           runtime: { kind: "executable", entryPath: `${runtime.linuxAppRoot}/vibecodinger` },
           resolvedPath: stagedProbe.resolvedPath,
-          t3Home: stagedProbe.t3Home,
+          appDataHome: stagedProbe.appDataHome,
           runtimeId: input.runtimeArchive.runtimeId,
         } as const;
       }
@@ -391,7 +391,7 @@ const runWslPreflight = Effect.fn("desktop.backendConfiguration.wslPreflight")(f
       linuxEntryPath: `${mounted.linuxAppRoot}/apps/server/dist/bin.mjs`,
     },
     resolvedPath: nodePtyResult.resolvedPath,
-    t3Home: nodePtyResult.t3Home,
+    appDataHome: nodePtyResult.appDataHome,
   } as const;
 });
 
@@ -429,7 +429,7 @@ const resolvePrimaryStartConfig = Effect.fn("desktop.backendConfiguration.resolv
       mode: "desktop" as const,
       noBrowser: true,
       port: backendExposure.port,
-      t3Home: environment.baseDir,
+      appDataHome: environment.baseDir,
       host: backendExposure.bindHost,
       desktopBootstrapToken: input.bootstrapToken,
       desktopBootstrapSecret: input.bootstrapSecret,
@@ -506,7 +506,7 @@ const resolveWslStartConfig = Effect.fn("desktop.backendConfiguration.resolveWsl
     mode: "desktop" as const,
     noBrowser: true,
     port: input.port,
-    // Omit t3Home to keep the Linux backend from sharing the primary's Windows SQLite file.
+    // Omit appDataHome to keep the Linux backend from sharing the primary's Windows SQLite file.
     host: wslBindHost,
     desktopBootstrapToken: input.bootstrapToken,
     desktopBootstrapSecret: input.bootstrapSecret,
@@ -576,12 +576,12 @@ const resolveWslStartConfig = Effect.fn("desktop.backendConfiguration.resolveWsl
     }
   }
 
-  const parentEnvWithoutT3Home: Record<string, string | undefined> = {};
+  const parentEnvWithoutAppDataHome: Record<string, string | undefined> = {};
   for (const [key, value] of Object.entries(env)) {
     if (key === "VIBECODINGER_HOME") continue;
-    parentEnvWithoutT3Home[key] = value;
+    parentEnvWithoutAppDataHome[key] = value;
   }
-  const wslEnv = mergeWslEnv(parentEnvWithoutT3Home.WSLENV, forwardedEnvNames);
+  const wslEnv = mergeWslEnv(parentEnvWithoutAppDataHome.WSLENV, forwardedEnvNames);
 
   const baseConfig = {
     executablePath: "wsl.exe",
@@ -589,7 +589,7 @@ const resolveWslStartConfig = Effect.fn("desktop.backendConfiguration.resolveWsl
       preflight._tag === "Ready" ? preflight.windowsEntryPath : environment.backendEntryPath,
     cwd: environment.backendCwd,
     env: {
-      ...parentEnvWithoutT3Home,
+      ...parentEnvWithoutAppDataHome,
       ...backendChildEnvPatch(),
       ...forwardedEnv,
       ...(wslEnv !== undefined ? { WSLENV: wslEnv } : {}),
@@ -646,7 +646,7 @@ const resolveWslStartConfig = Effect.fn("desktop.backendConfiguration.resolveWsl
       "--exec",
       "env",
       `PATH=${launchPath}`,
-      ...(preflight.t3Home === null ? [] : [`VIBECODINGER_HOME=${preflight.t3Home}`]),
+      ...(preflight.appDataHome === null ? [] : [`VIBECODINGER_HOME=${preflight.appDataHome}`]),
       ...command,
       "--bootstrap-fd",
       "0",
@@ -655,7 +655,7 @@ const resolveWslStartConfig = Effect.fn("desktop.backendConfiguration.resolveWsl
     preflightFailure: Option.none(),
     ...(preflight.runtimeId === undefined
       ? {}
-      : { wslRuntimeId: preflight.runtimeId, wslT3Home: preflight.t3Home }),
+      : { wslRuntimeId: preflight.runtimeId, wslAppDataHome: preflight.appDataHome }),
   } satisfies DesktopBackendManager.DesktopBackendStartConfig;
 });
 

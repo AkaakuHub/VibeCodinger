@@ -63,7 +63,7 @@ const makeDesktopBootstrap = (
   mode: "desktop",
   noBrowser: true,
   port: 4888,
-  t3Home: "/tmp/vibecodinger-bootstrap-home",
+  appDataHome: "/tmp/vibecodinger-bootstrap-home",
   host: "127.0.0.1",
   desktopBootstrapToken: "desktop-bootstrap-token",
   tailscaleServeEnabled: false,
@@ -505,7 +505,7 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
         makeDesktopBootstrap({
           port: 4888,
           host: "127.0.0.2",
-          t3Home: "/tmp/vibecodinger-bootstrap-home",
+          appDataHome: "/tmp/vibecodinger-bootstrap-home",
           noBrowser: false,
           desktopBootstrapToken: "desktop-token",
           tailscaleServeEnabled: false,

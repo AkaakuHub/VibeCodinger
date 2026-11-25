@@ -2,7 +2,7 @@ import { expect } from "e2e";
 import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";
 
-import { T3_HOME } from "../e2e.config.ts";
+import { APP_DATA_HOME } from "../e2e.config.ts";
 import { runPromise, test, WEB } from "./t3.ts";
 
 test(
@@ -10,9 +10,9 @@ test(
   WEB,
   async ({ t3, app, screen }) => {
     await t3.project("theme-directory");
-    const themes = `${T3_HOME}/userdata/themes`;
-    const previous = `${T3_HOME}/themes-before-restore`;
-    const restored = `${T3_HOME}/themes-to-restore`;
+    const themes = `${APP_DATA_HOME}/userdata/themes`;
+    const previous = `${APP_DATA_HOME}/themes-before-restore`;
+    const restored = `${APP_DATA_HOME}/themes-to-restore`;
     const file = "restore-fixture.json";
     const contents = (name: string) =>
       JSON.stringify({

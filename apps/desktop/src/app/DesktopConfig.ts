@@ -36,7 +36,7 @@ export const DesktopConfig = Config.all({
   appDataDirectory: trimmedString("APPDATA"),
   xdgConfigHome: trimmedString("XDG_CONFIG_HOME"),
   xdgDataHome: trimmedString("XDG_DATA_HOME"),
-  t3Home: trimmedString("VIBECODINGER_HOME"),
+  appDataHome: trimmedString("VIBECODINGER_HOME"),
   devServerUrl: Config.URL("VITE_DEV_SERVER_URL").pipe(Config.option),
   appUserModelIdOverride: trimmedString("VIBECODINGER_DESKTOP_APP_USER_MODEL_ID"),
   devRemoteServerEntryPath: trimmedString("VIBECODINGER_DEV_REMOTE_SERVER_ENTRY_PATH"),

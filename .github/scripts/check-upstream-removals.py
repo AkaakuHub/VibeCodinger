@@ -79,6 +79,7 @@ FORBIDDEN = re.compile(
     rb"server\.checkOtlpEndpoint|TelemetryExportSettings|telemetry-export|"
     rb"ProcessGroupMetrics\.layer|otelEnvironment:\s*(?:OtelEnvironment|otel)\b|"
     rb"getRelayTelemetryEnabled|parsePersistedServerObservabilitySettings|observabilitySettings\.otlp|"
+    rb"\b(?:t3Home|t3_home|t3-home)\b|"
     rb"relay_public_config|relay.client.tracing.config|VIBECODINGER_TELEMETRY_CHANNEL|"
     rb"armAgentAwarenessLiveActivityForLocalWork|setAgentAwarenessRelayTokenProvider|registerLiveActivityWithRelay|"
     rb"expo-notifications|firebase-messaging|com\.google\.firebase\.MESSAGING_EVENT|"

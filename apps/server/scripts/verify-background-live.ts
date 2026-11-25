@@ -217,7 +217,7 @@ function startServer() {
       mode: "desktop",
       noBrowser: true,
       port,
-      t3Home: home,
+      appDataHome: home,
       host: "127.0.0.1",
       desktopBootstrapToken: bootstrap,
       tailscaleServeEnabled: false,

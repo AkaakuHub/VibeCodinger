@@ -19,18 +19,18 @@ set -eu
 
 repo="AkaakuHub/t3code"
 base_url="${VIBECODINGER_RELEASE_BASE_URL:-https://github.com/${repo}/releases/download}"
-t3_home="${VIBECODINGER_HOME:-$HOME/.vibecodinger}"
-case "$t3_home" in
+app_data_home="${VIBECODINGER_HOME:-$HOME/.vibecodinger}"
+case "$app_data_home" in
   /*) ;;
   *)
     # Preserve cwd's trailing newlines; trim only pwd's newline and the sentinel.
     t3_cwd="$(pwd -P && printf .)"
-    t3_home="${t3_cwd%??}/$t3_home"
+    app_data_home="${t3_cwd%??}/$app_data_home"
     ;;
 esac
 bin_dir="${VIBECODINGER_INSTALL_BIN_DIR:-$HOME/.local/bin}"
 # Trailing slashes would put `//` in the paths the vibecodinger command guard compares.
-while [ "${t3_home%/}" != "$t3_home" ] && [ "$t3_home" != / ]; do t3_home="${t3_home%/}"; done
+while [ "${app_data_home%/}" != "$app_data_home" ] && [ "$app_data_home" != / ]; do app_data_home="${app_data_home%/}"; done
 while [ "${bin_dir%/}" != "$bin_dir" ] && [ "$bin_dir" != / ]; do bin_dir="${bin_dir%/}"; done
 # Absolute, so the PATH hint never adds a folder that changes with the working directory.
 case "$bin_dir" in /*) ;; *) bin_dir="$PWD/$bin_dir" ;; esac
@@ -223,7 +223,7 @@ esac
 
 stem="vibecodinger-${version}-${platform}-${arch}"
 archive="${stem}.tar.gz"
-versions_dir="${t3_home}/runtime/versions"
+versions_dir="${app_data_home}/runtime/versions"
 target_dir="${versions_dir}/${version}"
 
 if [ -f "${target_dir}/.install-complete" ] && [ "$(cat "${target_dir}/.install-complete")" = "$version" ]; then
@@ -318,7 +318,7 @@ if [ -e "${bin_dir}/vibecodinger" ] || [ -L "${bin_dir}/vibecodinger" ]; then
       */./* | */../* | */. | */..) ;;
       *)
         if version_t3 "$existing" "$versions_dir" || version_t3 "$existing" "$real_versions_dir" ||
-          [ "$existing" = "${t3_home}/bin/vibecodinger" ]; then owned=true; fi
+          [ "$existing" = "${app_data_home}/bin/vibecodinger" ]; then owned=true; fi
         ;;
     esac
     if [ -n "$existing_dir" ] && version_t3 "${existing_dir}/${existing##*/}" "$real_versions_dir"; then
@@ -345,7 +345,7 @@ rm -f "$launcher_tmp"
 trap - EXIT
 # Pruning keeps what this launcher points at; a background service cannot see bin_dir otherwise.
 launcher="$(CDPATH='' cd -P -- "$bin_dir" && pwd)/vibecodinger"
-launchers="${t3_home}/runtime/launchers"
+launchers="${app_data_home}/runtime/launchers"
 grep -qxF "$launcher" "$launchers" 2>/dev/null || printf '%s\n' "$launcher" >> "$launchers"
 if "$interactive"; then printf '\r\033[2K' >&2; fi
 printf '  %sInstalled VibeCodinger %s%s\n\n' "$green" "$version" "$reset" >&2

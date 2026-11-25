@@ -14,7 +14,7 @@ const SUPPORTED = ["darwin-arm64", "linux-arm64", "linux-x64", "win32-arm64", "w
 // Well inside launchd's 20 s ExitTimeOut, which SIGKILLs only the launcher and orphans the runtime.
 const TERMINATE_GRACE_MS = 5_000;
 
-function t3Home() {
+function appDataHome() {
   const raw = (process.env.VIBECODINGER_HOME || "").trim();
   if (raw === "") return path.join(os.homedir(), ".vibecodinger");
   if (raw === "~") return os.homedir();
@@ -183,7 +183,7 @@ async function main() {
         "The desktop app is at https://github.com/AkaakuHub/t3code/releases",
     );
   }
-  const dir = path.join(t3Home(), "runtime", "versions", version);
+  const dir = path.join(appDataHome(), "runtime", "versions", version);
   if (!isComplete(dir)) await install(dir, key);
 
   // Service IPC and signals must reach the child; terminal Ctrl-C already does, so do not forward SIGINT twice.

@@ -344,7 +344,7 @@ it.effect(
         DesktopCliShim.renderCliShim({
           target: { kind: "appimage", appImage: removedAppImage, executableName: "t3code" },
           shimPath: launcher,
-          t3Home: baseDir,
+          appDataHome: baseDir,
         }),
       );
       yield* fs.writeFileString(updatedAppImage, "", { mode: 0o755 });

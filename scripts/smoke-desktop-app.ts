@@ -32,9 +32,9 @@ if (!executable)
 const artifactsDir = NodePath.resolve(values["artifacts-dir"] ?? "desktop-launch-check");
 
 const home = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "vibecodinger-desktop-launch-"));
-const t3Home = NodePath.join(home, "vibecodinger");
-NodeFS.mkdirSync(NodePath.join(t3Home, "userdata"), { recursive: true });
-NodeFS.copyFileSync(FIXTURE_DB, NodePath.join(t3Home, "userdata/statev2.sqlite"));
+const appDataHome = NodePath.join(home, "vibecodinger");
+NodeFS.mkdirSync(NodePath.join(appDataHome, "userdata"), { recursive: true });
+NodeFS.copyFileSync(FIXTURE_DB, NodePath.join(appDataHome, "userdata/statev2.sqlite"));
 
 let step = "launching the app";
 let app: ElectronApplication | undefined;
@@ -49,7 +49,7 @@ try {
       ...process.env,
       XDG_CONFIG_HOME: NodePath.join(home, ".config"),
       XDG_DATA_HOME: NodePath.join(home, ".local/share"),
-      VIBECODINGER_HOME: t3Home,
+      VIBECODINGER_HOME: appDataHome,
       VIBECODINGER_DISABLE_AUTO_UPDATE: "true",
     },
     timeout: STEP_TIMEOUT_MS,
@@ -77,7 +77,7 @@ try {
   console.error(`Desktop launch check failed while ${step}.`);
   NodeFS.mkdirSync(artifactsDir, { recursive: true });
   console.error(error instanceof Error ? error.message : error);
-  const logs = NodePath.join(t3Home, "userdata/logs");
+  const logs = NodePath.join(appDataHome, "userdata/logs");
   if (NodeFS.existsSync(logs)) {
     NodeFS.cpSync(logs, NodePath.join(artifactsDir, "logs"), { recursive: true });
     const serverLog = NodePath.join(logs, "server-child.log");

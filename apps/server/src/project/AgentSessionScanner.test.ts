@@ -1363,7 +1363,7 @@ it.layer(NodeServices.layer)("AgentSessionScanner", (it) => {
           yield* makeTempDir("vibecodinger-scanner-base-"),
         );
         const linkParent = yield* makeTempDir("vibecodinger-scanner-links-");
-        const configBaseDir = path.join(linkParent, "t3-home");
+        const configBaseDir = path.join(linkParent, "app-data-home");
         yield* fileSystem.symlink(realBaseDir, configBaseDir);
 
         const worktreeCwd = path.join(realBaseDir, "worktrees", "t3code", "wt-4");
@@ -1393,7 +1393,7 @@ it.layer(NodeServices.layer)("AgentSessionScanner", (it) => {
           yield* makeTempDir("vibecodinger-scanner-base-"),
         );
         const linkParent = yield* makeTempDir("vibecodinger-scanner-links-");
-        const configBaseDir = path.join(linkParent, "t3-home");
+        const configBaseDir = path.join(linkParent, "app-data-home");
         yield* fileSystem.symlink(realBaseDir, configBaseDir);
         const projectLink = path.join(realBaseDir, "project-link");
         yield* fileSystem.symlink(projectDir, projectLink);

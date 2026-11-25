@@ -9,14 +9,14 @@ import * as Path from "effect/Path";
 import * as Schema from "effect/Schema";
 import { FetchHttpClient, HttpClient, HttpClientResponse } from "effect/http";
 
-import { APP_DIR, T3_HOME } from "../e2e.config.ts";
+import { APP_DIR, APP_DATA_HOME } from "../e2e.config.ts";
 import { run, ScenarioError } from "./shell.ts";
 import { prepareHome, start } from "./start-app.ts";
 import { makeState, runPromise, test, WEB } from "./t3.ts";
 
 const HOST = "github.scenario.invalid";
 const SCOPE = "scenario/demo";
-const HOME = `${T3_HOME}-github-issue-links`;
+const HOME = `${APP_DATA_HOME}-github-issue-links`;
 
 // Install only on the isolated server. The real GitHub adapter still builds and decodes requests.
 const upstream = String.raw`
