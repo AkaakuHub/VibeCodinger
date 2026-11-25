@@ -31,8 +31,6 @@ import {
   readWorkspaceConfig,
   createBuildConfig,
   DESKTOP_FILE_EXCLUSIONS,
-  InvalidMacPasskeyRpDomainError,
-  InvalidMacPasskeyPublishableKeyError,
   UnsupportedDesktopBuildArchitectureError,
   MacPasskeySigningConfigurationResolutionError,
   MissingMacPasskeyProvisioningProfileError,
@@ -1577,40 +1575,30 @@ it.layer(NodeServices.layer)("build-desktop-artifact", (it) => {
     ),
   );
 
-  it("derives macOS passkey signing configuration from the Clerk publishable key", () => {
+  it("resolves the app identity and profile for macOS signing", () => {
     const configuration = resolveMacPasskeySigningConfiguration({
       VIBECODINGER_APPLE_TEAM_ID: "abc1234567",
-      VIBECODINGER_MACOS_PROVISIONING_PROFILE: "/tmp/t3code.provisionprofile",
-      VIBECODINGER_CLERK_PUBLISHABLE_KEY: `pk_test_${btoa("example.clerk.accounts.dev$")}`,
+      VIBECODINGER_MACOS_PROVISIONING_PROFILE: "/tmp/vibecodinger.provisionprofile",
     });
 
     assert.deepStrictEqual(configuration, {
       appId: "net.akaaku.vibecodinger",
       teamId: "ABC1234567",
-      rpDomains: ["example.clerk.accounts.dev"],
-      provisioningProfilePath: "/tmp/t3code.provisionprofile",
+      provisioningProfilePath: "/tmp/vibecodinger.provisionprofile",
     });
   });
 
-  it("normalizes explicit macOS passkey RP domains and renders required entitlements", () => {
+  it("renders the entitlements required by hardened runtime", () => {
     const configuration = resolveMacPasskeySigningConfiguration({
       VIBECODINGER_APPLE_TEAM_ID: "ABC1234567",
-      VIBECODINGER_MACOS_PROVISIONING_PROFILE: "/tmp/t3code.provisionprofile",
-      VIBECODINGER_CLERK_PASSKEY_RP_DOMAINS:
-        " Clerk.Example.com,example.clerk.accounts.dev,clerk.example.com ",
+      VIBECODINGER_MACOS_PROVISIONING_PROFILE: "/tmp/vibecodinger.provisionprofile",
     });
     const entitlements = renderMacPasskeyEntitlements(configuration, {
       touchIdKeychainAccessGroup: undefined,
       browserPasskeys: false,
     });
 
-    assert.deepStrictEqual(configuration.rpDomains, [
-      "clerk.example.com",
-      "example.clerk.accounts.dev",
-    ]);
     assert.include(entitlements, "<string>ABC1234567.net.akaaku.vibecodinger</string>");
-    assert.include(entitlements, "<string>webcredentials:clerk.example.com</string>");
-    assert.include(entitlements, "<string>webcredentials:example.clerk.accounts.dev</string>");
     assert.include(entitlements, "<key>com.apple.security.cs.allow-jit</key>");
     assert.match(
       entitlements,
@@ -1671,7 +1659,7 @@ it.layer(NodeServices.layer)("build-desktop-artifact", (it) => {
     );
 
     const entitlements = renderMacPasskeyEntitlements(
-      { ...configuration, rpDomains: ["clerk.example.com"], provisioningProfilePath: "" },
+      configuration,
       resolveMacWebAuthnEntitlements(
         profile(
           `${teamWildcardGroups}<key>com.apple.developer.web-browser.public-key-credential</key><true/>`,
@@ -1701,54 +1689,12 @@ it.layer(NodeServices.layer)("build-desktop-artifact", (it) => {
 
     const missingProfileError = captureError({
       VIBECODINGER_APPLE_TEAM_ID: "ABC1234567",
-      VIBECODINGER_CLERK_PASSKEY_RP_DOMAINS: "example.clerk.accounts.dev",
     });
     assert.instanceOf(missingProfileError, MissingMacPasskeyProvisioningProfileError);
     assert.equal(
       missingProfileError.message,
-      "VIBECODINGER_MACOS_PROVISIONING_PROFILE must point to an Associated Domains provisioning profile.",
+      "VIBECODINGER_MACOS_PROVISIONING_PROFILE must point to a macOS provisioning profile.",
     );
-
-    const unsafeDomain =
-      "https://domain-user:domain-secret@example.clerk.accounts.dev/path?token=query-secret";
-    const invalidDomainError = captureError({
-      VIBECODINGER_APPLE_TEAM_ID: "ABC1234567",
-      VIBECODINGER_MACOS_PROVISIONING_PROFILE: "/tmp/t3code.provisionprofile",
-      VIBECODINGER_CLERK_PASSKEY_RP_DOMAINS: unsafeDomain,
-    });
-    assert.instanceOf(invalidDomainError, InvalidMacPasskeyRpDomainError);
-    assert.equal(invalidDomainError.reason, "scheme-not-allowed");
-    assert.equal(invalidDomainError.inputLength, unsafeDomain.length);
-    assert.equal(invalidDomainError.message, "Invalid passkey RP domain (scheme-not-allowed).");
-    assert.notProperty(invalidDomainError, "domain");
-    assert.notProperty(invalidDomainError, "cause");
-    const serializedInvalidDomainError = JSON.stringify(invalidDomainError);
-    assert.notInclude(serializedInvalidDomainError, unsafeDomain);
-    assert.notInclude(serializedInvalidDomainError, "domain-user");
-    assert.notInclude(serializedInvalidDomainError, "domain-secret");
-    assert.notInclude(serializedInvalidDomainError, "query-secret");
-    assert.throws(
-      () =>
-        resolveMacPasskeySigningConfiguration({
-          VIBECODINGER_APPLE_TEAM_ID: "ABC1234567",
-          VIBECODINGER_MACOS_PROVISIONING_PROFILE: "/tmp/t3code.provisionprofile",
-          VIBECODINGER_CLERK_PASSKEY_RP_DOMAINS: "example.clerk.accounts.dev:8443",
-        }),
-      /Invalid passkey RP domain/u,
-    );
-    const invalidPublishableKeyError = captureError({
-      VIBECODINGER_APPLE_TEAM_ID: "ABC1234567",
-      VIBECODINGER_MACOS_PROVISIONING_PROFILE: "/tmp/t3code.provisionprofile",
-      VIBECODINGER_CLERK_PUBLISHABLE_KEY: "pk_test_%",
-    });
-    assert.instanceOf(invalidPublishableKeyError, InvalidMacPasskeyPublishableKeyError);
-    assert.ok(invalidPublishableKeyError.cause);
-    assert.equal(
-      invalidPublishableKeyError.message,
-      "VIBECODINGER_CLERK_PUBLISHABLE_KEY is invalid.",
-    );
-    assert.notProperty(invalidPublishableKeyError, "publishableKey");
-    assert.notInclude(invalidPublishableKeyError.message, "pk_test_%");
   });
 
   it("wraps unknown passkey signing configuration defects without copying cause text", () => {
