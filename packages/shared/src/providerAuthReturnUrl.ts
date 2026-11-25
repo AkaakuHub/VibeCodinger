@@ -6,9 +6,7 @@ export function providerAuthReturnUrl(value: string | undefined): string | undef
     const url = new URL(value);
     const desktop =
       ["vibecodinger:", "vibecodinger-dev:"].includes(url.protocol) && url.host === "app";
-    const web =
-      ["http:", "https:"].includes(url.protocol) &&
-      (isLoopbackHost(url.hostname) || url.origin === "https://app.t3.codes");
+    const web = ["http:", "https:"].includes(url.protocol) && isLoopbackHost(url.hostname);
     if (
       url.username ||
       url.password ||

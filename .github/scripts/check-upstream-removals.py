@@ -63,7 +63,7 @@ FORBIDDEN = re.compile(
     rb"layerCloudDesiredLinkReconcile|managedTunnelStartup|watchManagedTunnelOrigin|hostedApprovalUrl|agentApprovalAppUrlConfig|"
     rb"CloudHttp\.layer|HttpApiBuilder\.layer\(EnvironmentHttpApi\).*connect|"
     rb"Outside MCP clients get app\.t3\.codes|"
-    rb"https://t3\.codes/(?:install[.]|download|mobile)|buildHostedPairingUrl|resolveHostedPairingUrl|DEFAULT_HOSTED_APP_URL|https://app\.t3\.codes/(?:pair|new|threads)|"
+    rb"https://t3\.codes/(?:install[.]|download|mobile)|buildHostedPairingUrl|resolveHostedPairingUrl|DEFAULT_HOSTED_APP_URL|https://app\.t3\.codes\b|"
     rb"relayHookBaseUrl|RelayDeliveryProof|traceAuthenticatedRelayRequest|connectSubcommands|writeHeapSnapshot\s*\(",
     re.IGNORECASE,
 )

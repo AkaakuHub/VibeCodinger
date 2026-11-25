@@ -17,5 +17,6 @@ describe("provider auth return destinations", () => {
     "vibecodinger://attacker/welcome",
     "vibecodinger://app/welcome/../evil",
     "https://attacker.example/welcome",
+    "https://app.t3.codes/welcome",
   ])("rejects %s", (url) => expect(providerAuthReturnUrl(url)).toBeUndefined());
 });
