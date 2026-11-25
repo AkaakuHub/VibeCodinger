@@ -181,7 +181,8 @@ class AgentNotificationsTest : AgentNotificationsFixture() {
     val alert = manager.activeNotifications.single()
     assertEquals("5 agents finished", alert.notification.extras.getString(Notification.EXTRA_TITLE))
     assertEquals(titles, alert.notification.extras.getString(Notification.EXTRA_BIG_TEXT))
-    assertEquals("vibecodinger-dev://", shadowOf(alert.notification.contentIntent).savedIntent.dataString)
+    val intent = shadowOf(alert.notification.contentIntent).savedIntent
+    assertEquals("vibecodinger-dev://", intent.dataString)
   }
 
   @Test

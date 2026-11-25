@@ -905,8 +905,9 @@ internal class SelectionAwareEditText(
 
   private fun pasteContextOrImages(): Boolean {
     val payload = T3ComposerClipboard.read(context)
+    val hasContextHtml = payload["html"]?.contains("data-vibecodinger-context-fragment=") == true
     return when {
-      payload["html"]?.contains("data-vibecodinger-context-fragment=") == true -> pasteContext(payload)
+      hasContextHtml -> pasteContext(payload)
       pasteImagesOrInterceptedText() -> true
       isSingleItemClip() && T3ComposerClipboard.hasThreadLink(payload["text"].orEmpty()) ->
         pasteContext(payload)
