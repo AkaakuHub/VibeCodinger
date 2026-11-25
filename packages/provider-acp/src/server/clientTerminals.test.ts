@@ -527,7 +527,7 @@ describe("resolveEmbeddedTerminalContent", () => {
       content: [
         { type: "content", content: { type: "text", text: "before" } },
         { type: "content", content: { type: "text", text: "compiled 3 files" } },
-        { type: "content", content: { type: "text", text: "[terminal t3-term-unknown]" } },
+        { type: "content", content: { type: "text", text: "[terminal vc-term-unknown]" } },
       ],
     });
   });

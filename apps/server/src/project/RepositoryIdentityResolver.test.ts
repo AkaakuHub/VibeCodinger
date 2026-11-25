@@ -43,7 +43,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
       });
 
       yield* git(cwd, ["init"]);
-      yield* git(cwd, ["remote", "add", "origin", "git@github.com:ExampleOrg/t3code.git"]);
+      yield* git(cwd, ["remote", "add", "origin", "git@github.com:ExampleOrg/vibecodinger.git"]);
 
       const resolver = yield* RepositoryIdentityResolver.RepositoryIdentityResolver;
       const identity = yield* resolver.resolve(cwd);
@@ -55,10 +55,10 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
       expect(identity).not.toBeNull();
       expect(identity?.canonicalKey).toBe("github.com/exampleorg/vibecodinger");
       expect(normalizeResolvedPath(resolvedIdentityRoot)).toBe(normalizeResolvedPath(resolvedCwd));
-      expect(identity?.displayName).toBe("ExampleOrg/t3code");
+      expect(identity?.displayName).toBe("ExampleOrg/vibecodinger");
       expect(identity?.provider).toBe("github");
       expect(identity?.owner).toBe("ExampleOrg");
-      expect(identity?.name).toBe("t3code");
+      expect(identity?.name).toBe("vibecodinger");
       expect(yield* resolver.resolve(path.join(cwd, ".git"))).toBeNull();
     }).pipe(Effect.provide(RepositoryIdentityResolver.layer)),
   );
@@ -71,14 +71,14 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
       });
 
       yield* git(cwd, ["init"]);
-      yield* git(cwd, ["remote", "add", "origin", "github.com:ExampleOrg/t3code.git"]);
+      yield* git(cwd, ["remote", "add", "origin", "github.com:ExampleOrg/vibecodinger.git"]);
 
       const resolver = yield* RepositoryIdentityResolver.RepositoryIdentityResolver;
       const identity = yield* resolver.resolve(cwd);
 
       expect(identity?.canonicalKey).toBe("github.com/exampleorg/vibecodinger");
       expect(identity?.provider).toBe("github");
-      expect(identity?.displayName).toBe("ExampleOrg/t3code");
+      expect(identity?.displayName).toBe("ExampleOrg/vibecodinger");
     }).pipe(Effect.provide(RepositoryIdentityResolver.layer)),
   );
 
@@ -136,36 +136,43 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
       });
 
       yield* git(cwd, ["init"]);
-      yield* git(cwd, ["remote", "add", "origin", "https://github.com/ExampleOrg/t3code.git"]);
+      yield* git(cwd, [
+        "remote",
+        "add",
+        "origin",
+        "https://github.com/ExampleOrg/vibecodinger.git",
+      ]);
       yield* git(cwd, ["config", "url.https://proxy.example/.insteadOf", "https://github.com/"]);
       yield* git(cwd, ["config", "remote.origin.gh-resolved", "base"]);
       const remotes = yield* git(cwd, ["remote", "-v"]);
-      expect(remotes.stdout).toContain("https://proxy.example/ExampleOrg/t3code.git (fetch)");
+      expect(remotes.stdout).toContain("https://proxy.example/ExampleOrg/vibecodinger.git (fetch)");
 
       const resolver = yield* RepositoryIdentityResolver.RepositoryIdentityResolver;
       const identity = yield* resolver.resolve(cwd);
 
       expect(identity?.canonicalKey).toBe("github.com/exampleorg/vibecodinger");
       expect(identity?.provider).toBe("github");
-      expect(identity?.displayName).toBe("ExampleOrg/t3code");
+      expect(identity?.displayName).toBe("ExampleOrg/vibecodinger");
       expect(identity?.locator).toEqual({
         source: "git-remote",
         remoteName: "origin",
-        remoteUrl: "https://github.com/ExampleOrg/t3code.git",
+        remoteUrl: "https://github.com/ExampleOrg/vibecodinger.git",
       });
 
       const shorthandCwd = yield* fileSystem.makeTempDirectoryScoped({
         prefix: "vibecodinger-repository-identity-instead-of-shorthand-test-",
       });
       yield* git(shorthandCwd, ["init"]);
-      yield* git(shorthandCwd, ["remote", "add", "origin", "gh:ExampleOrg/t3code.git"]);
+      yield* git(shorthandCwd, ["remote", "add", "origin", "gh:ExampleOrg/vibecodinger.git"]);
       yield* git(shorthandCwd, ["config", "url.https://github.com/.insteadOf", "gh:"]);
 
       const shorthandIdentity = yield* resolver.resolve(shorthandCwd);
 
       expect(shorthandIdentity?.canonicalKey).toBe("github.com/exampleorg/vibecodinger");
       expect(shorthandIdentity?.provider).toBe("github");
-      expect(shorthandIdentity?.locator.remoteUrl).toBe("https://github.com/ExampleOrg/t3code.git");
+      expect(shorthandIdentity?.locator.remoteUrl).toBe(
+        "https://github.com/ExampleOrg/vibecodinger.git",
+      );
     }).pipe(Effect.provide(RepositoryIdentityResolver.layer)),
   );
 
@@ -201,7 +208,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
       });
 
       yield* git(cwd, ["init"]);
-      yield* git(cwd, ["remote", "add", "origin", "git@github.com:ExampleOrg/t3code.git"]);
+      yield* git(cwd, ["remote", "add", "origin", "git@github.com:ExampleOrg/vibecodinger.git"]);
       yield* git(cwd, [
         "remote",
         "set-url",
@@ -218,7 +225,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
       const resolver = yield* RepositoryIdentityResolver.RepositoryIdentityResolver;
       const identity = yield* resolver.resolve(cwd);
       expect(identity?.canonicalKey).toBe("github.com/exampleorg/vibecodinger");
-      expect(identity?.locator.remoteUrl).toBe("git@github.com:ExampleOrg/t3code.git");
+      expect(identity?.locator.remoteUrl).toBe("git@github.com:ExampleOrg/vibecodinger.git");
       expect(identity?.locator.remoteName).toBe("origin");
     }).pipe(Effect.provide(RepositoryIdentityResolver.layer)),
   );
@@ -252,19 +259,19 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
         "remote",
         "add",
         "origin",
-        "https://me:origin-secret@github.com/me/t3code.git",
+        "https://me:origin-secret@github.com/me/vibecodinger.git",
       ]);
       yield* git(cwd, [
         "remote",
         "add",
         "upstream",
-        "https://x-access-token:upstream-secret@github.com/ExampleOrg/t3code.git?token=query-secret",
+        "https://x-access-token:upstream-secret@github.com/ExampleOrg/vibecodinger.git?token=query-secret",
       ]);
 
       const resolver = yield* RepositoryIdentityResolver.RepositoryIdentityResolver;
       const identity = yield* resolver.resolve(cwd);
-      expect(identity?.locator.remoteUrl).toBe("https://github.com/ExampleOrg/t3code.git");
-      expect(identity?.origin?.remoteUrl).toBe("https://github.com/me/t3code.git");
+      expect(identity?.locator.remoteUrl).toBe("https://github.com/ExampleOrg/vibecodinger.git");
+      expect(identity?.origin?.remoteUrl).toBe("https://github.com/me/vibecodinger.git");
       expect(JSON.stringify(identity)).not.toContain("secret");
     }).pipe(Effect.provide(RepositoryIdentityResolver.layer)),
   );
@@ -283,7 +290,12 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
 
         yield* fileSystem.makeDirectory(nestedWorkspace, { recursive: true });
         yield* git(repoRoot, ["init"]);
-        yield* git(repoRoot, ["remote", "add", "origin", "git@github.com:ExampleOrg/t3code.git"]);
+        yield* git(repoRoot, [
+          "remote",
+          "add",
+          "origin",
+          "git@github.com:ExampleOrg/vibecodinger.git",
+        ]);
 
         const resolver = yield* RepositoryIdentityResolver.RepositoryIdentityResolver;
         const identity = yield* resolver.resolve(nestedWorkspace);
@@ -316,7 +328,12 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
         const bareGitDir = layout === "dot-bare" ? path.join(root, ".bare") : root;
 
         yield* git(checkout, ["init"]);
-        yield* git(checkout, ["remote", "add", "origin", "git@github.com:ExampleOrg/t3code.git"]);
+        yield* git(checkout, [
+          "remote",
+          "add",
+          "origin",
+          "git@github.com:ExampleOrg/vibecodinger.git",
+        ]);
         yield* git(root, ["init", "--bare", bareGitDir]);
         if (layout === "dot-bare") {
           yield* fileSystem.writeFileString(path.join(root, ".git"), "gitdir: ./.bare\n");
@@ -327,7 +344,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
           "remote",
           "add",
           "origin",
-          "https://github.com/ExampleOrg/t3code.git",
+          "https://github.com/ExampleOrg/vibecodinger.git",
         ]);
 
         const resolver = yield* RepositoryIdentityResolver.RepositoryIdentityResolver;
@@ -410,7 +427,12 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
       yield* git(localOnlyDir, ["remote", "add", "archive", "file:///srv/git/repo.git"]);
       yield* git(mixedDir, ["init"]);
       yield* git(mixedDir, ["remote", "add", "gb-local", "."]);
-      yield* git(mixedDir, ["remote", "add", "mirror", "git@github.com:ExampleOrg/t3code.git"]);
+      yield* git(mixedDir, [
+        "remote",
+        "add",
+        "mirror",
+        "git@github.com:ExampleOrg/vibecodinger.git",
+      ]);
 
       const resolver = yield* RepositoryIdentityResolver.RepositoryIdentityResolver;
       expect(yield* resolver.resolve(localOnlyDir)).toBeNull();
@@ -431,7 +453,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
         });
 
         yield* git(cwd, ["init"]);
-        yield* git(cwd, ["remote", "add", "origin", "git@github.com:julius/t3code.git"]);
+        yield* git(cwd, ["remote", "add", "origin", "git@github.com:julius/vibecodinger.git"]);
         if (change === "replace") {
           yield* git(cwd, ["remote", "add", "upstream", "git@github.com:ExampleOrg/previous.git"]);
         }
@@ -439,14 +461,14 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
         const resolver = yield* RepositoryIdentityResolver.RepositoryIdentityResolver;
         const initialIdentity = yield* resolver.resolve(cwd);
         expect(initialIdentity?.canonicalKey).toBe(
-          change === "add" ? "github.com/julius/t3code" : "github.com/exampleorg/previous",
+          change === "add" ? "github.com/julius/vibecodinger" : "github.com/exampleorg/previous",
         );
 
         yield* git(cwd, [
           "remote",
           change === "add" ? "add" : "set-url",
           "upstream",
-          "git@github.com:ExampleOrg/t3code.git",
+          "git@github.com:ExampleOrg/vibecodinger.git",
         ]);
         expect(yield* resolver.resolve(cwd)).toEqual(initialIdentity);
         const identity = yield* resolver.resolve(cwd, { refresh: true });
@@ -454,7 +476,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
         expect(identity).not.toBeNull();
         expect(identity?.locator.remoteName).toBe("upstream");
         expect(identity?.canonicalKey).toBe("github.com/exampleorg/vibecodinger");
-        expect(identity?.displayName).toBe("ExampleOrg/t3code");
+        expect(identity?.displayName).toBe("ExampleOrg/vibecodinger");
         expect(yield* resolver.resolve(cwd)).toEqual(identity);
       }).pipe(Effect.provide(RepositoryIdentityResolver.layer)),
   );
@@ -467,18 +489,18 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
       });
 
       yield* git(cwd, ["init"]);
-      yield* git(cwd, ["remote", "add", "origin", "git@github.com:julius/t3code-fork.git"]);
-      yield* git(cwd, ["remote", "add", "upstream", "git@github.com:ExampleOrg/t3code.git"]);
+      yield* git(cwd, ["remote", "add", "origin", "git@github.com:julius/vibecodinger-fork.git"]);
+      yield* git(cwd, ["remote", "add", "upstream", "git@github.com:ExampleOrg/vibecodinger.git"]);
 
       const resolver = yield* RepositoryIdentityResolver.RepositoryIdentityResolver;
       const identity = yield* resolver.resolve(cwd);
 
       expect(identity?.canonicalKey).toBe("github.com/exampleorg/vibecodinger");
-      expect(identity?.displayName).toBe("ExampleOrg/t3code");
+      expect(identity?.displayName).toBe("ExampleOrg/vibecodinger");
       expect(identity?.origin).toEqual({
-        canonicalKey: "github.com/julius/t3code-fork",
-        remoteUrl: "git@github.com:julius/t3code-fork.git",
-        displayName: "julius/t3code-fork",
+        canonicalKey: "github.com/julius/vibecodinger-fork",
+        remoteUrl: "git@github.com:julius/vibecodinger-fork.git",
+        displayName: "julius/vibecodinger-fork",
       });
     }).pipe(Effect.provide(RepositoryIdentityResolver.layer)),
   );
@@ -491,14 +513,14 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
       });
 
       yield* git(cwd, ["init"]);
-      yield* git(cwd, ["remote", "add", "origin", "git@github.com:julius/t3code-fork.git"]);
-      yield* git(cwd, ["remote", "add", "upstream", "git@github.com:ExampleOrg/t3code.git"]);
+      yield* git(cwd, ["remote", "add", "origin", "git@github.com:julius/vibecodinger-fork.git"]);
+      yield* git(cwd, ["remote", "add", "upstream", "git@github.com:ExampleOrg/vibecodinger.git"]);
       yield* git(cwd, ["config", "remote.origin.gh-resolved", "base"]);
 
       const resolver = yield* RepositoryIdentityResolver.RepositoryIdentityResolver;
       const identity = yield* resolver.resolve(cwd);
 
-      expect(identity?.canonicalKey).toBe("github.com/julius/t3code-fork");
+      expect(identity?.canonicalKey).toBe("github.com/julius/vibecodinger-fork");
       expect(identity?.locator.remoteName).toBe("origin");
     }).pipe(Effect.provide(RepositoryIdentityResolver.layer)),
   );
@@ -513,16 +535,16 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
       const resolveFresh = () => resolver.resolve(cwd, { refresh: true });
 
       yield* git(cwd, ["init"]);
-      yield* git(cwd, ["remote", "add", "fork", "https://github.com/julius/t3code-fork.git"]);
-      yield* git(cwd, ["remote", "add", "main", "https://github.com/ExampleOrg/t3code.git"]);
-      yield* git(cwd, ["remote", "add", "upstream", "https://github.com/other/t3code.git"]);
+      yield* git(cwd, ["remote", "add", "fork", "https://github.com/julius/vibecodinger-fork.git"]);
+      yield* git(cwd, ["remote", "add", "main", "https://github.com/ExampleOrg/vibecodinger.git"]);
+      yield* git(cwd, ["remote", "add", "upstream", "https://github.com/other/vibecodinger.git"]);
       yield* git(cwd, ["config", "remote.fork.gh-resolved", "exampleorg/vibecodinger"]);
       const parent = yield* resolveFresh();
       expect(parent?.canonicalKey).toBe("github.com/exampleorg/vibecodinger");
       expect(parent?.locator).toEqual({
         source: "git-remote",
         remoteName: "main",
-        remoteUrl: "https://github.com/ExampleOrg/t3code.git",
+        remoteUrl: "https://github.com/ExampleOrg/vibecodinger.git",
       });
 
       // No remote fetches the marked repository, and several marks leave gh's choice unknown.
@@ -555,8 +577,8 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
       });
 
       yield* git(cwd, ["init"]);
-      yield* git(cwd, ["remote", "add", "origin", "git@github.com:julius/t3code-fork.git"]);
-      yield* git(cwd, ["remote", "add", "upstream", "git@github.com:ExampleOrg/t3code.git"]);
+      yield* git(cwd, ["remote", "add", "origin", "git@github.com:julius/vibecodinger-fork.git"]);
+      yield* git(cwd, ["remote", "add", "upstream", "git@github.com:ExampleOrg/vibecodinger.git"]);
       yield* git(cwd, ["config", "remote.origin.gh-resolved", "base"]);
       yield* git(other, ["init"]);
       yield* git(other, ["config", "remote.upstream.gh-resolved", "base"]);
@@ -567,7 +589,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
       const resolver = yield* RepositoryIdentityResolver.RepositoryIdentityResolver;
       const identity = yield* resolver.resolve(cwd);
 
-      expect(identity?.canonicalKey).toBe("github.com/julius/t3code-fork");
+      expect(identity?.canonicalKey).toBe("github.com/julius/vibecodinger-fork");
       expect(identity?.locator.remoteName).toBe("origin");
     }).pipe(Effect.provide(RepositoryIdentityResolver.layer)),
   );
@@ -580,16 +602,21 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
       });
 
       yield* git(cwd, ["init"]);
-      yield* git(cwd, ["remote", "add", "origin", "git@gitlab.com:ExampleOrg/platform/t3code.git"]);
+      yield* git(cwd, [
+        "remote",
+        "add",
+        "origin",
+        "git@gitlab.com:ExampleOrg/platform/vibecodinger.git",
+      ]);
 
       const resolver = yield* RepositoryIdentityResolver.RepositoryIdentityResolver;
       const identity = yield* resolver.resolve(cwd);
 
       expect(identity).not.toBeNull();
-      expect(identity?.canonicalKey).toBe("gitlab.com/exampleorg/platform/t3code");
-      expect(identity?.displayName).toBe("ExampleOrg/platform/t3code");
+      expect(identity?.canonicalKey).toBe("gitlab.com/exampleorg/platform/vibecodinger");
+      expect(identity?.displayName).toBe("ExampleOrg/platform/vibecodinger");
       expect(identity?.owner).toBe("ExampleOrg");
-      expect(identity?.name).toBe("t3code");
+      expect(identity?.name).toBe("vibecodinger");
     }).pipe(Effect.provide(RepositoryIdentityResolver.layer)),
   );
 });
