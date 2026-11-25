@@ -22,7 +22,6 @@ import * as FeatureFlags from "@t3tools/shared/FeatureFlags";
 import * as HostProcess from "@t3tools/shared/HostProcess";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
-import * as Option from "effect/Option";
 import * as Layer from "effect/Layer";
 import * as Stream from "effect/Stream";
 import { HttpRouter, HttpServer } from "effect/http";
@@ -167,18 +166,8 @@ import * as ReplayMarkers from "./auth/replayMarkers.ts";
 import * as ServerSecretStore from "./auth/ServerSecretStore.ts";
 import * as CodexManagedTokenBroker from "./provider/CodexManagedTokenBroker.ts";
 import * as WebhookRoute from "./scheduledTasks/webhookRoute.ts";
-import * as RelayDeliveryProof from "./scheduledTasks/RelayDeliveryProof.ts";
 import * as McpOAuth from "./auth/McpOAuth.ts";
 import * as McpOAuthHttp from "./auth/mcpOAuthHttp.ts";
-import {
-  relayHookBaseUrl,
-  ScheduledTaskWebhookOrigin,
-} from "./scheduledTasks/ScheduledTaskService.ts";
-import {
-  CLOUD_ENDPOINT_RUNTIME_CONFIG,
-  decodeRuntimeConfig,
-  RELAY_URL_SECRET,
-} from "./cloud/config.ts";
 import * as EnvironmentAuth from "./auth/EnvironmentAuth.ts";
 import * as EnvironmentAuthPolicy from "./auth/EnvironmentAuthPolicy.ts";
 import * as GuestHttp from "./guest/http.ts";
@@ -585,29 +574,6 @@ const layerCloudManagedEndpointRuntime = Layer.mergeAll(
   ),
 );
 
-const layerScheduledTaskWebhookOrigin = Layer.effect(
-  ScheduledTaskWebhookOrigin,
-  Effect.gen(function* () {
-    const secrets = yield* ServerSecretStore.ServerSecretStore;
-    return Effect.gen(function* () {
-      const [relayUrl, tunnelConfig] = yield* Effect.all([
-        secrets.get(RELAY_URL_SECRET),
-        secrets.get(CLOUD_ENDPOINT_RUNTIME_CONFIG),
-      ]).pipe(Effect.orElseSucceed(() => [Option.none(), Option.none()] as const));
-      if (Option.isNone(relayUrl) || Option.isNone(tunnelConfig)) {
-        return { relayHookBaseUrl: null };
-      }
-      const config = decodeRuntimeConfig(new TextDecoder().decode(tunnelConfig.value));
-      return {
-        relayHookBaseUrl: relayHookBaseUrl({
-          relayUrl: new TextDecoder().decode(relayUrl.value),
-          tunnelName: Option.isSome(config) ? config.value.tunnelName : undefined,
-        }),
-      };
-    });
-  }),
-);
-
 const layerTaskFolders = TaskFolders.layer.pipe(
   Layer.provide(
     Layer.mergeAll(
@@ -630,7 +596,6 @@ const layerOrchestrationV2Runtime = RuntimeLayer.layerProduction.pipe(
   ),
   Layer.provide(UsageLimitSources.layerResetFallback),
   Layer.provide(layerTaskFolders),
-  Layer.provide(layerScheduledTaskWebhookOrigin),
   Layer.provide(layerCheckpointStore),
   Layer.provide(layerGitWorkflow),
   Layer.provide(
@@ -867,7 +832,7 @@ const layerMakeRoutes = Layer.mergeAll(
       Layer.provide(ProjectHttp.layer),
       Layer.provide(speechHttpApiLayer),
       Layer.provide(ServerHttp.layerServerEnvironmentHttpApi),
-      Layer.provide(WebhookRoute.layer.pipe(Layer.provide(RelayDeliveryProof.layer))),
+      Layer.provide(WebhookRoute.layer),
       Layer.provide(AuthHttp.layerAuthenticatedAuth),
       Layer.provide(ServerHttp.layerApiBodyLimit),
     ),

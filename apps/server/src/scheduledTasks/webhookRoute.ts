@@ -3,50 +3,32 @@ import * as ByteSize from "effect/ByteSize";
 import * as Effect from "effect/Effect";
 import * as Option from "effect/Option";
 import * as Result from "effect/Result";
-import * as Tracer from "effect/Tracer";
 import * as HttpIncomingMessage from "effect/http/HttpIncomingMessage";
 import type * as HttpServerRequest from "effect/http/HttpServerRequest";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
-import * as HttpTraceContext from "effect/http/HttpTraceContext";
-import { withRelayClientTracing } from "@t3tools/shared/relayTracing";
 import * as HttpApiBuilder from "effect/http-api/HttpApiBuilder";
 
 import * as Metrics from "../observability/Metrics.ts";
 import * as ManagedPolicy from "../policy/ManagedPolicy.ts";
 import * as Workflows from "../workflows/Workflows.ts";
-import * as RelayDeliveryProof from "./RelayDeliveryProof.ts";
 import * as ScheduledTaskService from "./ScheduledTaskService.ts";
 
-/** The relay enforces the same cap. */
 export const WEBHOOK_MAX_BODY_BYTES = 1024 * 1024;
 
-// The relay records this outcome header.
-const WEBHOOK_OUTCOME_HEADER = "x-t3-hook-outcome";
-
-const json = (
-  status: number,
-  body: Record<string, string>,
-  outcome: string,
-  headers?: Record<string, string>,
-) =>
-  HttpServerResponse.jsonUnsafe(body, {
-    status,
-    headers: { ...headers, [WEBHOOK_OUTCOME_HEADER]: outcome },
-  });
+const json = (status: number, body: Record<string, string>, headers?: Record<string, string>) =>
+  HttpServerResponse.jsonUnsafe(body, { status, ...(headers === undefined ? {} : { headers }) });
 
 export const layer = HttpApiBuilder.group(
   EnvironmentHttpApi,
   "webhooks",
   Effect.fnUntraced(function* (handlers) {
     const scheduledTasks = yield* ScheduledTaskService.ScheduledTaskService;
-    const relayDeliveryProof = yield* RelayDeliveryProof.RelayDeliveryProof;
     const workflows = yield* Workflows.Workflows;
     const managedPolicy = yield* ManagedPolicy.ManagedPolicy;
     /**
      * The endpoint is raw so the signature is checked over the exact body
      * bytes; the service checks the token and signature.
      */
-    // Only verified relay deliveries join a trace; direct requests keep their existing context.
     const handler = Effect.fnUntraced(function* ({
       params,
       request,
@@ -56,13 +38,17 @@ export const layer = HttpApiBuilder.group(
     }) {
       // The router answers HEAD with the GET route; link checkers probe with HEAD.
       if (request.method === "HEAD") {
-        return json(405, { error: "method_not_allowed" }, "method_not_allowed", {
-          allow: "GET, POST, PUT, PATCH",
-        });
+        return json(
+          405,
+          { error: "method_not_allowed" },
+          {
+            allow: "GET, POST, PUT, PATCH",
+          },
+        );
       }
       const contentLength = Number(request.headers["content-length"] ?? "0");
       if (!Number.isFinite(contentLength) || contentLength > WEBHOOK_MAX_BODY_BYTES) {
-        return json(413, { error: "body_too_large" }, "body_too_large");
+        return json(413, { error: "body_too_large" });
       }
       // Chunked requests carry no content-length, so the reader itself is capped.
       const body = yield* request.arrayBuffer.pipe(
@@ -76,8 +62,8 @@ export const layer = HttpApiBuilder.group(
       const tooLarge = (error: string) =>
         Metrics.increment(Metrics.webhookDeliveriesTotal, {
           outcome: "body_too_large",
-          source: request.headers["x-t3-relay-delivery-id"] ? "relay" : "direct",
-        }).pipe(Effect.as(json(413, { error }, "body_too_large")));
+          source: "direct",
+        }).pipe(Effect.as(json(413, { error })));
       if (Option.isNone(body)) return yield* tooLarge("body_too_large_or_unreadable");
       if (body.value.byteLength > WEBHOOK_MAX_BODY_BYTES) {
         return yield* tooLarge("body_too_large");
@@ -91,21 +77,9 @@ export const layer = HttpApiBuilder.group(
         }
       }
       const queryIndex = request.url.indexOf("?");
-      // The relay's delivery id and receive time count only with its signed
-      // proof; the URL can also be called directly. The receive time matters
-      // for requests the relay held while we were offline.
-      const relay = yield* relayDeliveryProof.verify({ headers, hookId: params.hookId });
-      const relayDeliveryId = Option.isSome(relay) ? relay.value.deliveryId : undefined;
-      const relayReceivedAt = Option.isSome(relay) ? relay.value.receivedAt : undefined;
-
-      // A relay delivery joins the relay's trace, and goes to the T3 Connect
-      // tracer with it. Anyone else's traceparent is never trusted.
-      const relayParent = Option.isSome(relay)
-        ? HttpTraceContext.fromHeaders(request.headers)
-        : Option.none<Tracer.ExternalSpan>();
       if (params.hookId.startsWith(Workflows.HOOK_PREFIX)) {
         if (ManagedPolicy.deniedBy(managedPolicy, "webhookTasks") !== undefined) {
-          return json(403, { error: "blocked_by_policy" }, "blocked_by_policy");
+          return json(403, { error: "blocked_by_policy" });
         }
         // Answered only once the run is stored, so a sender that hears nothing may send again.
         const started = yield* workflows
@@ -118,26 +92,21 @@ export const layer = HttpApiBuilder.group(
               query: queryIndex === -1 ? "" : request.url.slice(queryIndex + 1),
               body: new TextDecoder().decode(body.value),
             },
-            ...(relayDeliveryId ? { deliveryId: `relay:${relayDeliveryId}` } : {}),
           })
           .pipe(Effect.result);
         if (Result.isFailure(started)) {
           if (started.failure._tag === "WorkflowInputError") {
-            return json(
-              400,
-              { error: "invalid_request", problem: started.failure.problem },
-              "invalid",
-            );
+            return json(400, { error: "invalid_request", problem: started.failure.problem });
           }
           if (started.failure._tag === "WorkflowHookBusyError") {
-            return json(429, { error: "rate_limited" }, "rate_limited", { "retry-after": "60" });
+            return json(429, { error: "rate_limited" }, { "retry-after": "60" });
           }
           yield* Effect.logWarning("Workflow hook delivery failed", { hookId: params.hookId });
-          return json(500, { error: "internal_error" }, "error");
+          return json(500, { error: "internal_error" });
         }
         return Option.isNone(started.success)
-          ? json(404, { error: "hook_not_found" }, "not_found")
-          : json(202, { runId: started.success.value.runId }, "accepted");
+          ? json(404, { error: "hook_not_found" })
+          : json(202, { runId: started.success.value.runId });
       }
       const result = yield* scheduledTasks
         .triggerWebhook({
@@ -149,14 +118,8 @@ export const layer = HttpApiBuilder.group(
           headers,
           body: body.value,
           bodyText: new TextDecoder().decode(body.value),
-          ...(relayDeliveryId ? { relayDeliveryId } : {}),
-          ...(relayReceivedAt ? { receivedAt: relayReceivedAt } : {}),
         })
         .pipe(
-          Option.isSome(relayParent)
-            ? (effect) =>
-                effect.pipe(Effect.withParentSpan(relayParent.value), withRelayClientTracing)
-            : (effect) => effect,
           Effect.catchCause((cause) =>
             Effect.logWarning("Webhook delivery failed").pipe(
               Effect.annotateLogs({ hookId: params.hookId }),
@@ -168,21 +131,21 @@ export const layer = HttpApiBuilder.group(
 
       switch (result._tag) {
         case "accepted":
-          return json(202, { deliveryId: result.deliveryId }, result.outcome);
+          return json(202, { deliveryId: result.deliveryId });
         case "not_found":
-          return json(404, { error: "hook_not_found" }, "not_found");
+          return json(404, { error: "hook_not_found" });
         case "rejected_signature":
-          return json(401, { error: "invalid_signature" }, "rejected_signature");
+          return json(401, { error: "invalid_signature" });
         case "disabled":
-          return json(409, { error: "hook_disabled" }, "disabled");
+          return json(409, { error: "hook_disabled" });
         case "blocked_by_policy":
-          return json(403, { error: "blocked_by_policy" }, "blocked_by_policy");
+          return json(403, { error: "blocked_by_policy" });
         case "rate_limited":
-          return json(429, { error: result.outcome }, result.outcome);
+          return json(429, { error: result.outcome });
         case "expired":
-          return json(410, { error: "delivery_too_old" }, "expired");
+          return json(410, { error: "delivery_too_old" });
         case "error":
-          return json(500, { error: "internal_error" }, "error");
+          return json(500, { error: "internal_error" });
       }
     });
     return handlers

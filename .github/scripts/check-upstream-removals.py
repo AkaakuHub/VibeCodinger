@@ -11,12 +11,17 @@ PROTECTED_PATHS = (
     ".github/actions",
     ".github/scripts",
     ".github/workflows",
+    "apps/desktop/src/app/ClerkTokenStore.ts",
+    "apps/desktop/src/app/ClerkTokenStore.test.ts",
+    "apps/desktop/src/app/DesktopClerk.ts",
+    "apps/desktop/src/app/DesktopClerk.test.ts",
     "apps/mobile/src/features/cloud",
     "apps/server/src/cli/connect.ts",
     "apps/server/src/cloud/CliState.ts",
     "apps/server/src/cloud/CliTokenManager.ts",
     "apps/server/src/cloud/CloudLink.ts",
     "apps/server/src/cloud/ConnectReachability.ts",
+    "apps/server/src/cloud/config.ts",
     "apps/server/src/cloud/http.ts",
     "apps/server/src/cloud/linkChecks.ts",
     "apps/server/src/cloud/publicConfig.ts",
@@ -26,6 +31,7 @@ PROTECTED_PATHS = (
     "apps/server/src/cloud/managedTunnelStartup.test.ts",
     "apps/server/src/observability/HeapSnapshot.ts",
     "apps/server/src/relay",
+    "apps/server/src/scheduledTasks/RelayDeliveryProof.ts",
     "apps/server/src/telemetry",
     "apps/web/src/cloud",
     "apps/web/src/components/clerk",
@@ -41,7 +47,7 @@ FORBIDDEN = re.compile(
     rb"layerCloudDesiredLinkReconcile|managedTunnelStartup|watchManagedTunnelOrigin|hostedApprovalUrl|agentApprovalAppUrlConfig|"
     rb"CloudHttp\.layer|HttpApiBuilder\.layer\(EnvironmentHttpApi\).*connect|"
     rb"Outside MCP clients get app\.t3\.codes|"
-    rb"connectSubcommands|writeHeapSnapshot\s*\(",
+    rb"relayHookBaseUrl|RelayDeliveryProof|connectSubcommands|writeHeapSnapshot\s*\(",
     re.IGNORECASE,
 )
 SOURCE_SUFFIXES = (".js", ".ts", ".mjs", ".cjs", ".tsx", ".jsx", ".json", ".yml", ".yaml", ".sh", ".ps1", ".swift", ".kt")
