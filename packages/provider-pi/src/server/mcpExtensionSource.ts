@@ -386,7 +386,7 @@ export default async function t3McpExtension(pi: ExtensionAPI) {
   if (endpoint === undefined || token === undefined) {
     pi.on("session_start", async (_event, ctx) => {
       ctx.ui.notify(
-        "t3-code MCP unavailable: T3_MCP_URL or T3_MCP_BEARER_TOKEN is missing.",
+        "vibe-codinger MCP unavailable: T3_MCP_URL or T3_MCP_BEARER_TOKEN is missing.",
         "warning",
       );
     });
@@ -397,7 +397,7 @@ export default async function t3McpExtension(pi: ExtensionAPI) {
   // bridge as the credential owner: mcp.json overrides native registrations.
   const supportsExposure = "registerMcpServer" in pi && typeof pi.registerMcpServer === "function";
   const directTools = new Set(["orchestrator_capabilities", "delegate_task", "task_status"]);
-  const ALIAS_PREFIX = "mcp__t3_code__";
+  const ALIAS_PREFIX = "mcp__vibe_codinger__";
   let deferOptionalTools = supportsExposure;
   const isDeferred = (name: string) => deferOptionalTools && !directTools.has(name);
   // An alias follows its public tool: gone when --exclude-tools removed it,
@@ -407,8 +407,8 @@ export default async function t3McpExtension(pi: ExtensionAPI) {
     registered: ReadonlySet<string>,
     active: ReadonlyArray<string>,
   ) =>
-    registered.has("mcp__t3-code__" + name) &&
-    (isDeferred(name) || active.includes("mcp__t3-code__" + name));
+    registered.has("mcp__vibe-codinger__" + name) &&
+    (isDeferred(name) || active.includes("mcp__vibe-codinger__" + name));
   let catalog: ReadonlyArray<McpTool> = [];
 
   const client = createMcpClient(endpoint, token);
@@ -418,7 +418,7 @@ export default async function t3McpExtension(pi: ExtensionAPI) {
     // Preserve public names for saved loadouts and tool selectors. The alias,
     // Pi's own MCP name for T3, reserves it against Pi's configured MCP servers.
     // model-only keeps it out of codemode; it hides its own declaration.
-    const prefixes = supportsExposure ? ["mcp__t3-code__", ALIAS_PREFIX] : ["mcp__t3-code__"];
+    const prefixes = supportsExposure ? ["mcp__vibe-codinger__", ALIAS_PREFIX] : ["mcp__vibe-codinger__"];
     readOnlyMcpTools.clear();
     for (const tool of catalog) {
       const name = tool.name;
@@ -433,7 +433,7 @@ export default async function t3McpExtension(pi: ExtensionAPI) {
           // Pi records active declarations in the transcript even when hidden, and
           // estimates context from them. The model sees only the public schema;
           // T3's server still validates the arguments.
-          description: isAlias ? "Same as mcp__t3-code__" + name + "." : (tool.description ?? name),
+          description: isAlias ? "Same as mcp__vibe-codinger__" + name + "." : (tool.description ?? name),
           parameters: jsonSchemaToTypebox(isAlias ? { type: "object" } : tool.inputSchema),
           ...(supportsExposure ? { outputSchema: mcpOutputSchema(tool) } : {}),
           ...(supportsExposure ? { exposure } : {}),
@@ -453,12 +453,12 @@ export default async function t3McpExtension(pi: ExtensionAPI) {
             );
             const content = mcpModelContent(result);
             if (isMcpToolError(result) && !content.some((part) => part.type === "text" && part.text.length > 0)) {
-              content.push({ type: "text", text: "MCP tool t3-code/" + name + " returned an error" });
+              content.push({ type: "text", text: "MCP tool vibe-codinger/" + name + " returned an error" });
             }
             return {
               content,
               structuredContent: mcpScriptResult(result),
-              details: { server: "t3-code", tool: name },
+              details: { server: "vibe-codinger", tool: name },
               ...(isMcpToolError(result) ? { isError: true } : {}),
             };
           },
@@ -500,7 +500,7 @@ export default async function t3McpExtension(pi: ExtensionAPI) {
     // Pi still applies --tools/--exclude-tools to this active loadout.
     const required = [
       ...(hasToolSearch ? ["tool_search"] : []),
-      ...(ctx.model?.api === "openai-completions" ? catalog.map((tool) => "mcp__t3-code__" + tool.name) : []),
+      ...(ctx.model?.api === "openai-completions" ? catalog.map((tool) => "mcp__vibe-codinger__" + tool.name) : []),
     ];
     const current = pi.getActiveTools();
     const missing = required.filter((name) => !current.includes(name));
@@ -513,7 +513,7 @@ export default async function t3McpExtension(pi: ExtensionAPI) {
     const aliases = catalog
       .filter((tool) => registered.has(ALIAS_PREFIX + tool.name) &&
         followsPublicTool(tool.name, registered, loaded) &&
-        !loaded.includes("mcp__t3-code__" + tool.name))
+        !loaded.includes("mcp__vibe-codinger__" + tool.name))
       .map((tool) => ALIAS_PREFIX + tool.name);
     const kept = loaded.filter((name) => !name.startsWith(ALIAS_PREFIX) || aliases.includes(name));
     const added = aliases.filter((name) => !loaded.includes(name));
@@ -528,7 +528,7 @@ export default async function t3McpExtension(pi: ExtensionAPI) {
     let renamed = false;
     const content = message.content.map((part) => {
       if (part.type !== "toolCall" || !part.name.startsWith(ALIAS_PREFIX)) return part;
-      const publicName = "mcp__t3-code__" + part.name.slice(ALIAS_PREFIX.length);
+      const publicName = "mcp__vibe-codinger__" + part.name.slice(ALIAS_PREFIX.length);
       if (!active.includes(publicName)) return part;
       renamed = true;
       return { ...part, name: publicName };
@@ -545,7 +545,7 @@ export default async function t3McpExtension(pi: ExtensionAPI) {
       await ensureStarted();
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      ctx.ui.notify(\`t3-code MCP unavailable: \${message}\`, "warning");
+      ctx.ui.notify(\`vibe-codinger MCP unavailable: \${message}\`, "warning");
     }
   });
 
@@ -556,7 +556,7 @@ export default async function t3McpExtension(pi: ExtensionAPI) {
     const sections = event.systemPromptOptions?.sections;
     if (sections && typeof sections === "object" && event.systemPromptOptions?.forceSystemPrompt === undefined) {
       // A full prompt override bypasses Pi's later section rendering.
-      sections.t3_code_orchestration = instructions;
+      sections.vibe_codinger_orchestration = instructions;
       return undefined;
     }
     return { systemPrompt: event.systemPrompt + "\\n\\n" + instructions };

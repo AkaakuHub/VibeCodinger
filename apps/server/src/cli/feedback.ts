@@ -143,7 +143,7 @@ export const feedbackCommand = Command.make("feedback", {
       { baseDir, json: true, clientLabel: FEEDBACK_CLI_CLIENT_LABEL },
       Effect.fn("cli.feedback.submit")(function* (tools) {
         const report = yield* tools.call(
-          "t3_feedback",
+          "vc_feedback",
           { kind, subject, expected, actual, workaround },
           FeedbackSubmitResult,
         );

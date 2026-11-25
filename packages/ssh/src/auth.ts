@@ -271,7 +271,7 @@ export const buildSshChildEnvironment = Effect.fn("ssh/auth.buildSshChildEnviron
     SSH_ASKPASS: helperPath,
     SSH_ASKPASS_REQUIRE: "force",
     ...authSecretEnv,
-    ...(baseEnv.DISPLAY || hostDisplay ? {} : { DISPLAY: "t3code" }),
+    ...(baseEnv.DISPLAY || hostDisplay ? {} : { DISPLAY: "vibecodinger" }),
   };
 });
 

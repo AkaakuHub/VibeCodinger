@@ -2682,12 +2682,12 @@ describe("AcpAdapterV2", () => {
 
         const command = yield* runTurn(0, defaultPolicy, "/compact");
         assert.isTrue(command.prompt.startsWith("/compact"));
-        assert.notInclude(command.prompt, "<t3_code_instructions>");
+        assert.notInclude(command.prompt, "<vibe_codinger_instructions>");
         assert.equal(command.textBlockCount, 1);
         const whitespaceCommand = yield* runTurn(1, defaultPolicy, "  /repro-skill");
         assert.equal(whitespaceCommand.prompt, "  /repro-skill");
         assert.equal(whitespaceCommand.textBlockCount, 1);
-        assert.notInclude(whitespaceCommand.prompt, "<t3_code_instructions>");
+        assert.notInclude(whitespaceCommand.prompt, "<vibe_codinger_instructions>");
         const firstDefault = yield* runTurn(2, defaultPolicy, "First default request.");
         assert.equal(firstDefault.textBlockCount, 2);
         assert.include(firstDefault.prompt, "VibeCodinger interaction mode: Default");
@@ -3416,8 +3416,8 @@ describe("AcpAdapterV2", () => {
                         title: "Wait for the child",
                         status: "in_progress",
                         rawInput: {
-                          server: "t3-code",
-                          tool: "t3_thread_wait",
+                          server: "vibe-codinger",
+                          tool: "vc_thread_wait",
                           arguments: { threadId: "child" },
                         },
                         _meta: { is_mcp_tool_call: true },
@@ -4469,7 +4469,7 @@ describe("AcpAdapterV2", () => {
           (item) =>
             item.threadId === task?.childThreadId &&
             item.type === "dynamic_tool" &&
-            item.toolName === "t3-code.task_status",
+            item.toolName === "vibe-codinger.task_status",
         ),
       );
       const childMcp = items.find(
@@ -5204,7 +5204,7 @@ describe("AcpAdapterV2", () => {
       assert.deepEqual(webItem("grok-web-search", "completed"), {
         title: "Web search: t3 code",
         patterns: ["t3 code"],
-        results: [{ url: "https://t3.codes" }, { url: "https://github.com/pingdotgg/t3code" }],
+        results: [{ url: "https://example.test" }, { url: "https://github.com/pingdotgg/t3code" }],
       });
       assert.deepEqual(webItem("antigravity-web-search", "completed"), {
         title: "Web search: top story on Hacker News today",
@@ -5226,7 +5226,7 @@ describe("AcpAdapterV2", () => {
         results: [{ url: "https://example.com/streamed_(detail)" }],
       });
       assert.deepEqual(webItem("grok-web-fetch", "completed")?.results, [
-        { url: "https://t3.codes", snippet: "VibeCodinger page" },
+        { url: "https://example.test", snippet: "VibeCodinger page" },
       ]);
       const completedCompaction = items.find(
         (item) =>
@@ -6388,7 +6388,7 @@ describe("AcpAdapterV2", () => {
         Stream.filter((event) => trackedToolStatus(event) !== undefined),
         Stream.runHead,
       );
-      // t3_worktree_handoff releases the live session while its own tool call is open.
+      // vc_worktree_handoff releases the live session while its own tool call is open.
       yield* Scope.close(sessionScope, Exit.void);
       // The event queue outlives the session; only events emitted by the close remain.
       const after = yield* harness.runtime.events.pipe(
@@ -6620,7 +6620,7 @@ describe("AcpAdapterV2", () => {
         mcpServers: [
           {
             type: "stdio",
-            name: "t3-code",
+            name: "vibe-codinger",
             command: process.execPath,
             args: [
               process.argv[1] === undefined ? "t3" : NodePath.resolve(process.argv[1]),
@@ -7020,7 +7020,7 @@ describe("AcpAdapterV2", () => {
         return yield* Effect.die("ACP runtime must register MCP-over-ACP handlers");
       }
       const { connectionId } = yield* mcpConnect(
-        { serverId: "t3-code" },
+        { serverId: "vibe-codinger" },
         { requestId: "stop-mcp-connect", method: "mcp/connect" },
       );
       const call = yield* mcpMessage(

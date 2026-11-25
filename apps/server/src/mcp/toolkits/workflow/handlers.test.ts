@@ -45,7 +45,7 @@ it.effect("start passes an explicit null payload through and defaults an omitted
       const toolkit = yield* WorkflowToolkit;
       for (const input of [{ input: null }, {}]) {
         yield* toolkit
-          .handle("t3_workflow", {
+          .handle("vc_workflow", {
             action: "start",
             workflow: "echo",
             idempotencyKey: "trial",
@@ -82,7 +82,7 @@ it.effect("signal refuses a run destination mixed with a channel destination", (
         ],
         (address) =>
           toolkit
-            .handle("t3_workflow", { action: "signal", value: { choice: "yes" }, ...address })
+            .handle("vc_workflow", { action: "signal", value: { choice: "yes" }, ...address })
             .pipe(
               Stream.unwrap,
               Stream.runCollect,
@@ -112,7 +112,7 @@ const emptyRun = { run: undefined, steps: [], references: [] } as never;
 const call = (input: Record<string, unknown>) =>
   Effect.gen(function* () {
     const toolkit = yield* WorkflowToolkit;
-    return yield* toolkit.handle("t3_workflow", input as never).pipe(
+    return yield* toolkit.handle("vc_workflow", input as never).pipe(
       Stream.unwrap,
       Stream.runCollect,
       Effect.map((parts) => parts.at(-1)?.result),

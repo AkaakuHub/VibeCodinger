@@ -614,7 +614,7 @@ describe("AcpSessionRuntime", () => {
         (event) => event.method === "session/new" && event.status === "started",
       );
       expect(created?.payload).toMatchObject({
-        mcpServers: [{ type: "acp", name: "t3-code", serverId: "t3-code" }],
+        mcpServers: [{ type: "acp", name: "vibe-codinger", serverId: "vibe-codinger" }],
       });
       // This agent does not advertise additional directories, so the thread's other folders stay out.
       expect(created?.payload).not.toHaveProperty("additionalDirectories");
@@ -629,8 +629,10 @@ describe("AcpSessionRuntime", () => {
           cwd: process.cwd(),
           clientInfo: { name: "t3-test", version: "0.0.0" },
           authMethodId: "test",
-          mcpServers: [{ type: "stdio", name: "t3-code", command: "/usr/bin/node", args: [] }],
-          acpMcpServers: [{ type: "acp", name: "t3-code", serverId: "t3-code" }],
+          mcpServers: [
+            { type: "stdio", name: "vibe-codinger", command: "/usr/bin/node", args: [] },
+          ],
+          acpMcpServers: [{ type: "acp", name: "vibe-codinger", serverId: "vibe-codinger" }],
           extraRoots: ["/tmp/t3-tracked"],
           requestLogger: (event) =>
             Effect.sync(() => {

@@ -1,6 +1,6 @@
-export const BUILT_IN_THEME_IDS = ["t3-chat", "grove", "ocean", "ember", "iris"] as const;
+export const BUILT_IN_THEME_IDS = ["vc-chat", "grove", "ocean", "ember", "iris"] as const;
 
-export const MOBILE_DEFAULT_THEME_ID = "t3-code";
+export const MOBILE_DEFAULT_THEME_ID = "vibe-codinger";
 
 export const MOBILE_THEME_IDS = [MOBILE_DEFAULT_THEME_ID, ...BUILT_IN_THEME_IDS] as const;
 
@@ -10,7 +10,7 @@ export const RESERVED_THEME_IDS: ReadonlySet<string> = new Set([
   "light",
   "dark",
   ...BUILT_IN_THEME_IDS,
-  "t3-chat-dark",
+  "vc-chat-dark",
   "t3-grove",
   "t3-ocean",
   "t3-ember",
@@ -236,8 +236,8 @@ export const T3_CODE_DARK_THEME_COLORS: ThemeColors = {
 };
 
 export const T3_CHAT_THEME: ThemeDefinition = {
-  id: "t3-chat",
-  label: "T3 Chat",
+  id: "vc-chat",
+  label: "VC Chat",
   appearance: "light",
   colors: {
     canvas: "oklch(0.982446 0.010114 325.653)",

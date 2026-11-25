@@ -4,8 +4,8 @@ import { THREAD_FIND_BLOCK_TAGS } from "@vibecodinger/shared/threadFindBlockTags
 
 import { observeResize } from "~/lib/observeResize";
 
-const THREAD_FIND_HIGHLIGHT_NAME = "t3-thread-find";
-const THREAD_FIND_ACTIVE_HIGHLIGHT_NAME = "t3-thread-find-active";
+const THREAD_FIND_HIGHLIGHT_NAME = "vibecodinger-thread-find";
+const THREAD_FIND_ACTIVE_HIGHLIGHT_NAME = "vibecodinger-thread-find-active";
 
 const THREAD_FIND_TEXT_SELECTOR = "[data-thread-find-text]";
 const THREAD_FIND_IGNORE_SELECTOR = "[data-thread-find-ignore]";

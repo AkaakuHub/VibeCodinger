@@ -74,7 +74,7 @@ describe("filesystem browse model", () => {
     expect(getFilesystemBrowsePath("~/projects/vibecodinger")).toEqual({
       isBrowsing: true,
       directoryPath: "~/projects/",
-      filterQuery: "t3",
+      filterQuery: "vibecodinger",
       parentPath: "~/",
       canBrowseUp: true,
     });

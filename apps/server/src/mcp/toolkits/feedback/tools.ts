@@ -22,7 +22,7 @@ const shared = {
 };
 
 export const FeedbackToolkit = Toolkit.make(
-  Tool.make("t3_feedback", {
+  Tool.make("vc_feedback", {
     ...shared,
     description:
       "Save VibeCodinger feedback on this machine: broken tools or commands, confusing instructions, missing capabilities, or other product feedback. Use your own words and exclude the user's messages, code, files, and names. When asked, call directly to open an approval card where the user chooses whether to include the selected turns. Never paste the conversation into the report.",

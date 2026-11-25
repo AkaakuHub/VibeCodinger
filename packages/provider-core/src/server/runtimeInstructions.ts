@@ -5,8 +5,8 @@ import type { ProviderAdapterV2RuntimePolicy } from "./ProviderAdapter.ts";
 /** None while agent feedback is off, so users who never opt in pay no context for it. */
 export const AGENT_FEEDBACK_INSTRUCTIONS = {
   off: "",
-  "on-request": "Use `t3_feedback` only when the user asks to save feedback.",
-  auto: "Save one local report with `t3_feedback` when a VibeCodinger tool or command fails, gives a wrong result, or lacks a capability you need, or the user corrects how you use the app. Also report when asked. Continue after saving it. Report app issues only.",
+  "on-request": "Use `vc_feedback` only when the user asks to save feedback.",
+  auto: "Save one local report with `vc_feedback` when a VibeCodinger tool or command fails, gives a wrong result, or lacks a capability you need, or the user corrects how you use the app. Also report when asked. Continue after saving it. Report app issues only.",
 } satisfies Record<AgentFeedbackMode, string>;
 
 /** Session-invariant; harnesses with a native system-prompt append can carry it once per session. */

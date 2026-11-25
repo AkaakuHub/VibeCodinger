@@ -15,8 +15,8 @@ const findTotal = `(() => {
 })()`;
 
 const paint = `(() => {
-  const inactive = CSS.highlights.get("t3-thread-find");
-  const active = CSS.highlights.get("t3-thread-find-active");
+  const inactive = CSS.highlights.get("vibecodinger-thread-find");
+  const active = CSS.highlights.get("vibecodinger-thread-find-active");
   let onScreen = 0;
   for (const highlight of [inactive, active])
     for (const range of highlight ?? []) {

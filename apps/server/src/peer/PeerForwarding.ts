@@ -46,7 +46,7 @@ export class PeerForwarding extends Context.Service<
   {
     /**
      * Runs `tool` in the linked environment `environmentId` with `params`. A
-     * `t3_thread_wait` goes in pieces short enough to survive any route.
+     * `vc_thread_wait` goes in pieces short enough to survive any route.
      */
     readonly call: <T extends Tool.Any>(
       scope: Scope,
@@ -54,19 +54,19 @@ export class PeerForwarding extends Context.Service<
       environmentId: EnvironmentId,
       params: Tool.Parameters<T>,
     ) => Effect.Effect<Tool.Success<T>, OrchestratorMcpFailure>;
-    /** `t3_thread_read` there. */
+    /** `vc_thread_read` there. */
     readonly readThread: (
       scope: Scope,
       environmentId: EnvironmentId,
       input: OrchestratorMcpThreadReadInput,
     ) => Effect.Effect<OrchestratorMcpThreadReadResult, OrchestratorMcpFailure>;
-    /** `t3_thread_interrupt` there. */
+    /** `vc_thread_interrupt` there. */
     readonly interruptThread: (
       scope: Scope,
       environmentId: EnvironmentId,
       input: OrchestratorMcpThreadInterruptInput,
     ) => Effect.Effect<OrchestratorMcpThreadInterruptResult, OrchestratorMcpFailure>;
-    /** `t3_thread_wait` there, bounded like a local wait. */
+    /** `vc_thread_wait` there, bounded like a local wait. */
     readonly waitForThread: (
       scope: Scope,
       environmentId: EnvironmentId,
@@ -97,7 +97,7 @@ export const remoteTarget = (scope: Scope, environmentId: EnvironmentId | undefi
 
 // Older peers reject beforePosition during parameter validation.
 const BEFORE_POSITION_REFUSAL =
-  /^Invalid parameters for tool 't3_thread_read': Unknown arguments? (?:"[^"]+", )*"beforePosition"(?:, "[^"]+")*\. Accepted arguments: /;
+  /^Invalid parameters for tool 'vc_thread_read': Unknown arguments? (?:"[^"]+", )*"beforePosition"(?:, "[^"]+")*\. Accepted arguments: /;
 export const refusesBeforePosition = (failure: {
   readonly code: string;
   readonly message: string;
@@ -211,7 +211,7 @@ const make = Effect.gen(function* () {
   const readThread: PeerForwarding["Service"]["readThread"] = (scope, environmentId, input) =>
     forward<OrchestratorMcpThreadReadResult>(
       scope,
-      "t3_thread_read",
+      "vc_thread_read",
       OrchestratorMcpThreadReadInput,
       OrchestratorMcpThreadReadResult,
       environmentId,
@@ -225,7 +225,7 @@ const make = Effect.gen(function* () {
   ) =>
     forward<OrchestratorMcpThreadInterruptResult>(
       scope,
-      "t3_thread_interrupt",
+      "vc_thread_interrupt",
       OrchestratorMcpThreadInterruptInput,
       OrchestratorMcpThreadInterruptResult,
       environmentId,
@@ -235,7 +235,7 @@ const make = Effect.gen(function* () {
   const waitForThread: PeerForwarding["Service"]["waitForThread"] = (scope, environmentId, input) =>
     forward<OrchestratorMcpThreadWaitResult>(
       scope,
-      "t3_thread_wait",
+      "vc_thread_wait",
       OrchestratorMcpThreadWaitInput,
       OrchestratorMcpThreadWaitResult,
       environmentId,
@@ -256,7 +256,7 @@ const make = Effect.gen(function* () {
 
   // Older peers page some cursorless reads forward; ask for the newest page, as a read here gets.
   const newestPage = (toolName: string, params: unknown) => {
-    if (toolName !== "t3_thread_read") return undefined;
+    if (toolName !== "vc_thread_read") return undefined;
     const input = params as OrchestratorMcpThreadReadInput;
     return input.afterPosition === undefined && input.beforePosition === undefined
       ? { ...input, beforePosition: Number.MAX_SAFE_INTEGER }
@@ -272,7 +272,7 @@ const make = Effect.gen(function* () {
     const forwarded: Effect.Effect<
       Tool.Success<typeof tool>,
       OrchestratorMcpFailure
-    > = tool.name === "t3_thread_wait"
+    > = tool.name === "vc_thread_wait"
       ? (waitForThread(
           scope,
           environmentId,
@@ -289,7 +289,7 @@ const make = Effect.gen(function* () {
    * empty list reads as a dead end and agents go looking elsewhere.
    */
   const NOT_LISTED =
-    "Not listed: not linked yet. Call t3_environment_link with a hint from the user's words.";
+    "Not listed: not linked yet. Call vc_environment_link with a hint from the user's words.";
 
   const listLinks: PeerForwarding["Service"]["links"] = Effect.fn("PeerForwarding.listLinks")(
     function* (scope) {

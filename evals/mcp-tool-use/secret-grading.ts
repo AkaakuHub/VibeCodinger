@@ -474,7 +474,7 @@ const leaks = (text: string, value: string) =>
   [...encodings(value), ...fragments(value)].some((form) => text.includes(form));
 
 /** Where fixture values went that they must not. */
-const HISTORY_TOOLS = new Set(["t3_thread_read", "t3_thread_search", "t3_thread_list"]);
+const HISTORY_TOOLS = new Set(["vc_thread_read", "vc_thread_search", "vc_thread_list"]);
 
 /**
  * `pasted` is what the user wrote in this thread: the prompt, the case's context and prior user

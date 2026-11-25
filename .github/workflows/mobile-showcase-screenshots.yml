@@ -24,11 +24,11 @@ on:
       theme:
         description: Palette to capture (all multiplies the run by six)
         required: true
-        default: t3-code
+        default: vibe-codinger
         type: choice
         options:
-          - t3-code
-          - t3-chat
+          - vibe-codinger
+          - vc-chat
           - grove
           - ocean
           - ember

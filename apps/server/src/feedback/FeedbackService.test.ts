@@ -77,7 +77,7 @@ const turnItems = [
   item(5, { type: "assistant_message", text: "Done in /srv/checkouts/acme-app-7." }),
   item(6, {
     type: "dynamic_tool",
-    toolName: "mcp__t3-code__t3_thread_read",
+    toolName: "mcp__vibe-codinger__vc_thread_read",
     status: "failed",
     startedAt: at(0),
     completedAt: at(1_500),
@@ -99,12 +99,16 @@ const turnItems = [
       item(turn, { type: "assistant_message", text: "z".repeat(2_000) }),
     ),
   ),
-  item(6, { type: "dynamic_tool", toolName: "t3-code.t3_thread_read", status: "running" }),
-  item(5, { type: "dynamic_tool", toolName: "mcp__t3-code__t3_feedback", status: "running" }),
-  item(6, { type: "dynamic_tool", toolName: "mcp__t3-code__t3_feedback", status: "failed" }),
+  item(6, { type: "dynamic_tool", toolName: "vibe-codinger.vc_thread_read", status: "running" }),
+  item(5, { type: "dynamic_tool", toolName: "mcp__vibe-codinger__vc_feedback", status: "running" }),
+  item(6, { type: "dynamic_tool", toolName: "mcp__vibe-codinger__vc_feedback", status: "failed" }),
   // The call making the card in the active run, as Claude names it and as OpenCode 2 does.
-  item(6, { type: "dynamic_tool", toolName: "mcp__t3-code__t3_feedback", status: "running" }),
-  item(6, { type: "dynamic_tool", toolName: "t3-code-thread_1_t3_feedback", status: "running" }),
+  item(6, { type: "dynamic_tool", toolName: "mcp__vibe-codinger__vc_feedback", status: "running" }),
+  item(6, {
+    type: "dynamic_tool",
+    toolName: "vibe-codinger-thread_1_t3_feedback",
+    status: "running",
+  }),
 ];
 
 it("says so when the report asks for more turns than a trace can hold", () => {
@@ -269,7 +273,7 @@ const harness = Effect.gen(function* () {
       });
     }),
   );
-  const layer = Feedback.layer(() => ["t3_thread_read", "t3_feedback"]).pipe(
+  const layer = Feedback.layer(() => ["vc_thread_read", "vc_feedback"]).pipe(
     Layer.provideMerge(Store.layer),
     Layer.provideMerge(
       Layer.mergeAll(
@@ -369,7 +373,7 @@ const approved = (
 
 const input = {
   kind: "bug" as const,
-  subject: "t3_thread_read",
+  subject: "vc_thread_read",
   expected: "Items for a completed thread.",
   actual: "No items.",
   workaround: "",
@@ -407,7 +411,7 @@ it.effect("scrubs private values before storing feedback", () =>
         cards,
         {
           kind: "other",
-          subject: "mcp__t3-code__t3_thread_read",
+          subject: "mcp__vibe-codinger__vc_thread_read",
           expected: `Reading /srv/checkouts/acme-app-7 on acme/secret-launch as ${NodeOS.userInfo().username}`,
           actual:
             "git@github.com:acme/payments.git in Acme Payments with sk-proj-abcdefghij1234567890",
@@ -419,7 +423,7 @@ it.effect("scrubs private values before storing feedback", () =>
       );
       expect(local).toMatchObject({
         kind: "other",
-        subject: "t3_thread_read",
+        subject: "vc_thread_read",
         expected: "Reading [redacted] on [redacted] as [redacted]",
         actual: "[redacted] in [redacted] with [redacted]",
         workaround: "x".repeat(300),
@@ -434,11 +438,14 @@ it.effect("scrubs private values before storing feedback", () =>
 
       yield* feedback.submit({ ...input, subject: "vibecodinger thread show" }, fromThread);
       yield* feedback.submit({ ...input, subject: " general " }, { source: "cli" });
-      yield* feedback.submit({ ...input, subject: "mcp__t3_code__t3_thread_read" }, fromThread);
+      yield* feedback.submit(
+        { ...input, subject: "mcp__vibe_codinger__vc_thread_read" },
+        fromThread,
+      );
       // Codex's second server, for T3 tools kept out of Code Mode, in both of its forms.
       for (const subject of [
-        "t3-code-direct.t3_thread_read",
-        "mcp__t3-code-direct__t3_thread_read",
+        "vibe-codinger-direct.vc_thread_read",
+        "mcp__vibe-codinger-direct__vc_thread_read",
       ])
         yield* feedback.submit({ ...input, subject }, { source: "cli" });
       expect(
@@ -449,12 +456,12 @@ it.effect("scrubs private values before storing feedback", () =>
           threadId,
         })),
       ).toEqual([
-        { subject: "t3_thread_read", userRequested: false, sent: false, threadId: null },
-        { subject: "t3_thread_read", userRequested: false, sent: false, threadId: null },
-        { subject: "t3_thread_read", userRequested: false, sent: false, threadId },
+        { subject: "vc_thread_read", userRequested: false, sent: false, threadId: null },
+        { subject: "vc_thread_read", userRequested: false, sent: false, threadId: null },
+        { subject: "vc_thread_read", userRequested: false, sent: false, threadId },
         { subject: "general", userRequested: false, sent: false, threadId: null },
         { subject: "vibecodinger thread show", userRequested: false, sent: false, threadId },
-        { subject: "t3_thread_read", userRequested: true, sent: false, threadId },
+        { subject: "vc_thread_read", userRequested: true, sent: false, threadId },
       ]);
     }).pipe(Effect.provide(layer));
   }),
@@ -470,7 +477,7 @@ it.effect(
         const limited = Effect.flip(feedback.submit(input, fromThread)).pipe(
           Effect.map((error) => error._tag),
         );
-        for (const subject of ["", "acme payments roadmap", "mcp__other__t3_thread_read"]) {
+        for (const subject of ["", "acme payments roadmap", "mcp__other__vc_thread_read"]) {
           const error = yield* Effect.flip(feedback.submit({ ...input, subject }, fromThread));
           expect(error.message).toBe(
             "Set subject to the exact tool name, the vibecodinger command, or `general`.",
@@ -541,16 +548,16 @@ it.effect("stores the trace selected in the approval card", () =>
         1, 2, 3, 4, 5,
       ]);
       expect(outline.entries.filter((entry) => entry.turn === 5 && entry.type === "tool")).toEqual([
-        { turn: 5, type: "tool", tool: "t3_thread_read", outcome: "error", durationMs: 1_500 },
+        { turn: 5, type: "tool", tool: "vc_thread_read", outcome: "error", durationMs: 1_500 },
         { turn: 5, type: "tool", tool: "mcp", outcome: "ok" },
         { turn: 5, type: "tool", tool: "Read", outcome: "ok" },
         { turn: 5, type: "tool", tool: "shell", outcome: "error" },
-        { turn: 5, type: "tool", tool: "t3_thread_read", outcome: "unfinished" },
-        { turn: 5, type: "tool", tool: "t3_feedback", outcome: "error" },
+        { turn: 5, type: "tool", tool: "vc_thread_read", outcome: "unfinished" },
+        { turn: 5, type: "tool", tool: "vc_feedback", outcome: "error" },
       ]);
-      expect(outline.entries.filter((entry) => entry.tool === "t3_feedback")).toEqual([
-        { turn: 4, type: "tool", tool: "t3_feedback", outcome: "unfinished" },
-        { turn: 5, type: "tool", tool: "t3_feedback", outcome: "error" },
+      expect(outline.entries.filter((entry) => entry.tool === "vc_feedback")).toEqual([
+        { turn: 4, type: "tool", tool: "vc_feedback", outcome: "unfinished" },
+        { turn: 5, type: "tool", tool: "vc_feedback", outcome: "error" },
       ]);
 
       // The conversation is the same outline with the scrubbed text of its turns, newest kept

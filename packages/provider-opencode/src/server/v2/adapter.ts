@@ -434,13 +434,13 @@ const rule = (action: string, effect: Rule["effect"]): Rule => ({ action, resour
 
 /** OpenCode hides tools for names over 64 chars and rejects names over 100; hash long thread IDs. */
 export const t3McpServerName = Effect.fn("t3McpServerName")(function* (threadId: string) {
-  const name = `t3-code-${threadId.replaceAll(/[^a-zA-Z0-9_-]/g, "_")}`;
+  const name = `vibe-codinger-${threadId.replaceAll(/[^a-zA-Z0-9_-]/g, "_")}`;
   if (name.length <= 64) return name;
   const crypto = yield* Digest.Digest;
   const digest = yield* crypto
     .digest(Digest.sha256, new TextEncoder().encode(threadId))
     .pipe(Effect.orDie);
-  return `t3-code-${Hex.encode(digest).slice(0, 16)}`;
+  return `vibe-codinger-${Hex.encode(digest).slice(0, 16)}`;
 });
 
 // Last match wins: deny all threads' T3 servers, then allow only this thread's.
@@ -448,7 +448,7 @@ const mcpRules = (mcpServerName: string | null): ReadonlyArray<Rule> =>
   mcpServerName === null
     ? []
     : [
-        { action: "t3-code-*", resource: "*", effect: "deny" },
+        { action: "vibe-codinger-*", resource: "*", effect: "deny" },
         { action: `${mcpServerName}_*`, resource: "*", effect: "allow" },
       ];
 
@@ -642,7 +642,7 @@ const isUsageLimit = (error: {
   claudeUsageLimit(error.message) !== undefined;
 
 const INTERRUPT_TIMEOUT = 10_000;
-const INSTRUCTIONS_KEY = "t3-code";
+const INSTRUCTIONS_KEY = "vibe-codinger";
 const RECONNECT_ATTEMPTS = 5;
 const RECONNECT_DELAY = "2 seconds";
 const RECONCILE_TIMEOUT = "15 seconds";
@@ -1562,7 +1562,7 @@ export const make = Effect.fn("OpenCode2Adapter.make")(function* (instanceId: Pr
       }> = nestedSentMessages.map(({ index, messageId, sentMessage }) => ({
         index,
         id: messageId,
-        toolName: `t3-code.${SEND_TO_USER_TOOL_NAME}`,
+        toolName: `vibe-codinger.${SEND_TO_USER_TOOL_NAME}`,
         input: { message: sentMessage },
         output: { sentMessage },
       }));
@@ -1575,7 +1575,7 @@ export const make = Effect.fn("OpenCode2Adapter.make")(function* (instanceId: Pr
         recoveredItems.push({
           index,
           id: pageId,
-          toolName: `t3-code.${HTML_RENDER_TOOL_NAME}`,
+          toolName: `vibe-codinger.${HTML_RENDER_TOOL_NAME}`,
           input: { title: page.title, height: page.height },
           output: { htmlRender: page },
         });
@@ -4502,7 +4502,7 @@ export const make = Effect.fn("OpenCode2Adapter.make")(function* (instanceId: Pr
         }),
         t3OrchestrationSystemPrompt(mcpAvailable, mcpSession?.capabilities?.has("device") === true),
         mcpAvailable
-          ? "To wait for a background shell you started (tests, a build), call `t3_background_wait` with its shell ID before you end your turn. Do not mark work you leave running, or PRs."
+          ? "To wait for a background shell you started (tests, a build), call `vc_background_wait` with its shell ID before you end your turn. Do not mark work you leave running, or PRs."
           : undefined,
       ]
         .filter((part) => part !== undefined && part.length > 0)

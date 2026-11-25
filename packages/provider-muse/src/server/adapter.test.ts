@@ -406,7 +406,7 @@ describe("MuseAdapterV2", () => {
         const call = yield* fake.takeCall(nativeId ? "session/resume" : "session/start");
         assert.deepStrictEqual(call.params.config, {
           mcpServers: {
-            "t3-code": {
+            "vibe-codinger": {
               transport: "streamableHttp",
               mode: "optional",
               url: "http://127.0.0.1:43210/mcp",
@@ -420,7 +420,7 @@ describe("MuseAdapterV2", () => {
           agentFeedback: "auto",
         });
         const turn = yield* fake.takeCall("turn/start");
-        assert.match(JSON.stringify(turn.params.input), /t3_feedback/);
+        assert.match(JSON.stringify(turn.params.input), /vc_feedback/);
       }
     }).pipe(Effect.scoped, Effect.provide(testLayer)),
   );

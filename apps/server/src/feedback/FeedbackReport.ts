@@ -50,7 +50,7 @@ export const FeedbackReport = Schema.Struct({
   trace: Schema.NullOr(FeedbackTrace),
 });
 
-/** What `t3_feedback` answers: the report, with only the size of what its trace attached. */
+/** What `vc_feedback` answers: the report, with only the size of what its trace attached. */
 export const FeedbackSubmitResult = Schema.Struct({
   ...reportFields,
   ...storedFields,
@@ -60,7 +60,7 @@ export const FeedbackSubmitResult = Schema.Struct({
 export const FEEDBACK_AWAITING_APPROVAL_NOTE =
   "The user sees this report in a card and chooses there whether to send it and whether to include the conversation. Nothing is sent until they do, and you will not learn their choice. Do not wait for it or send it another way. Call again only if the user asks to change it; that shows a new card.";
 
-/** What `t3_feedback` answers for a requested report: shown to the user, not yet sent. */
+/** What `vc_feedback` answers for a requested report: shown to the user, not yet sent. */
 export const FeedbackAwaitingApproval = Schema.Struct({
   status: Schema.Literal("awaiting_approval"),
   note: Schema.String,
@@ -133,10 +133,6 @@ export const T3_CLI_COMMANDS: ReadonlyArray<string> = [
   "vibecodinger app",
   "vibecodinger pair",
   "vibecodinger auth",
-  "vibecodinger auth connect-device",
-  "vibecodinger auth connect-device approve",
-  "vibecodinger auth connect-device list",
-  "vibecodinger auth connect-device revoke",
   "vibecodinger auth pairing",
   "vibecodinger auth pairing create",
   "vibecodinger auth pairing list",
@@ -208,7 +204,7 @@ export const FEEDBACK_SUBJECT_MESSAGE =
   "Set subject to the exact tool name, the vibecodinger command, or `general`.";
 
 // The shared resolver knows the presented tools; the prefix covers the rest, such as these.
-// Codex also registers `t3-code-direct` for T3 tools it keeps out of Code Mode.
+// Codex also registers `vibe-codinger-direct` for T3 tools it keeps out of Code Mode.
 const T3_PREFIX =
   /^(?:mcp__t3[-_]?code(?:[-_]direct)?__|vibecodinger[-_]?code(?:[-_]direct)?[.:/])/iu;
 
@@ -216,8 +212,8 @@ const T3_PREFIX =
 export const resolveT3ToolName = (name: string, toolNames: ReadonlyArray<string>) => {
   const tool = resolveT3McpToolId(name) ?? name.replace(T3_PREFIX, "");
   if (toolNames.includes(tool)) return tool;
-  // OpenCode 2 prefixes tools with `t3-code-<thread>_`, underscores and all: the longest name wins.
-  if (!/^t3-code-/iu.test(name)) return undefined;
+  // OpenCode 2 prefixes tools with `vibe-codinger-<thread>_`, underscores and all: the longest name wins.
+  if (!/^vibe-codinger-/iu.test(name)) return undefined;
   return toolNames
     .filter((candidate) => name.endsWith(`_${candidate}`))
     .toSorted((a, b) => b.length - a.length)[0];

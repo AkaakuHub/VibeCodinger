@@ -852,7 +852,7 @@ describe("AntigravityAdapterV2 html_render pages", () => {
                   yield* send({
                     sessionUpdate: "tool_call",
                     toolCallId: "agy-1.5.8",
-                    title: "Run mcp_t3-code_html_render",
+                    title: "Run mcp_vibe-codinger_html_render",
                     kind: "other",
                     status: "in_progress",
                     rawInput: { ...telemetry, toolSummary: "Render telemetry" },
@@ -955,25 +955,25 @@ describe("AntigravityAdapterV2 html_render pages", () => {
 
       assert.deepEqual(tool("published"), {
         status: "completed",
-        toolName: "t3-code.html_render",
+        toolName: "vibe-codinger.html_render",
         page: page("replacement"),
         output: { htmlRender: page("replacement") },
       });
       assert.deepEqual(tool("unpublished"), {
         status: "completed",
-        toolName: "t3-code.html_render",
+        toolName: "vibe-codinger.html_render",
         page: undefined,
         output: "Summary of unpublished",
       });
       assert.deepEqual(tool("failed"), {
         status: "failed",
-        toolName: "t3-code.html_render",
+        toolName: "vibe-codinger.html_render",
         page: undefined,
         output: "Summary of failed",
       });
       assert.deepEqual(tool("error"), {
         status: "completed",
-        toolName: "t3-code.html_render",
+        toolName: "vibe-codinger.html_render",
         page: undefined,
         output: [],
       });
@@ -991,7 +991,7 @@ describe("AntigravityAdapterV2 html_render pages", () => {
       for (const name of ["failed-retry", "error-retry", "agy-1.5.8"]) {
         assert.deepEqual(tool(name), {
           status: "completed",
-          toolName: "t3-code.html_render",
+          toolName: "vibe-codinger.html_render",
           page: page(name),
           output: { htmlRender: page(name) },
         });
@@ -1066,7 +1066,7 @@ describe("AntigravityAdapterV2 html_render pages", () => {
                       send({
                         sessionUpdate: "tool_call",
                         toolCallId,
-                        title: `Run mcp_t3-code_${toolName}`,
+                        title: `Run mcp_vibe-codinger_${toolName}`,
                         kind: "other",
                         status: "in_progress",
                         rawInput,
@@ -2113,15 +2113,15 @@ describe("AntigravityAdapterV2 work after the prompt ends", () => {
   );
 
   // agy names its background commands `<session>/task-<n>`; the agent passes that to
-  // t3_background_wait, which must not fail since the adapter already holds the run open.
-  it.effect("accepts t3_background_wait for a command it already tracks", () =>
+  // vc_background_wait, which must not fail since the adapter already holds the run open.
+  it.effect("accepts vc_background_wait for a command it already tracks", () =>
     Effect.gen(function* () {
       const { session, providerThread, startTurn, throughPromptSettled } =
         yield* openSessionWithRunningCommand({ WaitMsBeforeAsync: 10000 });
       yield* startTurn(1, false);
       yield* throughPromptSettled;
       const taskIds = ["mock-session-1/task-2"];
-      assert.isDefined(session.awaitBackgroundTasks, "t3_background_wait must not be unsupported");
+      assert.isDefined(session.awaitBackgroundTasks, "vc_background_wait must not be unsupported");
       const result = yield* session.awaitBackgroundTasks!({
         providerThread,
         taskIds,
@@ -2968,7 +2968,7 @@ describe("AntigravityAdapterV2 session system prompt", () => {
           .find((request) => request.method === "session/new");
         const append = JSON.stringify(sessionNew?.params?._meta ?? null);
         // Identity stays per turn either way.
-        assert.include(sent, "through the Antigravity harness, as gemini-test-low");
+        assert.include(sent, "Antigravity as the harness, as gemini-test-low");
         assert.notInclude(append, "systemPrompt");
         assert.include(sent, "<pull_request_linking>");
       }).pipe(Effect.provide(layerSession)),

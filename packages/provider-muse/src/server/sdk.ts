@@ -159,7 +159,7 @@ export function museServeArgs(
 
 export function museInitializeParams(readOnly = false) {
   return {
-    clientInfo: { name: "t3_code", title: "VibeCodinger", version: "1" },
+    clientInfo: { name: "vibe_codinger", title: "VibeCodinger", version: "1" },
     capabilities: { requestedCapabilities: readOnly ? [] : ["sessionMcp"] },
   };
 }

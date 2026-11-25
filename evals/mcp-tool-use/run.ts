@@ -131,7 +131,7 @@ type PricedModel = keyof typeof PRICES;
 const PROXY_SHELL_MODELS = ["gpt-6-luna", "gpt-6.1-terra"] as const;
 type ShellModel = PricedModel | (typeof PROXY_SHELL_MODELS)[number];
 const isPricedModel = (model: ShellModel): model is PricedModel => model in PRICES;
-const T3_PREFIX = "mcp__t3-code__";
+const T3_PREFIX = "mcp__vibe-codinger__";
 const RUNTIME_MARKER = "<runtime_info>";
 const TOOL_LOADED = "Tool loaded.";
 
@@ -186,7 +186,7 @@ const PriorToolCall = Schema.Struct({
   tool: Schema.String,
   input: Schema.Unknown,
   /**
-   * For a device tool or t3_background_wait, `"default"` runs the call on the world's devices or
+   * For a device tool or vc_background_wait, `"default"` runs the call on the world's devices or
    * background tasks for T3's result.
    */
   result: Schema.Unknown,
@@ -239,7 +239,7 @@ const McpToolUseExpect = Schema.Struct({
   /** First calls of these tools happen in this order. */
   order: Schema.optional(Schema.Array(Schema.String)),
   /**
-   * One `args`-style value per new top-level thread the agent asks for, by `t3_thread_launch` or a
+   * One `args`-style value per new top-level thread the agent asks for, by `vc_thread_launch` or a
    * `create_threads` entry. Each matches a different thread's request; no other thread is asked for.
    */
   newThreads: Schema.optional(Schema.Array(Schema.Unknown)),
@@ -322,7 +322,7 @@ const McpToolUseWorld = Schema.StructWithRest(
     deviceOwners: Schema.optional(Schema.Record(Schema.String, Schema.String)),
     /**
      * Task IDs of the background commands and Monitors still running on the agent's Claude
-     * session. With them, T3's own t3_background_wait handler answers from this world.
+     * session. With them, T3's own vc_background_wait handler answers from this world.
      */
     backgroundTasks: Schema.optional(Schema.Array(Schema.String)),
     /** The world's `prs`, bottom first, form one native stack with this number. */
@@ -462,7 +462,8 @@ const toolResult = (id: string, content: unknown): Block => ({
 });
 const texts = (content: typeof Content.Type) =>
   typeof content === "string" ? [content] : content.flatMap((block) => block.text ?? []);
-const isT3Name = (name: string) => name.startsWith(T3_PREFIX) || name.startsWith("mcp__t3_code__");
+const isT3Name = (name: string) =>
+  name.startsWith(T3_PREFIX) || name.startsWith("mcp__vibe_codinger__");
 const hasTool = (tools: ReadonlyArray<ApiTool>, name: string) =>
   tools.some((tool) => tool.name === name);
 
@@ -621,7 +622,7 @@ const claudeQueryOptions = (
     nativeThreadId: "mcp-tool-use-eval",
     resume: false,
     cwd: null,
-    mcpServers: { "t3-code": { type: "http", url: "http://127.0.0.1/mcp" } },
+    mcpServers: { "vibe-codinger": { type: "http", url: "http://127.0.0.1/mcp" } },
     agentFeedback,
     deviceToolsAvailable: device,
     browserToolsAvailable: browser,
@@ -838,7 +839,7 @@ const buildCodexBase = (
       ? item.content.map((block: Block) => valueText(block.text)).join("\n")
       : valueText(item.content);
   const joined = template.input.map(contentText).join("\n");
-  if (!joined.includes("<t3_code_runtime>"))
+  if (!joined.includes("<vibe_codinger_runtime>"))
     throw new Error("Codex template needs full T3 context.");
   const cwd = /<cwd>(.*?)<\/cwd>/.exec(joined)?.[1] ?? "/home/user/app";
   const home = /^\/(?:home|Users)\/[^/]+/.exec(cwd)?.[0];
@@ -852,7 +853,7 @@ const buildCodexBase = (
   // The captured <collaboration_mode> message stays: Codex supplies its own mode text natively.
   const input = template.input.flatMap((item) => {
     const content = contentText(item);
-    if (content.includes("<t3_code_")) return [];
+    if (content.includes("<vibe_codinger_")) return [];
     if (item.role === "user") {
       const env = /<environment_context>[\s\S]*?<\/environment_context>/.exec(content)?.[0];
       return env ? [message(clean(options.keepUserInstructions ? content : env), "user")] : [];
@@ -919,7 +920,7 @@ const codexCall = (name: string, input: unknown) => {
           : `python3 -c ${JSON.stringify(`from pathlib import Path; p=Path(${JSON.stringify(file)}); p.write_text(p.read_text().replace(${JSON.stringify(args.old_string)}, ${JSON.stringify(args.new_string)}))`)}`;
     return `text(await tools.exec_command(${JSON.stringify({ cmd: command })}));`;
   }
-  return `text(await tools.${name.replace("mcp__t3-code__", "mcp__t3_code__")}(${JSON.stringify(input)}));`;
+  return `text(await tools.${name.replace("mcp__vibe-codinger__", "mcp__vibe_codinger__")}(${JSON.stringify(input)}));`;
 };
 const codexMessages = (messages: ReadonlyArray<ApiMessage>): Array<Block> =>
   messages.flatMap((message) =>
@@ -1026,7 +1027,7 @@ type Sample = {
   readonly priorResults: Map<unknown, string>;
   /** Prior calls whose T3 result is an error, so the agent sees it as one. */
   readonly priorErrors: Set<unknown>;
-  /** T3's t3_background_wait, once `withBackgroundWait` builds it for `world.backgroundTasks`. */
+  /** T3's vc_background_wait, once `withBackgroundWait` builds it for `world.backgroundTasks`. */
   backgroundWait?: BackgroundWait;
   /** Calls so far per mocked tool, for mocks that answer in sequence. */
   readonly mockCalls: Map<string, number>;
@@ -1119,7 +1120,7 @@ export const withDevices = Effect.fn("evaluateMcpToolUse.withDevices")(function*
 });
 
 /**
- * Builds T3's t3_background_wait for a world with background tasks, and answers prior waits whose
+ * Builds T3's vc_background_wait for a world with background tasks, and answers prior waits whose
  * result is "default" with T3's result.
  */
 export const withBackgroundWait = Effect.fn("evaluateMcpToolUse.withBackgroundWait")(function* (
@@ -1130,7 +1131,7 @@ export const withBackgroundWait = Effect.fn("evaluateMcpToolUse.withBackgroundWa
   const backgroundWait = yield* makeBackgroundWait(running);
   sample.backgroundWait = backgroundWait;
   for (const call of (sample.testCase.setup.priorTurns ?? []).flatMap((t) => t.toolCalls ?? [])) {
-    if (call.result !== "default" || call.tool !== "t3_background_wait") continue;
+    if (call.result !== "default" || call.tool !== "vc_background_wait") continue;
     const result = yield* backgroundWait(call.input);
     sample.priorResults.set(call, result.text);
     if (result.isError) sample.priorErrors.add(call);
@@ -1226,7 +1227,7 @@ export const buildMessages = (sample: Sample) => {
       if (tool === undefined) throw new Error(`${testCase.id}: unknown prior tool ${call.tool}.`);
       const builder = isDeviceTool(call.tool)
         ? "withDevices"
-        : call.tool === "t3_background_wait"
+        : call.tool === "vc_background_wait"
           ? "withBackgroundWait"
           : undefined;
       if (call.result === "default" && builder && !sample.priorResults.has(call)) {
@@ -1432,7 +1433,7 @@ export const t3Default = (
     };
   };
   switch (name) {
-    case "t3_thread_launch":
+    case "vc_thread_launch":
       return newThread(input, input.message);
     case "create_threads":
       return {
@@ -1776,7 +1777,7 @@ export const t3Default = (
         nextCursor: end < matching.length ? String(end) : null,
       };
     }
-    case "t3_thread_read": {
+    case "vc_thread_read": {
       const threadId = valueText(input.threadId);
       const launched = sample.threads.get(threadId);
       if (launched !== undefined) {
@@ -1829,7 +1830,7 @@ const unsavedSecretNote = (Contracts as Record<string, unknown>).SECRET_REQUEST_
 const withProductFields = (name: string, value: unknown, child: boolean): unknown => {
   if (!isRecord(value)) return value;
   // The guide is the checkout's text, so a case's mock cannot go stale.
-  if (name === "t3_theme_read") return { ...value, guide: THEME_GUIDE };
+  if (name === "vc_theme_read") return { ...value, guide: THEME_GUIDE };
   const linked = (thread: unknown, idKey = "threadId") => {
     if (!isRecord(thread) || thread.link !== undefined) return thread;
     const id = thread[idKey] ?? thread.id;
@@ -1856,16 +1857,16 @@ const withProductFields = (name: string, value: unknown, child: boolean): unknow
       const running = task.status === "running" && task.next === undefined;
       return running ? { ...task, next: ORCHESTRATOR_MCP_RUNNING_TASK_NEXT } : task;
     }
-    case "t3_thread_read":
+    case "vc_thread_read":
       return { ...value, thread: linked(value.thread) };
-    case "t3_thread_launch":
-    case "t3_thread_send":
+    case "vc_thread_launch":
+    case "vc_thread_send":
     case "run_scheduled_task_now":
       return linked(value);
-    case "t3_thread_list":
+    case "vc_thread_list":
     case "create_threads":
       return listed("threads");
-    case "t3_thread_search":
+    case "vc_thread_search":
       return listed("matches");
     case "link_pull_request":
     case "link_pull_requests":
@@ -2298,7 +2299,7 @@ export const answerToolCall = Effect.fn("evaluateMcpToolUse.answerToolCall")(fun
     const result = yield* sample.devices.call(name, input, failure);
     return result.isError ? failed(result.text) : toolResult(call.id, result.text);
   }
-  if (sample.backgroundWait && isT3Name(call.name) && name === "t3_background_wait" && fromWorld) {
+  if (sample.backgroundWait && isT3Name(call.name) && name === "vc_background_wait" && fromWorld) {
     const result = yield* sample.backgroundWait(input);
     return result.isError ? failed(result.text) : toolResult(call.id, result.text);
   }
@@ -2308,7 +2309,7 @@ export const answerToolCall = Effect.fn("evaluateMcpToolUse.answerToolCall")(fun
     const refused = productRefusal(sample, name, input);
     if (refused !== undefined) return failed(refused);
   }
-  if (isT3Name(call.name) && name === "t3_feedback" && (mock === undefined || mock === "default")) {
+  if (isT3Name(call.name) && name === "vc_feedback" && (mock === undefined || mock === "default")) {
     const decoded = decodeFeedbackInput(input);
     if (Result.isFailure(decoded)) return failed(decoded.failure.message);
     const report = decoded.success;
@@ -2451,7 +2452,7 @@ const matchesEach = (
 const newThreadRequests = (calls: ReadonlyArray<Call>) =>
   calls.flatMap((call): ReadonlyArray<{ request: unknown; brief: unknown }> => {
     if (call.failed === true || !isRecord(call.input)) return [];
-    if (call.tool === "t3_thread_launch")
+    if (call.tool === "vc_thread_launch")
       return [{ request: call.input, brief: call.input.message }];
     if (call.tool !== "create_threads" || !Array.isArray(call.input.threads)) return [];
     return call.input.threads.map((request: unknown) => ({
@@ -2741,7 +2742,7 @@ export const executeCodex = async (
 
 const codexCatalog = (base: Base) => [
   ...base.t3.map((tool) => ({
-    name: tool.name.replace("mcp__t3-code__", "mcp__t3_code__"),
+    name: tool.name.replace("mcp__vibe-codinger__", "mcp__vibe_codinger__"),
     description: `${valueText(tool.description)}\nInput JSON schema: ${JSON.stringify(tool.input_schema)}`,
   })),
   ...[

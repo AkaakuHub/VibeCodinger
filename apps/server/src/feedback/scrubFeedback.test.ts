@@ -35,9 +35,9 @@ describe("scrubFeedback", () => {
     ],
     [
       "long random runs, not long identifiers or paths",
-      "aB3dE5fG7hI9jK1lM3nO5pQ7rS9tU1vW t3_environment_preferences_update apps/server/src/persistence/Migrations/088",
+      "aB3dE5fG7hI9jK1lM3nO5pQ7rS9tU1vW vc_environment_preferences_update apps/server/src/persistence/Migrations/088",
       [],
-      "[redacted] t3_environment_preferences_update apps/server/src/persistence/Migrations/088",
+      "[redacted] vc_environment_preferences_update apps/server/src/persistence/Migrations/088",
     ],
     [
       "whole absolute paths",
@@ -59,9 +59,9 @@ describe("scrubFeedback", () => {
     ],
     [
       "nothing that only looks like a path",
-      "See https://github.com/org/repo for vibecodinger thread send and t3_thread_read: 3/10 and/or a / b /mcp /compact /secret.env",
+      "See https://github.com/org/repo for vibecodinger thread send and vc_thread_read: 3/10 and/or a / b /mcp /compact /secret.env",
       [],
-      "See https://github.com/org/repo for vibecodinger thread send and t3_thread_read: 3/10 and/or a / b /mcp /compact /secret.env",
+      "See https://github.com/org/repo for vibecodinger thread send and vc_thread_read: 3/10 and/or a / b /mcp /compact /secret.env",
     ],
     [
       "quoted paths with spaces",

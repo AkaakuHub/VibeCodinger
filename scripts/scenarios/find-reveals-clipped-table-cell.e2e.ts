@@ -32,7 +32,7 @@ test(
         .poll(
           () =>
             browser.evaluate((query) => {
-              const active = CSS.highlights.get("t3-thread-find-active");
+              const active = CSS.highlights.get("vibecodinger-thread-find-active");
               const match =
                 active &&
                 [...active].find((range) => range instanceof Range && range.toString() === query);

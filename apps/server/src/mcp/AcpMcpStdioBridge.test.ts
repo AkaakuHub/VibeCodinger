@@ -423,7 +423,7 @@ describe("AcpMcpStdioBridge", () => {
       const fiber = yield* mcpToolSession({
         endpoint: "http://127.0.0.1:1/mcp",
         authorization: "Bearer bridge-test",
-        clientName: "t3-code-acp-cli",
+        clientName: "vibe-codinger-acp-cli",
         fetchImplementation: pendingFetch(started),
       }).pipe(
         Effect.flatMap((session) => session.call("orchestrator_capabilities", {})),
@@ -443,7 +443,7 @@ describe("AcpMcpStdioBridge", () => {
       const result = yield* mcpToolSession({
         endpoint: "http://127.0.0.1:1/mcp",
         authorization: "Bearer bridge-test",
-        clientName: "t3-code-acp-cli",
+        clientName: "vibe-codinger-acp-cli",
         fetchImplementation: async (_url, init) => {
           if (init?.method === "DELETE") return new Response(null, { status: 204 });
           const message = JSON.parse(String(init?.body)) as (typeof sent)[number];
@@ -474,7 +474,7 @@ describe("AcpMcpStdioBridge", () => {
 
   it.effect("keeps the server's JSON-RPC error on a failed tool call", () =>
     Effect.gen(function* () {
-      const rpcError = { code: -32602, message: "Tool 't3_feedback' not found" };
+      const rpcError = { code: -32602, message: "Tool 'vc_feedback' not found" };
       const error = yield* mcpToolSession({
         endpoint: "http://127.0.0.1:1/mcp",
         authorization: "Bearer bridge-test",
@@ -489,7 +489,7 @@ describe("AcpMcpStdioBridge", () => {
           return Response.json({ jsonrpc: "2.0", id: message.id, error: rpcError });
         },
       }).pipe(
-        Effect.flatMap((session) => session.call("t3_feedback", {})),
+        Effect.flatMap((session) => session.call("vc_feedback", {})),
         Effect.scoped,
         Effect.asVoid,
         Effect.flip,
