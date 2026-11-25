@@ -144,7 +144,7 @@ export const mcpToolSession = (
     method: string,
     params: unknown,
   ): Effect.fn.Return<JsonRpcEnvelope, AcpMcpBridgeError> {
-    const id = `t3-cli-${nextId++}`;
+    const id = `vc-cli-${nextId++}`;
     const responses = yield* send({ jsonrpc: "2.0", id, method, params });
     const envelope = asEnvelope(responses.find((entry) => asEnvelope(entry)?.id === id));
     if (envelope === null || envelope.error !== undefined) {

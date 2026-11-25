@@ -352,7 +352,7 @@ it.layer(NodeServices.layer)("vibecodinger update launcher", (it) => {
       if (recorded !== undefined) {
         yield* fs.writeFileString(path.join(root, "runtime/launchers"), recorded);
       }
-      // A launcher in the T3 home itself, which neither PATH nor the default bin dir reaches.
+      // A launcher in the VibeCodinger home itself, which neither PATH nor the default bin dir reaches.
       const launcher = path.join(root, "vibecodinger");
       yield* fs.symlink(path.join(root, "runtime/versions/1.0.0/vibecodinger"), launcher);
 

@@ -139,21 +139,21 @@ describe("Antigravity Auto", () => {
         toolCall: { toolCallId: "call-1", title, kind: "execute", rawInput },
         options: [{ optionId: "allow", name: "Allow", kind: "allow_once" }],
       });
-      for (const t3Call of [
+      for (const vcCall of [
         request("Run mcp_vibe-codinger_vc_thread_list?"),
         request("MCP Tool delegate_task", {
           ServerName: "vibe-codinger",
           ToolName: "delegate_task",
         }),
       ]) {
-        expect(antigravityPermissionDisposition(policy, t3Call)).toBe("allow");
+        expect(antigravityPermissionDisposition(policy, vcCall)).toBe("allow");
         expect(
-          antigravityPermissionDisposition({ ...policy, approvalPolicy: "on-request" }, t3Call),
+          antigravityPermissionDisposition({ ...policy, approvalPolicy: "on-request" }, vcCall),
         ).toBe("ask");
         expect(
           antigravityPermissionDisposition(
             { ...policy, sandboxPolicy: { type: "readOnly" } },
-            t3Call,
+            vcCall,
           ),
         ).toBe("deny");
       }

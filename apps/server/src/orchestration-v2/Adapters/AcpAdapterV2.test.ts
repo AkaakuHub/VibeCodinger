@@ -1476,7 +1476,7 @@ describe("AcpAdapterV2", () => {
       const completed = (yield* runTurn(2)).at(-1);
       assert.equal(completed?.type === "turn.terminal" ? completed.status : null, "completed");
       assert.deepEqual(promptRuntimes, [1, 2], "the next turn runs on a fresh runtime");
-      // The fresh runtime has no record of what reached the agent, so it sends T3's notes again.
+      // The fresh runtime has no record of what reached the agent, so it sends VibeCodinger's notes again.
       assert.include(promptTexts[1] ?? "", "<runtime_info>");
       assert.include(promptTexts[1] ?? "", "VibeCodinger interaction mode: Default");
       assert.equal(watchedSessions.length, 2);

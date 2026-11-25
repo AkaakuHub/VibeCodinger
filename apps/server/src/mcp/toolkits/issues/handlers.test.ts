@@ -61,14 +61,14 @@ const project: OrchestrationProjectShell = {
   defaultModelSelection: null,
   scripts: [],
   repositoryIdentity: {
-    canonicalKey: "github.com/exampleorg/t3code",
+    canonicalKey: "github.com/exampleorg/vibecodinger",
     locator: {
       source: "git-remote",
       remoteName: "origin",
-      remoteUrl: "git@github.com:ExampleOrg/T3Code.git",
+      remoteUrl: "git@github.com:ExampleOrg/VibeCodinger.git",
     },
     provider: SourceControlProviderKind.make("github"),
-    displayName: "ExampleOrg/T3Code",
+    displayName: "ExampleOrg/VibeCodinger",
     owner: "ExampleOrg",
     name: "T3Code",
   },
@@ -102,11 +102,11 @@ function makeThread(issues: ReadonlyArray<ThreadIssueLink>) {
 const detail: IssueDetail = {
   tracker: GITHUB,
   host: "github.com",
-  scope: "exampleorg/t3code",
+  scope: "exampleorg/vibecodinger",
   key: "7",
   displayKey: "#7",
   title: "Seven",
-  url: "https://github.com/ExampleOrg/T3Code/issues/7",
+  url: "https://github.com/ExampleOrg/VibeCodinger/issues/7",
   author: null,
   state: { category: "open", name: "open" },
   createdAt: "2026-08-01T00:00:00.000Z",
@@ -164,14 +164,14 @@ const makeHarness = Effect.fn("makeIssuesToolkitHarness")(function* (
             projectId,
             tracker: GITHUB,
             host: "github.com",
-            scope: "exampleorg/t3code",
+            scope: "exampleorg/vibecodinger",
           }),
         resolveUrl: (url) =>
           Effect.succeed({
             projectId: PROJECT_ID,
             tracker: GITHUB,
             host: "github.com",
-            scope: "exampleorg/t3code",
+            scope: "exampleorg/vibecodinger",
             key: url.split("/").at(-1)!,
             writable: true,
           }),
@@ -376,15 +376,15 @@ describe("issue toolkit handlers", () => {
     Effect.gen(function* () {
       const harness = yield* makeHarness();
       const result = yield* harness.call("link_issue", {
-        url: "https://github.com/ExampleOrg/T3Code/issues/7",
+        url: "https://github.com/ExampleOrg/VibeCodinger/issues/7",
       });
       expect(result).toEqual({
         projectId: PROJECT_ID,
         tracker: "github",
         host: "github.com",
-        scope: "exampleorg/t3code",
+        scope: "exampleorg/vibecodinger",
         key: "7",
-        url: "https://github.com/ExampleOrg/T3Code/issues/7",
+        url: "https://github.com/ExampleOrg/VibeCodinger/issues/7",
         alreadyLinked: false,
       });
       expect(yield* Ref.get(harness.links)).toEqual([
@@ -394,10 +394,10 @@ describe("issue toolkit handlers", () => {
             projectId: PROJECT_ID,
             tracker: "github",
             host: "github.com",
-            scope: "exampleorg/t3code",
+            scope: "exampleorg/vibecodinger",
             key: "7",
           },
-          url: "https://github.com/ExampleOrg/T3Code/issues/7",
+          url: "https://github.com/ExampleOrg/VibeCodinger/issues/7",
           displayKey: detail.displayKey,
           title: detail.title,
           source: "agent",
@@ -426,7 +426,7 @@ describe("issue toolkit handlers", () => {
         {
           tracker: GITHUB,
           host: "github.com",
-          scope: "exampleorg/t3code",
+          scope: "exampleorg/vibecodinger",
           key: "7",
           projectId: PROJECT_ID,
           url: detail.url,

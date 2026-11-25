@@ -1744,7 +1744,7 @@ function codexThreadRuntimeParams(input: {
       ...(vcServer === undefined
         ? {}
         : {
-            // Override only T3's servers so launch-argument MCP servers survive.
+            // Override only VibeCodinger's servers so launch-argument MCP servers survive.
             "mcp_servers.vibe-codinger": {
               ...vcServer,
               disabled_tools: CODEX_DIRECT_ONLY_VC_TOOLS,
@@ -6314,7 +6314,7 @@ export const makeCodexAdapterV2 = Effect.fn("makeCodexAdapterV2")(function* (
                 payload,
               );
             }
-            // T3's Full access policy is granular, under which Codex still asks before commands it
+            // VibeCodinger's Full access policy is granular, under which Codex still asks before commands it
             // deems dangerous. Managed-network asks enforce the user's allowlist, so they still ask.
             if (
               context.input.runtimePolicy.runtimeMode === "full-access" &&

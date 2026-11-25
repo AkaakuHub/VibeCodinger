@@ -4567,7 +4567,7 @@ describe("PiAdapterV2", () => {
         leafId: "a3",
       };
 
-      // The adopted wake precedes T3's first turn; its steer must be discarded with it.
+      // The adopted wake precedes VibeCodinger's first turn; its steer must be discarded with it.
       fake.queueEntries(entries);
       yield* rollBackToStart(150);
       assert.deepEqual(forkedEntries(), ["u2"]);

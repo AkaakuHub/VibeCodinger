@@ -1000,9 +1000,7 @@ export const SETTINGS_SEARCH_ITEMS = [
     to: "/settings/labs",
     scope: "environment-defaults",
     agentFeedbackOnly: true,
-    searchTerms: [
-      msg("report bug problem t3 team send feedback agents tools automatic when i ask"),
-    ],
+    searchTerms: [msg("report bug problem local feedback agents tools automatic when i ask")],
   },
   {
     id: "open-source-licenses",

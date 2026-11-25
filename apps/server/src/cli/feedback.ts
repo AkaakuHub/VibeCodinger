@@ -125,7 +125,7 @@ export const feedbackCommand = Command.make("feedback", {
   ),
   subject: Flag.String("subject").pipe(
     Flag.withDescription(
-      "The T3 tool name, vibecodinger command such as `vibecodinger thread send`, or `general`.",
+      "The VibeCodinger tool name, vibecodinger command such as `vibecodinger thread send`, or `general`.",
     ),
   ),
   expected: Flag.String("expected").pipe(Flag.withDescription("What you expected.")),

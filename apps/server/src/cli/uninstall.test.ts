@@ -238,9 +238,9 @@ it.layer(NodeServices.layer)("vibecodinger uninstall launcher", (it) => {
       // npx can run another version than the installed one, so uninstall also reads the
       // recorded launchers: through a symlinked home, and dangling after a prune.
       const throughAlias = path.join(root, "bin/t3-alias");
-      const pruned = path.join(root, "bin/t3-pruned");
+      const pruned = path.join(root, "bin/vc-pruned");
       const scriptThroughAlias = path.join(scriptDir, "t3-alias");
-      const prunedScript = path.join(scriptDir, "t3-pruned");
+      const prunedScript = path.join(scriptDir, "vc-pruned");
       yield* fs.symlink(root, path.join(root, "alias"));
       yield* fs.symlink(path.join(root, "alias/runtime/versions/1.0.0/vibecodinger"), throughAlias);
       yield* fs.symlink(path.join(versionsDir, "0.9.0/vibecodinger"), pruned);

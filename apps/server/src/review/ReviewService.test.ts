@@ -291,7 +291,7 @@ describe("ReviewService", () => {
                 { worktreePath: bound },
                 { worktreePath: claimed },
                 { worktreePath: deleted, deleted: true },
-                { worktreePath: "t3-review-relative" },
+                { worktreePath: "vc-review-relative" },
                 { worktreePath: "/" },
               ],
             }),
@@ -301,7 +301,7 @@ describe("ReviewService", () => {
       for (const cwd of [bound, `${bound}/sub`]) {
         assert.strictEqual((yield* review(cwd)).cwd, cwd);
       }
-      for (const cwd of [deleted, unbound, claimed, `${process.cwd()}/t3-review-relative`]) {
+      for (const cwd of [deleted, unbound, claimed, `${process.cwd()}/vc-review-relative`]) {
         const error = yield* review(cwd).pipe(Effect.flip);
         assert.strictEqual(error._tag, "VcsRepositoryDetectionError");
       }

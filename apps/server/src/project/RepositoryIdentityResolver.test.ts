@@ -53,7 +53,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
       const resolvedCwd = NodeFS.realpathSync.native(cwd);
 
       expect(identity).not.toBeNull();
-      expect(identity?.canonicalKey).toBe("github.com/exampleorg/t3code");
+      expect(identity?.canonicalKey).toBe("github.com/exampleorg/vibecodinger");
       expect(normalizeResolvedPath(resolvedIdentityRoot)).toBe(normalizeResolvedPath(resolvedCwd));
       expect(identity?.displayName).toBe("ExampleOrg/t3code");
       expect(identity?.provider).toBe("github");
@@ -76,7 +76,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
       const resolver = yield* RepositoryIdentityResolver.RepositoryIdentityResolver;
       const identity = yield* resolver.resolve(cwd);
 
-      expect(identity?.canonicalKey).toBe("github.com/exampleorg/t3code");
+      expect(identity?.canonicalKey).toBe("github.com/exampleorg/vibecodinger");
       expect(identity?.provider).toBe("github");
       expect(identity?.displayName).toBe("ExampleOrg/t3code");
     }).pipe(Effect.provide(RepositoryIdentityResolver.layer)),
@@ -145,7 +145,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
       const resolver = yield* RepositoryIdentityResolver.RepositoryIdentityResolver;
       const identity = yield* resolver.resolve(cwd);
 
-      expect(identity?.canonicalKey).toBe("github.com/exampleorg/t3code");
+      expect(identity?.canonicalKey).toBe("github.com/exampleorg/vibecodinger");
       expect(identity?.provider).toBe("github");
       expect(identity?.displayName).toBe("ExampleOrg/t3code");
       expect(identity?.locator).toEqual({
@@ -163,7 +163,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
 
       const shorthandIdentity = yield* resolver.resolve(shorthandCwd);
 
-      expect(shorthandIdentity?.canonicalKey).toBe("github.com/exampleorg/t3code");
+      expect(shorthandIdentity?.canonicalKey).toBe("github.com/exampleorg/vibecodinger");
       expect(shorthandIdentity?.provider).toBe("github");
       expect(shorthandIdentity?.locator.remoteUrl).toBe("https://github.com/ExampleOrg/t3code.git");
     }).pipe(Effect.provide(RepositoryIdentityResolver.layer)),
@@ -217,7 +217,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
 
       const resolver = yield* RepositoryIdentityResolver.RepositoryIdentityResolver;
       const identity = yield* resolver.resolve(cwd);
-      expect(identity?.canonicalKey).toBe("github.com/exampleorg/t3code");
+      expect(identity?.canonicalKey).toBe("github.com/exampleorg/vibecodinger");
       expect(identity?.locator.remoteUrl).toBe("git@github.com:ExampleOrg/t3code.git");
       expect(identity?.locator.remoteName).toBe("origin");
     }).pipe(Effect.provide(RepositoryIdentityResolver.layer)),
@@ -292,7 +292,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
         const resolvedRepoRoot = NodeFS.realpathSync.native(repoRoot);
 
         expect(identity).not.toBeNull();
-        expect(identity?.canonicalKey).toBe("github.com/exampleorg/t3code");
+        expect(identity?.canonicalKey).toBe("github.com/exampleorg/vibecodinger");
         expect(normalizeResolvedPath(resolvedIdentityRoot)).toBe(
           normalizeResolvedPath(resolvedRepoRoot),
         );
@@ -332,7 +332,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
 
         const resolver = yield* RepositoryIdentityResolver.RepositoryIdentityResolver;
         const checkoutIdentity = yield* resolver.resolve(checkout);
-        expect(checkoutIdentity?.canonicalKey).toBe("github.com/exampleorg/t3code");
+        expect(checkoutIdentity?.canonicalKey).toBe("github.com/exampleorg/vibecodinger");
         const resolvedBareGitDir = NodeFS.realpathSync.native(bareGitDir);
         const projectRoots = layout === "dot-bare" ? [root, bareGitDir] : [root];
 
@@ -417,7 +417,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
 
       const mixedIdentity = yield* resolver.resolve(mixedDir);
       expect(mixedIdentity?.locator.remoteName).toBe("mirror");
-      expect(mixedIdentity?.canonicalKey).toBe("github.com/exampleorg/t3code");
+      expect(mixedIdentity?.canonicalKey).toBe("github.com/exampleorg/vibecodinger");
     }).pipe(Effect.provide(RepositoryIdentityResolver.layer)),
   );
 
@@ -453,7 +453,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
 
         expect(identity).not.toBeNull();
         expect(identity?.locator.remoteName).toBe("upstream");
-        expect(identity?.canonicalKey).toBe("github.com/exampleorg/t3code");
+        expect(identity?.canonicalKey).toBe("github.com/exampleorg/vibecodinger");
         expect(identity?.displayName).toBe("ExampleOrg/t3code");
         expect(yield* resolver.resolve(cwd)).toEqual(identity);
       }).pipe(Effect.provide(RepositoryIdentityResolver.layer)),
@@ -473,7 +473,7 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
       const resolver = yield* RepositoryIdentityResolver.RepositoryIdentityResolver;
       const identity = yield* resolver.resolve(cwd);
 
-      expect(identity?.canonicalKey).toBe("github.com/exampleorg/t3code");
+      expect(identity?.canonicalKey).toBe("github.com/exampleorg/vibecodinger");
       expect(identity?.displayName).toBe("ExampleOrg/t3code");
       expect(identity?.origin).toEqual({
         canonicalKey: "github.com/julius/t3code-fork",
@@ -516,9 +516,9 @@ it.layer(NodeServices.layer)("RepositoryIdentityResolverLive", (it) => {
       yield* git(cwd, ["remote", "add", "fork", "https://github.com/julius/t3code-fork.git"]);
       yield* git(cwd, ["remote", "add", "main", "https://github.com/ExampleOrg/t3code.git"]);
       yield* git(cwd, ["remote", "add", "upstream", "https://github.com/other/t3code.git"]);
-      yield* git(cwd, ["config", "remote.fork.gh-resolved", "exampleorg/t3code"]);
+      yield* git(cwd, ["config", "remote.fork.gh-resolved", "exampleorg/vibecodinger"]);
       const parent = yield* resolveFresh();
-      expect(parent?.canonicalKey).toBe("github.com/exampleorg/t3code");
+      expect(parent?.canonicalKey).toBe("github.com/exampleorg/vibecodinger");
       expect(parent?.locator).toEqual({
         source: "git-remote",
         remoteName: "main",

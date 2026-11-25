@@ -14,9 +14,9 @@ const kindOf = (url: string) => sourceControlClients.parseChangeRequestUrl(url)?
 
 describe("sourceControlClients.parseChangeRequestUrl", () => {
   it("reads a GitHub pull request, lower-casing the repository", () => {
-    expect(parse("https://github.com/ExampleOrg/T3Code/pull/123")).toEqual({
+    expect(parse("https://github.com/ExampleOrg/VibeCodinger/pull/123")).toEqual({
       host: "github.com",
-      repository: "exampleorg/t3code",
+      repository: "exampleorg/vibecodinger",
       number: 123,
     });
   });
@@ -165,28 +165,28 @@ describe("sourceControlClients.parseChangeRequestUrl", () => {
   });
 
   it("survives trailing segments, a trailing slash and a query string", () => {
-    expect(parse("https://github.com/exampleorg/t3code/pull/123/files?w=1")).toEqual({
+    expect(parse("https://github.com/exampleorg/vibecodinger/pull/123/files?w=1")).toEqual({
       host: "github.com",
-      repository: "exampleorg/t3code",
+      repository: "exampleorg/vibecodinger",
       number: 123,
     });
-    expect(parse("https://github.com/exampleorg/t3code/pull/123/")).toEqual({
+    expect(parse("https://github.com/exampleorg/vibecodinger/pull/123/")).toEqual({
       host: "github.com",
-      repository: "exampleorg/t3code",
+      repository: "exampleorg/vibecodinger",
       number: 123,
     });
   });
 
   it("claims nothing it cannot be sure of", () => {
     for (const link of [
-      "https://github.com/exampleorg/t3code/issues/123",
+      "https://github.com/exampleorg/vibecodinger/issues/123",
       "https://git.cafe/pingdotgg/t3code/issues/23897",
       "https://git.cafe/pingdotgg/t3code/pull/abc",
       "https://git.cafe/pingdotgg/t3code",
-      "https://github.com/exampleorg/t3code/commit/0a1b2c3",
-      "https://github.com/exampleorg/t3code",
-      "https://github.com/exampleorg/t3code/pull/abc",
-      "https://gitlab.com/exampleorg/t3code/-/issues/12",
+      "https://github.com/exampleorg/vibecodinger/commit/0a1b2c3",
+      "https://github.com/exampleorg/vibecodinger",
+      "https://github.com/exampleorg/vibecodinger/pull/abc",
+      "https://gitlab.com/exampleorg/vibecodinger/-/issues/12",
       "https://blog.example.test/2026/updates/archive/pull/3",
       "https://scm.example.test/tfs/Collection/Project/_git/Repo",
       "https://scm.example.test/tfs/Collection/Project/pullrequest/123",
@@ -194,7 +194,7 @@ describe("sourceControlClients.parseChangeRequestUrl", () => {
       "https://scm.example.test/tfs/Collection/Project/_git/Repo/pullrequest/0",
       "https://scm.example.test/tfs/Collection/Project/_git/Repo/pullrequest/9007199254740992",
       "ftp://scm.example.test/tfs/Collection/Project/_git/Repo/pullrequest/123",
-      "javascript:alert(1)//github.com/exampleorg/t3code/pull/1",
+      "javascript:alert(1)//github.com/exampleorg/vibecodinger/pull/1",
       "not a url",
     ]) {
       expect(parse(link), link).toBeNull();
@@ -316,7 +316,7 @@ describe("sourceControlClients.recognizeRemote", () => {
 describe("sourceControlClients repository keys", () => {
   // Persisted as `repositoryIdentity.canonicalKey` and in thread pull request keys.
   it.each([
-    ["git@github.com:ExampleOrg/T3Code.git", "github.com/exampleorg/t3code"],
+    ["git@github.com:ExampleOrg/VibeCodinger.git", "github.com/exampleorg/vibecodinger"],
     ["ssh://git@gitlab.company.com:2222/team/project.git", "gitlab.company.com/team/project"],
     [
       "git@ssh.dev.azure.com:v3/ExampleOrg/Platform/T3Code",

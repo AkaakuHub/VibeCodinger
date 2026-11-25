@@ -1097,7 +1097,7 @@ it.layer(NodeServices.layer)("AgentSessionScanner", (it) => {
         );
 
         // Not offered: the config is unreadable, so the repository could be bare; and
-        // the main checkout is reached through a symlink into T3's own state.
+        // the main checkout is reached through a symlink into VibeCodinger's own state.
         const configBaseDir = yield* fileSystem.realPath(
           yield* makeTempDir("vibecodinger-scanner-base-"),
         );

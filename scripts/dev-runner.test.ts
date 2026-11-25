@@ -523,13 +523,13 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
             Effect.map((env) => env.VIBECODINGER_HOME),
           );
 
-        assert.equal(yield* homeFor("~/t3-dev"), path.join("/home/dev", "t3-dev"));
+        assert.equal(yield* homeFor("~/vc-dev"), path.join("/home/dev", "vc-dev"));
         assert.equal(yield* homeFor("~"), "/home/dev");
-        assert.equal(yield* homeFor("~\\t3-dev"), path.join("/home/dev", "t3-dev"));
-        assert.equal(yield* homeFor("  ~/t3-dev  "), path.join("/home/dev", "t3-dev"));
-        assert.equal(yield* homeFor("~someone/t3-dev"), path.resolve("~someone/t3-dev"));
-        assert.equal(yield* homeFor("relative/t3-dev"), path.resolve("relative/t3-dev"));
-        assert.equal(yield* homeFor("/tmp/t3-dev"), path.resolve("/tmp/t3-dev"));
+        assert.equal(yield* homeFor("~\\t3-dev"), path.join("/home/dev", "vc-dev"));
+        assert.equal(yield* homeFor("  ~/vc-dev  "), path.join("/home/dev", "vc-dev"));
+        assert.equal(yield* homeFor("~someone/vc-dev"), path.resolve("~someone/vc-dev"));
+        assert.equal(yield* homeFor("relative/vc-dev"), path.resolve("relative/vc-dev"));
+        assert.equal(yield* homeFor("/tmp/vc-dev"), path.resolve("/tmp/vc-dev"));
         // An explicit ~/.vibecodinger would put state in the live userdata; leaving it implicit selects ~/.vibecodinger/dev.
         assert.equal(yield* homeFor("~/.vibecodinger"), undefined);
         assert.equal(yield* homeFor("/home/dev/.vibecodinger/"), undefined);

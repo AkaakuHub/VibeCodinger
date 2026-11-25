@@ -203,7 +203,7 @@ export class TaskFolders extends Context.Service<
 const isTaskFolderError = Schema.is(TaskFolderError);
 
 /**
- * A layout command is the project owner's own code. A link paired below full access grants T3's
+ * A layout command is the project owner's own code. A link paired below full access grants VibeCodinger's
  * tools only (see `mcp/linkOrigin.ts`), so work it started never runs one.
  */
 export const linkRunsProjectCommands = (origin: OrchestrationV2LinkOrigin | undefined) =>

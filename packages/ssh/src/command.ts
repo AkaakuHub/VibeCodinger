@@ -128,7 +128,7 @@ export function baseSshArgs(
   ];
 }
 
-// `-F none` keeps the user's configured forwards out of T3's requests, and ProxyCommand=false
+// `-F none` keeps the user's configured forwards out of VibeCodinger's requests, and ProxyCommand=false
 // fails closed instead of dialing the host directly once the master is gone.
 export function controlMasterArgs(controlPath: string): string[] {
   return ["-F", "none", "-o", `ControlPath=${controlPath}`, "-o", "ProxyCommand=false"];

@@ -2381,7 +2381,7 @@
   "febf4ec3cdcdf372": "Uppdateringskommandot kopierades",
   "bee440d0da53841c": "Omstartskommandot kopierades",
   "9e17a8beb64d6130": "Kör `{command}` på {serverLabel} och starta sedan om t3 med dina vanliga alternativ.",
-  "218253b96de09d5d": "Stoppa t3 på {serverLabel} och starta sedan om med `{command}` med samma underkommando och alternativ. Det här uppdaterar inte ett installerat t3-kommando.",
+  "218253b96de09d5d": "Stoppa vibecodinger på {serverLabel} och starta sedan om med `{command}` med samma underkommando och alternativ. Det här uppdaterar inte ett installerat t3-kommando.",
   "3cb4fcae1546e2eb": "Kunde inte kopiera uppdateringskommandot",
   "4b0ed562996cfb13": "Uppdatera VibeCodinger-skrivbordsappen som kör {serverLabel}? Den stängs och startas om på den datorn.",
   "a1581c125ff5ba06": "Kopiera uppdateringskommando",

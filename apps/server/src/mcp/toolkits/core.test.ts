@@ -370,7 +370,7 @@ it.effect("returns an HTML render reference that Codex and Claude tool rows both
         .callTool({
           name,
           arguments: {
-            path: "/t3-missing-dir/revenue.html",
+            path: "/vc-missing-dir/revenue.html",
             ...(name === "html_render" ? { title: "Revenue", height: 240 } : {}),
           },
         })

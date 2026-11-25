@@ -59,7 +59,7 @@ export function cursorContextWindowTokens(
   return Number.isSafeInteger(tokens) && tokens > 0 ? tokens : undefined;
 }
 
-// The SDK infers Max Mode from a model list it never refreshes, so pass it from T3's fresher catalog.
+// The SDK infers Max Mode from a model list it never refreshes, so pass it from VibeCodinger's fresher catalog.
 function cursorSdkMaxMode(
   sdkModel: SDKModel | undefined,
   params: ReadonlyArray<ModelParameterValue>,

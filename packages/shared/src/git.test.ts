@@ -18,20 +18,20 @@ import {
 
 describe("normalizeGitRemoteUrl", () => {
   it("canonicalizes equivalent GitHub remotes across protocol variants", () => {
-    expect(normalizeGitRemoteUrl("git@github.com:ExampleOrg/T3Code.git")).toBe(
-      "github.com/exampleorg/t3code",
+    expect(normalizeGitRemoteUrl("git@github.com:ExampleOrg/VibeCodinger.git")).toBe(
+      "github.com/exampleorg/vibecodinger",
     );
-    expect(normalizeGitRemoteUrl("https://github.com/ExampleOrg/T3Code.git")).toBe(
-      "github.com/exampleorg/t3code",
+    expect(normalizeGitRemoteUrl("https://github.com/ExampleOrg/VibeCodinger.git")).toBe(
+      "github.com/exampleorg/vibecodinger",
     );
-    expect(normalizeGitRemoteUrl("ssh://git@github.com/ExampleOrg/T3Code")).toBe(
-      "github.com/exampleorg/t3code",
+    expect(normalizeGitRemoteUrl("ssh://git@github.com/ExampleOrg/VibeCodinger")).toBe(
+      "github.com/exampleorg/vibecodinger",
     );
-    expect(normalizeGitRemoteUrl("https://github.com/ExampleOrg/T3Code.git?view=compact")).toBe(
-      "github.com/exampleorg/t3code",
-    );
-    expect(normalizeGitRemoteUrl("https://github.com/ExampleOrg/T3Code.git#section")).toBe(
-      "github.com/exampleorg/t3code",
+    expect(
+      normalizeGitRemoteUrl("https://github.com/ExampleOrg/VibeCodinger.git?view=compact"),
+    ).toBe("github.com/exampleorg/vibecodinger");
+    expect(normalizeGitRemoteUrl("https://github.com/ExampleOrg/VibeCodinger.git#section")).toBe(
+      "github.com/exampleorg/vibecodinger",
     );
     expect(normalizeGitRemoteUrl("https://code.example.test/team/%C3%84pp.git")).toBe(
       normalizeGitRemoteUrl("git@code.example.test:team/Äpp.git"),

@@ -979,7 +979,7 @@ const devRunnerCli = Command.make("dev-runner", {
   ),
   appDataHome: Flag.String("home-dir").pipe(
     Flag.withDescription(
-      "Explicit T3 Code data directory; runtime state is stored under userdata (equivalent to VIBECODINGER_HOME). Inside a git worktree this defaults to that worktree's own .vibecodinger so dev state stays off the shared home.",
+      "Explicit VibeCodinger data directory; runtime state is stored under userdata (equivalent to VIBECODINGER_HOME). Inside a git worktree this defaults to that worktree's own .vibecodinger so dev state stays off the shared home.",
     ),
     Flag.optional,
     Flag.map(Option.getOrUndefined),

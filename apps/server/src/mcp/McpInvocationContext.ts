@@ -166,7 +166,7 @@ export interface McpInvocationScope {
    * see the URL they were configured with, so links they must fetch carry it. Unset in-process.
    */
   readonly origin?: string | undefined;
-  /** False when the calling thread's project is on no forge T3 reads; `/mcp` reads it per request. */
+  /** False when the calling thread's project is on no forge VibeCodinger reads; `/mcp` reads it per request. */
   readonly forge?: boolean;
 }
 

@@ -340,12 +340,12 @@ it.effect("a file given up on registers nothing into the file that loads after i
     const { at, fileSystem } = yield* setup();
     yield* fileSystem.writeFileString(
       at("slow.ts"),
-      'await new Promise((resolve) => { globalThis.t3TestResume = resolve; });\nT3.workflow("slow", { version: 1, payload: Schema.Struct({}) }, () => Effect.void);\n',
+      'await new Promise((resolve) => { globalThis.vcTestResume = resolve; });\nT3.workflow("slow", { version: 1, payload: Schema.Struct({}) }, () => Effect.void);\n',
     );
     // The second file goes on loading until the first one's top level has run to its end.
     yield* fileSystem.writeFileString(
       at("next.ts"),
-      `${greet("hi")}globalThis.t3TestResume();\nawait new Promise((resolve) => setImmediate(resolve));\n`,
+      `${greet("hi")}globalThis.vcTestResume();\nawait new Promise((resolve) => setImmediate(resolve));\n`,
     );
     yield* WorkflowRuntime.loadDefinitions(at("slow.ts"), 0, 50).pipe(Effect.flip);
     const loaded = yield* WorkflowRuntime.loadDefinitions(at("next.ts"));
@@ -502,9 +502,9 @@ it.effect(
       // Its top level counts the times it was loaded.
       yield* fileSystem.writeFileString(
         at("counted.ts"),
-        "globalThis.t3GatedLoads = (globalThis.t3GatedLoads ?? 0) + 1;\nexport default [];\n",
+        "globalThis.vcGatedLoads = (globalThis.vcGatedLoads ?? 0) + 1;\nexport default [];\n",
       );
-      const loads = () => (globalThis as { t3GatedLoads?: number }).t3GatedLoads ?? 0;
+      const loads = () => (globalThis as { vcGatedLoads?: number }).vcGatedLoads ?? 0;
       yield* Effect.gen(function* () {
         const { turn, context } = yield* WorkflowRuntime.gate(made, directory);
         const workflows = Context.get(context, Workflows.Workflows);

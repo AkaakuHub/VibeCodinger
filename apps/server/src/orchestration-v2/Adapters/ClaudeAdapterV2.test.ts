@@ -1642,11 +1642,11 @@ describe("ClaudeAdapterV2 append-system-prompt-file launch argument", () => {
     ),
   );
 
-  // regression: #15073 the SDK replaced the --settings launch argument with T3's settings
+  // regression: #15073 the SDK replaced the --settings launch argument with VibeCodinger's settings
   it.effect.each([
     `--settings '{"skillOverrides":{"lint":"off"},"showThinkingSummaries":false}'`,
     "--settings user-settings.json",
-  ])("merges %s beneath T3's settings", (launchArgs) =>
+  ])("merges %s beneath VibeCodinger's settings", (launchArgs) =>
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const cwd = yield* fileSystem.makeTempDirectoryScoped({
@@ -11682,7 +11682,7 @@ describe("ClaudeAdapterV2 background wake turns", () => {
       content: unknown,
       extra?: object,
     ) => line({ type, uuid, parentUuid, message: { role: type, content }, ...extra });
-    const t3Turn = (promptUuid: string) =>
+    const vcTurn = (promptUuid: string) =>
       entry("user", promptUuid, null, "Request 1") +
       entry("assistant", firstReply, promptUuid, [{ type: "text", text: "Working." }]) +
       entry("assistant", secondReply, firstReply, [{ type: "text", text: "Done." }]);
@@ -11791,13 +11791,13 @@ describe("ClaudeAdapterV2 background wake turns", () => {
     it.effect.each([
       {
         name: "the session transcript gained messages outside T3",
-        transcript: (promptUuid: string) => t3Turn(promptUuid) + terminalExchange,
+        transcript: (promptUuid: string) => vcTurn(promptUuid) + terminalExchange,
       },
       {
-        // The terminal's rows alone are longer than the tail T3 reads first.
+        // The terminal's rows alone are longer than the tail VibeCodinger reads first.
         name: "a long terminal exchange followed its last message",
         transcript: (promptUuid: string) =>
-          t3Turn(promptUuid) +
+          vcTurn(promptUuid) +
           entry("user", terminalPrompt, secondReply, "x".repeat(1_200_000)) +
           entry("assistant", terminalReply, terminalPrompt, [
             { type: "text", text: "y".repeat(1_200_000) },
@@ -11820,9 +11820,9 @@ describe("ClaudeAdapterV2 background wake turns", () => {
           entry("assistant", firstReply, promptUuid, [{ type: "text", text: "Working." }]),
       },
       {
-        name: "only bookkeeping follows T3's reply",
+        name: "only bookkeeping follows VibeCodinger's reply",
         transcript: (promptUuid: string) =>
-          t3Turn(promptUuid) +
+          vcTurn(promptUuid) +
           line({
             type: "system",
             subtype: "turn_duration",
@@ -11843,26 +11843,26 @@ describe("ClaudeAdapterV2 background wake turns", () => {
       { name: "there is no transcript", transcript: null },
       {
         name: "a pinned head decides where to resume",
-        transcript: (promptUuid: string) => t3Turn(promptUuid) + terminalExchange,
+        transcript: (promptUuid: string) => vcTurn(promptUuid) + terminalExchange,
         pinnedHead: firstReply,
       },
       {
         name: "replacing it would end background work",
-        transcript: (promptUuid: string) => t3Turn(promptUuid) + terminalExchange,
+        transcript: (promptUuid: string) => vcTurn(promptUuid) + terminalExchange,
         backgroundShell: true,
       },
       {
         name: "replacing it would cancel a scheduled wakeup",
-        transcript: (promptUuid: string) => t3Turn(promptUuid) + terminalExchange,
+        transcript: (promptUuid: string) => vcTurn(promptUuid) + terminalExchange,
         scheduledWakeup: true,
       },
       {
         name: "its scheduled wakeup fires while the transcript is read",
-        transcript: (promptUuid: string) => t3Turn(promptUuid) + terminalExchange,
+        transcript: (promptUuid: string) => vcTurn(promptUuid) + terminalExchange,
         wakeFiresDuringRead: true,
       },
       {
-        // Longer than the tail T3 reads, and the process's own messages are not written yet.
+        // Longer than the tail VibeCodinger reads, and the process's own messages are not written yet.
         name: "a long transcript's tail holds none of its messages",
         transcript: () =>
           entry("user", "old-1", null, "x".repeat(1_200_000)) +

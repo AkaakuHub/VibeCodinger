@@ -31,14 +31,14 @@ const testCrypto = SecureRandom.make((size) => new Uint8Array(size).fill(7));
 
 function makeProject(
   repositoryIdentity: OrchestrationProjectShell["repositoryIdentity"] = {
-    canonicalKey: "github.com/exampleorg/t3code",
+    canonicalKey: "github.com/exampleorg/vibecodinger",
     locator: {
       source: "git-remote",
       remoteName: "origin",
-      remoteUrl: "git@github.com:ExampleOrg/T3Code.git",
+      remoteUrl: "git@github.com:ExampleOrg/VibeCodinger.git",
     },
     provider: SourceControlProviderKind.make("github"),
-    displayName: "ExampleOrg/T3Code",
+    displayName: "ExampleOrg/VibeCodinger",
     owner: "ExampleOrg",
     name: "T3Code",
   },
@@ -85,9 +85,9 @@ function makeLink(
   const { headBranch, baseBranch, ...rest } = overrides;
   return {
     host: "github.com",
-    repository: "exampleorg/t3code",
+    repository: "exampleorg/vibecodinger",
     number,
-    url: `https://github.com/exampleorg/t3code/pull/${number}`,
+    url: `https://github.com/exampleorg/vibecodinger/pull/${number}`,
     source: "manual",
     linkedAt: "2026-08-10T00:00:00.000Z",
     snapshot:
@@ -181,7 +181,7 @@ describe("PullRequestWatchService", () => {
       for (const [options, checksPending] of cases) {
         const harness = yield* makeHarness(options);
         const result = yield* harness.setWatching(true, {
-          url: "https://github.com/exampleorg/t3code/pull/9",
+          url: "https://github.com/exampleorg/vibecodinger/pull/9",
         });
         expect(result).toMatchObject({ number: 9, wasWatching: false });
         const commands = yield* Ref.get(harness.commands);
@@ -190,7 +190,7 @@ describe("PullRequestWatchService", () => {
             type: "thread.pull-request.watch",
             number: 9,
             watching: true,
-            link: { url: "https://github.com/exampleorg/t3code/pull/9", source: "agent" },
+            link: { url: "https://github.com/exampleorg/vibecodinger/pull/9", source: "agent" },
           },
         ]);
         const [command] = commands;
@@ -205,7 +205,7 @@ describe("PullRequestWatchService", () => {
     Effect.gen(function* () {
       const harness = yield* makeHarness({ readChecksState: "passing" });
       const result = yield* harness.setWatching(true, {
-        url: "https://github.com/exampleorg/t3code/pull/9",
+        url: "https://github.com/exampleorg/vibecodinger/pull/9",
       });
       expect(result).toMatchObject({ wasWatching: false, checksState: "passing" });
     }),
@@ -235,7 +235,7 @@ describe("PullRequestWatchService", () => {
     Effect.gen(function* () {
       const freshMerged = yield* makeHarness({ readState: "merged" });
       expect(
-        yield* freshMerged.setWatching(true, { repository: "exampleorg/t3code", number: 1 }),
+        yield* freshMerged.setWatching(true, { repository: "exampleorg/vibecodinger", number: 1 }),
       ).toMatchObject({ number: 1, watching: false, wasWatching: false, state: "merged" });
       expect(yield* Ref.get(freshMerged.commands)).toEqual([]);
 
@@ -260,13 +260,13 @@ describe("PullRequestWatchService", () => {
         ]),
       });
       expect(
-        yield* harness.setWatching(true, { repository: "exampleorg/t3code", number: 1 }),
+        yield* harness.setWatching(true, { repository: "exampleorg/vibecodinger", number: 1 }),
       ).toMatchObject({ number: 1, watching: false, state: "merged" });
       expect(
-        yield* harness.setWatching(true, { repository: "exampleorg/t3code", number: 3 }),
+        yield* harness.setWatching(true, { repository: "exampleorg/vibecodinger", number: 3 }),
       ).toMatchObject({ watching: true, wasWatching: true });
       expect(
-        yield* harness.setWatching(false, { repository: "exampleorg/t3code", number: 3 }),
+        yield* harness.setWatching(false, { repository: "exampleorg/vibecodinger", number: 3 }),
       ).toMatchObject({ wasWatching: true });
       expect(yield* Ref.get(harness.commands)).toMatchObject([
         { type: "thread.pull-request.watch", number: 3, watching: true },
@@ -283,12 +283,12 @@ describe("PullRequestWatchService", () => {
       ]);
       const stillClosed = yield* makeHarness({ readState: "closed", thread: closedThread });
       expect(
-        yield* stillClosed.setWatching(true, { repository: "exampleorg/t3code", number: 1 }),
+        yield* stillClosed.setWatching(true, { repository: "exampleorg/vibecodinger", number: 1 }),
       ).toMatchObject({ watching: false, state: "closed" });
       expect(yield* Ref.get(stillClosed.commands)).toEqual([]);
 
       const harness = yield* makeHarness({ readState: "open", thread: closedThread });
-      yield* harness.setWatching(true, { repository: "exampleorg/t3code", number: 1 });
+      yield* harness.setWatching(true, { repository: "exampleorg/vibecodinger", number: 1 });
       expect(yield* Ref.get(harness.commands)).toMatchObject([
         { type: "thread.pull-request.watch", number: 1, watching: true },
       ]);
@@ -308,7 +308,7 @@ describe("PullRequestWatchService", () => {
         },
       });
       const error = yield* harness
-        .setWatching(true, { repository: "exampleorg/t3code", number: 1 })
+        .setWatching(true, { repository: "exampleorg/vibecodinger", number: 1 })
         .pipe(Effect.flip);
       expect(error).toMatchObject({ _tag: "PullRequestWatchFromSubagentError" });
       expect(yield* Ref.get(harness.commands)).toEqual([]);

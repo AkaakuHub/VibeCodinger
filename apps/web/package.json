@@ -32,7 +32,7 @@
     "@noble/hashes": "catalog:",
     "@pierre/diffs": "catalog:",
     "@pierre/trees": "1.0.0-beta.6",
-    "@pierre/words": "file:deps/pierre-words-0.2.2-t3.4-7c04b7f1.tgz",
+    "@pierre/words": "file:deps/pierre-words-0.2.2-vendor.4-7c04b7f1.tgz",
     "@tanstack/react-pacer": "^0.19.4",
     "@tanstack/react-router": "^1.160.2",
     "@tiptap/core": "^3.31.3",

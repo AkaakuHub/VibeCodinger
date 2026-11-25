@@ -734,7 +734,7 @@ describe("Antigravity served reads", () => {
   });
 
   it("drops agy's toolSummary from T3 MCP call arguments only", () => {
-    const t3Call = normalizeAntigravityToolCall(
+    const vcCall = normalizeAntigravityToolCall(
       parseToolUpdate(
         normalizeAntigravitySessionUpdate({
           sessionId: "session-1",
@@ -749,7 +749,7 @@ describe("Antigravity served reads", () => {
         }),
       ).toolCall,
     );
-    expect(t3Call.data.rawInput).toEqual({ message: "Hello" });
+    expect(vcCall.data.rawInput).toEqual({ message: "Hello" });
 
     const foreignCall = normalizeAntigravityToolCall(
       parseToolUpdate({

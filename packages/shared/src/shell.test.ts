@@ -1025,7 +1025,7 @@ console.log(JSON.stringify({ ...result, cached: cache.size }));
         });
         const removed = path.join(parent, "removed");
         yield* fs.makeDirectory(removed);
-        const command = "t3-gone-cwd-cli";
+        const command = "vc-gone-cwd-cli";
         const inListed = path.join(listed, command);
         const gitShim = path.join(listed, "git");
         const xcodeGit = path.join(listed, "xcode-git");

@@ -34,7 +34,7 @@ const mockAgentArgs = [mockAgentPath];
 const mockRuntimeOptions = {
   spawn: { command: mockAgentCommand, args: mockAgentArgs },
   cwd: process.cwd(),
-  clientInfo: { name: "t3-test", version: "0.0.0" },
+  clientInfo: { name: "vc-test", version: "0.0.0" },
   authMethodId: "test",
 } satisfies AcpSessionRuntime.AcpSessionRuntimeOptions;
 
@@ -627,7 +627,7 @@ describe("AcpSessionRuntime", () => {
             env: { VIBECODINGER_ACP_MCP_ACP: "1" },
           },
           cwd: process.cwd(),
-          clientInfo: { name: "t3-test", version: "0.0.0" },
+          clientInfo: { name: "vc-test", version: "0.0.0" },
           authMethodId: "test",
           mcpServers: [
             { type: "stdio", name: "vibe-codinger", command: "/usr/bin/node", args: [] },
@@ -684,7 +684,7 @@ describe("AcpSessionRuntime", () => {
             env: { VIBECODINGER_ACP_V2_MANAGEMENT: "1" },
           },
           cwd: process.cwd(),
-          clientInfo: { name: "t3-test", version: "0.0.0" },
+          clientInfo: { name: "vc-test", version: "0.0.0" },
           authMethodId: "test",
           requestLogger: (event) =>
             Effect.sync(() => {
@@ -729,7 +729,7 @@ describe("AcpSessionRuntime", () => {
             },
           },
           cwd: process.cwd(),
-          clientInfo: { name: "t3-test", version: "0.0.0" },
+          clientInfo: { name: "vc-test", version: "0.0.0" },
           requestLogger: (event) =>
             Effect.sync(() => {
               requestEvents.push(event);
@@ -767,7 +767,7 @@ describe("AcpSessionRuntime", () => {
             },
           },
           cwd: process.cwd(),
-          clientInfo: { name: "t3-test", version: "0.0.0" },
+          clientInfo: { name: "vc-test", version: "0.0.0" },
           onInitialized: (initializeResult) =>
             Effect.sync(() => {
               advertisedAuthMethodName = initializeResult.authMethods?.[0]?.name;
@@ -831,7 +831,7 @@ describe("AcpSessionRuntime", () => {
             args: mockAgentArgs,
           },
           cwd: process.cwd(),
-          clientInfo: { name: "t3-test", version: "0.0.0" },
+          clientInfo: { name: "vc-test", version: "0.0.0" },
           authMethodId: "test",
         }),
       ),
@@ -862,7 +862,7 @@ describe("AcpSessionRuntime", () => {
             args: mockAgentArgs,
           },
           cwd: process.cwd(),
-          clientInfo: { name: "t3-test", version: "0.0.0" },
+          clientInfo: { name: "vc-test", version: "0.0.0" },
           authMethodId: "test",
         }),
       ),
@@ -912,7 +912,7 @@ describe("AcpSessionRuntime", () => {
             },
           },
           cwd: process.cwd(),
-          clientInfo: { name: "t3-test", version: "0.0.0" },
+          clientInfo: { name: "vc-test", version: "0.0.0" },
           authMethodId: "test",
         }),
       ),
@@ -973,7 +973,7 @@ describe("AcpSessionRuntime", () => {
             },
           },
           cwd: process.cwd(),
-          clientInfo: { name: "t3-test", version: "0.0.0" },
+          clientInfo: { name: "vc-test", version: "0.0.0" },
           authMethodId: "test",
         }),
       ),
@@ -1019,7 +1019,7 @@ describe("AcpSessionRuntime", () => {
             env: { VIBECODINGER_ACP_EMIT_BACKGROUND_TOOL_DURING_ANSWER: "1" },
           },
           cwd: process.cwd(),
-          clientInfo: { name: "t3-test", version: "0.0.0" },
+          clientInfo: { name: "vc-test", version: "0.0.0" },
           authMethodId: "test",
         }),
       ),
@@ -1066,7 +1066,7 @@ describe("AcpSessionRuntime", () => {
             },
           },
           cwd: process.cwd(),
-          clientInfo: { name: "t3-test", version: "0.0.0" },
+          clientInfo: { name: "vc-test", version: "0.0.0" },
           authMethodId: "test",
         }),
       ),
@@ -1143,7 +1143,7 @@ describe("AcpSessionRuntime", () => {
             negotiated: initializeResult.agentInfo?.version ?? "none",
           }),
           cwd: process.cwd(),
-          clientInfo: { name: "t3-test", version: "0.0.0" },
+          clientInfo: { name: "vc-test", version: "0.0.0" },
           requestLogger: (event) =>
             Effect.sync(() => {
               requestEvents.push(event);
@@ -1196,7 +1196,7 @@ describe("AcpSessionRuntime", () => {
           },
           cwd: process.cwd(),
           resumeSessionId: "mock-session-1",
-          clientInfo: { name: "t3-test", version: "0.0.0" },
+          clientInfo: { name: "vc-test", version: "0.0.0" },
         }),
       ),
       Effect.scoped,
@@ -1224,7 +1224,7 @@ describe("AcpSessionRuntime", () => {
           },
           cwd: process.cwd(),
           resumeSessionId: "stale-session-id",
-          clientInfo: { name: "t3-test", version: "0.0.0" },
+          clientInfo: { name: "vc-test", version: "0.0.0" },
         }),
       ),
       Effect.scoped,
@@ -1410,7 +1410,7 @@ describe("AcpSessionRuntime", () => {
             },
           },
           cwd: process.cwd(),
-          clientInfo: { name: "t3-test", version: "0.0.0" },
+          clientInfo: { name: "vc-test", version: "0.0.0" },
         }),
       ),
       Effect.scoped,
@@ -1447,7 +1447,7 @@ describe("AcpSessionRuntime", () => {
           },
           cwd: process.cwd(),
           resumeSessionId: "mock-session-1",
-          clientInfo: { name: "t3-test", version: "0.0.0" },
+          clientInfo: { name: "vc-test", version: "0.0.0" },
         }),
       ),
       Effect.scoped,
@@ -1481,7 +1481,7 @@ describe("AcpSessionRuntime", () => {
           cwd: process.cwd(),
           resumeSessionId: "mock-session-1",
           sessionLoadReplayIdleGap: "50 millis",
-          clientInfo: { name: "t3-test", version: "0.0.0" },
+          clientInfo: { name: "vc-test", version: "0.0.0" },
         }),
       ),
       Effect.scoped,
@@ -1513,7 +1513,7 @@ describe("AcpSessionRuntime", () => {
           resumeSessionId: "mock-session-1",
           sessionLoadReplayIdleGap: "50 millis",
           sessionLoadReplayIdleReadiness: true,
-          clientInfo: { name: "t3-test", version: "0.0.0" },
+          clientInfo: { name: "vc-test", version: "0.0.0" },
         }),
       ),
       Effect.scoped,
@@ -1562,7 +1562,7 @@ describe("AcpSessionRuntime", () => {
             },
           },
           cwd: process.cwd(),
-          clientInfo: { name: "t3-test", version: "0.0.0" },
+          clientInfo: { name: "vc-test", version: "0.0.0" },
         }),
       ),
       Effect.scoped,

@@ -62,7 +62,6 @@ describe.skipIf(HostProcess.Platform.defaultValue() !== "linux")("AUR release", 
         yield* fs.chmod(file, 0o755);
       }
       const version = nightly ? "1.2.4-nightly.20261104.1" : "1.2.3";
-      const pkgname = nightly ? "t3code-nightly-bin" : "t3code-bin";
       const prefix =
         naming === "versioned" ? `T3-Code-${version}` : nightly ? "T3-Code-Nightly" : "T3-Code";
       const assets = [
@@ -81,7 +80,7 @@ describe.skipIf(HostProcess.Platform.defaultValue() !== "linux")("AUR release", 
       ];
       const fixture = path.join(root, "release.json");
       yield* fs.writeFileString(fixture, JSON.stringify({ assets }));
-      const packageDir = path.join(aur, pkgname);
+      const packageDir = path.join(aur, nightly ? "upstream-nightly" : "upstream-stable");
       const recipe = path.join(packageDir, "PKGBUILD");
       const before = yield* fs.readFileString(recipe);
       const env = {

@@ -651,7 +651,7 @@ const template = {
     {
       role: "system",
       content:
-        "Main prompt.\n - Primary working directory: /home/alice/app\n\n<runtime_info>old</runtime_info>\n\n## T3 Code orchestration\nold text",
+        "Main prompt.\n - Primary working directory: /home/alice/app\n\n<runtime_info>old</runtime_info>\n\n## VibeCodinger orchestration\nold text",
     },
     {
       role: "system",
@@ -1775,7 +1775,7 @@ it.effect("fails preview calls with T3's errors when browser access is off or a 
         is_error: true,
         content: off,
       });
-    assert.notInclude(vcSystemAppend("claude-sonnet-5-5", true, false), "## T3 Code browser");
+    assert.notInclude(vcSystemAppend("claude-sonnet-5-5", true, false), "## VibeCodinger browser");
     const unsupported = "br-guard-preview-open-unsupported";
     assert.deepInclude(yield* answer(unsupported, "preview_open"), {
       is_error: true,

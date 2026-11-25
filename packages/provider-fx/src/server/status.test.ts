@@ -43,7 +43,7 @@ function processHandle(stdout: string, code: number, answered: Effect.Effect<voi
 }
 
 // `fx status --json` and `fx models --json` from fx 0.0.15, trimmed to the
-// fields T3 reads plus a few it ignores.
+// fields VibeCodinger reads plus a few it ignores.
 const status = (auth: string, fields: Record<string, unknown> = {}) =>
   JSON.stringify({ kind: "status", model: "default", auth, auth_refreshable: false, ...fields });
 const models = (ids: ReadonlyArray<string>) =>

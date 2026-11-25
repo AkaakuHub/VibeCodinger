@@ -273,7 +273,7 @@ const runSide = Effect.fn("prove.runSide")(function* (
 const targetOf = Effect.fn("prove.targetOf")(function* (scenarioPath: string) {
   const fs = yield* FileSystem.FileSystem;
   const source = yield* fs.readFileString(scenarioPath).pipe(Effect.orElseSucceed(() => ""));
-  return source.includes("t3-mobile") ? "ios" : "web";
+  return source.includes("vibecodinger-mobile") ? "ios" : "web";
 });
 
 /** Uploads the captures and maps each to its URL; a failed upload leaves the map empty. */

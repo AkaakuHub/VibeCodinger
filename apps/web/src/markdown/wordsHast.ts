@@ -1136,7 +1136,7 @@ export function wordsHast(text: string, options: WordsHastOptions): Root {
     source,
     options,
     math: new Map(),
-    mathKey: `t3-math-${Math.random().toString(36).slice(2)}`,
+    mathKey: `vc-math-${Math.random().toString(36).slice(2)}`,
     insightMarker: insights?.marker ?? null,
   };
   transform(tree, walk, false, false);

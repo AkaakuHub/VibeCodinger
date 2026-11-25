@@ -22,7 +22,7 @@ export function assetImageCacheKey(
     case SOURCE_CONTROL_MEDIA_ASSET: {
       const media = sourceControlClients.mediaUrl(resource.url);
       return media?.immutable
-        ? `t3-media:${JSON.stringify([environmentId, media.fetchUrl])}`
+        ? `vc-media:${JSON.stringify([environmentId, media.fetchUrl])}`
         : undefined;
     }
     case "media-file":

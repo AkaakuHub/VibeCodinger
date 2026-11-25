@@ -22,7 +22,7 @@ export const layerWithoutOfficialRelay = Layer.effect(
             new HttpClientError.HttpClientError({
               reason: new HttpClientError.TransportError({
                 request,
-                description: "The official T3 relay is disabled.",
+                description: "The official VibeCodinger relay is disabled.",
               }),
             }),
           )

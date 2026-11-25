@@ -218,7 +218,7 @@ const layerAppDataHome = ServerConfig.layerTest(process.cwd(), {
 });
 
 it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("layerCliConfig", (it) => {
-  it.effect("does not migrate a T3 home a running server owns", () =>
+  it.effect("does not migrate a VibeCodinger home a running server owns", () =>
     Effect.gen(function* () {
       const recorded = Math.max(...migrationManifest.map(([id]) => id)) - 1;
       yield* migrateTo(recorded);
@@ -237,7 +237,7 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("layerCliConfig",
     }).pipe(Effect.scoped, Effect.provide(layerAppDataHome)),
   );
 
-  it.effect("opens a current T3 home while a running server owns it", () =>
+  it.effect("opens a current VibeCodinger home while a running server owns it", () =>
     Effect.gen(function* () {
       yield* migrateTo();
       yield* ownAppDataHome();

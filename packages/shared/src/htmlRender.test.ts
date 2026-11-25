@@ -14,7 +14,7 @@ describe("injectHtmlRenderBootstrap", () => {
     const html =
       "<!doctype html><html><head><style>:root{--background:red}</style></head><body>x</body></html>";
     const injected = injectHtmlRenderBootstrap(html);
-    const themeAt = injected.indexOf('<style id="t3-theme">');
+    const themeAt = injected.indexOf('<style id="vc-theme">');
     expect(themeAt).toBeGreaterThan(injected.indexOf("<head>"));
     expect(themeAt).toBeLessThan(injected.indexOf(":root{--background:red}"));
     expect(injected).toContain('<meta charset="utf-8">');
@@ -32,7 +32,7 @@ describe("injectHtmlRenderBootstrap", () => {
     const content = `${head ? "" : "<title>Report</title></head>"}<body><p>Report</p></body></html>`;
     const injected = injectHtmlRenderBootstrap(prefix + content);
     expect(injected.startsWith(`${prefix}${head}<meta charset="utf-8">`)).toBe(true);
-    expect(injected.indexOf('<style id="t3-theme">')).toBeGreaterThan(prefix.length);
+    expect(injected.indexOf('<style id="vc-theme">')).toBeGreaterThan(prefix.length);
     expect(injected).toContain("<script>");
     expect(injected.endsWith(content)).toBe(true);
   });
@@ -51,7 +51,7 @@ describe("injectHtmlRenderBootstrap", () => {
     const fragment = `<${tag}><head><meta name="viewport"></head></${tag}>`;
     const injected = injectHtmlRenderBootstrap(fragment);
     expect(injected.startsWith("<!doctype html><head>")).toBe(true);
-    expect(injected.indexOf('<style id="t3-theme">')).toBeLessThan(injected.indexOf(`<${tag}>`));
+    expect(injected.indexOf('<style id="vc-theme">')).toBeLessThan(injected.indexOf(`<${tag}>`));
     expect(injected).toContain('<meta name="viewport" content="width=device-width');
     expect(injected.endsWith(fragment)).toBe(true);
   });
@@ -63,7 +63,7 @@ describe("injectHtmlRenderBootstrap", () => {
   ])("keeps the bootstrap outside inert template content: %s", (fragment) => {
     const injected = injectHtmlRenderBootstrap(fragment);
     expect(injected.startsWith("<!doctype html><head>")).toBe(true);
-    expect(injected.indexOf('<style id="t3-theme">')).toBeLessThan(injected.indexOf("<template"));
+    expect(injected.indexOf('<style id="vc-theme">')).toBeLessThan(injected.indexOf("<template"));
     expect(injected).toContain('<meta name="viewport" content="width=device-width');
     expect(injected.endsWith(fragment)).toBe(true);
   });
@@ -89,7 +89,7 @@ describe("injectHtmlRenderBootstrap", () => {
       '<!-- copy <head> and <meta name="viewport"> here --><html><head>' +
       "<script>const tag = '<meta name=\"viewport\">';</script></head><body>x</body></html>";
     const injected = injectHtmlRenderBootstrap(html);
-    expect(injected.indexOf('<style id="t3-theme">')).toBeGreaterThan(
+    expect(injected.indexOf('<style id="vc-theme">')).toBeGreaterThan(
       injected.indexOf("<html><head>"),
     );
     expect(injected).toContain('<meta name="viewport" content="width=device-width');

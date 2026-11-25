@@ -340,7 +340,7 @@ export default async function vibeCodingerMcpExtension(pi: ExtensionAPI) {
     if (changed) return replacement;
   });
 
-  // Pi deliberately leaves permission policy to extensions. T3's injected
+  // Pi deliberately leaves permission policy to extensions. VibeCodinger's injected
   // bridge uses Pi's public blocking tool hook so the shared runtime modes
   // keep their normal meaning without replacing or shadowing Pi's runtime.
   // Only Pi's own search is known to be read-only. An extension that replaces
@@ -432,7 +432,7 @@ export default async function vibeCodingerMcpExtension(pi: ExtensionAPI) {
           label: name,
           // Pi records active declarations in the transcript even when hidden, and
           // estimates context from them. The model sees only the public schema;
-          // T3's server still validates the arguments.
+          // VibeCodinger's server still validates the arguments.
           description: isAlias ? "Same as mcp__vibe-codinger__" + name + "." : (tool.description ?? name),
           parameters: jsonSchemaToTypebox(isAlias ? { type: "object" } : tool.inputSchema),
           ...(supportsExposure ? { outputSchema: mcpOutputSchema(tool) } : {}),

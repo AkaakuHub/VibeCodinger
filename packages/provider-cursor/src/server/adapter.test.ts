@@ -3349,7 +3349,7 @@ describe("CursorAdapterV2", () => {
           authorizationHeader: "Bearer synthetic-cursor-token",
           browserToolsAvailable: false,
         });
-        const t3Servers = cursorMcpServers(yield* mcpSessions.read(threadId));
+        const vcServers = cursorMcpServers(yield* mcpSessions.read(threadId));
         const modelSelection = { instanceId, model: "composer-2.5" };
         const runtimePolicy = ProviderAdapter.ProviderAdapterV2RuntimePolicy.make({
           runtimeMode: "full-access",
@@ -3460,10 +3460,10 @@ describe("CursorAdapterV2", () => {
           },
           "cwd-only": { command: "node", args: ["server.mjs"], cwd: projectRoot },
         };
-        // The agent is created with T3's server only; the resolved servers go with each turn.
-        assert.deepEqual(openedWith?.mcpServers, t3Servers);
+        // The agent is created with VibeCodinger's server only; the resolved servers go with each turn.
+        assert.deepEqual(openedWith?.mcpServers, vcServers);
         yield* sendTurn(1);
-        assert.deepEqual(sentWith[0], { ...expectedServers, ...t3Servers });
+        assert.deepEqual(sentWith[0], { ...expectedServers, ...vcServers });
         // A server switched off between turns stays off on the next one.
         yield* fileSystem.writeFileString(
           path.join(home, ".cursor", "projects", projectDirectory, "mcp-disabled.json"),
@@ -3471,14 +3471,14 @@ describe("CursorAdapterV2", () => {
         );
         yield* sendTurn(2);
         const { repro: _disabled, ...stillEnabled } = expectedServers;
-        assert.deepEqual(sentWith[1], { ...stillEnabled, ...t3Servers });
+        assert.deepEqual(sentWith[1], { ...stillEnabled, ...vcServers });
         // Unreadable disabled state starts none of the overrides, and the turn still goes out.
         yield* fileSystem.writeFileString(
           path.join(home, ".cursor", "projects", projectDirectory, "mcp-disabled.json"),
           "[",
         );
         yield* sendTurn(3);
-        assert.deepEqual(sentWith[2], t3Servers);
+        assert.deepEqual(sentWith[2], vcServers);
         // A restricted turn starts no command the checkout names; the user's own file still applies.
         yield* fileSystem.writeFileString(
           path.join(home, ".cursor", "projects", projectDirectory, "mcp-disabled.json"),
@@ -3490,7 +3490,7 @@ describe("CursorAdapterV2", () => {
           yield* sendTurn(4 + index, { ...runtimePolicy, runtimeMode });
           assert.deepEqual(sentWith[3 + index], {
             repro: { command: "node", args: [`${home}/shadowed.mjs`], cwd: projectRoot },
-            ...t3Servers,
+            ...vcServers,
           });
         }
         yield* fileSystem.writeFileString(

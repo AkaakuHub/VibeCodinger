@@ -397,7 +397,7 @@ test("preserves a successful result when a same-SHA rerun has no artifact", asyn
         {
           id: 1,
           user: { login: "github-actions[bot]" },
-          body: `<!-- t3-thread-transfer-report -->\n<!-- t3-thread-transfer-result-sha:${sha} -->`,
+          body: `<!-- vc-thread-transfer-report -->\n<!-- vc-thread-transfer-result-sha:${sha} -->`,
         },
       ],
       rest: {

@@ -190,7 +190,7 @@ it.layer(NodeServices.layer)("build-npm-launcher", (it) => {
 
         yield* fs.writeFileString(
           path.join(versionDir, "vibecodinger"),
-          "#!/t3-test-missing-loader\n",
+          "#!/vc-test-missing-loader\n",
         );
         for (const _attempt of [1, 2]) {
           const cached = yield* run(process.execPath, [launcher, "serve"], { cwd: root, env });
@@ -371,7 +371,7 @@ fs.readFileSync = (file, ...rest) => {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
         for (const executable of [
-          "#!/t3-test-missing-loader\n",
+          "#!/vc-test-missing-loader\n",
           '#!/bin/sh\necho "runtime loader failed" >&2\nexit 42\n',
           "#!/bin/sh\nkill -TERM $$\n",
           '#!/bin/sh\ntrap \'echo caught > "$VIBECODINGER_TEST_TERM"; exit 42\' TERM\necho ready > "$VIBECODINGER_TEST_READY"\nwhile :; do :; done\n',
