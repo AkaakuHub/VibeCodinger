@@ -465,7 +465,7 @@ it.layer(layerTest)("AntigravityDriver", (it) => {
   );
 
   it.effect.skipIf(windowsHost)(
-    "gives a thread session its own T3 thread and MCP fallback environment",
+    "gives a thread session its own VibeCodinger thread and MCP fallback environment",
     () =>
       Effect.gen(function* () {
         const h = yield* makeHarness({

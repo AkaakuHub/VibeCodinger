@@ -264,7 +264,7 @@ const AGENT_FEEDBACK_MODE_DESCRIPTIONS: Record<AgentFeedbackMode, string> = {
     "When you ask, agents show you a short report about VibeCodinger and save it on the server if you approve.",
   ),
   auto: msg(
-    "Agents also report VibeCodinger problems they hit on their own, such as a T3 tool that failed.",
+    "Agents also report VibeCodinger problems they hit on their own, such as a VibeCodinger tool that failed.",
   ),
 };
 

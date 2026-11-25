@@ -114,7 +114,7 @@ function categoryLabel(
     case "resource-monitor":
       return resolve(msg("Monitor"));
     case "unknown-t3":
-      return resolve(msg("T3 process"));
+      return resolve(msg("VibeCodinger process"));
   }
 }
 
