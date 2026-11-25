@@ -12,7 +12,7 @@ import type { QueuedThreadMessage } from "../../state/thread-outbox-model";
 
 export const SHOWCASE_PENDING_TASK_DEFINITIONS = [
   {
-    projectId: "t3code",
+    projectId: "vibecodinger",
     id: "offline-launch-checklist",
     // oxlint-disable-next-line vibecodinger/no-untranslated-copy -- showcase fixture data
     text: "Ship the offline launch checklist before touchdown ✈️",

@@ -104,7 +104,7 @@ const PROJECT_FAVICONS = {
 
 export const SHOWCASE_PROJECTS = [
   {
-    id: "t3code",
+    id: "vibecodinger",
     title: "T3 Code",
     directory: "t3code",
     repositoryUrl: "https://github.com/pingdotgg/t3code.git",
@@ -147,7 +147,7 @@ export const SHOWCASE_ENVIRONMENTS = [
 export const SHOWCASE_THREADS = [
   {
     id: SHOWCASE_THREAD_ID,
-    projectId: "t3code",
+    projectId: "vibecodinger",
     title: "Make remote coding feel local ✦",
     branch: "feat/remote-command-center",
     minutesAgo: 3,
@@ -158,7 +158,7 @@ export const SHOWCASE_THREADS = [
   },
   {
     id: "pocket-command-center",
-    projectId: "t3code",
+    projectId: "vibecodinger",
     title: "Put the command center in your pocket",
     branch: "feat/pocket-command-center",
     minutesAgo: 21,
@@ -215,7 +215,7 @@ export const SHOWCASE_THREADS = [
   },
   {
     id: "handoff-haptics",
-    projectId: "t3code",
+    projectId: "vibecodinger",
     title: "Tune the handoff haptics",
     branch: "feat/handoff-haptics",
     minutesAgo: 5 * 60,

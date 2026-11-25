@@ -49,7 +49,6 @@ anything.
 - [04 · Environment auth](./internals/04_environment-auth.md)
 - [05 · Remote environments](./internals/05_remote.md)
 - [07 · Server updates](./internals/07_server-updates.md)
-- [08 · Product analytics](./internals/08_product-analytics.md)
 - [09 · Connection runtime](./internals/09_connection-runtime.md)
 - [10 · Web UI](./internals/10_web-ui.md)
 - [11 · Mobile layout](./internals/11_mobile-layout.md)
