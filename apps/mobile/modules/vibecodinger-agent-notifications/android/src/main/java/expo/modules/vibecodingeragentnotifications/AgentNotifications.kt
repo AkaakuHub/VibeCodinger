@@ -62,7 +62,7 @@ object AgentNotifications {
     val notification = base(context, ALERT_CHANNEL)
       .setContentTitle(title)
       .setAutoCancel(true)
-      .setContentIntent(contentIntent(context, "vibecodinger", null, id.hashCode()))
+      .setContentIntent(contentIntent(context, null, null, id.hashCode()))
       .build()
     manager(context).notify(id, 0, notification)
   }
@@ -189,16 +189,18 @@ object AgentNotifications {
 
   private fun contentIntent(
     context: Context,
-    scheme: String,
+    scheme: String?,
     path: String?,
     id: Int
   ): PendingIntent? {
-    val threadPath = path?.takeIf { it.startsWith("/threads/") }
-    val route = threadPath?.takeUnless { it.contains('?') || it.contains('#') } ?: "/"
     val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
       ?: return null
-    intent.setAction(Intent.ACTION_VIEW).setData(Uri.parse("$scheme:/$route"))
-      .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+    if (scheme != null) {
+      val threadPath = path?.takeIf { it.startsWith("/threads/") }
+      val route = threadPath?.takeUnless { it.contains('?') || it.contains('#') } ?: "/"
+      intent.setAction(Intent.ACTION_VIEW).setData(Uri.parse("$scheme:/$route"))
+    }
+    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
     return PendingIntent.getActivity(
       context,
       id,

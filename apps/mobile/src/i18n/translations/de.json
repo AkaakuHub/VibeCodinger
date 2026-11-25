@@ -5469,5 +5469,7 @@
   "473550adc709d86e": "The saved encryption identity does not match the server.",
   "ffa2e62f5d3f3826": "The server did not provide a valid encryption identity over HTTPS.",
   "47dcceed3e672fd5": "This environment requires HTTPS.",
-  "5ba716d9df66be39": "This environment requires HTTPS and a valid encryption identity."
+  "5ba716d9df66be39": "This environment requires HTTPS and a valid encryption identity.",
+  "efa53eef25d24375": "Sitzung abgeschlossen",
+  "01c6598ce155f6fa": "Benachrichtigungen bei Abschluss"
 }
