@@ -180,7 +180,7 @@ function resolveCompletionShell(shell: string): CompletionShell | null {
 const utf8 = new TextEncoder();
 // Canonical TTY input (before a line editor starts reading) caps a line below 1 KiB on Linux.
 const POSIX_MAX_LINE_BYTES = 1_023;
-const POSIX_APPEND = '__t3_command="$__t3_command"';
+const POSIX_APPEND = '__vc_command="$__vc_command"';
 
 function encodePosixScript(text: string): string {
   let encoded = "";
@@ -202,13 +202,13 @@ function wrapPosixCommand(command: string, sentinel: string): string {
   const normalized = command.replace(/\r\n/g, "\n");
   // The `_` suffix keeps trailing newlines; the subshell contains exits and syntax errors.
   const evaluate = (payload: string) =>
-    `( __t3_command=$(printf '%b_' ${payload}); eval "\${__t3_command%_}" ); printf '\\n${sentinel}%s\\n' "$?"`;
+    `( __vc_command=$(printf '%b_' ${payload}); eval "\${__vc_command%_}" ); printf '\\n${sentinel}%s\\n' "$?"`;
   const inline = evaluate(`'${encodePosixScript(normalized)}'`);
   if (utf8.encode(` ${inline}\r`).byteLength <= POSIX_MAX_LINE_BYTES) return inline;
 
   const maxChunkBytes = POSIX_MAX_LINE_BYTES - utf8.encode(` ${POSIX_APPEND}''\r`).byteLength;
   const lines: string[] = [];
-  let prefix = "__t3_command=";
+  let prefix = "__vc_command=";
   let chunk = "";
   let chunkBytes = 0;
   for (const character of normalized) {
@@ -223,7 +223,7 @@ function wrapPosixCommand(command: string, sentinel: string): string {
     chunk += encoded;
     chunkBytes += bytes;
   }
-  lines.push(`${prefix}'${chunk}'`, `${evaluate('"$__t3_command"')}; unset __t3_command`);
+  lines.push(`${prefix}'${chunk}'`, `${evaluate('"$__vc_command"')}; unset __vc_command`);
   // The leading space gives every line the history suppression a short command gets.
   return lines.join("\r ");
 }
@@ -236,7 +236,7 @@ function wrapCommandForCompletion(
   const body = command.replace(/\r?\n/g, "\r");
   switch (shell) {
     case "powershell":
-      return `$global:LASTEXITCODE = $null; & {\r${body}\r}; if ($null -ne $LASTEXITCODE) { $__t3c = $LASTEXITCODE } elseif ($?) { $__t3c = 0 } else { $__t3c = 1 }; Write-Host "${sentinel}$__t3c"`;
+      return `$global:LASTEXITCODE = $null; & {\r${body}\r}; if ($null -ne $LASTEXITCODE) { $__vcc = $LASTEXITCODE } elseif ($?) { $__vcc = 0 } else { $__vcc = 1 }; Write-Host "${sentinel}$__vcc"`;
     case "fish":
       return `begin\r${body}\rend; printf '\\n${sentinel}%s\\n' $status`;
     case "nushell": {
@@ -246,11 +246,11 @@ function wrapCommandForCompletion(
       // Nu resolves imports before running cd; source a file rooted in the worktree.
       return [
         "$env.LAST_EXIT_CODE = 0",
-        "let __t3f = try { mktemp --tmpdir-path $env.VIBECODINGER_WORKTREE_PATH --suffix .nu .vibecodinger-setup-XXXXXXXX } catch {|e| print -e $e.msg; null }",
-        `if $__t3f == null { $env.LAST_EXIT_CODE = 1 } else { try { [$"rm --permanent ($__t3f | to nuon)" "${escaped}"] | str join (char newline) | save --force --raw $__t3f; ^$nu.current-exe --login --commands $"cd $env.VIBECODINGER_WORKTREE_PATH; source ($__t3f | to nuon)" } catch {|e| if $e != null and $e.exit_code? == null { print -e $e.msg }; if $env.LAST_EXIT_CODE == 0 { $env.LAST_EXIT_CODE = 1 } } }`,
-        "let __t3c = $env.LAST_EXIT_CODE",
-        "try { if $__t3f != null and ($__t3f | path exists) { rm --permanent $__t3f } } catch {|e| print -e $e.msg }",
-        `print $"\\n${sentinel}($__t3c)"`,
+        "let __vcf = try { mktemp --tmpdir-path $env.VIBECODINGER_WORKTREE_PATH --suffix .nu .vibecodinger-setup-XXXXXXXX } catch {|e| print -e $e.msg; null }",
+        `if $__vcf == null { $env.LAST_EXIT_CODE = 1 } else { try { [$"rm --permanent ($__vcf | to nuon)" "${escaped}"] | str join (char newline) | save --force --raw $__vcf; ^$nu.current-exe --login --commands $"cd $env.VIBECODINGER_WORKTREE_PATH; source ($__vcf | to nuon)" } catch {|e| if $e != null and $e.exit_code? == null { print -e $e.msg }; if $env.LAST_EXIT_CODE == 0 { $env.LAST_EXIT_CODE = 1 } } }`,
+        "let __vcc = $env.LAST_EXIT_CODE",
+        "try { if $__vcf != null and ($__vcf | path exists) { rm --permanent $__vcf } } catch {|e| print -e $e.msg }",
+        `print $"\\n${sentinel}($__vcc)"`,
       ].join("; ");
     }
     case "posix":
