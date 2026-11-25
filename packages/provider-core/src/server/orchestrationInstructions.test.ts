@@ -1,9 +1,9 @@
 import { assert, describe, it } from "@effect/vitest";
 
 import {
-  T3_CODE_DEVICE_TOOL_INSTRUCTIONS,
-  T3_CODE_DEVICE_TOOL_INSTRUCTIONS_WITH_TOOL_SEARCH,
-  T3_CODE_ORCHESTRATION_INSTRUCTIONS,
+  VIBECODINGER_DEVICE_TOOL_INSTRUCTIONS,
+  VIBECODINGER_DEVICE_TOOL_INSTRUCTIONS_WITH_TOOL_SEARCH,
+  VIBECODINGER_ORCHESTRATION_INSTRUCTIONS,
   t3AcpPromptWithInstructions,
   t3OrchestrationPrompt,
   t3OrchestrationSystemPrompt,
@@ -12,21 +12,21 @@ import {
 describe("T3 device instructions", () => {
   it("route device work through device_open and give Claude the line that loads the tools", () => {
     for (const intent of ["`device_list`", "`device_open`", "`agent-device`", "ssh", "`hostId`"]) {
-      assert.include(T3_CODE_DEVICE_TOOL_INSTRUCTIONS, intent);
+      assert.include(VIBECODINGER_DEVICE_TOOL_INSTRUCTIONS, intent);
     }
-    assert.notInclude(T3_CODE_DEVICE_TOOL_INSTRUCTIONS, "ToolSearch");
+    assert.notInclude(VIBECODINGER_DEVICE_TOOL_INSTRUCTIONS, "ToolSearch");
     const loadLine =
       " Load them with ToolSearch `select:mcp__vibe-codinger__device_list,mcp__vibe-codinger__device_open,mcp__vibe-codinger__device_screenshot,mcp__vibe-codinger__device_close`.";
-    assert.include(T3_CODE_DEVICE_TOOL_INSTRUCTIONS_WITH_TOOL_SEARCH, loadLine);
+    assert.include(VIBECODINGER_DEVICE_TOOL_INSTRUCTIONS_WITH_TOOL_SEARCH, loadLine);
     assert.equal(
-      T3_CODE_DEVICE_TOOL_INSTRUCTIONS_WITH_TOOL_SEARCH.replace(loadLine, ""),
-      T3_CODE_DEVICE_TOOL_INSTRUCTIONS,
+      VIBECODINGER_DEVICE_TOOL_INSTRUCTIONS_WITH_TOOL_SEARCH.replace(loadLine, ""),
+      VIBECODINGER_DEVICE_TOOL_INSTRUCTIONS,
     );
   });
 
   it("open the app before the returned command's snapshots, screenshots and input", () => {
     assert.include(
-      T3_CODE_DEVICE_TOOL_INSTRUCTIONS,
+      VIBECODINGER_DEVICE_TOOL_INSTRUCTIONS,
       "its snapshots, screenshots and input need `open <app>` first,",
     );
   });
@@ -34,13 +34,13 @@ describe("T3 device instructions", () => {
   it("keep the failure rule from taking over or closing a session another thread holds", () => {
     // agent-device's DEVICE_IN_USE advice is to rerun with the owner's --session or close it first.
     assert.include(
-      T3_CODE_DEVICE_TOOL_INSTRUCTIONS,
+      VIBECODINGER_DEVICE_TOOL_INSTRUCTIONS,
       "follow its advice once, but never reuse or close another session; if it still fails,",
     );
   });
 
   it("reach OpenCode and Cursor only when the session holds device access", () => {
-    assert.include(t3OrchestrationSystemPrompt(true, true), T3_CODE_DEVICE_TOOL_INSTRUCTIONS);
+    assert.include(t3OrchestrationSystemPrompt(true, true), VIBECODINGER_DEVICE_TOOL_INSTRUCTIONS);
     assert.notInclude(t3OrchestrationSystemPrompt(true, false), "## VibeCodinger devices");
     assert.isUndefined(t3OrchestrationSystemPrompt(false, true));
 
@@ -52,7 +52,7 @@ describe("T3 device instructions", () => {
         orchestrationDelivered: false,
         deviceInstructionsDelivered: false,
       });
-    assert.include(firstRun(true), T3_CODE_DEVICE_TOOL_INSTRUCTIONS);
+    assert.include(firstRun(true), VIBECODINGER_DEVICE_TOOL_INSTRUCTIONS);
     assert.notInclude(firstRun(false), "## VibeCodinger devices");
 
     const laterRun = (deviceInstructionsDelivered: boolean) =>
@@ -63,8 +63,8 @@ describe("T3 device instructions", () => {
         orchestrationDelivered: true,
         deviceInstructionsDelivered,
       });
-    assert.include(laterRun(false), T3_CODE_DEVICE_TOOL_INSTRUCTIONS);
-    assert.notInclude(laterRun(false), T3_CODE_ORCHESTRATION_INSTRUCTIONS.trim());
+    assert.include(laterRun(false), VIBECODINGER_DEVICE_TOOL_INSTRUCTIONS);
+    assert.notInclude(laterRun(false), VIBECODINGER_ORCHESTRATION_INSTRUCTIONS.trim());
     assert.equal(laterRun(true), "Check the login screen.");
 
     // A provider's own guidance reaches a conversation that already had the rest.
@@ -79,7 +79,7 @@ describe("T3 device instructions", () => {
         providerInstructionsDelivered,
       });
     assert.include(providerRun(false), "Mark awaited shells.");
-    assert.notInclude(providerRun(false), T3_CODE_ORCHESTRATION_INSTRUCTIONS.trim());
+    assert.notInclude(providerRun(false), VIBECODINGER_ORCHESTRATION_INSTRUCTIONS.trim());
     assert.equal(providerRun(true), "Check the login screen.");
   });
 
@@ -90,7 +90,7 @@ describe("T3 device instructions", () => {
       state: { ...state, hasDeviceTools: true },
       previousState: state,
     });
-    assert.include(withDevices, T3_CODE_DEVICE_TOOL_INSTRUCTIONS);
+    assert.include(withDevices, VIBECODINGER_DEVICE_TOOL_INSTRUCTIONS);
     assert.equal(
       t3AcpPromptWithInstructions({ prompt: "Again.", state, previousState: state }),
       "Again.",

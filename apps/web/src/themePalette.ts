@@ -14,8 +14,8 @@ import {
   IRIS_THEME,
   OCEAN_THEME,
   T3_CHAT_THEME,
-  T3_CODE_LIGHT_THEME_COLORS,
-  T3_CODE_DARK_THEME_COLORS,
+  VIBECODINGER_LIGHT_THEME_COLORS,
+  VIBECODINGER_DARK_THEME_COLORS,
   RESERVED_THEME_IDS,
   THEME_COLOR_ROLES,
   type ThemeAppearance,
@@ -435,11 +435,11 @@ function legacyThemeMode(theme: ThemePreference): ThemeAppearance | null {
 export function getStandardThemeColors(appearance: ThemeAppearance): ThemeColors {
   if (appearance === "dark") {
     return (standardDarkThemeColors ??= decodeThemeColors({
-      ...T3_CODE_DARK_THEME_COLORS,
+      ...VIBECODINGER_DARK_THEME_COLORS,
       canvas: "#000000",
     }));
   }
-  return (standardLightThemeColors ??= decodeThemeColors(T3_CODE_LIGHT_THEME_COLORS));
+  return (standardLightThemeColors ??= decodeThemeColors(VIBECODINGER_LIGHT_THEME_COLORS));
 }
 
 // index.css paints the light bubble a step darker than the shared palette mobile uses.

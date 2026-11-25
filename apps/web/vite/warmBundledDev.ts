@@ -11,7 +11,7 @@ const STARTUP_LAZY_ENTRIES = [
   "src/lib/lucideIconByName.ts",
 ];
 
-const WARMUP_CLIENT_ID = "t3code-startup-warmup";
+const WARMUP_CLIENT_ID = "vibecodinger-startup-warmup";
 
 // Bundled dev keeps these private and untyped. A Vite upgrade that moves them
 // skips the warmup or logs a warning, never breaks dev; bundledDev.test.ts
