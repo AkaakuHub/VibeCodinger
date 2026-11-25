@@ -17,7 +17,7 @@ export class CaptureSetupRequiredError extends Schema.TaggedError<CaptureSetupRe
     return `${this.state} Open Settings → SnapShots to continue setup.`;
   }
 }
-export const NIRI_CAPTURE_PATH = "/com/t3tools/SnapShot";
+export const NIRI_CAPTURE_PATH = "/net/akaaku/vibecodinger/SnapShot";
 export const NIRI_CAPTURE_INTERFACE = "net.akaaku.vibecodinger.SnapShot";
 
 function isDesktopSession(env: NodeJS.ProcessEnv, desktop: string): boolean {
