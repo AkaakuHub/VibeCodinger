@@ -1,6 +1,7 @@
 import * as McpProviderSessions from "@t3tools/provider-core/server/McpProviderSessions";
 import {
   AntigravitySettings,
+  defaultInstanceIdForDriver,
   ProviderDriverKind,
   ProviderSetupError,
   RuntimeMode,
@@ -15,6 +16,7 @@ import {
 } from "@t3tools/shared/nodeRuntime";
 import * as Digest from "effect/crypto/Digest";
 import * as SecureRandom from "effect/crypto/SecureRandom";
+import * as DateTime from "effect/DateTime";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
 import * as Exit from "effect/Exit";
@@ -27,7 +29,6 @@ import * as Scope from "effect/Scope";
 import * as Stream from "effect/Stream";
 import * as ChildProcess from "effect/process/ChildProcess";
 import * as ChildProcessSpawner from "effect/process/ChildProcessSpawner";
-import { HttpClient } from "effect/http";
 import * as AcpErrors from "effect-acp/errors";
 
 import * as ProviderHost from "@t3tools/provider-core/server/ProviderHost";
@@ -57,7 +58,16 @@ import {
   type AntigravityAcpRuntimeInput,
 } from "../acp/AntigravityAcpSupport.ts";
 import type * as AcpSessionRuntime from "@t3tools/provider-acp/server/AcpSessionRuntime";
-import type { ServerProviderDraft } from "@t3tools/provider-core/server/snapshotProbe";
+import {
+  parseCliVersionResult,
+  spawnAndCollect,
+  type ServerProviderDraft,
+} from "@t3tools/provider-core/server/snapshotProbe";
+import {
+  makeUnavailableUsageLimits,
+  makeUsageLimits,
+} from "@t3tools/provider-core/server/usageLimits";
+import { parseAntigravityCliUsage } from "../antigravityCliUsage.ts";
 import {
   removeAntigravitySessionFiles,
   retireAntigravityRuntimeTempDirs,
@@ -71,7 +81,6 @@ import {
 import { makeAcpNativeLoggerFactory } from "@t3tools/provider-acp/server/nativeLogging";
 import { ProviderDriverError } from "../Errors.ts";
 import { makeAntigravityProvider } from "../AntigravityProvider.ts";
-import { makeAntigravityUsageProbe } from "../antigravityUsageLimits.ts";
 import * as ProviderEventLoggers from "@t3tools/provider-core/server/ProviderEventLoggers";
 import * as ModelCatalog from "@t3tools/provider-core/server/ModelCatalog";
 import {
@@ -115,7 +124,6 @@ export type AntigravityDriverEnv =
   | Digest.Digest
   | SecureRandom.SecureRandom
   | FileSystem.FileSystem
-  | HttpClient.HttpClient
   | IdAllocator.IdAllocatorV2
   | McpProviderSessions.McpProviderSessions
   | ModelCatalog.ModelCatalog
@@ -143,7 +151,6 @@ export const AntigravityDriver: ProviderDriver<
     const digest = yield* Digest.Digest;
     const random = yield* SecureRandom.SecureRandom;
     const fileSystem = yield* FileSystem.FileSystem;
-    const httpClient = yield* HttpClient.HttpClient;
     const path = yield* Path.Path;
     const spawner = yield* ChildProcessSpawner.ChildProcessSpawner;
     const host = yield* ProviderHost.ProviderHost;
@@ -162,7 +169,11 @@ export const AntigravityDriver: ProviderDriver<
       gcpProject: settings.gcpProject,
       gcpLocation: settings.gcpLocation,
     };
-    const authConfigIssue = antigravityAuthConfigIssue(auth);
+    const authConfigIssue =
+      (auth.authMethod === "oauth-personal" || auth.authMethod === "oauth-business") &&
+      instanceId !== defaultInstanceIdForDriver(DRIVER)
+        ? "Google sign-in uses the official CLI keyring. Use the default Antigravity instance for Google sign-in."
+        : antigravityAuthConfigIssue(auth);
     const processEnvironment = yield* mergeProviderInstanceEnvironment(environment);
     const userHome = resolveAntigravityUserHome(
       yield* HostProcess.Platform,
@@ -329,7 +340,6 @@ export const AntigravityDriver: ProviderDriver<
       );
       const runtime = yield* makeAntigravityAcpRuntime({
         ...runtimeInput,
-        runtimeVersion: executable.version,
         authMethod: auth.authMethod,
         childProcessSpawner: spawner,
         spawn,
@@ -576,21 +586,50 @@ export const AntigravityDriver: ProviderDriver<
       };
     });
 
-    const usage = yield* makeAntigravityUsageProbe({
-      profileDirectory,
-      authMethod: auth.authMethod,
-    }).pipe(
-      Effect.provideService(FileSystem.FileSystem, fileSystem),
-      Effect.provideService(Path.Path, path),
-      Effect.provideService(Digest.Digest, digest),
-      Effect.provideService(HttpClient.HttpClient, httpClient),
-    );
+    // Google documents /usage in print mode for these releases. Do not send it to older CLIs
+    // that could interpret it as a model prompt.
+    const supportsUsageCommand = (version: string | null) =>
+      /^(?:1\.(?:[5-9]|[1-9]\d+)\.|(?:[2-9]|[1-9]\d+)\.)\d+/.test(version ?? "");
+    const probeUsage = Effect.gen(function* () {
+      const checkedAt = DateTime.formatIso(yield* DateTime.now);
+      const unavailable = (reason: "unsupported" | "probeFailed") =>
+        makeUnavailableUsageLimits({ checkedAt, reason });
+      const windows = yield* Effect.gen(function* () {
+        const resolved = yield* installation.resolve(settings.binaryPath, processEnvironment);
+        if (resolved.version !== null && !supportsUsageCommand(resolved.version)) return [];
+        const { executable, spawn } = yield* prepareSpawn(userHome, processEnvironment);
+        const run = (args: ReadonlyArray<string>) =>
+          spawnAndCollect(
+            spawn.command,
+            ChildProcess.make(spawn.command, args, {
+              cwd: spawn.cwd,
+              env: spawn.env,
+              extendEnv: false,
+              shell: false,
+            }),
+          ).pipe(Effect.provideService(ChildProcessSpawner.ChildProcessSpawner, spawner));
+        const version = executable.version ?? parseCliVersionResult(yield* run(["--version"]));
+        if (!supportsUsageCommand(version)) return [];
+        const result = yield* run([
+          ...spawn.args.slice(1),
+          "-p",
+          "/usage",
+          "--output-format",
+          "json",
+        ]);
+        return result.code === 0 ? parseAntigravityCliUsage(result.stdout) : [];
+      }).pipe(Effect.scoped, Effect.timeout("20 seconds"), Effect.option);
+      if (Option.isNone(windows)) return unavailable("probeFailed");
+      return windows.value.length > 0
+        ? makeUsageLimits({ checkedAt, windows: windows.value })
+        : unavailable("unsupported");
+    });
+
     const provider = yield* makeAntigravityProvider(settings, {
       environment: processEnvironment,
       stampIdentity: classifyModels,
       probe,
-      probeUsage: usage.probe,
-      clearUsage: usage.clear,
+      probeUsage,
       auth: { type: auth.authMethod, label: antigravityAuthLabel(auth.authMethod) },
       ...(rememberedRuntimeModes ? { rememberedRuntimeModes } : {}),
       rememberRuntimeModes: (modes) =>
