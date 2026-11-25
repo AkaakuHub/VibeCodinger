@@ -117,7 +117,7 @@ it.effect(
         NodePath.join(NodeOS.tmpdir(), "vibecodinger-v2-project-cli-"),
       );
       const workspaceRoot = NodeFS.mkdtempSync(
-        NodePath.join(NodeOS.tmpdir(), "t3-v2-project-workspace-"),
+        NodePath.join(NodeOS.tmpdir(), "vibecodinger-v2-project-workspace-"),
       );
 
       yield* runCli(["project", "add", workspaceRoot, "--title", "Alpha", "--base-dir", baseDir]);

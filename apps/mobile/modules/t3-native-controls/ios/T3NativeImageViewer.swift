@@ -855,7 +855,7 @@ final class T3ImageViewerController: UIViewController, UIScrollViewDelegate, UIG
     // belongs to this save, since closing the viewer deletes its files before Photos may read them.
     let original = fileForPage(currentIndex).flatMap { file -> URL? in
       guard file.pathExtension.lowercased() != "svg", let source = CGImageSourceCreateWithURL(file as CFURL, nil), CGImageSourceGetCount(source) > 0 else { return nil }
-      let copy = FileManager.default.temporaryDirectory.appendingPathComponent("t3-save-\(UUID().uuidString)")
+      let copy = FileManager.default.temporaryDirectory.appendingPathComponent("vibecodinger-save-\(UUID().uuidString)")
         .appendingPathComponent(file.lastPathComponent)
       do {
         try FileManager.default.createDirectory(at: copy.deletingLastPathComponent(), withIntermediateDirectories: true)

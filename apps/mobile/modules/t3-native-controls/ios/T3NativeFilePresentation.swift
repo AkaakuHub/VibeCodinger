@@ -229,7 +229,7 @@ final class T3NativeFilePresentation: NSObject, QLPreviewControllerDataSource,
   /// Copy original bytes so preview and sharing do not mutate a draft or workspace file.
   nonisolated static func prepareFile(url: URL, title: String) async throws -> URL {
     try Task.checkCancellation()
-    let directory = FileManager.default.temporaryDirectory.appendingPathComponent("t3-preview-\(UUID().uuidString)")
+    let directory = FileManager.default.temporaryDirectory.appendingPathComponent("vibecodinger-preview-\(UUID().uuidString)")
     try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
     do {
       let download = directory.appendingPathComponent("original")

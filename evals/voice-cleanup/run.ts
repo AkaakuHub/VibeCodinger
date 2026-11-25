@@ -49,7 +49,7 @@ await Effect.runPromise(
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "t3-voice-eval-" });
+    const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-voice-eval-" });
     const service = yield* makeCodexTextGeneration(yield* decodeSettings({}));
     const baseline = values.baseline
       ? yield* fs.readFileString(values.baseline).pipe(Effect.flatMap(decodeResults))

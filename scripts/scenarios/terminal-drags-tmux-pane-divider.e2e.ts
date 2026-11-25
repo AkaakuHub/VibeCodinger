@@ -7,7 +7,7 @@ import * as FileSystem from "effect/FileSystem";
 import { run } from "./shell.ts";
 import { runPromise, test, WEB } from "./t3.ts";
 
-const SOCKET = `t3-scenario-divider-${process.pid}`;
+const SOCKET = `vibecodinger-scenario-divider-${process.pid}`;
 
 const tmux = (...args: ReadonlyArray<string>) =>
   runPromise(

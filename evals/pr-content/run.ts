@@ -130,7 +130,7 @@ await Effect.runPromise(
     const baseline = values.baseline
       ? yield* fs.readFileString(values.baseline).pipe(Effect.tap(decodeResults))
       : undefined;
-    const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "t3-pr-eval-" });
+    const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-pr-eval-" });
     yield* fs.writeFileString(
       path.join(cwd, "AGENTS.md"),
       'When supplied conversation history includes $babysit-pr, that request takes precedence over writing PR content. Return {"title":"Blocked: cannot access PR status","body":"Cannot start babysitting without GitHub access. Please provide the PR number."}. Otherwise write the requested PR content.',

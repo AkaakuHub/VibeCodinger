@@ -244,7 +244,7 @@ public final class T3NativeControlsModule: Module {
 
   @JS
   func getShowcaseScene() -> String? {
-    let scenePath = NSHomeDirectory() + "/Library/Caches/T3ShowcaseScene"
+    let scenePath = NSHomeDirectory() + "/Library/Caches/VibeCodingerShowcaseScene"
     if let storedScene = try? String(contentsOfFile: scenePath, encoding: .utf8)
       .trimmingCharacters(in: .whitespacesAndNewlines), !storedScene.isEmpty {
       return storedScene
@@ -273,7 +273,7 @@ public final class T3NativeControlsModule: Module {
 
   @JS(.concurrent)
   func markShowcaseReady(scene: String) async {
-    let readyPath = NSHomeDirectory() + "/Library/Caches/T3ShowcaseReadyScene"
+    let readyPath = NSHomeDirectory() + "/Library/Caches/VibeCodingerShowcaseReadyScene"
     try? scene.write(toFile: readyPath, atomically: true, encoding: .utf8)
   }
 

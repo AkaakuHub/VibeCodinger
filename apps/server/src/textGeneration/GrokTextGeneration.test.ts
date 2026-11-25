@@ -78,7 +78,7 @@ function readJsonRpcRequests(filePath: string): ReadonlyArray<{
 it.layer(layerGrokTextGenerationTest)("GrokTextGeneration", (it) => {
   it.effect("uses ACP with disabled tool capabilities and forwards the requested model id", () => {
     const requestLogDir = NodeFS.mkdtempSync(
-      NodePath.join(NodeOS.tmpdir(), "t3code-grok-text-log-"),
+      NodePath.join(NodeOS.tmpdir(), "vibecodinger-grok-text-log-"),
     );
     const requestLogPath = NodePath.join(requestLogDir, "requests.ndjson");
 

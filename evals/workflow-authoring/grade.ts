@@ -72,7 +72,9 @@ const world = Effect.fn("gradeWorkflow.world")(function* (
 ) {
   const fileSystem = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
-  const directory = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-workflow-eval-" });
+  const directory = yield* fileSystem.makeTempDirectoryScoped({
+    prefix: "vibecodinger-workflow-eval-",
+  });
   const database = NodeSqliteClient.layer({ filename: path.join(directory, "state.sqlite") });
   yield* Effect.provide(WorkflowsMigration, database);
   const turns: Array<AgentTurnInput> = [];

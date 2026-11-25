@@ -39,15 +39,15 @@ import {
 const REPO_ROOT = NodePath.resolve(NodePath.dirname(NodeURL.fileURLToPath(import.meta.url)), "..");
 const MOBILE_ROOT = NodePath.join(REPO_ROOT, "apps/mobile");
 const ANDROID_PACKAGE = "net.akaaku.vibecodinger";
-const APP_SCHEME = "t3code";
+const APP_SCHEME = "vibecodinger";
 // Manifest flags update expo-dev-launcher preferences before loading, hiding dev chrome in captures.
 const DEV_CLIENT_LAUNCH_FLAGS = "disableOnboarding=1&disableFab=1&disableAutoLaunch=1";
-const IOS_READY_FILENAME = "T3ShowcaseReadyScene";
+const IOS_READY_FILENAME = "VibeCodingerShowcaseReadyScene";
 const SERVER_HOST = "0.0.0.0";
 const IOS_SIMULATOR_ARCH = NodeProcess.arch === "arm64" ? "arm64" : "x86_64";
 const IOS_APP_PATH = NodePath.join(
   MOBILE_ROOT,
-  ".showcase/ios-derived-data/Build/Products/Debug-iphonesimulator/T3Code.app",
+  ".showcase/ios-derived-data/Build/Products/Debug-iphonesimulator/VibeCodinger.app",
 );
 const ANDROID_APK_PATH = NodePath.join(
   MOBILE_ROOT,
@@ -71,7 +71,7 @@ const MOBILE_BUILD_ENV = {
   APP_VARIANT: "production",
   EXPO_NO_GIT_STATUS: "1",
   // iPad self-rotation needs the capture build's fullscreen mode (app.config.ts).
-  T3_SHOWCASE_CAPTURE_BUILD: "1",
+  VIBECODINGER_SHOWCASE_CAPTURE_BUILD: "1",
   JAVA_HOME:
     NodeProcess.env.JAVA_HOME ??
     (NodeProcess.platform === "darwin"
@@ -774,9 +774,9 @@ async function buildIos(): Promise<string> {
     "xcodebuild",
     [
       "-workspace",
-      NodePath.join(MOBILE_ROOT, "ios/T3Code.xcworkspace"),
+      NodePath.join(MOBILE_ROOT, "ios/VibeCodinger.xcworkspace"),
       "-scheme",
-      "T3Code",
+      "VibeCodinger",
       "-configuration",
       "Debug",
       "-sdk",
@@ -1168,7 +1168,7 @@ async function captureIos(
   const metroUrl = `http://${metroHost}:${config.metroPort}?${DEV_CLIENT_LAUNCH_FLAGS}`;
   const scenePath = NodePath.join(
     await iosAppContainer(simulator.udid),
-    "Library/Caches/T3ShowcaseScene",
+    "Library/Caches/VibeCodingerShowcaseScene",
   );
   const readyPath = NodePath.join(
     await iosAppContainer(simulator.udid),
@@ -1380,7 +1380,7 @@ async function waitForAndroidShowcaseScene(
       "run-as",
       ANDROID_PACKAGE,
       "cat",
-      "files/t3-showcase-ready",
+      "files/vibecodinger-showcase-ready",
     ]).catch(() => "");
     if (readyScene.trim() === scene) return;
     await delay(500);
@@ -1391,7 +1391,7 @@ async function waitForAndroidShowcaseScene(
 async function writeAndroidShowcaseScene(serial: string, scene: ShowcaseScene): Promise<void> {
   await runAdb(serial, [
     "shell",
-    `run-as ${ANDROID_PACKAGE} sh -c 'mkdir -p files && rm -f files/t3-showcase-ready && printf %s ${scene} > files/t3-showcase-scene'`,
+    `run-as ${ANDROID_PACKAGE} sh -c 'mkdir -p files && rm -f files/vibecodinger-showcase-ready && printf %s ${scene} > files/vibecodinger-showcase-scene'`,
   ]);
 }
 

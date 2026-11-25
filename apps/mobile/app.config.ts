@@ -28,7 +28,7 @@ if (
     !IOS_BUNDLE_IDENTIFIER_PATTERN.test(personalTeamBundleIdentifier))
 ) {
   throw new Error(
-    "VIBECODINGER_IOS_PERSONAL_TEAM_BUNDLE_ID must be a reverse-DNS identifier such as com.example.t3code when VIBECODINGER_IOS_PERSONAL_TEAM=1.",
+    "VIBECODINGER_IOS_PERSONAL_TEAM_BUNDLE_ID must be a reverse-DNS identifier such as net.akaaku.vibecodinger when VIBECODINGER_IOS_PERSONAL_TEAM=1.",
   );
 }
 
@@ -232,7 +232,7 @@ const config: ExpoConfig = {
   ios: {
     icon: variant.assets.iosIcon,
     supportsTablet: true,
-    requireFullScreen: process.env.T3_SHOWCASE_CAPTURE_BUILD === "1",
+    requireFullScreen: process.env.VIBECODINGER_SHOWCASE_CAPTURE_BUILD === "1",
     bundleIdentifier: iosBundleIdentifier,
     entitlements: {
       "keychain-access-groups": [`$(AppIdentifierPrefix)${iosBundleIdentifier}`],
@@ -255,7 +255,7 @@ const config: ExpoConfig = {
       UIBackgroundModes: ["audio"],
       ITSAppUsesNonExemptEncryption: false,
       // Capture builds disable multitasking because iPadOS otherwise ignores orientation requests.
-      ...(process.env.T3_SHOWCASE_CAPTURE_BUILD === "1"
+      ...(process.env.VIBECODINGER_SHOWCASE_CAPTURE_BUILD === "1"
         ? {
             "UISupportedInterfaceOrientations~ipad": [
               "UIInterfaceOrientationPortrait",

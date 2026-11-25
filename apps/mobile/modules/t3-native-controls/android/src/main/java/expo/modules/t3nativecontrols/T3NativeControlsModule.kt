@@ -93,7 +93,7 @@ class T3NativeControlsModule : Module() {
     Function("getShowcaseScene") {
       val storedScene = appContext.reactContext
         ?.filesDir
-        ?.resolve("t3-showcase-scene")
+        ?.resolve("vibecodinger-showcase-scene")
         ?.takeIf { it.isFile }
         ?.readText()
         ?.trim()
@@ -114,7 +114,7 @@ class T3NativeControlsModule : Module() {
     Function("markShowcaseReady") { scene: String ->
       appContext.reactContext
         ?.filesDir
-        ?.resolve("t3-showcase-ready")
+        ?.resolve("vibecodinger-showcase-ready")
         ?.writeText(scene)
     }
   }

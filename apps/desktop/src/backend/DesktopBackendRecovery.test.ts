@@ -156,7 +156,7 @@ describe.runIf(NodeProcess.platform === "darwin" || NodeProcess.platform === "li
     it("releases a frozen orphan's port and leaves a backend with a live launcher running", async () => {
       await using cleanup = new AsyncDisposableStack();
       const appDataDirectory = await NodeFSP.mkdtemp(
-        NodePath.join(NodeOS.tmpdir(), "t3-backend-recovery-"),
+        NodePath.join(NodeOS.tmpdir(), "vibecodinger-backend-recovery-"),
       );
       cleanup.defer(() => NodeFSP.rm(appDataDirectory, { recursive: true, force: true }));
       // The first launcher records ownership before the home exists.

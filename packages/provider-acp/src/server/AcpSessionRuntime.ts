@@ -301,7 +301,7 @@ export function wrapCommandForLinuxCgroup(
         '[ -f "$1" ] && [ -x "$1" ] || { printf "%s: %s: not an executable file\\n" "$0" "$1" >&2; exit 125; }',
         'exec "$@"',
       ].join("\n"),
-      "t3-acp-cgroup-wrapper",
+      "vibecodinger-acp-cgroup-wrapper",
       lease.path,
       lease.relativePath,
       command,
@@ -341,7 +341,7 @@ export function resolveLinuxCgroupTargetCommand(
   return undefined;
 }
 
-const STALE_ACP_CGROUP_SIBLING = /^t3-acp-(\d+)-/;
+const STALE_ACP_CGROUP_SIBLING = /^vibecodinger-acp-(\d+)-/;
 
 export interface SweepStaleLinuxCgroupSiblingsOptions {
   readonly currentPid?: number;
@@ -415,7 +415,7 @@ function tryCreateLinuxCgroupLease(
     return undefined;
   }
   sweepStaleLinuxCgroupSiblings(currentPath);
-  const childName = `t3-acp-${process.pid}-${NodeCrypto.randomUUID().replaceAll("-", "")}`;
+  const childName = `vibecodinger-acp-${process.pid}-${NodeCrypto.randomUUID().replaceAll("-", "")}`;
   const childPath = NodePath.join(currentPath, childName);
   const childRelative = NodePath.posix.join(currentRelative, childName);
   if (NodePath.dirname(childPath) !== currentPath) return undefined;

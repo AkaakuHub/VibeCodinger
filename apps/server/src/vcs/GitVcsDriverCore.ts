@@ -4284,7 +4284,7 @@ export const makeGitVcsDriverCore = Effect.fn("makeGitVcsDriverCore")(function* 
     const omitted = pathsToAdd.length < candidates.length;
     if (pathsToAdd.length === 0 || (omitted && !allowPartial)) return { env: undefined, omitted };
 
-    const prefix = `t3code-review-index-${process.pid}-`;
+    const prefix = `vibecodinger-review-index-${process.pid}-`;
     // The pathspec excludes every other entry, so an index holding only the added paths diffs
     // the same as a copy of the real one. Git reads the missing file as an empty index.
     const tempIndexPath = isolated
