@@ -42,8 +42,11 @@ PROTECTED_PATHS = (
     "apps/server/src/telemetry",
     "apps/web/src/cloud",
     "apps/web/src/components/clerk",
+    "apps/web/src/components/ConnectDeviceApprovalCoordinator.tsx",
     "apps/web/src/routes/connect.tsx",
     "infra/relay",
+    "packages/client-runtime/src/connectDeviceNotices.ts",
+    "packages/client-runtime/src/connectDeviceNotices.test.ts",
 )
 FORBIDDEN = re.compile(
     rb"posthog|captureException\s*\(|sendBeacon\s*\(|opentelemetry/exporter|"
