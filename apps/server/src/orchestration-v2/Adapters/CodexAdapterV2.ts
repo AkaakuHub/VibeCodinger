@@ -20,7 +20,7 @@ import type { CodexEffectiveRuntime } from "../../provider/CodexManagedRuntime.t
 import { classifyCodexManagedError } from "../../provider/CodexManagedErrors.ts";
 import {
   buildCodexInitializeParams,
-  codexAppServerEnvironment,
+  codexCliEnvironment,
   codexDefaultReasoningEffortOverride,
 } from "../../provider/CodexProvider.ts";
 import {
@@ -1979,7 +1979,7 @@ export const layerAppServerClientFactory: Layer.Layer<
       open: Effect.fn("CodexAdapterV2.open")(function* (input) {
         const scope = yield* Scope.Scope;
         const environment = {
-          ...codexAppServerEnvironment(input.environment),
+          ...codexCliEnvironment(input.environment),
           ...(input.settings.homePath ? { CODEX_HOME: input.settings.homePath } : {}),
         };
         const command = yield* makeCodexAppServerSpawnCommand({
