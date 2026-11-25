@@ -140,7 +140,7 @@ describe("Antigravity Auto", () => {
         options: [{ optionId: "allow", name: "Allow", kind: "allow_once" }],
       });
       for (const t3Call of [
-        request("Run mcp_vibe-codinger_t3_thread_list?"),
+        request("Run mcp_vibe-codinger_vc_thread_list?"),
         request("MCP Tool delegate_task", {
           ServerName: "vibe-codinger",
           ToolName: "delegate_task",

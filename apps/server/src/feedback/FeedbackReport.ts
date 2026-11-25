@@ -206,7 +206,7 @@ export const FEEDBACK_SUBJECT_MESSAGE =
 // The shared resolver knows the presented tools; the prefix covers the rest, such as these.
 // Codex also registers `vibe-codinger-direct` for T3 tools it keeps out of Code Mode.
 const T3_PREFIX =
-  /^(?:mcp__t3[-_]?code(?:[-_]direct)?__|vibecodinger[-_]?code(?:[-_]direct)?[.:/])/iu;
+  /^(?:mcp__vibe[-_]?codinger(?:[-_]direct)?__|vibe[-_]?codinger(?:[-_]direct)?[.:/])/iu;
 
 /** The bare name of a registered T3 tool however a provider prefixed it, else undefined. */
 export const resolveT3ToolName = (name: string, toolNames: ReadonlyArray<string>) => {

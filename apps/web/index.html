@@ -52,7 +52,7 @@
         // Keep this small boot-time copy in sync with the built-in palettes so
         // the selected theme is visible before the app has mounted.
         const BUILT_IN_THEME_PALETTES = {
-          "t3-chat": {
+          "vc-chat": {
             light: {
               background: "oklch(0.982446 0.010114 325.653)",
               foreground: "oklch(0.325698 0.116116 325.037)",
@@ -133,12 +133,12 @@
           "system",
           "light",
           "dark",
-          "t3-chat",
+          "vc-chat",
           "grove",
           "ocean",
           "ember",
           "iris",
-          "t3-chat-dark",
+          "vc-chat-dark",
           "t3-grove",
           "t3-ocean",
           "t3-ember",
@@ -222,13 +222,13 @@
           const storedTheme = window.localStorage.getItem("vibecodinger:theme");
           const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
           const LEGACY_THEME_IDS = {
-            "t3-chat-dark": "t3-chat",
+            "vc-chat-dark": "vc-chat",
             "t3-grove": "grove",
             "t3-ocean": "ocean",
             "t3-ember": "ember",
             "t3-iris": "iris",
           };
-          const isLegacyT3ChatDark = storedTheme === "t3-chat-dark";
+          const isLegacyT3ChatDark = storedTheme === "vc-chat-dark";
           const themeId =
             storedTheme === null ? "" : (LEGACY_THEME_IDS[storedTheme] ?? storedTheme);
           const legacyMode = isLegacyT3ChatDark ? "dark" : null;

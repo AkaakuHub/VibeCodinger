@@ -1224,7 +1224,7 @@ export function extractMcpToolCallIdentity(
     if (
       qualified?.[1] &&
       qualified[2] &&
-      /^editor_t3_?code_[0-9a-f]{8}$/.test(qualified[1]) &&
+      /^editor_vibe_?codinger_[0-9a-f]{8}$/.test(qualified[1]) &&
       T3_MCP_TOOL_NAMES.has(qualified[2])
     ) {
       return { server: "vibe-codinger", tool: qualified[2] };

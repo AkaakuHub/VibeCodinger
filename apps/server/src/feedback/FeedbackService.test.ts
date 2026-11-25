@@ -106,7 +106,7 @@ const turnItems = [
   item(6, { type: "dynamic_tool", toolName: "mcp__vibe-codinger__vc_feedback", status: "running" }),
   item(6, {
     type: "dynamic_tool",
-    toolName: "vibe-codinger-thread_1_t3_feedback",
+    toolName: "vibe-codinger-thread_1_vc_feedback",
     status: "running",
   }),
 ];
