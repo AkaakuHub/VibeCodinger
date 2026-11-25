@@ -12,7 +12,6 @@ import {
 } from "./triagePrompt.ts";
 
 it("stays byte-identical to .github/triage/PLAYBOOK.md", () => {
-  // Older releases fetch the repository playbook.
   const canonicalPath = NodePath.join(
     import.meta.dirname,
     "../../../../.github/triage/PLAYBOOK.md",
@@ -33,20 +32,20 @@ it("launch prompt stays a single argv-safe line naming the prompt file", () => {
 it("context file labels the CLI version as the CLI's, not the user's build", () => {
   const context = buildTriageContext({
     ...contextInput,
-    entry: { kind: "cli", cliVersion: "0.0.42", launchedAs: "npx t3 triage" },
+    entry: { kind: "cli", cliVersion: "0.0.42", launchedAs: "vibecodinger triage" },
     server: "running (pid 42, http://127.0.0.1:3773, version 0.0.43-nightly.20260923.2173)",
   });
   assert.notInclude(context, "Installed version");
   assert.notInclude(context, "Release tag");
   assert.include(context, "- Triage CLI version: 0.0.42 (");
   assert.include(context, "version 0.0.43-nightly.20260923.2173");
-  assert.notInclude(context, "runs inside T3 Code");
+  assert.notInclude(context, "runs inside VibeCodinger");
 });
 
 it("in-app context warns the agent off its own server and points at the clone in progress", () => {
   const context = buildTriageContext({
     ...contextInput,
-    entry: { kind: "app", client: "T3 Code Desktop version 0.1.1 on macos" },
+    entry: { kind: "app", client: "VibeCodinger Desktop version 0.1.1 on macos" },
     server: "running (pid 42, version 0.1.1); this session runs inside it",
     sourceClone: {
       _tag: "cloning",
@@ -57,8 +56,8 @@ it("in-app context warns the agent off its own server and points at the clone in
     },
   });
   assert.notInclude(context, "Triage CLI version");
-  assert.include(context, "- Started from: T3 Code Desktop version 0.1.1 on macos (");
-  assert.include(context, "## This session runs inside T3 Code");
+  assert.include(context, "- Started from: VibeCodinger Desktop version 0.1.1 on macos (");
+  assert.include(context, "## This session runs inside VibeCodinger");
   assert.include(context, "/home/u/.vibecodinger/source/abc123  (v0.1.1, commit abc123)");
   assert.include(context, "Wait for it instead of\ncloning again.");
 });
@@ -74,7 +73,6 @@ const contextInput = {
     logsDir: "/home/u/.vibecodinger/userdata/logs",
     serviceLogPath: "/home/u/.vibecodinger/userdata/logs/boot-service.log",
     desktopBackendLogGlob: "/home/u/.vibecodinger/userdata/logs/server-child*.log*",
-    relayClientLogPath: "/home/u/.vibecodinger/userdata/logs/relay-client.ndjson",
     serverTracePath: "/home/u/.vibecodinger/userdata/logs/server.trace.ndjson",
     providerEventLogPath: "/home/u/.vibecodinger/userdata/logs/provider/events.log",
     terminalLogsDir: "/home/u/.vibecodinger/userdata/logs/terminals",

@@ -10,7 +10,6 @@ import * as Option from "effect/Option";
 import * as Path from "effect/Path";
 
 import * as BootService from "../cloud/bootService.ts";
-import * as ManagedEndpointRuntime from "../cloud/ManagedEndpointRuntime.ts";
 import type * as ServerConfig from "../config.ts";
 import { isProcessAlive, readPersistedServerRuntimeState } from "../serverRuntimeState.ts";
 import {
@@ -43,7 +42,7 @@ export const triageSourceCacheDir = (baseDir: string, path: Path.Path) =>
 
 /**
  * Writes `context.md` and the playbook prompt into a fresh `<stateDir>/triage/<time>`
- * folder. Both `t3 triage` and the in-app entry point start from these files.
+ * folder. Both `vibecodinger triage` and the in-app entry point start from these files.
  */
 export const writeTriageSession = Effect.fn("triage.writeTriageSession")(function* (input: {
   readonly baseDir: string;
@@ -81,7 +80,6 @@ export const writeTriageSession = Effect.fn("triage.writeTriageSession")(functio
         logsDir: paths.logsDir,
         serviceLogPath: path.join(paths.logsDir, BootService.BOOT_SERVICE_LOG_FILE),
         desktopBackendLogGlob: path.join(paths.logsDir, "server-child*.log*"),
-        relayClientLogPath: path.join(paths.logsDir, ManagedEndpointRuntime.RELAY_CLIENT_LOG_FILE),
         serverTracePath: paths.serverTracePath,
         providerEventLogPath: paths.providerEventLogPath,
         terminalLogsDir: paths.terminalLogsDir,
