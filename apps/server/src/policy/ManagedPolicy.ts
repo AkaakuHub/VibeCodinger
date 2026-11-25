@@ -205,7 +205,7 @@ const make = Effect.gen(function* () {
       lockedSettings: policy.summary.lockedSettings,
     });
   }
-  return { ...policy, connectDisabled: true as const };
+  return { ...policy, telemetry: false, connectDisabled: true as const };
 });
 
 // A single-executable server resolves packages on disk only through `require`.

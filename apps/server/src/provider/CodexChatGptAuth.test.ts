@@ -236,8 +236,6 @@ const makeHarnessFor = Effect.fnUntraced(function* (
             analyticsEvents.push({ event, properties });
             return true;
           }),
-    flush: Effect.void,
-    recordOwners: () => Effect.void,
   });
   const auth = yield* makeCodexChatGptAuth({
     instanceId,
@@ -1581,24 +1579,6 @@ it.effect("primary completes OAuth and destination imports and owns the refresh 
       );
       assert.isTrue(stopped);
       assert.strictEqual(imported.phase, "succeeded");
-      assert.deepStrictEqual(
-        h.analyticsEvents.map(({ event }) => event),
-        [
-          "chatgpt.auth.started",
-          "chatgpt.auth.completed",
-          "chatgpt.transfer.started",
-          "chatgpt.transfer.completed",
-        ],
-      );
-      assert.isTrue(
-        h.analyticsEvents.every(({ properties }) => properties?.flow === "primary_handoff"),
-      );
-      assert.strictEqual(h.analyticsEvents[1]?.properties?.outcome, "succeeded");
-      assert.strictEqual(h.analyticsEvents[3]?.properties?.outcome, "succeeded");
-      assert.notProperty(h.analyticsEvents[1]?.properties ?? {}, "connectedAccountCount");
-      assert.strictEqual(h.analyticsEvents[1]?.properties?.intent, "different_account");
-      assert.strictEqual(h.analyticsEvents[3]?.properties?.connectedAccountCount, 1);
-      assert.strictEqual(h.analyticsEvents[3]?.properties?.savedConnectionCount, 1);
       const saved = Option.getOrThrow(yield* destination.auth.read);
       assert.strictEqual(saved.clientId, result.profile.registration.clientId);
       assert.strictEqual(saved.refreshToken, "initial-refresh");
