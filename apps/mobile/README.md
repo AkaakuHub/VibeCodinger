@@ -12,7 +12,7 @@ This app has three variants:
 
 - `development`: Expo dev client, installable side-by-side as `T3 Code Dev`
 - `preview`: persistent internal preview build, installable side-by-side as `T3 Code Preview`
-- `production`: store/release build as `T3 Code`
+- `production`: release build as `VibeCodinger`
 
 Run commands from `apps/mobile`.
 
@@ -110,7 +110,7 @@ vp run ios:release
 ### iPhone IPA for SideStore or AltStore Classic
 
 Run **Fork iPhone IPA** on the fork's `main` branch and give it a new tag such
-as `ios-v2.3.0`. The workflow attaches `T3Code-unsigned.ipa` and its SHA-256
+as `ios-v2.3.0`. The workflow attaches `VibeCodinger-unsigned.ipa` and its SHA-256
 checksum to a draft GitHub release. It uses the Personal Team capabilities
 above and embeds the JavaScript bundle for offline launch. Review the draft
 before publishing it.

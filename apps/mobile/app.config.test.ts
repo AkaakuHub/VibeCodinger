@@ -26,15 +26,21 @@ it.each(["prod", ""])("rejects APP_VARIANT=%j before selecting production IDs", 
 });
 
 it.each([
-  [undefined, "com.t3tools.t3code"],
+  [undefined, "net.akaaku.vibecodinger"],
   ["development", "com.t3tools.t3code.dev"],
   ["preview", "com.t3tools.t3code.preview"],
-  ["production", "com.t3tools.t3code"],
+  ["production", "net.akaaku.vibecodinger"],
 ])("keeps the iOS and Android identifiers for APP_VARIANT=%j", async (value, identifier) => {
   const config = await loadConfig(value);
   expect(config.ios?.bundleIdentifier).toBe(identifier);
   expect(config.android?.package).toBe(identifier);
-  // Copied thread links open this app only while app.t3.codes lists it.
+  if (value === undefined || value === "production") {
+    expect(config.ios?.appleTeamId).toBeUndefined();
+    expect(config.ios?.associatedDomains).toBeUndefined();
+    expect(config.android?.intentFilters).toBeUndefined();
+    return;
+  }
+  // Copied thread links open the official builds listed by app.t3.codes.
   const host = new URL(DEFAULT_HOSTED_APP_URL).host;
   expect(config.ios?.associatedDomains).toContain(`applinks:${host}`);
   expect(appleAppSiteAssociation.applinks.details[0]?.appIDs).toContain(

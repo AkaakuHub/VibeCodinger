@@ -1,5 +1,5 @@
 export const CLIENT_NAMES = [
-  "com.t3tools.T3Code.SnapShot",
+  "net.akaaku.vibecodinger.SnapShot",
   "com.t3tools.T3Code.Development.SnapShot",
 ];
 

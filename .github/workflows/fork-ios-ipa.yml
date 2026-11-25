@@ -6,6 +6,7 @@ on:
     paths:
       - ".github/workflows/fork-ios-ipa.yml"
       - "apps/mobile/**"
+      - "assets/prod/**"
       - "packages/**"
       - "pnpm-lock.yaml"
   workflow_dispatch:
@@ -58,23 +59,24 @@ jobs:
         env:
           APP_VARIANT: production
           T3CODE_IOS_PERSONAL_TEAM: "1"
-          T3CODE_IOS_PERSONAL_TEAM_BUNDLE_ID: com.akaakuhub.t3code.sideload
+          T3CODE_IOS_PERSONAL_TEAM_BUNDLE_ID: net.akaaku.vibecodinger
           EXPO_NO_GIT_STATUS: "1"
           NODE_OPTIONS: --max-old-space-size=8192
         run: |
           set -euo pipefail
           vp exec expo prebuild --clean --platform ios --no-install
           (cd ios && pod install)
-          archive="$RUNNER_TEMP/T3Code.xcarchive"
+          archive="$RUNNER_TEMP/VibeCodinger.xcarchive"
           xcrun xcodebuild archive \
-            -workspace ios/T3Code.xcworkspace \
-            -scheme T3Code \
+            -workspace ios/VibeCodinger.xcworkspace \
+            -scheme VibeCodinger \
             -configuration Release \
             -destination 'generic/platform=iOS' \
             -archivePath "$archive" \
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
-          app="$archive/Products/Applications/T3Code.app"
+          app="$archive/Products/Applications/VibeCodinger.app"
           test -f "$app/Info.plist"
+          test "$(/usr/libexec/PlistBuddy -c 'Print CFBundleIdentifier' "$app/Info.plist")" = "$T3CODE_IOS_PERSONAL_TEAM_BUNDLE_ID"
           test -f "$app/main.jsbundle"
           executable=$(/usr/libexec/PlistBuddy -c 'Print CFBundleExecutable' "$app/Info.plist")
           xcrun lipo -verify_arch arm64 "$app/$executable"
@@ -82,10 +84,10 @@ jobs:
 
           staging=$(mktemp -d "$RUNNER_TEMP/ipa.XXXXXXXX")
           mkdir -p "$staging/Payload" "$RUNNER_TEMP/release-assets"
-          ditto "$app" "$staging/Payload/T3Code.app"
-          ipa="$RUNNER_TEMP/release-assets/T3Code-unsigned.ipa"
+          ditto "$app" "$staging/Payload/VibeCodinger.app"
+          ipa="$RUNNER_TEMP/release-assets/VibeCodinger-unsigned.ipa"
           (cd "$staging" && ditto -c -k --keepParent Payload "$ipa")
-          (cd "$RUNNER_TEMP/release-assets" && shasum -a 256 T3Code-unsigned.ipa > T3Code-unsigned.ipa.sha256)
+          (cd "$RUNNER_TEMP/release-assets" && shasum -a 256 VibeCodinger-unsigned.ipa > VibeCodinger-unsigned.ipa.sha256)
 
       - name: Upload iPhone IPA
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -121,8 +123,8 @@ jobs:
             echo '::error::Choose a new release tag.'
             exit 1
           fi
-          sha256sum --check T3Code-unsigned.ipa.sha256
+          sha256sum --check VibeCodinger-unsigned.ipa.sha256
           gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" \
             --target "$GITHUB_SHA" --title "$RELEASE_TAG" --draft --prerelease \
             --notes 'Unsigned iPhone IPA. Re-sign it on your device with SideStore or AltStore Classic.' \
-            T3Code-unsigned.ipa T3Code-unsigned.ipa.sha256
+            VibeCodinger-unsigned.ipa VibeCodinger-unsigned.ipa.sha256
