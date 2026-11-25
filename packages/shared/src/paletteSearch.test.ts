@@ -381,7 +381,7 @@ describe("scoreThreadSearch beyond Latin text and titles", () => {
     // Short words before a mere prefix are a coincidence.
     expect(rankTitles("inth", [thread("Show skill names in thread overview")])).toEqual([]);
     expect(rankTitles("tos", [thread("Move Client State to Server")])).toEqual([]);
-    expect(rankTitles("t3co", [thread("VibeCodinger vs Gemini")])).toEqual([
+    expect(rankTitles("vibeco", [thread("VibeCodinger vs Gemini")])).toEqual([
       "VibeCodinger vs Gemini",
     ]);
     expect(rankTitles('"sidebar lag"', [thread("Fix sidebar lag")])).toEqual(["Fix sidebar lag"]);

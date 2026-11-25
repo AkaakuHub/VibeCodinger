@@ -64,9 +64,9 @@ describe("resolveSpeechVocabulary", () => {
     const resolved = resolveSpeechVocabulary({
       personal,
       project: [{ term: "effect", aliases: ["a fact"] }],
-      hints: ["  T3   Code ", "word1", "", "x".repeat(51), "t3 code"],
+      hints: ["  VibeCodinger   CLI ", "word1", "", "x".repeat(51), "vibecodinger cli"],
     });
-    expect(resolved.speechHints).toEqual(["VibeCodinger"]);
+    expect(resolved.speechHints).toEqual(["VibeCodinger CLI"]);
     expect(resolved.speechCustomWords).toHaveLength(100);
     expect(resolved.speechCustomWords.slice(0, 2)).toEqual([
       { term: "effect", aliases: ["a fact"] },
