@@ -611,7 +611,9 @@ export const AntigravityDriver: ProviderDriver<
         const version = executable.version ?? parseCliVersionResult(yield* run(["--version"]));
         if (!supportsUsageCommand(version)) return [];
         const result = yield* run([
-          ...spawn.args.slice(1),
+          ...spawn.args.slice(1).filter((arg) => arg !== "--disable-telemetry"),
+          "--settings",
+          '{"enableTelemetry":false}',
           "-p",
           "/usage",
           "--output-format",

@@ -93,7 +93,14 @@ describe("Antigravity process environment", () => {
     expect(baseEnv).toEqual(original);
     expect(spawn).toEqual({
       command: "/usr/bin/agy",
-      args: ["acp", "--gemini-dir", profile.geminiHome, "--app-data-dir", "antigravity-acp"],
+      args: [
+        "acp",
+        "--gemini-dir",
+        profile.geminiHome,
+        "--app-data-dir",
+        "antigravity-acp",
+        "--disable-telemetry",
+      ],
       cwd: "/project",
       extendEnv: false,
       env: {
