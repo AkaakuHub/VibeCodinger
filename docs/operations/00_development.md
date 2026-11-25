@@ -73,7 +73,7 @@ The fork checks upstream `main` daily and opens a PR for the pinned upstream
 commit. Changes that conflict open as drafts. The PR points out paths with
 telemetry-related changes and keeps the fork's workflow definitions. Review
 upstream workflow changes separately. The PR records the exact upstream
-commit in `.github/t3-upstream-reviewed` for the next comparison.
+commit in `.github/upstream-reviewed` for the next comparison.
 
 Set `UPSTREAM_REVIEW_TOKEN` to a dedicated GitHub credential scoped to this
 repository with Contents and Pull requests write access. The workflow creates

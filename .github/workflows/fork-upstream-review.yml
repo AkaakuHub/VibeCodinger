@@ -42,7 +42,7 @@ jobs:
           git fetch --no-tags https://github.com/pingdotgg/t3code.git refs/heads/main:refs/heads/upstream-main
           base=$(git rev-parse refs/heads/fork-main)
           upstream=$(git rev-parse refs/heads/upstream-main)
-          reviewed=$(git show "$base:.github/t3-upstream-reviewed" 2>/dev/null || git merge-base "$base" "$upstream")
+          reviewed=$(git show "$base:.github/upstream-reviewed" 2>/dev/null || git merge-base "$base" "$upstream")
           if [[ ! "$reviewed" =~ ^[0-9a-f]{40}$ ]] || ! git merge-base --is-ancestor "$reviewed" "$upstream"; then
             echo "::error::The last reviewed commit is missing from upstream history."
             exit 1
@@ -50,7 +50,7 @@ jobs:
           if [[ "$upstream" == "$reviewed" ]]; then
             exit 0
           fi
-          head="review/t3-upstream-$upstream"
+          head="review/upstream-$upstream"
 
           existing=$(gh pr list --repo "$GITHUB_REPOSITORY" --state all --head "$head" --json number --jq 'length')
           if [[ "$existing" != 0 ]]; then
@@ -80,7 +80,7 @@ jobs:
           git show "$base:.github/scripts/check-upstream-removals.py" > "$guard"
           python3 "$guard" restore "$base" "$tree" > "$RUNNER_TEMP/kept-fork-paths.txt"
           stamp=$(printf '%s\n' "$upstream" | git hash-object -w --stdin)
-          git update-index --add --cacheinfo "100644,$stamp,.github/t3-upstream-reviewed"
+          git update-index --add --cacheinfo "100644,$stamp,.github/upstream-reviewed"
           tree=$(git write-tree)
           if ! python3 "$guard" verify "$base" "$tree" 2> "$RUNNER_TEMP/fork-guard.txt"; then
             draft=(--draft)
@@ -103,7 +103,7 @@ jobs:
               echo 'Resolve the following privacy-check failures before approving:'
               sed 's/^/- /' "$RUNNER_TEMP/fork-guard.txt"
             fi
-            echo 'The proposed .github/t3-upstream-reviewed records the exact commit for the next comparison.'
+            echo 'The proposed .github/upstream-reviewed records the exact commit for the next comparison.'
             changed=$(git diff --no-ext-diff --no-textconv --name-only -i -G 'telemetry|posthog|axiom|otlp|analytics|sendBeacon|distinct_id|crashReport' "$base" "$tree")
             if [[ -n "$changed" ]]; then
               echo

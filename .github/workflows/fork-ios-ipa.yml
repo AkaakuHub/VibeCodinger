@@ -22,7 +22,7 @@ jobs:
       github.repository == 'AkaakuHub/t3code' &&
       ((github.event_name == 'pull_request' &&
         github.event.pull_request.head.repo.full_name == github.repository &&
-        !startsWith(github.head_ref, 'review/t3-upstream-')) ||
+        !startsWith(github.head_ref, 'review/upstream-')) ||
        (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'))
     runs-on: xcode-27
     timeout-minutes: 60
