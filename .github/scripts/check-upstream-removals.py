@@ -6,6 +6,7 @@ import subprocess
 import sys
 
 PROTECTED_PATHS = (
+    ".env.example",
     ".task-cache.json",
     "infra/task-cache",
     ".github/actions",
@@ -66,6 +67,7 @@ PROTECTED_PATHS = (
 FORBIDDEN = re.compile(
     rb"posthog|captureException\s*\(|sendBeacon\s*\(|opentelemetry/exporter|"
     rb"otlp.{0,48}(?:endpoint|exporter)|cloudflared|"
+    rb"relay_public_config|relay.client.tracing.config|VIBECODINGER_TELEMETRY_CHANNEL|"
     rb"tailscale.{0,48}funnel|--allow-funnel|https?://[^\s'\x22]*(?:relay|clerk)\.t3\.codes|"
     rb"t3-task-cache\.pinglabs\.workers\.dev|"
     rb"@clerk/(?:expo|react|electron)|cloudAuthProvider|managedAuthShell|"

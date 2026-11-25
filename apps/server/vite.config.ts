@@ -23,14 +23,7 @@ const buildVersion =
   process.env.APP_VERSION?.trim() ||
   resolveTaggedSourceVersion(NodePath.join(import.meta.dirname, "../.."), packageJson.version);
 const cliBuildChannel = /^[^-+]+-(?:nightly|preview)\./.test(buildVersion) ? "nightly" : "latest";
-// Official release workflows set the telemetry channel; local builds and forks use "dev".
-const TELEMETRY_CHANNELS = ["stable", "nightly", "preview", "dev"];
-const telemetryChannel = process.env.VIBECODINGER_TELEMETRY_CHANNEL?.trim() || "dev";
-if (!TELEMETRY_CHANNELS.includes(telemetryChannel)) {
-  throw new Error(
-    `VIBECODINGER_TELEMETRY_CHANNEL must be one of ${TELEMETRY_CHANNELS.join(", ")}, got "${telemetryChannel}".`,
-  );
-}
+const releaseBuild = process.env.VIBECODINGER_RELEASE_BUILD === "1";
 
 // tsdown SEA needs one chunk (sourcemaps count) and Node >=25.7, so package separately.
 // "bundle" emits the embedded CLI. "1" builds dist-exe/vibecodinger from the bootstrap.
@@ -149,7 +142,7 @@ export default mergeConfig(
       },
       define: {
         __VIBECODINGER_BUILD_CHANNEL__: JSON.stringify(cliBuildChannel),
-        __VIBECODINGER_TELEMETRY_CHANNEL__: JSON.stringify(telemetryChannel),
+        __VIBECODINGER_RELEASE_BUILD__: JSON.stringify(releaseBuild),
       },
     },
     test: {

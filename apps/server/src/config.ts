@@ -13,15 +13,9 @@ import { sweepStalePendingAttachments } from "./attachmentStore.ts";
 import { markNoCopyOnWrite } from "./noCopyOnWrite.ts";
 import { DEFAULT_SIGNAL_EXPORT, type SignalExport } from "@t3tools/shared/observability";
 import * as OtelEnvironment from "@t3tools/shared/otelEnvironment";
-import type { ReleaseChannel } from "@t3tools/shared/releaseResource";
-
-// Official release workflows set this telemetry channel; other builds report dev.
-// Unlike __VIBECODINGER_BUILD_CHANNEL__, this is not the sign-in page's latest/nightly channel.
-declare const __VIBECODINGER_TELEMETRY_CHANNEL__: ReleaseChannel | undefined;
-export const telemetryChannel: ReleaseChannel =
-  typeof __VIBECODINGER_TELEMETRY_CHANNEL__ === "undefined"
-    ? "dev"
-    : __VIBECODINGER_TELEMETRY_CHANNEL__;
+declare const __VIBECODINGER_RELEASE_BUILD__: boolean;
+export const releaseBuild =
+  typeof __VIBECODINGER_RELEASE_BUILD__ !== "undefined" && __VIBECODINGER_RELEASE_BUILD__;
 
 export const DEFAULT_PORT = 3773;
 

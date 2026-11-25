@@ -50,6 +50,8 @@ jobs:
           echo "value=$version" >> "$GITHUB_OUTPUT"
 
       - name: Build desktop and server bundles
+        env:
+          VIBECODINGER_RELEASE_BUILD: "1"
         run: vp run build:desktop:bundle
 
       - name: Upload bundles
@@ -127,8 +129,3 @@ jobs:
       version: ${{ needs.bundle.outputs.version }}
       ref: ${{ github.sha }}
       release_channel: preview
-      relay_client_tracing: false
-      clerk_publishable_key: ""
-      clerk_jwt_template: ""
-      clerk_cli_oauth_client_id: ""
-      relay_url: ""
