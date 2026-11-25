@@ -1545,7 +1545,7 @@ export class Launcher {
     if (this.#stateDirFreeProbes < 2) return;
     this.#clearTimer();
     await this.#claimServing();
-    this.#log("[service-launcher] The T3 home is free again. Starting the server.\n");
+    this.#log("[service-launcher] The data directory is free again. Starting the server.\n");
     const update = this.#state.update;
     if (update?.status === "pending") await this.#startTrial(update);
     else await this.#startChild(this.#state.activeVersion, "active", update);
