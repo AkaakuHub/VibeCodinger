@@ -1,6 +1,6 @@
 import {
-  t3ConnectTroubleshootingUrl,
-  type T3ConnectTroubleshootingSection,
+  vcConnectTroubleshootingUrl,
+  type VibeCodingerConnectTroubleshootingSection,
 } from "@vibecodinger/contracts";
 import type { RelayEnvironmentStatusResponse } from "@vibecodinger/contracts/relay";
 import * as DateTime from "effect/DateTime";
@@ -307,7 +307,7 @@ function steps(
 function helpSection(
   located: Located,
   failure: ConnectionAttemptError | null,
-): T3ConnectTroubleshootingSection {
+): VibeCodingerConnectTroubleshootingSection {
   switch (located.cause) {
     case "offline":
       return "this-device-cant-reach-t3-connect";
@@ -445,7 +445,7 @@ export function presentConnectionDiagnosis(
     facts,
     moreInfoUrl:
       relayPath || located.cause === "session_pending"
-        ? t3ConnectTroubleshootingUrl(helpSection(located, failure))
+        ? vcConnectTroubleshootingUrl(helpSection(located, failure))
         : null,
   };
 }

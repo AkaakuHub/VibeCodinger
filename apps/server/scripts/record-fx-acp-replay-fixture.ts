@@ -137,7 +137,7 @@ function wireToEntries(wire: ReadonlyArray<WireMessage>): {
   readonly droppedFrames: number;
 } {
   const entries: Array<ProviderReplayEntry> = [];
-  const t3Requests = new Map<string, string>();
+  const vcRequests = new Map<string, string>();
   const agentRequests = new Map<string, string>();
   let droppedFrames = 0;
   for (const { direction, message } of wire) {
@@ -145,7 +145,7 @@ function wireToEntries(wire: ReadonlyArray<WireMessage>): {
     if (typeof message.method === "string") {
       const isRequest = message.id !== undefined && message.id !== null;
       if (isRequest) {
-        (direction === "outgoing" ? t3Requests : agentRequests).set(
+        (direction === "outgoing" ? vcRequests : agentRequests).set(
           String(message.id),
           message.method,
         );
@@ -162,7 +162,7 @@ function wireToEntries(wire: ReadonlyArray<WireMessage>): {
       });
       continue;
     }
-    const pending = direction === "outgoing" ? agentRequests : t3Requests;
+    const pending = direction === "outgoing" ? agentRequests : vcRequests;
     const method = pending.get(String(message.id));
     if (method === undefined) {
       droppedFrames += 1;

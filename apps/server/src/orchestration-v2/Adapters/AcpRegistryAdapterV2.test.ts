@@ -46,7 +46,7 @@ import * as AcpRegistrySupport from "@vibecodinger/provider-acp-registry/server/
 import * as AcpRegistryRuntimeCoordinator from "@vibecodinger/provider-acp-registry/server/AcpRegistryRuntimeCoordinator";
 import { ACP_SESSION_MODE_OPTION_ID } from "@vibecodinger/provider-acp/server/sessionConfig";
 import * as AcpSessionRuntime from "@vibecodinger/provider-acp/server/AcpSessionRuntime";
-import { t3AcpPromptWithInstructions } from "@vibecodinger/provider-core/server/orchestrationInstructions";
+import { vcAcpPromptWithInstructions } from "@vibecodinger/provider-core/server/orchestrationInstructions";
 import { buildRuntimeInstructions } from "@vibecodinger/provider-core/server/runtimeInstructions";
 import * as IdAllocator from "@vibecodinger/provider-core/server/IdAllocator";
 import {
@@ -1744,7 +1744,7 @@ describe("AcpRegistryAdapterV2", () => {
             type: "text",
             text:
               ordinal === 1
-                ? t3AcpPromptWithInstructions({
+                ? vcAcpPromptWithInstructions({
                     prompt: "test prompt",
                     state: {
                       interactionMode: "default",

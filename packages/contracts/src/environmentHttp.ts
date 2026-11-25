@@ -519,11 +519,13 @@ const VIBECODINGER_CONNECT_TROUBLESHOOTING_SECTIONS = [
   "the-host-runs-an-older-vibe-codinger",
   "t3-connect-returned-an-error",
 ] as const;
-export type T3ConnectTroubleshootingSection =
+export type VibeCodingerConnectTroubleshootingSection =
   (typeof VIBECODINGER_CONNECT_TROUBLESHOOTING_SECTIONS)[number];
 
 /** Clients, the CLI, and server logs link here as "More info". */
-export function t3ConnectTroubleshootingUrl(section: T3ConnectTroubleshootingSection): string {
+export function vcConnectTroubleshootingUrl(
+  section: VibeCodingerConnectTroubleshootingSection,
+): string {
   return `https://github.com/pingdotgg/t3code/blob/main/docs/user/t3-connect-troubleshooting.md#${section}`;
 }
 
@@ -1048,7 +1050,7 @@ class EnvironmentConnectHttpApi extends HttpApiGroup.make("connect")
     }),
   )
   .add(
-    HttpApiEndpoint.post("t3MintCredential", "/api/t3-connect/mint-credential", {
+    HttpApiEndpoint.post("vcMintCredential", "/api/t3-connect/mint-credential", {
       payload: RelayCloudMintCredentialRequest,
       success: RelayEnvironmentMintResponse,
       error: EnvironmentHttpCloudErrors,

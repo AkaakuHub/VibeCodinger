@@ -40,10 +40,10 @@ export const layer = Layer.effect(
       Effect.try({
         try: () => {
           const { DataType, load, open } = requireForFfi("ffi-rs") as typeof import("ffi-rs");
-          open({ library: "t3-libsystem", path: "/usr/lib/libSystem.B.dylib" });
+          open({ library: "vc-libsystem", path: "/usr/lib/libSystem.B.dylib" });
           return (source: string, destination: string) =>
             load({
-              library: "t3-libsystem",
+              library: "vc-libsystem",
               funcName: "clonefile",
               retType: DataType.I32,
               paramsType: [DataType.String, DataType.String, DataType.I32],

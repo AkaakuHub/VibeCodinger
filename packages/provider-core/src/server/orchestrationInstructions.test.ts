@@ -4,9 +4,9 @@ import {
   VIBECODINGER_DEVICE_TOOL_INSTRUCTIONS,
   VIBECODINGER_DEVICE_TOOL_INSTRUCTIONS_WITH_TOOL_SEARCH,
   VIBECODINGER_ORCHESTRATION_INSTRUCTIONS,
-  t3AcpPromptWithInstructions,
-  t3OrchestrationPrompt,
-  t3OrchestrationSystemPrompt,
+  vcAcpPromptWithInstructions,
+  vcOrchestrationPrompt,
+  vcOrchestrationSystemPrompt,
 } from "./orchestrationInstructions.ts";
 
 describe("T3 device instructions", () => {
@@ -40,12 +40,12 @@ describe("T3 device instructions", () => {
   });
 
   it("reach OpenCode and Cursor only when the session holds device access", () => {
-    assert.include(t3OrchestrationSystemPrompt(true, true), VIBECODINGER_DEVICE_TOOL_INSTRUCTIONS);
-    assert.notInclude(t3OrchestrationSystemPrompt(true, false), "## VibeCodinger devices");
-    assert.isUndefined(t3OrchestrationSystemPrompt(false, true));
+    assert.include(vcOrchestrationSystemPrompt(true, true), VIBECODINGER_DEVICE_TOOL_INSTRUCTIONS);
+    assert.notInclude(vcOrchestrationSystemPrompt(true, false), "## VibeCodinger devices");
+    assert.isUndefined(vcOrchestrationSystemPrompt(false, true));
 
     const firstRun = (hasDeviceTools: boolean) =>
-      t3OrchestrationPrompt({
+      vcOrchestrationPrompt({
         prompt: "Check the login screen.",
         hasVibeCodingerMcp: true,
         hasDeviceTools,
@@ -56,7 +56,7 @@ describe("T3 device instructions", () => {
     assert.notInclude(firstRun(false), "## VibeCodinger devices");
 
     const laterRun = (deviceInstructionsDelivered: boolean) =>
-      t3OrchestrationPrompt({
+      vcOrchestrationPrompt({
         prompt: "Check the login screen.",
         hasVibeCodingerMcp: true,
         hasDeviceTools: true,
@@ -69,7 +69,7 @@ describe("T3 device instructions", () => {
 
     // A provider's own guidance reaches a conversation that already had the rest.
     const providerRun = (providerInstructionsDelivered: boolean) =>
-      t3OrchestrationPrompt({
+      vcOrchestrationPrompt({
         prompt: "Check the login screen.",
         hasVibeCodingerMcp: true,
         hasDeviceTools: false,
@@ -89,18 +89,18 @@ describe("T3 device instructions", () => {
       hasVibeCodingerMcp: true,
       hasDeviceTools: false,
     } as const;
-    const withDevices = t3AcpPromptWithInstructions({
+    const withDevices = vcAcpPromptWithInstructions({
       prompt: "Check the login screen.",
       state: { ...state, hasDeviceTools: true },
       previousState: state,
     });
     assert.include(withDevices, VIBECODINGER_DEVICE_TOOL_INSTRUCTIONS);
     assert.equal(
-      t3AcpPromptWithInstructions({ prompt: "Again.", state, previousState: state }),
+      vcAcpPromptWithInstructions({ prompt: "Again.", state, previousState: state }),
       "Again.",
     );
     assert.notInclude(
-      t3AcpPromptWithInstructions({ prompt: "Hi.", state }),
+      vcAcpPromptWithInstructions({ prompt: "Hi.", state }),
       "## VibeCodinger devices",
     );
   });

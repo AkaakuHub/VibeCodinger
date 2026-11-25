@@ -20,7 +20,7 @@ import { HttpClient } from "effect/http";
 import * as Headers from "effect/http/Headers";
 import * as HostProcess from "@vibecodinger/shared/HostProcess";
 
-import { ExpoApiGraphQLGroup, type T3EasSimulatorSession } from "./ExpoApi.graphql.ts";
+import { ExpoApiGraphQLGroup, type VibeCodingerEasSimulatorSession } from "./ExpoApi.graphql.ts";
 import type { DeviceRunSessionStatus } from "../../schema/expo.graphql.ts";
 
 const EXPO_GRAPHQL_URL = "https://api.expo.dev/graphql";
@@ -225,7 +225,7 @@ const toExpoApiError = (
 };
 
 const toSession = (
-  session: T3EasSimulatorSession.Result["deviceRunSessions"]["byId"],
+  session: VibeCodingerEasSimulatorSession.Result["deviceRunSessions"]["byId"],
 ): EasSession => {
   const remote = session.remoteConfig;
   return {
@@ -289,7 +289,7 @@ export const makeExpoApi = (http: HttpClient.HttpClient, credential: ExpoCredent
 
   return {
     credential,
-    viewer: call("read the signed-in account", (expo) => expo.T3ExpoViewer()).pipe(
+    viewer: call("read the signed-in account", (expo) => expo.VibeCodingerExpoViewer()).pipe(
       Effect.flatMap(({ meActor }) =>
         meActor === null
           ? Effect.fail(
@@ -313,7 +313,7 @@ export const makeExpoApi = (http: HttpClient.HttpClient, credential: ExpoCredent
     ),
     create: (input: CreateEasSessionInput) =>
       call("start a simulator session", (expo) =>
-        expo.T3CreateEasSimulatorSession({
+        expo.VibeCodingerCreateEasSimulatorSession({
           input: {
             appId: input.appId,
             platform: input.platform === "ios" ? "IOS" : "ANDROID",
@@ -327,12 +327,12 @@ export const makeExpoApi = (http: HttpClient.HttpClient, credential: ExpoCredent
         }),
       ).pipe(Effect.map(({ deviceRunSession }) => deviceRunSession.createDeviceRunSession.id)),
     session: (id: string) =>
-      call("read a simulator session", (expo) => expo.T3EasSimulatorSession({ id })).pipe(
+      call("read a simulator session", (expo) => expo.VibeCodingerEasSimulatorSession({ id })).pipe(
         Effect.map(({ deviceRunSessions }) => toSession(deviceRunSessions.byId)),
       ),
     activeSessions: (appId: string) =>
       call("list simulator sessions", (expo) =>
-        expo.T3ActiveEasSimulatorSessions({
+        expo.VibeCodingerActiveEasSimulatorSessions({
           appId,
           filter: { statuses: ["NEW", "QUEUED", "STARTING", "IN_PROGRESS"] },
         }),
@@ -340,7 +340,9 @@ export const makeExpoApi = (http: HttpClient.HttpClient, credential: ExpoCredent
         Effect.map(({ app }) => app.byId.deviceRunSessionsPaginated.edges.map(({ node }) => node)),
       ),
     stop: (id: string) =>
-      call("stop a simulator session", (expo) => expo.T3StopEasSimulatorSession({ id })).pipe(
+      call("stop a simulator session", (expo) =>
+        expo.VibeCodingerStopEasSimulatorSession({ id }),
+      ).pipe(
         Effect.map(({ deviceRunSession }) => deviceRunSession.ensureDeviceRunSessionStopped.status),
       ),
   };

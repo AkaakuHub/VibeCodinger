@@ -2,18 +2,18 @@
 import { VIBECODINGER_ORCHESTRATION_INSTRUCTIONS } from "@vibecodinger/provider-core/server/orchestrationInstructions";
 import { PULL_REQUEST_LINKING_INSTRUCTIONS } from "@vibecodinger/provider-core/server/runtimeInstructions";
 
-export const PI_T3_MCP_EXTENSION_FILENAME = "pi-t3-mcp-extension.ts";
+export const PI_VC_MCP_EXTENSION_FILENAME = "pi-vc-mcp-extension.ts";
 
 export const VIBECODINGER_MCP_URL_ENV = "VIBECODINGER_MCP_URL";
 export const VIBECODINGER_MCP_BEARER_ENV = "VIBECODINGER_MCP_BEARER_TOKEN";
 export const VIBECODINGER_PI_RUNTIME_MODE_ENV = "VIBECODINGER_PI_RUNTIME_MODE";
 export const VIBECODINGER_PI_MCP_EXTENSION_PATH_ENV = "VIBECODINGER_PI_MCP_EXTENSION_PATH";
-export const PI_T3_SERVICE_TIER_COMMAND = "vibecodinger-service-tier";
+export const PI_VC_SERVICE_TIER_COMMAND = "vibecodinger-service-tier";
 
 // These tools trigger file-change approvals, bypassed by Auto-accept edits.
 export const PI_FILE_CHANGE_TOOLS = ["edit", "write"] as const;
 
-export const PI_T3_MCP_EXTENSION_SOURCE = `\
+export const PI_VC_MCP_EXTENSION_SOURCE = `\
 import { stripFrontmatter, type ExtensionAPI, type ExtensionContext } from "@earendil-works/pi-coding-agent";
 import * as NodeCrypto from "node:crypto";
 import * as NodeFSP from "node:fs/promises";
@@ -26,7 +26,7 @@ const RUNTIME_MODE_ENV = ${JSON.stringify(VIBECODINGER_PI_RUNTIME_MODE_ENV)};
 const EXTENSION_PATH_ENV = ${JSON.stringify(VIBECODINGER_PI_MCP_EXTENSION_PATH_ENV)};
 const ORCHESTRATION_INSTRUCTIONS = ${JSON.stringify(VIBECODINGER_ORCHESTRATION_INSTRUCTIONS.trim())};
 const PULL_REQUEST_LINKING_INSTRUCTIONS = ${JSON.stringify(PULL_REQUEST_LINKING_INSTRUCTIONS)};
-const SERVICE_TIER_COMMAND = ${JSON.stringify(PI_T3_SERVICE_TIER_COMMAND)};
+const SERVICE_TIER_COMMAND = ${JSON.stringify(PI_VC_SERVICE_TIER_COMMAND)};
 const PROTOCOL = "2025-06-18";
 const READ_ONLY_TOOLS = new Set(["read", "grep", "find", "ls"]);
 const FILE_CHANGE_TOOLS = new Set(${JSON.stringify(PI_FILE_CHANGE_TOOLS)});

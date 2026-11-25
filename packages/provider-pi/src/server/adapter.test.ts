@@ -57,7 +57,7 @@ import {
 } from "./adapter.ts";
 import { makePiRpcConnection, type PiRpcRecord } from "./rpc.ts";
 import { loadMcpBridge } from "./mcpBridge.testkit.ts";
-import { PI_T3_SERVICE_TIER_COMMAND } from "./mcpExtensionSource.ts";
+import { PI_VC_SERVICE_TIER_COMMAND } from "./mcpExtensionSource.ts";
 import { turnItemOutputText } from "../../../client-runtime/src/work-log/itemDetail.ts";
 
 const layerTest = Layer.mergeAll(
@@ -256,7 +256,7 @@ const makeFakePi: Effect.Effect<FakePi> = Effect.gen(function* () {
   let serviceTier: string | null = null;
   let promptDisposition = true;
   let currentModel = "default";
-  const serviceTierCommand = `/${PI_T3_SERVICE_TIER_COMMAND}`;
+  const serviceTierCommand = `/${PI_VC_SERVICE_TIER_COMMAND}`;
 
   const emit = (record: PiRpcRecord, chunkBytes?: number) =>
     Effect.gen(function* () {
@@ -2208,7 +2208,7 @@ describe("PiAdapterV2", () => {
       // A thread's long-lived process keeps Pi's startup model refresh unless the user opts out.
       assert.notInclude(spawn.args, "--offline");
       assert.isUndefined(spawn.env.PI_OFFLINE);
-      assert.isTrue(extensions.some((path) => path?.endsWith("pi-t3-mcp-extension.ts")));
+      assert.isTrue(extensions.some((path) => path?.endsWith("pi-vc-mcp-extension.ts")));
       assert.equal(spawn.env.VIBECODINGER_MCP_URL, "http://127.0.0.1:43123/mcp");
       assert.equal(spawn.env.VIBECODINGER_MCP_BEARER_TOKEN, "secret-pi-token");
       assert.equal(spawn.env.VIBECODINGER_PI_RUNTIME_MODE, "full-access");
@@ -2871,15 +2871,15 @@ describe("PiAdapterV2", () => {
         fake
           .allRequests()
           .flatMap((request) =>
-            String(request["message"]).startsWith(`/${PI_T3_SERVICE_TIER_COMMAND}`)
+            String(request["message"]).startsWith(`/${PI_VC_SERVICE_TIER_COMMAND}`)
               ? [request["message"]]
               : [],
           ),
         [
-          `/${PI_T3_SERVICE_TIER_COMMAND} priority`,
-          `/${PI_T3_SERVICE_TIER_COMMAND} priority`,
-          `/${PI_T3_SERVICE_TIER_COMMAND} ultrafast`,
-          `/${PI_T3_SERVICE_TIER_COMMAND}`,
+          `/${PI_VC_SERVICE_TIER_COMMAND} priority`,
+          `/${PI_VC_SERVICE_TIER_COMMAND} priority`,
+          `/${PI_VC_SERVICE_TIER_COMMAND} ultrafast`,
+          `/${PI_VC_SERVICE_TIER_COMMAND}`,
         ],
       );
     }).pipe(Effect.scoped, Effect.provide(layerTest)),
@@ -7111,7 +7111,7 @@ describe("PiAdapterV2", () => {
               yield* fake.takeRequest("get_state");
             }
             yield* fake.emit({
-              type: "t3.settle_probe",
+              type: "vc.settle_probe",
               providerTurnId,
               settleProbeGeneration: 2,
               data: { isStreaming: false, isCompacting: false, pendingMessageCount: 0 },

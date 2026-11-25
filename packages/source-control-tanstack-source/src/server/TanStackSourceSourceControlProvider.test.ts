@@ -12,7 +12,7 @@ import * as TanStackSourceApi from "./TanStackSourceApi.ts";
 import * as TanStackSourceSourceControlProvider from "./TanStackSourceSourceControlProvider.ts";
 
 const REMOTE = "https://source.tanstack.com/@acme/web.git";
-const OWNER_KEY = "branch.pr-42.t3TanstackSourcePull";
+const OWNER_KEY = "branch.pr-42.vcTanstackSourcePull";
 
 /** Pull request #42 of acme/web, opened from a fork, so it checks out as `pr-42`. */
 const PULL = {

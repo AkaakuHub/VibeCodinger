@@ -154,13 +154,13 @@ function wireToEntries(wire: ReadonlyArray<WireMessage>): {
   readonly droppedFrames: number;
 } {
   const entries: Array<ProviderReplayEntry> = [];
-  const t3Requests = new Map<string, string>();
+  const vcRequests = new Map<string, string>();
   const agentRequests = new Map<string, string>();
   let droppedFrames = 0;
   for (const wireMessage of wire) {
     if (wireMessage.direction === "respawn") {
       // JSON-RPC ids restart with the process.
-      t3Requests.clear();
+      vcRequests.clear();
       agentRequests.clear();
       entries.push({ type: "runtime_exit", status: "success" });
       continue;
@@ -174,7 +174,7 @@ function wireToEntries(wire: ReadonlyArray<WireMessage>): {
       }
       const isRequest = message.id !== undefined && message.id !== null;
       if (isRequest) {
-        (direction === "outgoing" ? t3Requests : agentRequests).set(
+        (direction === "outgoing" ? vcRequests : agentRequests).set(
           String(message.id),
           message.method,
         );
@@ -191,7 +191,7 @@ function wireToEntries(wire: ReadonlyArray<WireMessage>): {
       });
       continue;
     }
-    const pending = direction === "outgoing" ? agentRequests : t3Requests;
+    const pending = direction === "outgoing" ? agentRequests : vcRequests;
     const method = pending.get(String(message.id));
     if (method === undefined) {
       // A response to a request T3 never saw; T3's protocol drops it, so replay

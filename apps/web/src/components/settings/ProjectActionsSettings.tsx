@@ -75,11 +75,11 @@ export function ProjectActionsSettings() {
   );
 
   const representativeMember = target?.projectId ? memberById.get(target.projectId) : undefined;
-  const t3File = useVibeCodingerProjectFileState(
+  const vcFile = useVibeCodingerProjectFileState(
     representativeMember?.environmentId ?? EnvironmentId.make("none"),
     representativeMember?.workspaceRoot ?? null,
   );
-  const importableScripts = t3File.scripts.filter(
+  const importableScripts = vcFile.scripts.filter(
     (fileScript) =>
       !scripts.some(
         (script) =>
@@ -197,7 +197,7 @@ export function ProjectActionsSettings() {
           onEdit={(script) => setRequest(editorRequestForScript(script, keybindings))}
         />
       )}
-      {t3File.status === "invalid" ? (
+      {vcFile.status === "invalid" ? (
         <SettingsRow
           title={gt("vibecodinger.json is invalid")}
           description={gt(

@@ -734,33 +734,33 @@ export function summarizeToolGroup(
     ToolGroupAction | VibeCodingerMcpToolSummaryAction,
     {
       action: ToolGroupAction;
-      t3Action: VibeCodingerMcpToolSummaryAction | null;
+      vcAction: VibeCodingerMcpToolSummaryAction | null;
       entries: WorkLogPresentationEntry[];
     }
   >();
   const sources = new Map<string, ToolActivitySource>();
   for (const entry of entries) {
-    const t3Action = resolveVibeCodingerMcpSummaryAction(
+    const vcAction = resolveVibeCodingerMcpSummaryAction(
       workEntryToolName(entry),
       vibeCodingerToolSummaryCall(entry).input,
     );
-    if (entry.toolSource && t3Action === null) {
+    if (entry.toolSource && vcAction === null) {
       sources.set(entry.toolSource.key, entry.toolSource);
       continue;
     }
     const action = toolGroupAction(entry);
-    const key = t3Action ?? action;
+    const key = vcAction ?? action;
     const group = groups.get(key);
     if (group) group.entries.push(entry);
-    else groups.set(key, { action, t3Action, entries: [entry] });
+    else groups.set(key, { action, vcAction, entries: [entry] });
   }
   const summaries = [...groups].map(([action, group], index) => ({
     index,
     count: group.entries.length,
     priority: summaryActionPriority(action),
-    ...(group.t3Action
+    ...(group.vcAction
       ? summarizeVibeCodingerToolCalls(
-          group.t3Action,
+          group.vcAction,
           group.entries.map(vibeCodingerToolSummaryCall),
           resolve,
         )

@@ -1,5 +1,5 @@
 import type { DpopFailureReason } from "@vibecodinger/contracts";
-import { T3CHAT_PLAN_TUNNEL_LIMITS, type RelayProtectedError } from "@vibecodinger/contracts/relay";
+import { VC_PLAN_TUNNEL_LIMITS, type RelayProtectedError } from "@vibecodinger/contracts/relay";
 import { mFallback, msg } from "gt-i18n";
 import type { MFunctionType } from "gt-i18n/types";
 
@@ -98,14 +98,14 @@ export function relayProtectedErrorText(error: RelayProtectedError): MarkedText 
             }),
           ];
     case "RelayEnvironmentLinkLimitExceededError":
-      return error.maxTunnels < T3CHAT_PLAN_TUNNEL_LIMITS.premier
+      return error.maxTunnels < VC_PLAN_TUNNEL_LIMITS.premier
         ? [
             msg(
               "Relay refused the link: this account already has its maximum of {maxTunnels} managed tunnels. Unlink an environment, or link a paid T3 Chat account in your T3 Connect account settings on web or desktop. Pro raises the default limit to {pro} and Premier to {premier}.",
               {
                 maxTunnels: error.maxTunnels,
-                pro: T3CHAT_PLAN_TUNNEL_LIMITS.pro,
-                premier: T3CHAT_PLAN_TUNNEL_LIMITS.premier,
+                pro: VC_PLAN_TUNNEL_LIMITS.pro,
+                premier: VC_PLAN_TUNNEL_LIMITS.premier,
               },
             ),
           ]

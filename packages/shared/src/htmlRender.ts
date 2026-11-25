@@ -379,7 +379,7 @@ export function htmlRenderThemeFragment(theme: HtmlRenderTheme): string {
   return `#${THEME_FRAGMENT_KEY}=${encodeURIComponent(JSON.stringify(theme))}`;
 }
 
-const CONTAIN_SCROLL_FRAGMENT_KEY = "t3-contain-scroll";
+const CONTAIN_SCROLL_FRAGMENT_KEY = "vc-contain-scroll";
 
 /** Appended after the theme fragment for a frame whose page must not scroll the host. */
 export const HTML_RENDER_CONTAIN_SCROLL_FRAGMENT = `&${CONTAIN_SCROLL_FRAGMENT_KEY}`;

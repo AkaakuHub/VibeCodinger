@@ -448,4 +448,4 @@ export const RelayEnvironmentMintResponse = Schema.Struct({
 export type RelayEnvironmentMintResponse = typeof RelayEnvironmentMintResponse.Type;
 
 // A linked paid T3 Chat plan raises the default managed tunnel cap.
-export const T3CHAT_PLAN_TUNNEL_LIMITS = { pro: 10, premier: 100 } as const;
+export const VC_PLAN_TUNNEL_LIMITS = { pro: 10, premier: 100 } as const;

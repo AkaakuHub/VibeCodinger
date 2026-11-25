@@ -131,7 +131,7 @@ describe("AcpRuntimeModel", () => {
     } as EffectAcpSchema.InitializeResponse);
 
     expect(response.modes).toBeUndefined();
-    expect(response._meta).toMatchObject({ t3SessionLoadReady: "replay_idle" });
+    expect(response._meta).toMatchObject({ vcSessionLoadReady: "replay_idle" });
   });
 
   it("keeps initialize mode state whose modes have null descriptions", () => {

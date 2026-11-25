@@ -72,17 +72,17 @@ const VIBECODINGER_ACP_PLAN_MODE_INSTRUCTIONS = `## VibeCodinger interaction mod
 
 Investigate with read-only actions and do not edit files or otherwise execute the implementation. Resolve discoverable facts before asking questions. When the requirements are decision complete, return a concrete implementation plan and do not start implementing it. Treat this mode as active until VibeCodinger supplies a different interaction-mode instruction.`;
 
-export interface T3AcpInstructionState {
+export interface VibeCodingerAcpInstructionState {
   readonly interactionMode: ProviderInteractionMode;
   readonly hasVibeCodingerMcp: boolean;
   readonly hasDeviceTools: boolean;
 }
 
 /** ACP lacks system/developer fields; inject context on first prompt and tool/mode changes. */
-export function t3AcpPromptWithInstructions(input: {
+export function vcAcpPromptWithInstructions(input: {
   readonly prompt: string;
-  readonly state: T3AcpInstructionState;
-  readonly previousState?: T3AcpInstructionState;
+  readonly state: VibeCodingerAcpInstructionState;
+  readonly previousState?: VibeCodingerAcpInstructionState;
 }): string {
   // Native slash commands must remain at the start of the prompt.
   if (input.prompt.trimStart().startsWith("/")) return input.prompt;
@@ -114,12 +114,15 @@ const orchestrationInstructions = (hasDeviceTools: boolean) =>
     ? `${VIBECODINGER_ORCHESTRATION_INSTRUCTIONS}\n${VIBECODINGER_DEVICE_TOOL_INSTRUCTIONS}\n`
     : VIBECODINGER_ORCHESTRATION_INSTRUCTIONS;
 
-function prependT3OrchestrationInstructions(prompt: string, instructions: string): string {
+function prependVibeCodingerOrchestrationInstructions(
+  prompt: string,
+  instructions: string,
+): string {
   return `<vibe_codinger_orchestration_instructions>${instructions.trim()}</vibe_codinger_orchestration_instructions>\n\n<user_request>\n${prompt}\n</user_request>`;
 }
 
 /** For providers whose instructions ride on the prompt, so a compacted conversation loses them. */
-export function t3OrchestrationPrompt(input: {
+export function vcOrchestrationPrompt(input: {
   readonly prompt: string;
   readonly hasVibeCodingerMcp: boolean;
   readonly hasDeviceTools: boolean;
@@ -140,10 +143,10 @@ export function t3OrchestrationPrompt(input: {
   ].flatMap((part) => (part === undefined ? [] : [part.trim()]));
   return instructions.length === 0
     ? input.prompt
-    : prependT3OrchestrationInstructions(input.prompt, instructions.join("\n\n"));
+    : prependVibeCodingerOrchestrationInstructions(input.prompt, instructions.join("\n\n"));
 }
 
-export function t3OrchestrationSystemPrompt(
+export function vcOrchestrationSystemPrompt(
   hasVibeCodingerMcp: boolean,
   hasDeviceTools: boolean,
 ): string | undefined {

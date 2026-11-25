@@ -2011,7 +2011,7 @@ export const make = Effect.fn("AcpSessionRuntime.make")(function* (
       meta !== null &&
       typeof meta === "object" &&
       !Array.isArray(meta) &&
-      (meta as { readonly t3SessionLoadReady?: unknown }).t3SessionLoadReady === "replay_idle";
+      (meta as { readonly vcSessionLoadReady?: unknown }).vcSessionLoadReady === "replay_idle";
     const extractedModelConfigId = extractModelConfigId(sessionSetupResult);
     const nextModelConfigId =
       extractedModelConfigId ?? (syntheticReplayIdle ? current.modelConfigId : undefined);

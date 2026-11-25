@@ -727,7 +727,7 @@ describe("ClaudeAdapterV2 MCP query overrides", () => {
       headers: {
         Authorization: "Bearer secret-claude-token",
       },
-      timeout: ClaudeAdapterV2.CLAUDE_T3_MCP_TOOL_TIMEOUT_MS,
+      timeout: ClaudeAdapterV2.CLAUDE_VC_MCP_TOOL_TIMEOUT_MS,
     },
   } as const;
 
@@ -756,11 +756,11 @@ describe("ClaudeAdapterV2 MCP query overrides", () => {
     assert.deepEqual(overrides, {
       allowedTools: [
         ...ClaudeAdapterV2.CLAUDE_READ_ONLY_ALLOWED_TOOLS,
-        ...ClaudeAdapterV2.CLAUDE_READ_ONLY_T3_MCP_ALLOWED_TOOLS,
+        ...ClaudeAdapterV2.CLAUDE_READ_ONLY_VC_MCP_ALLOWED_TOOLS,
       ],
       mcpServers: VIBECODINGER_MCP_SERVERS,
     });
-    assert.isFalse(overrides.allowedTools?.includes(ClaudeAdapterV2.CLAUDE_T3_MCP_TOOL_WILDCARD));
+    assert.isFalse(overrides.allowedTools?.includes(ClaudeAdapterV2.CLAUDE_VC_MCP_TOOL_WILDCARD));
   });
 
   it("invalidates live-query reuse when MCP credentials rotate or tracked folders change", () => {
@@ -826,7 +826,7 @@ describe("ClaudeAdapterV2 MCP query overrides", () => {
     // regression: #32022 Claude Plan mode asks before every non-read-only MCP call
     assert.include(readOnlyToolNames, "mcp__vibe-codinger__vc_background_wait");
     assert.deepEqual(
-      [...ClaudeAdapterV2.CLAUDE_READ_ONLY_T3_MCP_ALLOWED_TOOLS].sort(),
+      [...ClaudeAdapterV2.CLAUDE_READ_ONLY_VC_MCP_ALLOWED_TOOLS].sort(),
       readOnlyToolNames,
     );
   });
@@ -836,7 +836,7 @@ describe("ClaudeAdapterV2 SDK warnings", () => {
   it("drops only the SDK's canUseTool shadowing warning while opening a query", async () => {
     using emitWarning = vi.spyOn(process, "emitWarning").mockImplementation(() => {});
     for (const options of [
-      { permissionMode: "default", allowedTools: [ClaudeAdapterV2.CLAUDE_T3_MCP_TOOL_WILDCARD] },
+      { permissionMode: "default", allowedTools: [ClaudeAdapterV2.CLAUDE_VC_MCP_TOOL_WILDCARD] },
       { permissionMode: "bypassPermissions", allowDangerouslySkipPermissions: true },
     ] satisfies ReadonlyArray<ClaudeSdk.Options>) {
       const query = ClaudeAdapterV2.withoutClaudeCanUseToolShadowedWarning(() =>
@@ -892,7 +892,7 @@ describe("ClaudeAdapterV2 native protocol logging", () => {
           headers: {
             Authorization: "Bearer secret-claude-token",
           },
-          timeout: ClaudeAdapterV2.CLAUDE_T3_MCP_TOOL_TIMEOUT_MS,
+          timeout: ClaudeAdapterV2.CLAUDE_VC_MCP_TOOL_TIMEOUT_MS,
         },
       },
     });

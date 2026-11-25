@@ -18,7 +18,7 @@ import {
   materializePiVibeCodingerMcpExtension,
   resolvePiLaunchArgs,
 } from "./mcpInjection.ts";
-import { PI_T3_MCP_EXTENSION_SOURCE } from "./mcpExtensionSource.ts";
+import { PI_VC_MCP_EXTENSION_SOURCE } from "./mcpExtensionSource.ts";
 
 const threadId = ThreadId.make("thread-pi-t3-mcp");
 
@@ -43,7 +43,7 @@ describe("pi T3 MCP injection", () => {
       launchArgs: resolvedArgs.args,
       environment: { PATH: "/usr/bin" },
       mcpSession,
-      extensionPath: "/tmp/cache/pi-t3-mcp-extension.ts",
+      extensionPath: "/tmp/cache/pi-vc-mcp-extension.ts",
       runtimeMode: "approval-required",
     });
     assert.deepEqual(launch.args, [
@@ -63,7 +63,7 @@ describe("pi T3 MCP injection", () => {
       "-review",
       "--extension-flag=kept",
       "--extension",
-      "/tmp/cache/pi-t3-mcp-extension.ts",
+      "/tmp/cache/pi-vc-mcp-extension.ts",
     ]);
     assert.notInclude(launch.args, "--no-extensions");
     assert.equal(launch.env[VIBECODINGER_MCP_URL_ENV], "http://127.0.0.1:43123/mcp");
@@ -71,7 +71,7 @@ describe("pi T3 MCP injection", () => {
     assert.equal(launch.env[VIBECODINGER_PI_RUNTIME_MODE_ENV], "approval-required");
     assert.equal(
       launch.env[VIBECODINGER_PI_MCP_EXTENSION_PATH_ENV],
-      "/tmp/cache/pi-t3-mcp-extension.ts",
+      "/tmp/cache/pi-vc-mcp-extension.ts",
     );
 
     const permissionOnly = buildPiRpcLaunch({
@@ -82,21 +82,21 @@ describe("pi T3 MCP injection", () => {
         [VIBECODINGER_PI_MCP_EXTENSION_PATH_ENV]: "/stale/extension.ts",
       },
       mcpSession: undefined,
-      extensionPath: "/tmp/cache/pi-t3-mcp-extension.ts",
+      extensionPath: "/tmp/cache/pi-vc-mcp-extension.ts",
       runtimeMode: "auto-accept-edits",
     });
     assert.deepEqual(permissionOnly.args, [
       "--mode",
       "rpc",
       "--extension",
-      "/tmp/cache/pi-t3-mcp-extension.ts",
+      "/tmp/cache/pi-vc-mcp-extension.ts",
     ]);
     assert.isUndefined(permissionOnly.env[VIBECODINGER_MCP_URL_ENV]);
     assert.isUndefined(permissionOnly.env[VIBECODINGER_MCP_BEARER_ENV]);
     assert.equal(permissionOnly.env[VIBECODINGER_PI_RUNTIME_MODE_ENV], "auto-accept-edits");
     assert.equal(
       permissionOnly.env[VIBECODINGER_PI_MCP_EXTENSION_PATH_ENV],
-      "/tmp/cache/pi-t3-mcp-extension.ts",
+      "/tmp/cache/pi-vc-mcp-extension.ts",
     );
   });
 
@@ -113,7 +113,7 @@ describe("pi T3 MCP injection", () => {
       ],
       environment: {},
       mcpSession,
-      extensionPath: "/tmp/cache/pi-t3-mcp-extension.ts",
+      extensionPath: "/tmp/cache/pi-vc-mcp-extension.ts",
       sessionPath: "/fake/persisted.jsonl",
       ephemeral: true,
       shortLived: true,
@@ -176,7 +176,7 @@ describe("materializePiVibeCodingerMcpExtension", () => {
         Effect.gen(function* () {
           for (let index = 0; index < stopAfter; index += 1) {
             yield* fs
-              .remove(path.join(directory, "pi-t3-mcp-extension.ts"), { force: true })
+              .remove(path.join(directory, "pi-vc-mcp-extension.ts"), { force: true })
               .pipe(Effect.ignore);
             yield* Effect.all(
               [
@@ -192,16 +192,16 @@ describe("materializePiVibeCodingerMcpExtension", () => {
         Effect.forever(
           Effect.gen(function* () {
             const text = yield* fs
-              .readFileString(path.join(directory, "pi-t3-mcp-extension.ts"))
+              .readFileString(path.join(directory, "pi-vc-mcp-extension.ts"))
               .pipe(Effect.option);
             if (Option.isNone(text)) return; // Missing between writes: legitimate.
             // A read that SUCCEEDS must return the full extension: an empty or
             // partial read means the writer truncated the file mid-write.
             if (text.value.length === 0) {
               anomalies.push("empty: truncated mid-write");
-            } else if (text.value.length !== PI_T3_MCP_EXTENSION_SOURCE.length) {
+            } else if (text.value.length !== PI_VC_MCP_EXTENSION_SOURCE.length) {
               anomalies.push(
-                `partial: ${text.value.length} of ${PI_T3_MCP_EXTENSION_SOURCE.length} chars`,
+                `partial: ${text.value.length} of ${PI_VC_MCP_EXTENSION_SOURCE.length} chars`,
               );
             }
           }),

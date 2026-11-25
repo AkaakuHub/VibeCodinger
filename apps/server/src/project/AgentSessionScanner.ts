@@ -830,7 +830,7 @@ function normalizeForWorktreeMatch(value: string, caseFold: boolean): string {
   return caseFold ? normalized.toLowerCase() : normalized;
 }
 
-function isT3ManagedWorktree(
+function isVibeCodingerManagedWorktree(
   candidatePath: string,
   worktreesDir: string,
   caseFold: boolean,
@@ -921,16 +921,16 @@ export const make = Effect.gen(function* () {
   const serverSettings = yield* ServerSettings.ServerSettingsService;
   const projectStore = yield* ProjectStore.ProjectStoreV2;
   const runtimes = yield* ProviderSessionRuntime.ProviderSessionRuntimeRepository;
-  const configuredT3Dirs = {
+  const configuredVibeCodingerDirs = {
     baseDir: path.resolve(serverConfig.baseDir),
     worktreesDir: path.resolve(serverConfig.worktreesDir),
   };
   // Resolved candidates are compared with T3's folders as resolved too, so a symlinked base still matches.
   const realPathOf = (directory: string) =>
     fileSystem.realPath(directory).pipe(Effect.orElseSucceed(() => directory));
-  const realT3Dirs = {
-    baseDir: yield* realPathOf(configuredT3Dirs.baseDir),
-    worktreesDir: yield* realPathOf(configuredT3Dirs.worktreesDir),
+  const realVibeCodingerDirs = {
+    baseDir: yield* realPathOf(configuredVibeCodingerDirs.baseDir),
+    worktreesDir: yield* realPathOf(configuredVibeCodingerDirs.worktreesDir),
   };
   const platform = yield* HostProcess.Platform;
   const isWindows = platform === "win32";
@@ -955,12 +955,12 @@ export const make = Effect.gen(function* () {
         normalizeForWorktreeMatch(ancestor, foldWorktreeCase),
       ),
     );
-  const isT3OwnedPath = (candidatePath: string, t3Dirs = configuredT3Dirs) =>
+  const isVibeCodingerOwnedPath = (candidatePath: string, vcDirs = configuredVibeCodingerDirs) =>
     normalizeForWorktreeMatch(candidatePath, foldWorktreeCase).startsWith(
-      normalizeForWorktreeMatch(t3Dirs.baseDir, foldWorktreeCase),
-    ) || isT3ManagedWorktree(candidatePath, t3Dirs.worktreesDir, foldWorktreeCase);
-  const isExcludedProjectPath = (candidatePath: string, t3Dirs = configuredT3Dirs) =>
-    isScratchPath(candidatePath) || isT3OwnedPath(candidatePath, t3Dirs);
+      normalizeForWorktreeMatch(vcDirs.baseDir, foldWorktreeCase),
+    ) || isVibeCodingerManagedWorktree(candidatePath, vcDirs.worktreesDir, foldWorktreeCase);
+  const isExcludedProjectPath = (candidatePath: string, vcDirs = configuredVibeCodingerDirs) =>
+    isScratchPath(candidatePath) || isVibeCodingerOwnedPath(candidatePath, vcDirs);
 
   const listDirectory = (directory: string) =>
     fileSystem.readDirectory(directory).pipe(Effect.orElseSucceed((): ReadonlyArray<string> => []));
@@ -1021,7 +1021,7 @@ export const make = Effect.gen(function* () {
       .realPath(directory)
       .pipe(Effect.orElseSucceed(() => directory));
     // Symlinks can disguise excluded worktree paths; re-check their targets.
-    return isExcludedProjectPath(realPath, realT3Dirs) ? Option.none() : stats;
+    return isExcludedProjectPath(realPath, realVibeCodingerDirs) ? Option.none() : stats;
   });
 
   // Paths whose own read outlived the deadline, mapped to when they may be read
@@ -1632,9 +1632,9 @@ export const make = Effect.gen(function* () {
   ) {
     if (projectRoots === undefined) return cwd;
     const resolved = path.resolve(expandHomePath(cwd.trim(), homeDir));
-    if (!isScratchPath(resolved) || isT3OwnedPath(resolved)) return cwd;
+    if (!isScratchPath(resolved) || isVibeCodingerOwnedPath(resolved)) return cwd;
     const realCwd = yield* realPathOf(resolved);
-    return isT3OwnedPath(realCwd, realT3Dirs) ? cwd : projectRoots[0]!;
+    return isVibeCodingerOwnedPath(realCwd, realVibeCodingerDirs) ? cwd : projectRoots[0]!;
   });
 
   const discoverCodexTranscripts = Effect.fn("AgentSessionScanner.discoverCodexTranscripts")(
@@ -2113,7 +2113,7 @@ export const make = Effect.gen(function* () {
   ) {
     const root = path.resolve(expandHomePath(workspaceRoot, homeDir));
     const realRoot = yield* fileSystem.realPath(root).pipe(Effect.orElseSucceed(() => root));
-    if (isExcludedProjectPath(root) || isExcludedProjectPath(realRoot, realT3Dirs)) {
+    if (isExcludedProjectPath(root) || isExcludedProjectPath(realRoot, realVibeCodingerDirs)) {
       return Stream.empty;
     }
     const rootIdentity = yield* directoryIdentity(root);

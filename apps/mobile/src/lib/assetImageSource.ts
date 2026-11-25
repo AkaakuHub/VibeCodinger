@@ -30,7 +30,7 @@ export function assetImageCacheKey(
     case "draft-workspace-file":
       return fileRevision === undefined
         ? undefined
-        : `t3-file:${JSON.stringify([
+        : `vc-file:${JSON.stringify([
             environmentId,
             resource._tag === "draft-workspace-file" ? resource.cwd : resource.threadId,
             resource.path,

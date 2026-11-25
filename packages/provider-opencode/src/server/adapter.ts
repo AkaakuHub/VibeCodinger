@@ -66,7 +66,7 @@ import {
   summarizeNativeProtocolPayload,
 } from "@vibecodinger/provider-core/server/nativeProtocolLogging";
 import { mergeProviderInstanceEnvironment } from "@vibecodinger/provider-core/server/instanceEnvironment";
-import { t3OrchestrationSystemPrompt } from "@vibecodinger/provider-core/server/orchestrationInstructions";
+import { vcOrchestrationSystemPrompt } from "@vibecodinger/provider-core/server/orchestrationInstructions";
 import { buildRuntimeInstructions } from "@vibecodinger/provider-core/server/runtimeInstructions";
 import * as OpenCodeRuntime from "./OpenCodeRuntime.ts";
 import { readableProviderErrorMessage } from "./providerErrorMessage.ts";
@@ -1094,7 +1094,7 @@ export const makeOpenCodeAdapterV2 = Effect.fn("makeOpenCodeAdapterV2")(function
 
         const mcpSession = yield* mcpSessions.read(input.threadId);
         const hasVibeCodingerMcp = mcpSession !== undefined && !connection.external;
-        const orchestrationSystemPrompt = t3OrchestrationSystemPrompt(
+        const orchestrationSystemPrompt = vcOrchestrationSystemPrompt(
           hasVibeCodingerMcp,
           mcpSession?.capabilities?.has("device") === true,
         );

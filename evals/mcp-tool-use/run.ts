@@ -486,7 +486,7 @@ export const normalizeToolName = (name: string) => {
     : (CODEX_NAMES[bare] ?? bare.slice(bare.lastIndexOf("_") + 1));
 };
 export const normalizeToolInput = (name: string, input: unknown) => {
-  const decode = t3InputDecoders.get(normalizeToolName(name));
+  const decode = vcInputDecoders.get(normalizeToolName(name));
   if (decode !== undefined) return Option.getOrElse(decode(input), () => input);
   return normalizeToolName(name) === "Bash" && isRecord(input)
     ? { ...input, command: input.command ?? input.cmd }
@@ -497,7 +497,7 @@ export const normalizeToolInput = (name: string, input: unknown) => {
 
 // McpHttpServer advertises each tool's JSON schema, and Claude Code passes the MCP name,
 // description, and schema through unchanged.
-const t3SourceTools: ReadonlyArray<Tool.Any> = [
+const vcSourceTools: ReadonlyArray<Tool.Any> = [
   OrchestratorToolkit,
   ThreadToolkit,
   AttachmentToolkit,
@@ -515,15 +515,15 @@ const t3SourceTools: ReadonlyArray<Tool.Any> = [
   MessageToolkit,
 ].flatMap((toolkit): ReadonlyArray<Tool.Any> => Object.values(toolkit.tools));
 // McpHttpServer decodes arguments with each tool's JSON codec, which drops undeclared keys.
-const t3InputDecoders = new Map(
-  t3SourceTools.map((tool) => [
+const vcInputDecoders = new Map(
+  vcSourceTools.map((tool) => [
     tool.name,
     Schema.decodeUnknownOption(
       Schema.toCodecJson(tool.parametersSchema as Schema.Codec<unknown, unknown>),
     ),
   ]),
 );
-const t3Tools: ReadonlyArray<ApiTool> = t3SourceTools.map((tool) => ({
+const vcTools: ReadonlyArray<ApiTool> = vcSourceTools.map((tool) => ({
   name: `${VIBECODINGER_PREFIX}${tool.name}`,
   description: Tool.getDescription(tool) ?? "",
   input_schema: advertisedJsonSchema(tool),
@@ -538,7 +538,7 @@ const decodePreviewError = Schema.decodeUnknownOption(PreviewAutomationError);
 const previewFailure = (mock: unknown) => Option.getOrUndefined(decodePreviewError(mock));
 const enabledWhen = (predicate: () => boolean) =>
   new Set(
-    t3SourceTools
+    vcSourceTools
       .filter(
         (tool) => Context.getOrUndefined(tool.annotations, McpSchema.EnabledWhen) === predicate,
       )
@@ -546,7 +546,7 @@ const enabledWhen = (predicate: () => boolean) =>
   );
 // Claude Code loads a tool whose `_meta` sets anthropic/alwaysLoad up front instead of deferring it.
 const alwaysLoaded = new Set(
-  t3SourceTools
+  vcSourceTools
     .filter((tool) => {
       const meta = Context.getOrUndefined(tool.annotations, Tool.Meta);
       return meta !== undefined && meta["anthropic/alwaysLoad"] === true;
@@ -554,7 +554,7 @@ const alwaysLoaded = new Set(
     .map((tool) => `${VIBECODINGER_PREFIX}${tool.name}`),
 );
 // Refs whose request_secret takes `value` save a secret the user already pasted, with no card.
-export const savesPastedSecrets = t3Tools.some(
+export const savesPastedSecrets = vcTools.some(
   (tool) =>
     tool.name === `${VIBECODINGER_PREFIX}request_secret` &&
     isRecord(tool.input_schema) &&
@@ -593,7 +593,7 @@ const visibleT3Tools = (options: {
   readonly agentFeedback?: Contracts.AgentFeedbackMode;
   readonly arm?: Arm;
 }) =>
-  t3Tools.filter(
+  vcTools.filter(
     (tool) =>
       !(options.arm === "raw" && forgeToolNames.has(tool.name)) &&
       (options.links === true || !hiddenWhileLinksOff.has(tool.name)) &&
@@ -631,7 +631,7 @@ const claudeQueryOptions = (
 };
 
 /** Text T3 appends to Claude Code's system prompt. Delegated children get the same text. */
-export const t3SystemAppend = (
+export const vcSystemAppend = (
   model: Model,
   device = true,
   browser = true,
@@ -648,7 +648,7 @@ export const t3SystemAppend = (
  * The context T3's SubagentStart hooks give a native subagent, which gets none of the append.
  * Empty when T3 registers no such hook.
  */
-export const t3SubagentContext = async (model: Model, device = true, browser = true) => {
+export const vcSubagentContext = async (model: Model, device = true, browser = true) => {
   const hooks = (claudeQueryOptions(model, device, browser).hooks?.SubagentStart ?? []).flatMap(
     (m) => m.hooks,
   );
@@ -678,14 +678,14 @@ export const t3SubagentContext = async (model: Model, device = true, browser = t
  * descriptions and schemas (loaded on demand here, sent up front by harnesses without
  * deferred tools). Tokens are estimated at 4 characters each.
  */
-const t3ContextReport = (model: Model) => {
+const vcContextReport = (model: Model) => {
   const size = (chars: number) => `${chars} chars (~${Math.round(chars / 4)} tokens)`;
-  const descriptions = t3Tools.reduce((sum, tool) => sum + valueText(tool.description).length, 0);
-  const schemas = JSON.stringify(t3Tools).length;
+  const descriptions = vcTools.reduce((sum, tool) => sum + valueText(tool.description).length, 0);
+  const schemas = JSON.stringify(vcTools).length;
   return [
-    `- T3 context: system text ${size((isCodex(model) ? JSON.stringify(buildCodexAdditionalContext({ model }, { browser: true, device: true })) : t3SystemAppend(model)).length)}`,
+    `- T3 context: system text ${size((isCodex(model) ? JSON.stringify(buildCodexAdditionalContext({ model }, { browser: true, device: true })) : vcSystemAppend(model)).length)}`,
     `tool descriptions ${size(descriptions)}`,
-    `full tool schemas ${size(schemas)} across ${t3Tools.length} tools.`,
+    `full tool schemas ${size(schemas)} across ${vcTools.length} tools.`,
   ].join(", ");
 };
 
@@ -756,7 +756,7 @@ export const buildBase = (
   const append = options.nativeSubagent
     ? ""
     : forArm(
-        t3SystemAppend(model, options.deviceAccess, options.browserAccess, options.agentFeedback),
+        vcSystemAppend(model, options.deviceAccess, options.browserAccess, options.agentFeedback),
         options.arm,
       );
   const modelLine = `You are powered by the model named ${MODELS[model]}. The exact model ID is ${model}.`;
@@ -1414,7 +1414,7 @@ const selectedWorldChecks = (sample: Sample, input: Readonly<Record<string, unkn
 };
 
 /** A believable T3 result for a tool the case does not mock. */
-export const t3Default = (
+export const vcDefault = (
   sample: Sample,
   name: string,
   input: Readonly<Record<string, unknown>>,
@@ -2318,7 +2318,7 @@ export const answerToolCall = Effect.fn("evaluateMcpToolUse.answerToolCall")(fun
       return failed(new FeedbackNotRequestedError({ source: "mcp" }).message);
     const subject = resolveFeedbackSubject(
       report.subject,
-      t3SourceTools.map((tool) => tool.name),
+      vcSourceTools.map((tool) => tool.name),
     );
     if (subject === undefined) return failed(FEEDBACK_SUBJECT_MESSAGE);
     // T3 shows a requested report to the user in a card and answers at once.
@@ -2374,7 +2374,7 @@ export const answerToolCall = Effect.fn("evaluateMcpToolUse.answerToolCall")(fun
         return failed(`No check is named ${valueText(input.check)}. Checks: ${names}.`);
       }
     }
-    const value = t3Default(sample, name, input);
+    const value = vcDefault(sample, name, input);
     if (name === "request_secret") savedSecretFile(sample, input, value);
     recordForgeChange(sample, name, input, value);
     return toolResult(
@@ -3217,7 +3217,7 @@ const main = Effect.gen(function* () {
   });
   const flags = yield* decodeFlags({ template: "", ...values });
   if (flags.context) {
-    process.stdout.write(`${t3ContextReport(flags.model)}\n`);
+    process.stdout.write(`${vcContextReport(flags.model)}\n`);
     return;
   }
   if (flags["stop-on-regression"] && flags.baseline === undefined) {
@@ -3339,7 +3339,7 @@ const main = Effect.gen(function* () {
             });
             return role === "native-subagent"
               ? Effect.promise(() =>
-                  t3SubagentContext(flags.model, deviceAccess, browserAccess),
+                  vcSubagentContext(flags.model, deviceAccess, browserAccess),
                 ).pipe(Effect.map((subagentContext): Base => ({ ...built, subagentContext })))
               : Effect.succeed(built);
           }),
@@ -3518,7 +3518,7 @@ const main = Effect.gen(function* () {
   const summary = summarize(
     rows,
     {
-      header: [header, t3ContextReport(flags.model), ...stopped].join("\n"),
+      header: [header, vcContextReport(flags.model), ...stopped].join("\n"),
       shellModel: config.shellModel,
       model: config.model,
     },

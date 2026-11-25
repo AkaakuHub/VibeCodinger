@@ -4097,7 +4097,7 @@ const buildDesktopArtifactCli = Command.make("build-desktop-artifact", {
   ),
   wslRuntime: Flag.String("wsl-runtime").pipe(
     Flag.withDescription(
-      "Path to the Linux CLI release archive (t3-<version>-linux-x64.tar.gz) to embed as the WSL runtime of a Windows build (env: VIBECODINGER_DESKTOP_WSL_RUNTIME).",
+      "Path to the Linux CLI release archive (vibecodinger-<version>-linux-x64.tar.gz) to embed as the WSL runtime of a Windows build (env: VIBECODINGER_DESKTOP_WSL_RUNTIME).",
     ),
     Flag.optional,
   ),

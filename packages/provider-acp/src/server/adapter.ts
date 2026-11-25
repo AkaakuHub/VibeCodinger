@@ -118,8 +118,8 @@ import {
 } from "./sessionConfig.ts";
 import * as AcpSessionRuntime from "./AcpSessionRuntime.ts";
 import {
-  t3AcpPromptWithInstructions,
-  type T3AcpInstructionState,
+  vcAcpPromptWithInstructions,
+  type VibeCodingerAcpInstructionState,
 } from "@vibecodinger/provider-core/server/orchestrationInstructions";
 import { buildRuntimeInstructions } from "@vibecodinger/provider-core/server/runtimeInstructions";
 import * as IdAllocator from "@vibecodinger/provider-core/server/IdAllocator";
@@ -2396,7 +2396,9 @@ export const makeAcpAdapterV2 = Effect.fn("makeAcpAdapterV2")(function* (
         const configuredRuntimeMode = yield* Ref.make<
           ProviderAdapter.ProviderAdapterV2RuntimePolicy["runtimeMode"] | null
         >(null);
-        const promptInstructionStates = yield* Ref.make(new Map<string, T3AcpInstructionState>());
+        const promptInstructionStates = yield* Ref.make(
+          new Map<string, VibeCodingerAcpInstructionState>(),
+        );
         const promptRuntimeInstructions = yield* Ref.make(new Map<string, string>());
         const deliveredAppContext = yield* Ref.make(new Map<string, ReadonlyMap<string, string>>());
         // Unique markers keep delayed prompt completions from clearing later compactions.
@@ -9265,7 +9267,7 @@ export const makeAcpAdapterV2 = Effect.fn("makeAcpAdapterV2")(function* (
             interactionMode: turnInput.runtimePolicy.interactionMode,
             hasVibeCodingerMcp: mcpSession !== undefined,
             hasDeviceTools: mcpSession?.capabilities?.has("device") === true,
-          } satisfies T3AcpInstructionState;
+          } satisfies VibeCodingerAcpInstructionState;
           const userText =
             flavor.rewriteUserText === undefined
               ? turnInput.message.text
@@ -9298,7 +9300,7 @@ export const makeAcpAdapterV2 = Effect.fn("makeAcpAdapterV2")(function* (
             deliveredContext,
             isNativeSlashCommand,
           );
-          const text = t3AcpPromptWithInstructions({
+          const text = vcAcpPromptWithInstructions({
             prompt: messageText,
             state: instructionState,
             ...(previousInstructionState === undefined || compactionMarker !== undefined

@@ -269,7 +269,7 @@ const runSide = Effect.fn("prove.runSide")(function* (
   return result;
 });
 
-/** The one target a scenario runs on: an iOS scenario imports `t3-mobile.ts`, a web one does not. */
+/** The one target a scenario runs on: an iOS scenario imports `vc-mobile.ts`, a web one does not. */
 const targetOf = Effect.fn("prove.targetOf")(function* (scenarioPath: string) {
   const fs = yield* FileSystem.FileSystem;
   const source = yield* fs.readFileString(scenarioPath).pipe(Effect.orElseSucceed(() => ""));
@@ -357,7 +357,7 @@ const command = Command.make(
     ),
     target: Flag.String("target").pipe(
       Flag.withDescription(
-        "Target to run on: web or ios. Default: ios when the scenario imports t3-mobile.ts, else web.",
+        "Target to run on: web or ios. Default: ios when the scenario imports vc-mobile.ts, else web.",
       ),
       Flag.optional,
     ),

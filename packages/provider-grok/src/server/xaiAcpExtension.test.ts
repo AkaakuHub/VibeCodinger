@@ -43,7 +43,7 @@ describe("xAiPromptCompleteFromSessionUpdate", () => {
     expect(
       xAiPromptCompleteFromSessionUpdate({
         sessionId: "root",
-        update: { sessionUpdate: "hook_execution", prompt_id: "t3-xai-prompt-1" },
+        update: { sessionUpdate: "hook_execution", prompt_id: "vc-xai-prompt-1" },
       }),
     ).toBeNull();
     expect(
@@ -1435,7 +1435,7 @@ describe("XAiAcpExtension", () => {
         sessionId: "root-session",
         update: {
           sessionUpdate: "turn_completed",
-          prompt_id: "t3-xai-prompt-1",
+          prompt_id: "vc-xai-prompt-1",
           stop_reason: "end_turn",
         },
       });

@@ -75,14 +75,14 @@ export class DesktopSshEnvironment extends Context.Service<
 >()("@vibecodinger/desktop/ssh/DesktopSshEnvironment") {}
 
 export interface DesktopSshEnvironmentLayerOptions {
-  readonly resolveCliRunner?: Effect.Effect<SshTunnel.RemoteT3RunnerOptions>;
+  readonly resolveCliRunner?: Effect.Effect<SshTunnel.RemoteVibeCodingerRunnerOptions>;
   readonly resolveLauncherId?: Effect.Effect<string | null>;
 }
 
 export const resolveDesktopSshCliRunner = (
   environment: DesktopEnvironment.DesktopEnvironment["Service"],
   env: NodeJS.ProcessEnv,
-): SshTunnel.RemoteT3RunnerOptions => {
+): SshTunnel.RemoteVibeCodingerRunnerOptions => {
   const devRemoteEntryPath = Option.getOrUndefined(environment.devRemoteServerEntryPath);
   if (environment.isDevelopment && devRemoteEntryPath !== undefined) {
     return {

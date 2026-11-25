@@ -95,7 +95,7 @@ const simlock = (device: string): DeviceProvider => {
         cwd: APP_DIR,
       },
     );
-    const scope = { tenant: "t3-scenarios", runId: `${request.runId}-${request.slot}` };
+    const scope = { tenant: "vc-scenarios", runId: `${request.runId}-${request.slot}` };
     // Simlock takes the lease id from the caller: 32 hex characters.
     const leaseId = (yield* (yield* SecureRandom.SecureRandom).uuidV4()).replaceAll("-", "");
     const lease = yield* call(`The pool leased no ${device}`, () =>
@@ -174,7 +174,7 @@ export default {
       engine: mobile({
         platform: "ios",
         device: simlock("iPhone 18 Pro"),
-        session: "t3-scenarios",
+        session: "vc-scenarios",
       }),
       app: {
         bundleId: "net.akaaku.vibecodinger.dev",

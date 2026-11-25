@@ -68,7 +68,7 @@ import * as OpenCodeRuntime from "../OpenCodeRuntime.ts";
 import { readableProviderErrorMessage } from "../providerErrorMessage.ts";
 import * as McpProviderSessions from "@vibecodinger/provider-core/server/McpProviderSessions";
 import { buildRuntimeInstructions } from "@vibecodinger/provider-core/server/runtimeInstructions";
-import { t3OrchestrationSystemPrompt } from "@vibecodinger/provider-core/server/orchestrationInstructions";
+import { vcOrchestrationSystemPrompt } from "@vibecodinger/provider-core/server/orchestrationInstructions";
 import { SKILL_MENTION_PATTERN } from "@vibecodinger/shared/composerInlineTokens";
 import { HTML_RENDER_TOOL_NAME } from "@vibecodinger/shared/htmlRender";
 import {
@@ -4502,7 +4502,7 @@ export const make = Effect.fn("OpenCode2Adapter.make")(function* (instanceId: Pr
           model: turnInput.modelSelection.model,
           runtimePolicy: turnInput.runtimePolicy,
         }),
-        t3OrchestrationSystemPrompt(mcpAvailable, mcpSession?.capabilities?.has("device") === true),
+        vcOrchestrationSystemPrompt(mcpAvailable, mcpSession?.capabilities?.has("device") === true),
         mcpAvailable
           ? "To wait for a background shell you started (tests, a build), call `vc_background_wait` with its shell ID before you end your turn. Do not mark work you leave running, or PRs."
           : undefined,

@@ -22,7 +22,7 @@ import {
   type EnvironmentId,
   type MessageId,
   type ModelSelection,
-  type ServerConfig as T3ServerConfig,
+  type ServerConfig as VibeCodingerServerConfig,
   type UsageLimitsReport,
 } from "@vibecodinger/contracts";
 import {
@@ -158,7 +158,7 @@ export interface ThreadComposerProps {
   /** Arms a fresh session for the next message; absent where `/clear` is unavailable. */
   readonly onFreshSession?: () => void;
   readonly offersSideChat?: boolean;
-  readonly serverConfig: T3ServerConfig | null;
+  readonly serverConfig: VibeCodingerServerConfig | null;
   readonly queueCount: number;
   readonly activeThreadBusy: boolean;
   /** Sending declines a pending approval and redirects the agent, so `/side` is plain text. */

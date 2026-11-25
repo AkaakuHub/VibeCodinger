@@ -4,8 +4,8 @@ import * as FileSystem from "effect/FileSystem";
 
 import type { McpProviderSessionConfig } from "@vibecodinger/provider-core/server/mcpSession";
 import {
-  PI_T3_MCP_EXTENSION_FILENAME,
-  PI_T3_MCP_EXTENSION_SOURCE,
+  PI_VC_MCP_EXTENSION_FILENAME,
+  PI_VC_MCP_EXTENSION_SOURCE,
   VIBECODINGER_MCP_BEARER_ENV,
   VIBECODINGER_MCP_URL_ENV,
   VIBECODINGER_PI_RUNTIME_MODE_ENV,
@@ -224,7 +224,7 @@ function withoutToolSelectionArgs(args: ReadonlyArray<string>): ReadonlyArray<st
 }
 
 function piVibeCodingerMcpExtensionDestPath(cacheDir: string): string {
-  return `${cacheDir.replace(/\\/g, "/")}/${PI_T3_MCP_EXTENSION_FILENAME}`;
+  return `${cacheDir.replace(/\\/g, "/")}/${PI_VC_MCP_EXTENSION_FILENAME}`;
 }
 
 export const materializePiVibeCodingerMcpExtension = Effect.fn(
@@ -234,14 +234,14 @@ export const materializePiVibeCodingerMcpExtension = Effect.fn(
   yield* fs.makeDirectory(cacheDir, { recursive: true });
   const dest = piVibeCodingerMcpExtensionDestPath(cacheDir);
   const existing = yield* fs.readFileString(dest).pipe(Effect.orElseSucceed(() => ""));
-  if (existing !== PI_T3_MCP_EXTENSION_SOURCE) {
+  if (existing !== PI_VC_MCP_EXTENSION_SOURCE) {
     // Concurrent pi launches read this file: stage it in a per-call directory
     // and rename so readers and other writers never see a partial file.
     yield* Effect.scoped(
       Effect.gen(function* () {
         const stagingDir = yield* fs.makeTempDirectoryScoped({ directory: cacheDir });
-        const staging = `${stagingDir.replace(/\\/g, "/")}/${PI_T3_MCP_EXTENSION_FILENAME}`;
-        yield* fs.writeFileString(staging, PI_T3_MCP_EXTENSION_SOURCE);
+        const staging = `${stagingDir.replace(/\\/g, "/")}/${PI_VC_MCP_EXTENSION_FILENAME}`;
+        yield* fs.writeFileString(staging, PI_VC_MCP_EXTENSION_SOURCE);
         yield* fs.rename(staging, dest).pipe(Effect.retry({ times: 3 }));
       }),
     );
@@ -266,8 +266,9 @@ export function buildPiRpcLaunch(input: {
   readonly args: ReadonlyArray<string>;
   readonly env: NodeJS.ProcessEnv;
 } {
-  const hasT3Extension = input.disableExtensions !== true && input.extensionPath !== undefined;
-  const hasVibeCodingerMcp = hasT3Extension && input.mcpSession !== undefined;
+  const hasVibeCodingerExtension =
+    input.disableExtensions !== true && input.extensionPath !== undefined;
+  const hasVibeCodingerMcp = hasVibeCodingerExtension && input.mcpSession !== undefined;
   const extensionSafeArgs =
     input.disableExtensions === true
       ? withoutExplicitExtensions(input.launchArgs)
@@ -289,7 +290,7 @@ export function buildPiRpcLaunch(input: {
     ...(input.disableTools === true ? ["--no-tools"] : []),
   ];
   if (
-    hasT3Extension &&
+    hasVibeCodingerExtension &&
     input.extensionPath !== undefined &&
     !hasExplicitExtension(args, input.extensionPath)
   ) {
@@ -305,10 +306,10 @@ export function buildPiRpcLaunch(input: {
     args,
     env: {
       ...environment,
-      ...(hasT3Extension && input.extensionPath !== undefined
+      ...(hasVibeCodingerExtension && input.extensionPath !== undefined
         ? { [VIBECODINGER_PI_MCP_EXTENSION_PATH_ENV]: input.extensionPath }
         : {}),
-      ...(hasT3Extension && input.runtimeMode !== undefined
+      ...(hasVibeCodingerExtension && input.runtimeMode !== undefined
         ? {
             [VIBECODINGER_PI_RUNTIME_MODE_ENV]:
               input.runtimeMode === "auto" ? "approval-required" : input.runtimeMode,

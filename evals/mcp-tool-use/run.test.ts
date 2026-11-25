@@ -37,9 +37,9 @@ import {
   shellRequest,
   shellResponsesRequest,
   summarize,
-  t3Default,
-  t3SystemAppend,
-  t3SubagentContext,
+  vcDefault,
+  vcSystemAppend,
+  vcSubagentContext,
   withBackgroundWait,
   withDevices,
 } from "./run.ts";
@@ -706,10 +706,10 @@ it("rebuilds the template from this checkout and sends a child T3's task prompt"
   const system = base.system.map((block) => String(block.text));
   assert.deepEqual(system.slice(0, 2), [
     "You are Claude Code.",
-    `Main prompt.\n - Primary working directory: /home/user/app\n\n${t3SystemAppend("claude-sonnet-5-5")}`,
+    `Main prompt.\n - Primary working directory: /home/user/app\n\n${vcSystemAppend("claude-sonnet-5-5")}`,
   ]);
   // The eval offers the device tools, so Claude's append carries the device block.
-  assert.include(t3SystemAppend("claude-sonnet-5-5"), "## VibeCodinger devices");
+  assert.include(vcSystemAppend("claude-sonnet-5-5"), "## VibeCodinger devices");
   assert.equal(base.environment.cwd, "/home/user/app");
   assert.include(system[2], "model named Sonnet 5.5. The exact model ID is claude-sonnet-5-5.");
   const deferred = system[2]?.split("Load them first:\n")[1]?.split("\n\n")[0]?.split("\n") ?? [];
@@ -855,7 +855,7 @@ it("lists and reads world PRs in their own state, with the diff when asked", () 
     base,
   );
   const headOf = (number: number) =>
-    (t3Default(sample, "pull_request_read", { number }) as { headSha: unknown }).headSha;
+    (vcDefault(sample, "pull_request_read", { number }) as { headSha: unknown }).headSha;
   // The checkout's commit is the branch PR's head, not another PR's.
   assert.equal(headOf(6), "local-head");
   const other = makeSample(
@@ -874,11 +874,11 @@ it("lists and reads world PRs in their own state, with the diff when asked", () 
     base,
   );
   assert.isNull(
-    (t3Default(other, "pull_request_read", { number: 6 }) as { headSha: unknown }).headSha,
+    (vcDefault(other, "pull_request_read", { number: 6 }) as { headSha: unknown }).headSha,
   );
   const listed = (state?: string) =>
     (
-      t3Default(sample, "pull_request_list", state === undefined ? {} : { state }) as {
+      vcDefault(sample, "pull_request_list", state === undefined ? {} : { state }) as {
         pullRequests: Array<{ number: number; state: string }>;
       }
     ).pullRequests.map((pr) => [pr.number, pr.state]);
@@ -911,7 +911,7 @@ it("lists and reads world PRs in their own state, with the diff when asked", () 
   );
   const ciNames = (input: Record<string, unknown>) =>
     (
-      t3Default(ciSample, "ci_logs", { number: 7, ...input }) as {
+      vcDefault(ciSample, "ci_logs", { number: 7, ...input }) as {
         checks: Array<{ name: string }>;
       }
     ).checks.map((check) => check.name);
@@ -938,15 +938,15 @@ it("lists and reads world PRs in their own state, with the diff when asked", () 
     base,
   );
   const logs = (
-    t3Default(shards, "ci_logs", { number: 7 }) as { checks: Array<{ log: string | null }> }
+    vcDefault(shards, "ci_logs", { number: 7 }) as { checks: Array<{ log: string | null }> }
   ).checks.map((check) => check.log !== null);
   assert.deepEqual(logs, [true, true, true, true, true, false]);
   assert.deepEqual(ciNames({}), ["Lint"]);
-  const ciRead: Readonly<Record<string, unknown>> = t3Default(ciSample, "pull_request_read", {
+  const ciRead: Readonly<Record<string, unknown>> = vcDefault(ciSample, "pull_request_read", {
     number: 7,
   });
   assert.deepEqual(ciRead.checks, { passed: 1, pending: 1, failed: ["Lint"] });
-  const read: Readonly<Record<string, unknown>> = t3Default(sample, "pull_request_read", {
+  const read: Readonly<Record<string, unknown>> = vcDefault(sample, "pull_request_read", {
     number: 5,
     include: ["diff", "comments"],
   });
@@ -959,11 +959,11 @@ it("lists and reads world PRs in their own state, with the diff when asked", () 
 it("gives each launched thread its own id, and reading it back shows that thread's brief", () => {
   const base = buildBase(template, { model: "claude-sonnet-5-5", keepUserInstructions: false });
   const sample = makeSample(childCase, base);
-  const one = t3Default(sample, "vc_thread_launch", {
+  const one = vcDefault(sample, "vc_thread_launch", {
     title: "Reconnect",
     message: "Fix reconnect",
   });
-  const batch = t3Default(sample, "create_threads", {
+  const batch = vcDefault(sample, "create_threads", {
     threads: [
       { title: "CSV", prompt: "Fix CSV dates" },
       { prompt: "Fix admin expiry", target: { providerInstanceId: "muse", model: "muse-wonder" } },
@@ -983,11 +983,11 @@ it("gives each launched thread its own id, and reading it back shows that thread
   );
   assert.equal(new Set(ids).size, 3);
   const read = (threadId: unknown) =>
-    t3Default(sample, "vc_thread_read", { threadId }) as {
+    vcDefault(sample, "vc_thread_read", { threadId }) as {
       thread: { title: string; status: string; createdBy?: string };
       items: Array<{ text: string; createdBy: string; creationSource: string }>;
     };
-  const idle = t3Default(sample, "create_threads", { threads: [{ title: "Later" }] }) as {
+  const idle = vcDefault(sample, "create_threads", { threads: [{ title: "Later" }] }) as {
     threads: Array<{ threadId: string; status: string; runId?: string }>;
   };
   assert.equal(idle.threads[0]?.status, "idle");
@@ -1775,7 +1775,7 @@ it.effect("fails preview calls with T3's errors when browser access is off or a 
         is_error: true,
         content: off,
       });
-    assert.notInclude(t3SystemAppend("claude-sonnet-5-5", true, false), "## T3 Code browser");
+    assert.notInclude(vcSystemAppend("claude-sonnet-5-5", true, false), "## T3 Code browser");
     const unsupported = "br-guard-preview-open-unsupported";
     assert.deepInclude(yield* answer(unsupported, "preview_open"), {
       is_error: true,
@@ -2865,9 +2865,9 @@ it("gives native children hook context while excluding the parent's T3 append an
   });
   assert.notInclude(
     child.system.map((block) => block.text).join("\n"),
-    t3SystemAppend("claude-sonnet-5-5"),
+    vcSystemAppend("claude-sonnet-5-5"),
   );
-  const subagentContext = await t3SubagentContext("claude-sonnet-5-5");
+  const subagentContext = await vcSubagentContext("claude-sonnet-5-5");
   const messages = buildMessages(makeSample(testCase, { ...child, subagentContext }));
   const shown = messages
     .flatMap((message) => message.content)

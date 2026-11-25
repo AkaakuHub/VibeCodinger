@@ -44,7 +44,7 @@ describe("href codec", () => {
       "vc-context://v1/Image/ctx_1",
       "vc-context://v1/image/ctx 1",
       "https://v1/image/ctx_1",
-      "t3-citation://v1/a/b/c",
+      "vc-citation://v1/a/b/c",
     ]) {
       expect(parseComposerContextHref(bad), bad).toBeNull();
     }
@@ -222,7 +222,7 @@ describe("provider projection", () => {
       `See ${citation} ok [Preview annotation: Checkout](vc-context://v1/preview-annotation/ctx_p)`,
     ]) {
       const projected = projectComposerContextForProvider({ text, records: [] });
-      expect(projected).not.toContain("t3-citation:");
+      expect(projected).not.toContain("vc-citation:");
       expect(projected).toContain("See [assistant-quote-1]");
       expect(projected).toContain('"text": "Use a mutex here"');
       expect(projected).toContain('"comment": "Why not a channel?"');

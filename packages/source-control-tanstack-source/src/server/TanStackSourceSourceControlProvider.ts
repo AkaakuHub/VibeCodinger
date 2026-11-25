@@ -599,7 +599,7 @@ export const make = Effect.gen(function* () {
           // T3 records which pull request it made `pr-<n>` for, and reuses only that branch, and
           // only while it holds nothing the pull request lacks: an unrelated branch of the name,
           // or local commits, are never switched to, moved or lost.
-          const ownerKey = `branch.${localBranch}.t3TanstackSourcePull`;
+          const ownerKey = `branch.${localBranch}.vcTanstackSourcePull`;
           const owner = `${pullRepository ?? ""}#${pull.number}`;
           if (exists && input.force !== true) {
             const recorded = yield* git

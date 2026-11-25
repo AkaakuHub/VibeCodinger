@@ -48,7 +48,7 @@ const MAX_CAPTURE_HEIGHT = 4_000;
 const CAPTURE_TIMEOUT = "20 seconds";
 // Chrome blocks file access; images arrive inlined. Browser-only .localhost permits secure contexts and HTTP resources.
 // publicProxy blocks local networks; pinning the main frame and forbidding popups keeps captures on the page.
-const PAGE_ORIGIN = "http://t3-page.localhost";
+const PAGE_ORIGIN = "http://vc-page.localhost";
 const PAGE_URL = `${PAGE_ORIGIN}/page.html`;
 const PAGE_NAME = "page.html";
 const MEASURE_CONCURRENCY = 3;

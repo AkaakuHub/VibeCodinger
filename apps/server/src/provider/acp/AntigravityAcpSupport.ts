@@ -174,7 +174,7 @@ export function antigravitySessionMode(
 
 // Only calls that name T3's server: before agy 1.5.8 "Running <tool>" names no server, so another
 // MCP server's tool of the same name would pass.
-const ANTIGRAVITY_T3_MCP_TITLE = /^Run mcp_vibe-codinger_(?<tool>[A-Za-z0-9_]+)\??$/;
+const ANTIGRAVITY_VC_MCP_TITLE = /^Run mcp_vibe-codinger_(?<tool>[A-Za-z0-9_]+)\??$/;
 
 // call_mcp_tool is the one call whose rawInput names a server and tool; in every other call
 // rawInput is the tool's own arguments.
@@ -194,7 +194,7 @@ function isAntigravityVibeCodingerMcpRequest(
     );
   }
   if (typeof rawInput?.CommandLine === "string") return false;
-  const tool = ANTIGRAVITY_T3_MCP_TITLE.exec(title)?.groups?.tool;
+  const tool = ANTIGRAVITY_VC_MCP_TITLE.exec(title)?.groups?.tool;
   return tool !== undefined && VIBECODINGER_MCP_TOOL_NAMES.has(tool);
 }
 

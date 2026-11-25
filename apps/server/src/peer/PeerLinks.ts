@@ -227,7 +227,7 @@ const probeFailure = (
     );
   }
   return new PeerLinkError({
-    reason: "not_a_t3_environment",
+    reason: "not_a_vibecodinger_environment",
     message: `${origin} answered, but not as a VibeCodinger environment this version understands.`,
   });
 };

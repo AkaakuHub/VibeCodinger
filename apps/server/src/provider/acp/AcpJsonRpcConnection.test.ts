@@ -1249,7 +1249,7 @@ describe("AcpSessionRuntime", () => {
         sessionLoadReplayIdleReadiness: true,
       });
       const started = yield* runtime.start();
-      expect(started.sessionSetupResult._meta).toMatchObject({ t3SessionLoadReady: "replay_idle" });
+      expect(started.sessionSetupResult._meta).toMatchObject({ vcSessionLoadReady: "replay_idle" });
 
       yield* runtime.getEvents().pipe(
         Stream.filter((event) => event._tag === "ConfigOptionsUpdated"),
@@ -1495,7 +1495,7 @@ describe("AcpSessionRuntime", () => {
       const started = yield* runtime.start();
 
       expect(started.sessionSetupResult._meta).toMatchObject({
-        t3SessionLoadReady: "replay_idle",
+        vcSessionLoadReady: "replay_idle",
       });
     }).pipe(
       Effect.provide(

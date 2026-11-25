@@ -26,8 +26,8 @@ import {
   makeSample,
   McpToolUseCase,
   shellRequest,
-  t3SubagentContext,
-  t3SystemAppend,
+  vcSubagentContext,
+  vcSystemAppend,
   withDevices,
 } from "./run.ts";
 import { DeviceOperationError, LOCAL_DEVICE_HOST_ID } from "@vibecodinger/contracts";
@@ -155,15 +155,15 @@ it.effect("rebuilds prior device results with T3, whose sessions reach the measu
 
 it.effect("gives a native subagent T3's SubagentStart context instead of T3's append", () =>
   Effect.gen(function* () {
-    const subagentContext = yield* Effect.promise(() => t3SubagentContext(model));
+    const subagentContext = yield* Effect.promise(() => vcSubagentContext(model));
     const native = {
       ...buildBase(capture, { model, keepUserInstructions: false, nativeSubagent: true }),
       subagentContext,
     };
     const system = (blocks: typeof base.system) =>
       blocks.map((block) => String(block.text)).join("");
-    assert.include(system(base.system), t3SystemAppend(model));
-    assert.notInclude(system(native.system), t3SystemAppend(model));
+    assert.include(system(base.system), vcSystemAppend(model));
+    assert.notInclude(system(native.system), vcSystemAppend(model));
     const testCase = deviceCase({ role: "native-subagent" });
     const shown = (sample: typeof native) =>
       buildMessages(makeSample(testCase, sample))[0]?.content.map((block) => String(block.text));
@@ -661,7 +661,7 @@ it.effect("denies every device tool with T3's own error when agent device access
       );
     }
     // T3 drops its device text for a thread without the capability, on refs that have it.
-    assert.notInclude(t3SystemAppend(model, false), "## T3 Code devices");
+    assert.notInclude(vcSystemAppend(model, false), "## T3 Code devices");
   }).pipe(Effect.scoped, Effect.provide(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))),
 );
 
