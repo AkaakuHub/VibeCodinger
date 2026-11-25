@@ -30,8 +30,8 @@ jobs:
       contents: read
     env:
       APP_VARIANT: production
-      T3CODE_IOS_PERSONAL_TEAM: "1"
-      T3CODE_IOS_PERSONAL_TEAM_BUNDLE_ID: net.akaaku.vibecodinger
+      VIBECODINGER_IOS_PERSONAL_TEAM: "1"
+      VIBECODINGER_IOS_PERSONAL_TEAM_BUNDLE_ID: net.akaaku.vibecodinger
       EXPO_NO_GIT_STATUS: "1"
       NODE_OPTIONS: --max-old-space-size=8192
     steps:
@@ -76,7 +76,7 @@ jobs:
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
           app="$archive/Products/Applications/VibeCodinger.app"
           test -f "$app/Info.plist"
-          test "$(/usr/libexec/PlistBuddy -c 'Print CFBundleIdentifier' "$app/Info.plist")" = "$T3CODE_IOS_PERSONAL_TEAM_BUNDLE_ID"
+          test "$(/usr/libexec/PlistBuddy -c 'Print CFBundleIdentifier' "$app/Info.plist")" = "$VIBECODINGER_IOS_PERSONAL_TEAM_BUNDLE_ID"
           test -f "$app/main.jsbundle"
           executable=$(/usr/libexec/PlistBuddy -c 'Print CFBundleExecutable' "$app/Info.plist")
           xcrun lipo -verify_arch arm64 "$app/$executable"

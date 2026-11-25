@@ -122,9 +122,9 @@ const LOGIN_SHELL_ENV_NAMES = [
   "SSL_CERT_FILE",
   "SSL_CERT_DIR",
   "NODE_EXTRA_CA_CERTS",
-  "T3CODE_TELEMETRY_ENABLED",
-  "T3CODE_FEATURE_FLAGS",
-  "T3CODE_RELEASE_BASE_URL",
+  "VIBECODINGER_TELEMETRY_ENABLED",
+  "VIBECODINGER_FEATURE_FLAGS",
+  "VIBECODINGER_RELEASE_BASE_URL",
   "__MISE_DIFF",
   "JAVA_HOME",
   "PNPM_HOME",
@@ -133,7 +133,7 @@ const WINDOWS_PROFILE_ENV_NAMES = [
   "PATH",
   "FNM_DIR",
   "FNM_MULTISHELL_PATH",
-  "T3CODE_TELEMETRY_ENABLED",
+  "VIBECODINGER_TELEMETRY_ENABLED",
 ] as const;
 const LOCALE_ENV_NAMES = ["LANG", "LC_ALL", "LC_CTYPE"] as const;
 const ANDROID_SDK_ENV_NAMES = ["ANDROID_HOME", "ANDROID_SDK_ROOT"] as const;
@@ -221,8 +221,8 @@ const knownWindowsCliDirs = (env: NodeJS.ProcessEnv): ReadonlyArray<string> => [
   ),
 ];
 
-const startMarker = (name: string) => `__T3CODE_ENV_${name}_START__`;
-const endMarker = (name: string) => `__T3CODE_ENV_${name}_END__`;
+const startMarker = (name: string) => `__VIBECODINGER_ENV_${name}_START__`;
+const endMarker = (name: string) => `__VIBECODINGER_ENV_${name}_END__`;
 
 const executableName = (command: string): string => command.split(/[\\/]/u).at(-1) ?? command;
 
@@ -459,8 +459,8 @@ const installWindowsEnvironment = Effect.fn("desktop.shellEnvironment.installWin
     if (!config.env.FNM_MULTISHELL_PATH && profile.FNM_MULTISHELL_PATH) {
       config.env.FNM_MULTISHELL_PATH = profile.FNM_MULTISHELL_PATH;
     }
-    if (!config.env.T3CODE_TELEMETRY_ENABLED && profile.T3CODE_TELEMETRY_ENABLED) {
-      config.env.T3CODE_TELEMETRY_ENABLED = profile.T3CODE_TELEMETRY_ENABLED;
+    if (!config.env.VIBECODINGER_TELEMETRY_ENABLED && profile.VIBECODINGER_TELEMETRY_ENABLED) {
+      config.env.VIBECODINGER_TELEMETRY_ENABLED = profile.VIBECODINGER_TELEMETRY_ENABLED;
     }
     return Boolean(noProfile.PATH && profile.PATH);
   },
@@ -561,9 +561,9 @@ const installPosixEnvironment = Effect.fn("desktop.shellEnvironment.installPosix
       "NODE_EXTRA_CA_CERTS",
       "JAVA_HOME",
       "PNPM_HOME",
-      "T3CODE_TELEMETRY_ENABLED",
-      "T3CODE_FEATURE_FLAGS",
-      "T3CODE_RELEASE_BASE_URL",
+      "VIBECODINGER_TELEMETRY_ENABLED",
+      "VIBECODINGER_FEATURE_FLAGS",
+      "VIBECODINGER_RELEASE_BASE_URL",
     ] as const) {
       if (!config.env[name] && shellEnvironment[name]) {
         config.env[name] = shellEnvironment[name];
@@ -668,9 +668,9 @@ const CACHED_ENV_NAMES = [
   "SSL_CERT_FILE",
   "SSL_CERT_DIR",
   "NODE_EXTRA_CA_CERTS",
-  "T3CODE_TELEMETRY_ENABLED",
+  "VIBECODINGER_TELEMETRY_ENABLED",
   // The server reads its flags once at start, before discovery can finish.
-  "T3CODE_FEATURE_FLAGS",
+  "VIBECODINGER_FEATURE_FLAGS",
 ] as const;
 
 /** @public */

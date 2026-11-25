@@ -128,8 +128,8 @@ export const reconcileService = Effect.fn("cli.service.reconcile")(function* (op
   if (status.supported && !status.installed) {
     // A new service listens on this machine only, until `vibecodinger up` opens the local network.
     const { entries } = yield* readServiceEnv(baseDir);
-    if (entries.T3CODE_LAN === undefined && entries.T3CODE_HOST === undefined) {
-      yield* writeServiceEnv(baseDir, { T3CODE_LAN: "false" });
+    if (entries.VIBECODINGER_LAN === undefined && entries.VIBECODINGER_HOST === undefined) {
+      yield* writeServiceEnv(baseDir, { VIBECODINGER_LAN: "false" });
     }
   }
   if (

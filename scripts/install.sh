@@ -5,21 +5,21 @@
 #   curl -fsSL https://raw.githubusercontent.com/AkaakuHub/t3code/main/scripts/install.sh | sh
 #
 # Environment:
-#   T3CODE_CHANNEL           release train to follow: stable, nightly, or preview
+#   VIBECODINGER_CHANNEL           release train to follow: stable, nightly, or preview
 #                            (default: stable; preview is a maintainers' test train)
-#   T3CODE_VERSION           exact version to install (overrides T3CODE_CHANNEL)
-#   T3CODE_HOME              T3 home directory (default: ~/.vibecodinger)
-#   T3CODE_INSTALL_BIN_DIR   where the `vibecodinger` command goes (default: ~/.local/bin)
-#   T3CODE_RELEASE_BASE_URL  mirror for releases/download (default: GitHub)
+#   VIBECODINGER_VERSION           exact version to install (overrides VIBECODINGER_CHANNEL)
+#   VIBECODINGER_HOME              T3 home directory (default: ~/.vibecodinger)
+#   VIBECODINGER_INSTALL_BIN_DIR   where the `vibecodinger` command goes (default: ~/.local/bin)
+#   VIBECODINGER_RELEASE_BASE_URL  mirror for releases/download (default: GitHub)
 #
-# The archive is unpacked into $T3CODE_HOME/runtime/versions/<version>, the
+# The archive is unpacked into $VIBECODINGER_HOME/runtime/versions/<version>, the
 # same layout `vibecodinger service install` uses, so the service reuses this download
 # instead of fetching the release again.
 set -eu
 
 repo="AkaakuHub/t3code"
-base_url="${T3CODE_RELEASE_BASE_URL:-https://github.com/${repo}/releases/download}"
-t3_home="${T3CODE_HOME:-$HOME/.vibecodinger}"
+base_url="${VIBECODINGER_RELEASE_BASE_URL:-https://github.com/${repo}/releases/download}"
+t3_home="${VIBECODINGER_HOME:-$HOME/.vibecodinger}"
 case "$t3_home" in
   /*) ;;
   *)
@@ -28,7 +28,7 @@ case "$t3_home" in
     t3_home="${t3_cwd%??}/$t3_home"
     ;;
 esac
-bin_dir="${T3CODE_INSTALL_BIN_DIR:-$HOME/.local/bin}"
+bin_dir="${VIBECODINGER_INSTALL_BIN_DIR:-$HOME/.local/bin}"
 # Trailing slashes would put `//` in the paths the vibecodinger command guard compares.
 while [ "${t3_home%/}" != "$t3_home" ] && [ "$t3_home" != / ]; do t3_home="${t3_home%/}"; done
 while [ "${bin_dir%/}" != "$bin_dir" ] && [ "$bin_dir" != / ]; do bin_dir="${bin_dir%/}"; done
@@ -182,13 +182,13 @@ else
   fail "sha256sum or shasum is required"
 fi
 
-channel="${T3CODE_CHANNEL:-stable}"
-version="${T3CODE_VERSION:-}"
+channel="${VIBECODINGER_CHANNEL:-stable}"
+version="${VIBECODINGER_VERSION:-}"
 if [ -z "$version" ]; then
   case "$channel" in
     stable) tag_pattern='v\([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\)' ;;
     nightly | preview) tag_pattern="v\([0-9][^\"]*-${channel}\.[0-9]*\.[0-9]*\)" ;;
-    *) fail "T3CODE_CHANNEL must be stable, nightly, or preview" ;;
+    *) fail "VIBECODINGER_CHANNEL must be stable, nightly, or preview" ;;
   esac
   tmp_index="$(mktemp)"
   if [ "$channel" = stable ]; then
@@ -206,7 +206,7 @@ if [ -z "$version" ]; then
     done
   fi
   rm -f "$tmp_index"
-  [ -n "$version" ] || fail "could not find a ${channel} release; set T3CODE_VERSION"
+  [ -n "$version" ] || fail "could not find a ${channel} release; set VIBECODINGER_VERSION"
 fi
 case "$version" in
   *-preview.*)
@@ -214,8 +214,8 @@ case "$version" in
       "vibecodinger ${version} is a preview build." \
       "  Preview builds are cut by maintainers from unreleased branches to exercise the release" \
       "  pipeline. They can be broken, receive no fixes, and are never offered as updates." \
-      "  Set T3CODE_CHANNEL=stable (the default) for a supported build." >&2
-    if [ "$channel" != "preview" ] && [ -z "${T3CODE_VERSION:-}" ]; then
+      "  Set VIBECODINGER_CHANNEL=stable (the default) for a supported build." >&2
+    if [ "$channel" != "preview" ] && [ -z "${VIBECODINGER_VERSION:-}" ]; then
       fail "refusing a preview build that was not explicitly requested"
     fi
     ;;

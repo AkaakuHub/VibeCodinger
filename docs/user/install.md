@@ -25,8 +25,8 @@ This installs the `vibecodinger` command to `~/.local/bin`. If that folder is no
 a command to add it. On Windows, `vibecodinger` works in the same PowerShell window right
 away; add the folder to your `PATH` for new windows. If a `vibecodinger` that the
 installer or the desktop app did not create is already there, it leaves that
-one alone and stops. Set `T3CODE_CHANNEL=nightly` to install the nightly train, or
-`T3CODE_VERSION` to pin an exact version.
+one alone and stops. Set `VIBECODINGER_CHANNEL=nightly` to install the nightly train, or
+`VIBECODINGER_VERSION` to pin an exact version.
 
 | Task                                  | Command                                                                           |
 | ------------------------------------- | --------------------------------------------------------------------------------- |
@@ -257,13 +257,13 @@ allow more time in the T3 server's environment. For example, give Codex and
 Claude readiness checks 60 seconds:
 
 ```bash
-T3CODE_CODEX_PROBE_TIMEOUT_MS=60000 T3CODE_CLAUDE_PROBE_TIMEOUT_MS=60000 vibecodinger serve
+VIBECODINGER_CODEX_PROBE_TIMEOUT_MS=60000 VIBECODINGER_CLAUDE_PROBE_TIMEOUT_MS=60000 vibecodinger serve
 ```
 
 For a remote environment, set these on the machine running the T3 server.
 Keep them in your launcher or service configuration to retain them across
 updates, then restart the server. For systemd, add
-`Environment=T3CODE_CODEX_PROBE_TIMEOUT_MS=60000` under `[Service]` in a service
+`Environment=VIBECODINGER_CODEX_PROBE_TIMEOUT_MS=60000` under `[Service]` in a service
 override, reload systemd, and restart the service. Provider instances can also
 set their own overrides in Settings → Providers.
 
@@ -272,19 +272,19 @@ default is already longer keeps its default. Providers with several phases can
 take longer than one deadline in total. Values must be whole milliseconds no
 greater than 2147483647; unset or invalid values keep the defaults.
 
-| Provider            | Environment variable                   |
-| ------------------- | -------------------------------------- |
-| Codex               | `T3CODE_CODEX_PROBE_TIMEOUT_MS`        |
-| Claude              | `T3CODE_CLAUDE_PROBE_TIMEOUT_MS`       |
-| Cursor              | `T3CODE_CURSOR_PROBE_TIMEOUT_MS`       |
-| Antigravity         | `T3CODE_ANTIGRAVITY_PROBE_TIMEOUT_MS`  |
-| Grok                | `T3CODE_GROK_PROBE_TIMEOUT_MS`         |
-| Kiro                | `T3CODE_KIRO_PROBE_TIMEOUT_MS`         |
-| fx                  | `T3CODE_FX_PROBE_TIMEOUT_MS`           |
-| Pi                  | `T3CODE_PI_PROBE_TIMEOUT_MS`           |
-| Muse Code           | `T3CODE_MUSE_PROBE_TIMEOUT_MS`         |
-| OpenCode            | `T3CODE_OPENCODE_PROBE_TIMEOUT_MS`     |
-| ACP Registry agents | `T3CODE_ACP_REGISTRY_PROBE_TIMEOUT_MS` |
+| Provider            | Environment variable                         |
+| ------------------- | -------------------------------------------- |
+| Codex               | `VIBECODINGER_CODEX_PROBE_TIMEOUT_MS`        |
+| Claude              | `VIBECODINGER_CLAUDE_PROBE_TIMEOUT_MS`       |
+| Cursor              | `VIBECODINGER_CURSOR_PROBE_TIMEOUT_MS`       |
+| Antigravity         | `VIBECODINGER_ANTIGRAVITY_PROBE_TIMEOUT_MS`  |
+| Grok                | `VIBECODINGER_GROK_PROBE_TIMEOUT_MS`         |
+| Kiro                | `VIBECODINGER_KIRO_PROBE_TIMEOUT_MS`         |
+| fx                  | `VIBECODINGER_FX_PROBE_TIMEOUT_MS`           |
+| Pi                  | `VIBECODINGER_PI_PROBE_TIMEOUT_MS`           |
+| Muse Code           | `VIBECODINGER_MUSE_PROBE_TIMEOUT_MS`         |
+| OpenCode            | `VIBECODINGER_OPENCODE_PROBE_TIMEOUT_MS`     |
+| ACP Registry agents | `VIBECODINGER_ACP_REGISTRY_PROBE_TIMEOUT_MS` |
 
 Longer deadlines also take longer to report a stalled check. These overrides
 cover readiness and discovery, including OpenCode server startup. Usage and

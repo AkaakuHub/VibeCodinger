@@ -95,7 +95,7 @@ it.layer(NodeServices.layer)("root CLI commands", (it) => {
       const desktop = {
         node: "/tmp/.mount_T3abc/t3code",
         entry: "/tmp/.mount_T3abc/resources/app.asar/apps/server/dist/bin.mjs",
-        env: { T3CODE_CLI_PATH: shim },
+        env: { VIBECODINGER_CLI_PATH: shim },
       };
 
       expect(yield* rootCommand(desktop)).toBe(`sudo '${shim}' browser setup`);
@@ -147,12 +147,12 @@ it.layer(NodeServices.layer)("root CLI commands", (it) => {
           entry: "/home/theo/.vibecodinger/runtime/versions/1.0.0/vibecodinger",
           executable: true,
           path: path.join(prefix, "bin"),
-          env: { T3CODE_NPM_LAUNCHER_PATH: npmLauncher },
+          env: { VIBECODINGER_NPM_LAUNCHER_PATH: npmLauncher },
         }),
       ).toBe('sudo env "PATH=$PATH" vibecodinger browser setup');
 
       expect(
-        yield* rootCommand({ ...desktop, env: { T3CODE_CLI_PATH: path.join(home, "gone") } }),
+        yield* rootCommand({ ...desktop, env: { VIBECODINGER_CLI_PATH: path.join(home, "gone") } }),
       ).toBe('sudo env "PATH=$PATH" vibecodinger browser setup');
     }),
   );
@@ -180,7 +180,7 @@ it.layer(NodeServices.layer)("host CLI commands", (it) => {
           Effect.provideService(HostProcess.Platform, platform),
           Effect.provideService(HostProcess.Environment, { PATH: "", ...env }),
         );
-      expect((yield* hostCommand("win32", { T3CODE_CLI_PATH: shim })).command).toBe(
+      expect((yield* hostCommand("win32", { VIBECODINGER_CLI_PATH: shim })).command).toBe(
         `& "${shim}" doctor "--base-dir" "C:\\Users\\Jane Doe\\.vibecodinger"`,
       );
       expect((yield* hostCommand("win32", {})).command).toBe(
@@ -195,7 +195,7 @@ it.layer(NodeServices.layer)("host CLI commands", (it) => {
           Effect.provideService(HostProcess.IsExecutable, false),
         )).command,
       ).toBe('vibecodinger doctor "--base-dir" "C:\\T3\\\u201C\u201CArchive\u201D\u201D"');
-      expect((yield* hostCommand("linux", { T3CODE_CLI_PATH: shim })).command).toMatch(
+      expect((yield* hostCommand("linux", { VIBECODINGER_CLI_PATH: shim })).command).toMatch(
         / doctor --base-dir 'C:\\Users\\Jane Doe\\\.vibecodinger'$/,
       );
     }),
@@ -268,7 +268,7 @@ it.layer(NodeServices.layer)("manual server installation ownership", (it) => {
           Effect.provideService(HostProcess.IsExecutable, launchedBy),
           Effect.provideService(
             HostProcess.Environment,
-            launchedBy ? { T3CODE_NPM_LAUNCHER_PATH: entry } : {},
+            launchedBy ? { VIBECODINGER_NPM_LAUNCHER_PATH: entry } : {},
           ),
         );
         expect(installation).toEqual({ kind });
@@ -327,7 +327,9 @@ it.layer(NodeServices.layer)("manual server installation ownership", (it) => {
         Effect.provideService(HostProcess.Arguments, [executable, executable]),
         Effect.provideService(HostProcess.IsExecutable, true),
         Effect.provideService(HostProcess.Platform, "linux"),
-        Effect.provideService(HostProcess.Environment, { T3CODE_NPM_LAUNCHER_PATH: launcher }),
+        Effect.provideService(HostProcess.Environment, {
+          VIBECODINGER_NPM_LAUNCHER_PATH: launcher,
+        }),
       );
       for (const [version, expected] of [
         ["0.0.1", null],

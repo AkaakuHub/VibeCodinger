@@ -109,20 +109,20 @@ it.layer(Layer.mergeAll(NodeServices.layer, NetService.layer))("service commands
   );
 
   it.effect.each([
-    { label: "a new service", installed: false, env: "", expected: "T3CODE_LAN=false\n" },
-    // Services installed before T3CODE_LAN existed keep listening on the local network.
+    { label: "a new service", installed: false, env: "", expected: "VIBECODINGER_LAN=false\n" },
+    // Services installed before VIBECODINGER_LAN existed keep listening on the local network.
     { label: "an older service", installed: true, env: "", expected: "" },
     {
       label: "a set host",
       installed: false,
-      env: "T3CODE_HOST=::\n",
-      expected: "T3CODE_HOST=::\n",
+      env: "VIBECODINGER_HOST=::\n",
+      expected: "VIBECODINGER_HOST=::\n",
     },
     {
       label: "a quoted multiline value",
       installed: false,
-      env: 'CUSTOM="first\nT3CODE_LAN=example\nlast"\n',
-      expected: 'CUSTOM="first\nT3CODE_LAN=example\nlast"\nT3CODE_LAN=false\n',
+      env: 'CUSTOM="first\nVIBECODINGER_LAN=example\nlast"\n',
+      expected: 'CUSTOM="first\nVIBECODINGER_LAN=example\nlast"\nVIBECODINGER_LAN=false\n',
     },
   ])("install keeps $label off the local network only when it is new", (input) =>
     Effect.gen(function* () {

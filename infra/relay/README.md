@@ -113,7 +113,7 @@ domain override.
 The stack's `PublishClientConfig` action ([`src/clientConfig.ts`](./src/clientConfig.ts)) writes the
 deployed relay URL and tracing configuration into the repository-root `.env`, so subsequent source
 builds point at the relay that was just deployed without copying values manually. It runs only when
-one of those outputs changed, and `T3CODE_RELAY_CLIENT_CONFIG_ENV` redirects it to another file.
+one of those outputs changed, and `VIBECODINGER_RELAY_CLIENT_CONFIG_ENV` redirects it to another file.
 
 ### Deployment CI
 
@@ -160,7 +160,7 @@ The `production` GitHub environment must define these Actions secrets:
 - `CLERK_SECRET_KEY`
 - `APNS_PRIVATE_KEY`
 - `FCM_SERVICE_ACCOUNT` when Android push is enabled
-- `T3CHAT_LINK_SECRET`, optional, shared with T3 Chat's `T3CODE_LINK_SECRET`. Without it the
+- `T3CHAT_LINK_SECRET`, optional, shared with T3 Chat's `VIBECODINGER_LINK_SECRET`. Without it the
   T3 Chat account link is off. Local and preview stages can set `T3CHAT_URL` to point
   at another T3 Chat deployment; production uses `https://t3.chat`.
 

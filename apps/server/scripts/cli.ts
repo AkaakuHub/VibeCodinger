@@ -135,9 +135,9 @@ const buildExeCmd = Command.make(
             cwd: serverDir,
             env: {
               ...process.env,
-              T3CODE_PACK_EXE: packMode,
-              T3CODE_CLI_ASSET_DIR: cliAssetDir,
-              T3CODE_PACK_EXE_TARGET: target ?? "",
+              VIBECODINGER_PACK_EXE: packMode,
+              VIBECODINGER_CLI_ASSET_DIR: cliAssetDir,
+              VIBECODINGER_PACK_EXE_TARGET: target ?? "",
             },
             stdout: config.verbose ? "inherit" : "ignore",
             stderr: "inherit",

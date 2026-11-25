@@ -39,8 +39,8 @@ const setup = Effect.gen(function* () {
       Effect.provideService(HostProcess.Environment, {
         PATH: "/usr/bin",
         SHELL: "/bin/zsh",
-        T3CODE_INSTALL_BIN_DIR: binDir,
-        T3CODE_NPM_LAUNCHER_PATH: path.join(npmPackage, "bin/vibecodinger.mjs"),
+        VIBECODINGER_INSTALL_BIN_DIR: binDir,
+        VIBECODINGER_NPM_LAUNCHER_PATH: path.join(npmPackage, "bin/vibecodinger.mjs"),
         ...env,
       }),
     );

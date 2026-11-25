@@ -213,7 +213,7 @@ it.effect("points to Labs only when the server hides the feedback tool", () =>
         NodeServices.layer,
         NodeCrypto.layer,
         NetService.layer,
-        ConfigProvider.layer(ConfigProvider.fromEnv({ env: { T3CODE_PORT: "3773" } })),
+        ConfigProvider.layer(ConfigProvider.fromEnv({ env: { VIBECODINGER_PORT: "3773" } })),
       ),
     ),
   ),

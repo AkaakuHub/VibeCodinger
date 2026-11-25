@@ -43,9 +43,9 @@ const REAL_PROVIDERS = [
 export const SCENARIO_LINEAR_PORT = 13_997;
 
 export const SCENARIO_MACHINE_ENV = {
-  T3CODE_ENVIRONMENT_LABEL: "Scenario",
-  T3CODE_ENVIRONMENT_MACHINE_KIND: "laptop",
-  T3CODE_LINEAR_API_URL: `http://127.0.0.1:${SCENARIO_LINEAR_PORT}/graphql`,
+  VIBECODINGER_ENVIRONMENT_LABEL: "Scenario",
+  VIBECODINGER_ENVIRONMENT_MACHINE_KIND: "laptop",
+  VIBECODINGER_LINEAR_API_URL: `http://127.0.0.1:${SCENARIO_LINEAR_PORT}/graphql`,
 };
 
 const encodeSettings = Schema.encodeEffect(Schema.fromJsonString(Schema.Unknown));
@@ -129,7 +129,7 @@ const startApp = Effect.fn("startApp")(function* (input: {
   const env = {
     ...hostEnvironment,
     PATH: `${path.join(input.home, "bin")}:${hostEnvironment.PATH ?? ""}`,
-    T3CODE_AUTO_BOOTSTRAP_PROJECT_FROM_CWD: "0",
+    VIBECODINGER_AUTO_BOOTSTRAP_PROJECT_FROM_CWD: "0",
     ...SCENARIO_MACHINE_ENV,
   };
   const devRunner = (mode: string, args: ReadonlyArray<string>) => [
@@ -154,15 +154,15 @@ const startApp = Effect.fn("startApp")(function* (input: {
       mode: 0o600,
     });
     const ports = ["--port", serverPort, "--dev-url", origin];
-    const webEnv = { ...env, T3CODE_PORT_OFFSET: String(Number(webPort) - BASE_WEB_PORT) };
+    const webEnv = { ...env, VIBECODINGER_PORT_OFFSET: String(Number(webPort) - BASE_WEB_PORT) };
     const server = yield* start({
       cwd: checkout,
       command: node,
       args: devRunner("dev:server", ports),
       env: {
         ...webEnv,
-        T3CODE_DEV_ALLOWED_ORIGINS: origin,
-        T3CODE_DEV_AUTH_TOKEN: credential,
+        VIBECODINGER_DEV_ALLOWED_ORIGINS: origin,
+        VIBECODINGER_DEV_AUTH_TOKEN: credential,
       },
       onLine: (line) => (line.includes("pairingUrl:") ? Effect.void : Console.log(line)),
     });

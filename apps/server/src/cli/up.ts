@@ -22,7 +22,7 @@ import * as CliService from "./service.ts";
 interface Setup {
   readonly service: BootService.BootServiceStatus;
   readonly lan: boolean;
-  /** An installed service with no T3CODE_LAN or T3CODE_HOST keeps the old default: on. */
+  /** An installed service with no VIBECODINGER_LAN or VIBECODINGER_HOST keeps the old default: on. */
   readonly lanFromOldDefault: boolean;
   readonly host: string | undefined;
 }
@@ -32,7 +32,7 @@ const readSetup = Effect.fn("cli.up.read_setup")(function* () {
   const service = yield* (yield* BootService.BootService).status;
   const { entries } = yield* CliService.readServiceEnv(baseDir);
   // Parsed as the server parses it.
-  const lan = yield* Config.Boolean("T3CODE_LAN")
+  const lan = yield* Config.Boolean("VIBECODINGER_LAN")
     .pipe(Config.option)
     .parse(ConfigProvider.fromEnv({ env: entries }));
   // Another home's service doesn't read this home's service.env.
@@ -40,8 +40,9 @@ const readSetup = Effect.fn("cli.up.read_setup")(function* () {
   return {
     service,
     lan: Option.getOrElse(lan, () => servesThisHome),
-    lanFromOldDefault: Option.isNone(lan) && servesThisHome && entries.T3CODE_HOST === undefined,
-    host: entries.T3CODE_HOST,
+    lanFromOldDefault:
+      Option.isNone(lan) && servesThisHome && entries.VIBECODINGER_HOST === undefined,
+    host: entries.VIBECODINGER_HOST,
   } satisfies Setup;
 });
 
@@ -84,7 +85,7 @@ const formatSetup = (setup: Setup, hints: Hints) => {
     [
       "Local network",
       setup.host !== undefined
-        ? `overridden · T3CODE_HOST=${setup.host}`
+        ? `overridden · VIBECODINGER_HOST=${setup.host}`
         : setup.lanFromOldDefault
           ? "on · kept from an older install"
           : setup.lan
@@ -163,7 +164,7 @@ const setUp = Effect.fn("cli.up")(function* (flags: {
     }
   }
   if (!before.service.installed && !lan) {
-    if (before.lan) yield* CliService.writeServiceEnv(baseDir, { T3CODE_LAN: "false" });
+    if (before.lan) yield* CliService.writeServiceEnv(baseDir, { VIBECODINGER_LAN: "false" });
     return yield* Console.log(formatNextSteps(lan, false, hints));
   }
   const { installedVersion } = before.service;
@@ -193,10 +194,10 @@ const setUp = Effect.fn("cli.up")(function* (flags: {
     if (!confirmed) return yield* Console.log("Nothing changed.");
   }
 
-  const previousLan = (yield* CliService.readServiceEnv(baseDir)).entries.T3CODE_LAN;
-  yield* CliService.writeServiceEnv(baseDir, { T3CODE_LAN: String(lan) });
+  const previousLan = (yield* CliService.readServiceEnv(baseDir)).entries.VIBECODINGER_LAN;
+  yield* CliService.writeServiceEnv(baseDir, { VIBECODINGER_LAN: String(lan) });
   const restoreServiceEnv = before.service.installed
-    ? CliService.writeServiceEnv(baseDir, { T3CODE_LAN: previousLan })
+    ? CliService.writeServiceEnv(baseDir, { VIBECODINGER_LAN: previousLan })
     : Effect.void;
   // A failed update or restart may still have started the service with the new
   // settings, so restart it once more on the old ones.
@@ -205,22 +206,22 @@ const setUp = Effect.fn("cli.up")(function* (flags: {
     : Effect.void;
   if (before.host !== undefined) {
     yield* Console.warn(
-      `T3CODE_HOST=${before.host} in service.env overrides the network choice. Remove it to apply it.`,
+      `VIBECODINGER_HOST=${before.host} in service.env overrides the network choice. Remove it to apply it.`,
     );
   }
 
   const printServeCommand = Effect.fn(function* (reason: string) {
     const { command } = yield* resolveHostCliCommand("serve", [
       ...baseDirArgs,
-      // Explicit either way, so a T3CODE_LAN in the shell cannot override the choice.
+      // Explicit either way, so a VIBECODINGER_LAN in the shell cannot override the choice.
       lan ? "--lan" : "--no-lan",
     ]);
     yield* Console.log(`${reason} Keep this command running:\n  ${command}`);
     // A host wins over --lan and --no-lan, as it does in service.env.
-    const shellHost = (yield* HostProcess.Environment).T3CODE_HOST;
+    const shellHost = (yield* HostProcess.Environment).VIBECODINGER_HOST;
     if (shellHost !== undefined) {
       yield* Console.warn(
-        `T3CODE_HOST=${shellHost} in this shell overrides that choice. Unset it before you run the command.`,
+        `VIBECODINGER_HOST=${shellHost} in this shell overrides that choice. Unset it before you run the command.`,
       );
     }
   });

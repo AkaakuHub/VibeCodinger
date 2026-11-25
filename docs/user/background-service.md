@@ -46,16 +46,16 @@ under T3 home. Pass `--yes` from a script.
 
 A new service answers only on this machine. Other devices reach it through
 T3 Connect, or directly once you choose the local network in `vibecodinger up` (or run
-`vibecodinger up --lan`, which sets `T3CODE_LAN=true` in `service.env`). It then listens on
+`vibecodinger up --lan`, which sets `VIBECODINGER_LAN=true` in `service.env`). It then listens on
 your local network and Tailscale addresses, so the desktop and mobile apps on
 the same network connect directly instead of through T3 Connect. It still does
 not answer on public addresses. Anyone on the same network can reach the port,
 so a pairing code is all that keeps them out. The hosted web app at app.t3.codes
 stays on T3 Connect, because browsers block plain HTTP from an HTTPS page.
 
-A service installed before `T3CODE_LAN` existed keeps listening on the local
+A service installed before `VIBECODINGER_LAN` existed keeps listening on the local
 network. `vibecodinger status` says so, and `vibecodinger up --no-lan` turns it off. Any
-`T3CODE_HOST` value replaces this setting.
+`VIBECODINGER_HOST` value replaces this setting.
 
 ## Configure the service environment
 
@@ -64,13 +64,13 @@ directory, normally `~/.vibecodinger/service.env`. This file survives service in
 and updates. For example:
 
 ```dotenv
-T3CODE_PORT=3773
-T3CODE_HOST=127.0.0.1
+VIBECODINGER_PORT=3773
+VIBECODINGER_HOST=127.0.0.1
 ```
 
 Use `KEY=VALUE` entries, quoting values that contain spaces or `#`. Values are
 literal: shell commands and variable expansion are not evaluated. Entries
-override the inherited service environment, except for `PATH`, `T3CODE_HOME`,
+override the inherited service environment, except for `PATH`, `VIBECODINGER_HOME`,
 `T3_BOOT_SERVICE_UNIT`, and `T3_SERVICE_LAUNCHER_CONTEXT` (including case variants).
 
 Run `vibecodinger service restart` after changing the file. Changes apply when the service

@@ -23,7 +23,7 @@
   "containerEnv": {
     // Keep all runtime state inside the (gitignored) workspace .vibecodinger, matching
     // the worktree default. An explicit --home-dir still wins.
-    "T3CODE_HOME": "${containerWorkspaceFolder}/.vibecodinger"
+    "VIBECODINGER_HOME": "${containerWorkspaceFolder}/.vibecodinger"
   },
   "mounts": [
     // vp keeps the pnpm content-addressable store and metadata cache under

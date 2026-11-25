@@ -43,7 +43,7 @@ const identityEnv = (home) => {
   const { label, machine } = JSON.parse(
     NodeFS.readFileSync(NodePath.join(home, "identity.json"), "utf8"),
   );
-  return { T3CODE_ENVIRONMENT_LABEL: label, T3CODE_ENVIRONMENT_MACHINE_KIND: machine };
+  return { VIBECODINGER_ENVIRONMENT_LABEL: label, VIBECODINGER_ENVIRONMENT_MACHINE_KIND: machine };
 };
 
 /**
@@ -141,8 +141,8 @@ export async function startEnvironment(
           FAKE_CLAUDE_LOG: NodePath.join(home, "fake-claude.log"),
         }
       : {}),
-    T3CODE_AUTO_BOOTSTRAP_PROJECT_FROM_CWD: "0",
-    T3CODE_PORT_OFFSET: String(webPort - BASE_WEB_PORT),
+    VIBECODINGER_AUTO_BOOTSTRAP_PROJECT_FROM_CWD: "0",
+    VIBECODINGER_PORT_OFFSET: String(webPort - BASE_WEB_PORT),
     ...env,
   };
   const runner = (mode, extra) => [
@@ -162,8 +162,8 @@ export async function startEnvironment(
     runner("dev:server", ["--host", host]),
     {
       ...baseEnv,
-      T3CODE_DEV_ALLOWED_ORIGINS: [webOrigin, ...allowedOrigins].join(","),
-      T3CODE_DEV_AUTH_TOKEN: token,
+      VIBECODINGER_DEV_ALLOWED_ORIGINS: [webOrigin, ...allowedOrigins].join(","),
+      VIBECODINGER_DEV_AUTH_TOKEN: token,
     },
     log,
   );

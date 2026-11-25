@@ -22,7 +22,7 @@ export const isDirectTlsRequest = (request: { readonly source: object }): boolea
   request.source instanceof NodeHttp.IncomingMessage &&
   request.source.socket instanceof NodeTls.TLSSocket;
 
-const portConfig = Config.option(Config.Int("T3CODE_TLS_PORT"));
+const portConfig = Config.option(Config.Int("VIBECODINGER_TLS_PORT"));
 
 export const layerRequireTls = Layer.unwrap(
   Effect.gen(function* () {
@@ -49,8 +49,8 @@ export const layerRequireTls = Layer.unwrap(
 
 const configuration = Config.all({
   port: portConfig,
-  cert: Config.option(Config.NonEmptyString("T3CODE_TLS_CERT_FILE")),
-  key: Config.option(Config.NonEmptyString("T3CODE_TLS_KEY_FILE")),
+  cert: Config.option(Config.NonEmptyString("VIBECODINGER_TLS_CERT_FILE")),
+  key: Config.option(Config.NonEmptyString("VIBECODINGER_TLS_KEY_FILE")),
 });
 
 export const layer = (
@@ -73,7 +73,8 @@ export const layer = (
         port.value > 65_535
       ) {
         return yield* new TransportTlsError({
-          message: "Set T3CODE_TLS_PORT, T3CODE_TLS_CERT_FILE, and T3CODE_TLS_KEY_FILE together.",
+          message:
+            "Set VIBECODINGER_TLS_PORT, VIBECODINGER_TLS_CERT_FILE, and VIBECODINGER_TLS_KEY_FILE together.",
         });
       }
       if (!options.remoteClientsAllowed) {

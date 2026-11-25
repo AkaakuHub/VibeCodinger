@@ -67,7 +67,7 @@ model.
 
 ### Reusable dev credential
 
-Web development servers can accept a fixed `T3CODE_DEV_AUTH_TOKEN` across worktrees and ports on one
+Web development servers can accept a fixed `VIBECODINGER_DEV_AUTH_TOKEN` across worktrees and ports on one
 hostname (see the [development runbook](../operations/00_development.md#reusable-dev-credential)). It
 grants administrative access and is ignored by desktop and non-development servers.
 

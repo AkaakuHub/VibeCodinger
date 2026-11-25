@@ -105,10 +105,10 @@ If no credentials are saved, T3 Code falls back to these variables in the server
 Restart the server after changing them:
 
 ```bash
-export T3CODE_BITBUCKET_ACCESS_TOKEN="your-access-token"
+export VIBECODINGER_BITBUCKET_ACCESS_TOKEN="your-access-token"
 # or
-export T3CODE_BITBUCKET_EMAIL="you@example.com"
-export T3CODE_BITBUCKET_API_TOKEN="your-token"
+export VIBECODINGER_BITBUCKET_EMAIL="you@example.com"
+export VIBECODINGER_BITBUCKET_API_TOKEN="your-token"
 ```
 
 For a background service, put these `KEY=VALUE` entries in
@@ -146,7 +146,7 @@ Merging a stack lands it through GitCafe, and updating a branch restacks the lay
 ### TanStack Source
 
 TanStack Source is in private beta, so the server shows it only when its environment turns the flag
-on: `export T3CODE_FEATURE_FLAGS=tanstack_source` in your shell profile, then restart T3 Code. Separate
+on: `export VIBECODINGER_FEATURE_FLAGS=tanstack_source` in your shell profile, then restart T3 Code. Separate
 several flags with commas. A value already set in the server's own environment, such as a service
 definition, is used instead of the profile. Install its CLI and sign in:
 

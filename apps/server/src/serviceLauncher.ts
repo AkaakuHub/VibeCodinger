@@ -334,7 +334,7 @@ async function pathExists(target: string): Promise<boolean> {
 
 const MANAGED_SERVICE_ENV_NAMES = new Set([
   "PATH",
-  "T3CODE_HOME",
+  "VIBECODINGER_HOME",
   "T3_BOOT_SERVICE_UNIT",
   SERVICE_LAUNCHER_CONTEXT_ENV,
 ]);
@@ -1588,9 +1588,9 @@ export interface LauncherOptions {
 }
 
 export async function main(options: LauncherOptions = {}): Promise<void> {
-  const baseDir = options.baseDir ?? process.env.T3CODE_HOME;
+  const baseDir = options.baseDir ?? process.env.VIBECODINGER_HOME;
   if (baseDir === undefined || baseDir.trim() === "") {
-    throw new Error("T3CODE_HOME is required by the VibeCodinger service launcher.");
+    throw new Error("VIBECODINGER_HOME is required by the VibeCodinger service launcher.");
   }
   const output =
     options.logFile === undefined ? undefined : NodeFS.openSync(options.logFile, "a", 0o600);
@@ -1604,7 +1604,7 @@ export async function main(options: LauncherOptions = {}): Promise<void> {
     // changes only what the server gets.
     const managerEnvironment = {
       ...process.env,
-      T3CODE_HOME: baseDir,
+      VIBECODINGER_HOME: baseDir,
       ...(options.serviceUnit === undefined ? {} : { [SERVICE_UNIT_ENV]: options.serviceUnit }),
     };
     const environment = await readServiceEnvironment(baseDir, managerEnvironment);

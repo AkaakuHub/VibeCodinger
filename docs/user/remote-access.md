@@ -91,7 +91,7 @@ cannot add more until you are under the limit again.
 ## Direct TLS over Tailscale
 
 For a headless host, T3 Code can terminate HTTPS and WebSocket TLS itself. Set
-`T3CODE_TLS_PORT`, `T3CODE_TLS_CERT_FILE`, and `T3CODE_TLS_KEY_FILE` together
+`VIBECODINGER_TLS_PORT`, `VIBECODINGER_TLS_CERT_FILE`, and `VIBECODINGER_TLS_KEY_FILE` together
 in the server process environment. The certificate and key must be PEM files,
 and the certificate must cover the Tailscale hostname and be trusted by your
 clients. The TLS listener binds to `127.0.0.1` and requires TLS 1.3. Once enabled,
@@ -403,7 +403,7 @@ listed port opens as `http://localhost:<port>` and might not be a web page. For
 an HTTPS server or a specific path, set the **Preview URL** on the project
 script that starts it; T3 Code checks that address and opens it as written.
 
-To stop listing ports, set `T3CODE_PORT_DISCOVERY=0` in the environment that
+To stop listing ports, set `VIBECODINGER_PORT_DISCOVERY=0` in the environment that
 starts the T3 Code server, such as
 [`service.env`](./background-service.md#configure-the-service-environment) for
 the background service, and restart it. Script preview URLs still appear.
@@ -434,14 +434,14 @@ as root. If your T3 server runs as root, run it as a nonroot user to keep
 sandboxing enabled. `vibecodinger browser setup` does not fix this root restriction.
 
 If you need to run as root, or cannot enable the sandbox on your host, set
-`T3CODE_SERVER_BROWSER_SANDBOX=0` in the **T3 server's environment** and restart
+`VIBECODINGER_SERVER_BROWSER_SANDBOX=0` in the **T3 server's environment** and restart
 the server. This disables Chrome's sandbox. For a manual launch:
 
 ```sh
-T3CODE_SERVER_BROWSER_SANDBOX=0 vibecodinger serve
+VIBECODINGER_SERVER_BROWSER_SANDBOX=0 vibecodinger serve
 ```
 
-For a systemd service, add `Environment=T3CODE_SERVER_BROWSER_SANDBOX=0` under
+For a systemd service, add `Environment=VIBECODINGER_SERVER_BROWSER_SANDBOX=0` under
 `[Service]` in its configuration, run `sudo systemctl daemon-reload`, then restart
 your T3 service. Setting the variable in an agent's terminal does not change the
 environment of an already running T3 server.

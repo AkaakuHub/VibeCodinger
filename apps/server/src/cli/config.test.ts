@@ -289,7 +289,7 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
       const path = yield* Path.Path;
       const child = yield* liveProcess;
       assert(child.pid !== undefined);
-      for (const source of ["flag", "T3CODE_HOME", "default"] as const) {
+      for (const source of ["flag", "VIBECODINGER_HOME", "default"] as const) {
         const home = yield* fs.makeTempDirectoryScoped({
           prefix: "vibecodinger-cli-preflight-pair-",
         });
@@ -320,7 +320,7 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
               NetService.layer,
               ConfigProvider.layer(
                 ConfigProvider.fromEnv({
-                  env: source === "T3CODE_HOME" ? { T3CODE_HOME: baseDir } : {},
+                  env: source === "VIBECODINGER_HOME" ? { VIBECODINGER_HOME: baseDir } : {},
                 }),
               ),
             ),
@@ -363,7 +363,7 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
       const layerConfig = ConfigProvider.layer(
         ConfigProvider.fromEnv({
           env: {
-            T3CODE_DEV_AUTH_TOKEN: "  reusable-dev-auth-token-that-is-long-enough  ",
+            VIBECODINGER_DEV_AUTH_TOKEN: "  reusable-dev-auth-token-that-is-long-enough  ",
           },
         }),
       );
@@ -408,7 +408,7 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
         lan: Option.none<boolean>(),
       };
       const layerConfig = ConfigProvider.layer(
-        ConfigProvider.fromEnv({ env: { T3CODE_DEV_AUTH_TOKEN: secret } }),
+        ConfigProvider.fromEnv({ env: { VIBECODINGER_DEV_AUTH_TOKEN: secret } }),
       );
       const error = yield* resolveServerConfig(flags, Option.none()).pipe(
         Effect.provide(Layer.mergeAll(layerConfig, NetService.layer)),
@@ -470,10 +470,10 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
             ConfigProvider.layer(
               ConfigProvider.fromEnv({
                 env: {
-                  T3CODE_BOOTSTRAP_FD: String(fd),
-                  T3CODE_NO_BROWSER: "true",
-                  T3CODE_AUTO_BOOTSTRAP_PROJECT_FROM_CWD: "true",
-                  T3CODE_LOG_WS_EVENTS: "true",
+                  VIBECODINGER_BOOTSTRAP_FD: String(fd),
+                  VIBECODINGER_NO_BROWSER: "true",
+                  VIBECODINGER_AUTO_BOOTSTRAP_PROJECT_FROM_CWD: "true",
+                  VIBECODINGER_LOG_WS_EVENTS: "true",
                 },
               }),
             ),
@@ -547,12 +547,12 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
             ConfigProvider.layer(
               ConfigProvider.fromEnv({
                 env: {
-                  T3CODE_MODE: "web",
-                  T3CODE_BOOTSTRAP_FD: String(fd),
-                  T3CODE_HOME: baseDir,
-                  T3CODE_NO_BROWSER: "true",
-                  T3CODE_AUTO_BOOTSTRAP_PROJECT_FROM_CWD: "true",
-                  T3CODE_LOG_WS_EVENTS: "true",
+                  VIBECODINGER_MODE: "web",
+                  VIBECODINGER_BOOTSTRAP_FD: String(fd),
+                  VIBECODINGER_HOME: baseDir,
+                  VIBECODINGER_NO_BROWSER: "true",
+                  VIBECODINGER_AUTO_BOOTSTRAP_PROJECT_FROM_CWD: "true",
+                  VIBECODINGER_LOG_WS_EVENTS: "true",
                 },
               }),
             ),
@@ -743,7 +743,7 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
           Layer.mergeAll(
             ConfigProvider.layer(
               ConfigProvider.fromEnv({
-                env: { T3CODE_OTEL_SDK_DISABLED: "false", OTEL_SDK_DISABLED: "true" },
+                env: { VIBECODINGER_OTEL_SDK_DISABLED: "false", OTEL_SDK_DISABLED: "true" },
               }),
             ),
             NetService.layer,
@@ -788,8 +788,8 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
             ConfigProvider.layer(
               ConfigProvider.fromEnv({
                 env: {
-                  T3CODE_NO_BROWSER: "false",
-                  T3CODE_AUTO_BOOTSTRAP_PROJECT_FROM_CWD: "true",
+                  VIBECODINGER_NO_BROWSER: "false",
+                  VIBECODINGER_AUTO_BOOTSTRAP_PROJECT_FROM_CWD: "true",
                 },
               }),
             ),
@@ -848,8 +848,8 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
             ConfigProvider.layer(
               ConfigProvider.fromEnv({
                 env: {
-                  T3CODE_OTLP_HEADERS: "authorization=Bearer abc==, x-tenant=vibecodinger",
-                  T3CODE_OTLP_TRACES_URL: "http://collector.internal:4318",
+                  VIBECODINGER_OTLP_HEADERS: "authorization=Bearer abc==, x-tenant=vibecodinger",
+                  VIBECODINGER_OTLP_TRACES_URL: "http://collector.internal:4318",
                 },
               }),
             ),
@@ -963,8 +963,8 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
             ConfigProvider.layer(
               ConfigProvider.fromEnv({
                 env: {
-                  T3CODE_OTLP_TRACES_URL: "http://vibecodinger:4318/v1/traces",
-                  T3CODE_OTLP_HEADERS: "x-key=secret",
+                  VIBECODINGER_OTLP_TRACES_URL: "http://vibecodinger:4318/v1/traces",
+                  VIBECODINGER_OTLP_HEADERS: "x-key=secret",
                   OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: "http://otel-traces:4318/custom",
                   OTEL_EXPORTER_OTLP_METRICS_ENDPOINT: "http://otel-metrics:4318/custom",
                   OTEL_EXPORTER_OTLP_HEADERS: "x-key=otel",
@@ -1016,7 +1016,7 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
               ConfigProvider.layer(
                 ConfigProvider.fromEnv({
                   env: {
-                    T3CODE_OTLP_TRACES_URL: "http://vibecodinger:4318/v1/traces",
+                    VIBECODINGER_OTLP_TRACES_URL: "http://vibecodinger:4318/v1/traces",
                     OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel:4318",
                     OTEL_EXPORTER_OTLP_HEADERS: "x-key=%zz",
                   },
@@ -1033,60 +1033,68 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
       }),
   );
 
-  it.effect("listens on private networks per T3CODE_LAN, else under the service launcher", () =>
-    Effect.gen(function* () {
-      const { join } = yield* Path.Path;
-      const baseDir = join(NodeOS.tmpdir(), "t3-cli-config-service-host");
-      const resolveHost = (input: {
-        readonly connected: boolean;
-        readonly env?: Record<string, string>;
-      }) =>
-        resolveServerConfig(minimalWebFlags(baseDir), Option.none()).pipe(
-          Effect.map(({ host, privateNetworkOnly }) => ({ host, privateNetworkOnly })),
-          Effect.provide(
-            Layer.mergeAll(
-              ConfigProvider.layer(ConfigProvider.fromEnv({ env: input.env ?? {} })),
-              NetService.layer,
+  it.effect(
+    "listens on private networks per VIBECODINGER_LAN, else under the service launcher",
+    () =>
+      Effect.gen(function* () {
+        const { join } = yield* Path.Path;
+        const baseDir = join(NodeOS.tmpdir(), "t3-cli-config-service-host");
+        const resolveHost = (input: {
+          readonly connected: boolean;
+          readonly env?: Record<string, string>;
+        }) =>
+          resolveServerConfig(minimalWebFlags(baseDir), Option.none()).pipe(
+            Effect.map(({ host, privateNetworkOnly }) => ({ host, privateNetworkOnly })),
+            Effect.provide(
+              Layer.mergeAll(
+                ConfigProvider.layer(ConfigProvider.fromEnv({ env: input.env ?? {} })),
+                NetService.layer,
+              ),
             ),
-          ),
-          Effect.provideService(HostProcess.Environment, {
-            [SERVICE_LAUNCHER_CONTEXT_ENV]: JSON.stringify({
-              protocol: SERVICE_LAUNCHER_PROTOCOL,
-              childVersion: packageJson.version,
+            Effect.provideService(HostProcess.Environment, {
+              [SERVICE_LAUNCHER_CONTEXT_ENV]: JSON.stringify({
+                protocol: SERVICE_LAUNCHER_PROTOCOL,
+                childVersion: packageJson.version,
+              }),
             }),
-          }),
-          Effect.provideService(ServiceLauncherHostProcess, {
-            connected: input.connected,
-            send: () => false,
-            on: () => undefined,
-            off: () => undefined,
-          }),
-        );
+            Effect.provideService(ServiceLauncherHostProcess, {
+              connected: input.connected,
+              send: () => false,
+              on: () => undefined,
+              off: () => undefined,
+            }),
+          );
 
-      // A service installed before T3CODE_LAN existed.
-      expect(yield* resolveHost({ connected: true })).toEqual({
-        host: "0.0.0.0",
-        privateNetworkOnly: true,
-      });
-      // `service.env` reaches the server as its environment.
-      expect(yield* resolveHost({ connected: true, env: { T3CODE_HOST: "127.0.0.1" } })).toEqual({
-        host: "127.0.0.1",
-        privateNetworkOnly: undefined,
-      });
-      expect(yield* resolveHost({ connected: true, env: { T3CODE_LAN: "false" } })).toEqual({
-        host: undefined,
-        privateNetworkOnly: undefined,
-      });
-      expect(yield* resolveHost({ connected: false, env: { T3CODE_LAN: "true" } })).toEqual({
-        host: "0.0.0.0",
-        privateNetworkOnly: true,
-      });
-      // Without the launcher's IPC channel the context was inherited, e.g. by
-      // `vibecodinger serve` started from an agent inside the service.
-      expect(yield* resolveHost({ connected: false })).toEqual({
-        host: undefined,
-        privateNetworkOnly: undefined,
-      });
-    }),
+        // A service installed before VIBECODINGER_LAN existed.
+        expect(yield* resolveHost({ connected: true })).toEqual({
+          host: "0.0.0.0",
+          privateNetworkOnly: true,
+        });
+        // `service.env` reaches the server as its environment.
+        expect(
+          yield* resolveHost({ connected: true, env: { VIBECODINGER_HOST: "127.0.0.1" } }),
+        ).toEqual({
+          host: "127.0.0.1",
+          privateNetworkOnly: undefined,
+        });
+        expect(yield* resolveHost({ connected: true, env: { VIBECODINGER_LAN: "false" } })).toEqual(
+          {
+            host: undefined,
+            privateNetworkOnly: undefined,
+          },
+        );
+        expect(yield* resolveHost({ connected: false, env: { VIBECODINGER_LAN: "true" } })).toEqual(
+          {
+            host: "0.0.0.0",
+            privateNetworkOnly: true,
+          },
+        );
+        // Without the launcher's IPC channel the context was inherited, e.g. by
+        // `vibecodinger serve` started from an agent inside the service.
+        expect(yield* resolveHost({ connected: false })).toEqual({
+          host: undefined,
+          privateNetworkOnly: undefined,
+        });
+      }),
   );
 });

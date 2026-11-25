@@ -34,8 +34,8 @@ const layerEnvironment = (input: {
       Layer.mergeAll(
         NodeServices.layer,
         DesktopConfig.layerTest({
-          T3CODE_HOME: input.baseDir,
-          T3CODE_MODE: "desktop",
+          VIBECODINGER_HOME: input.baseDir,
+          VIBECODINGER_MODE: "desktop",
         }),
       ),
     ),

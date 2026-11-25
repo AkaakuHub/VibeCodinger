@@ -507,7 +507,7 @@ const PINNED_RUNTIME_PRUNED_PREFIX = ".pruned-";
 const PINNED_RUNTIME_PRUNE_GRACE = Duration.hours(1);
 /**
  * One `vibecodinger` launcher path per line, appended by the install scripts and by any prune that finds a
- * launcher on PATH. A service does not see the installer's `T3CODE_INSTALL_BIN_DIR` or the
+ * launcher on PATH. A service does not see the installer's `VIBECODINGER_INSTALL_BIN_DIR` or the
  * interactive PATH, so this is how it finds a custom one, including installs that predate the file.
  */
 const PINNED_RUNTIME_LAUNCHERS_FILE = "launchers";
@@ -660,7 +660,7 @@ export const findPosixLauncher = Effect.fn("cloud.pinned_runtime.find_posix_laun
         path.resolve(cwd, directory || ".", "vibecodinger"),
       ),
       path.join(
-        environment["T3CODE_INSTALL_BIN_DIR"] ||
+        environment["VIBECODINGER_INSTALL_BIN_DIR"] ||
           path.join(yield* HostProcess.HomeDirectory, ".local", "bin"),
         "vibecodinger",
       ),
@@ -716,7 +716,7 @@ const shellLauncherTargets = Effect.fn("cloud.pinned_runtime.shell_launcher_targ
     .split(/\r?\n/)
     .filter((launcher) => launcher.trim().length > 0);
   const found = [
-    environment["T3CODE_INSTALL_BIN_DIR"] || path.join(home, ".local", "bin"),
+    environment["VIBECODINGER_INSTALL_BIN_DIR"] || path.join(home, ".local", "bin"),
     ...(environment["PATH"] ?? environment["Path"] ?? "").split(platform === "win32" ? ";" : ":"),
   ]
     .filter((directory) => path.isAbsolute(directory))

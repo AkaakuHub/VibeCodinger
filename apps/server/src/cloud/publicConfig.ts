@@ -12,10 +12,10 @@ import * as Effect from "effect/Effect";
 import * as Schema from "effect/Schema";
 import * as SchemaIssue from "effect/SchemaIssue";
 
-declare const __T3CODE_BUILD_RELAY_URL__: string | undefined;
-declare const __T3CODE_BUILD_CHANNEL__: "nightly" | "latest" | undefined;
-declare const __T3CODE_BUILD_CLERK_PUBLISHABLE_KEY__: string | undefined;
-declare const __T3CODE_BUILD_CLERK_CLI_OAUTH_CLIENT_ID__: string | undefined;
+declare const __VIBECODINGER_BUILD_RELAY_URL__: string | undefined;
+declare const __VIBECODINGER_BUILD_CHANNEL__: "nightly" | "latest" | undefined;
+declare const __VIBECODINGER_BUILD_CLERK_PUBLISHABLE_KEY__: string | undefined;
+declare const __VIBECODINGER_BUILD_CLERK_CLI_OAUTH_CLIENT_ID__: string | undefined;
 const CLOUD_CLI_OAUTH_LOOPBACK_PORT = 34338;
 const CLOUD_CLI_OAUTH_SCOPES = CONNECT_OAUTH_SCOPES;
 
@@ -39,21 +39,21 @@ function readBuildTimeValue(value: string | undefined): string {
 }
 
 const buildTimeRelayUrl =
-  typeof __T3CODE_BUILD_RELAY_URL__ === "undefined"
+  typeof __VIBECODINGER_BUILD_RELAY_URL__ === "undefined"
     ? ""
-    : (normalizeSecureRelayUrl(__T3CODE_BUILD_RELAY_URL__) ?? "");
+    : (normalizeSecureRelayUrl(__VIBECODINGER_BUILD_RELAY_URL__) ?? "");
 const buildTimeClerkPublishableKey = readBuildTimeValue(
-  typeof __T3CODE_BUILD_CLERK_PUBLISHABLE_KEY__ === "undefined"
+  typeof __VIBECODINGER_BUILD_CLERK_PUBLISHABLE_KEY__ === "undefined"
     ? undefined
-    : __T3CODE_BUILD_CLERK_PUBLISHABLE_KEY__,
+    : __VIBECODINGER_BUILD_CLERK_PUBLISHABLE_KEY__,
 );
 const buildTimeClerkCliOAuthClientId = readBuildTimeValue(
-  typeof __T3CODE_BUILD_CLERK_CLI_OAUTH_CLIENT_ID__ === "undefined"
+  typeof __VIBECODINGER_BUILD_CLERK_CLI_OAUTH_CLIENT_ID__ === "undefined"
     ? undefined
-    : __T3CODE_BUILD_CLERK_CLI_OAUTH_CLIENT_ID__,
+    : __VIBECODINGER_BUILD_CLERK_CLI_OAUTH_CLIENT_ID__,
 );
 export function makeRelayUrlConfig(fallback = buildTimeRelayUrl) {
-  const runtimeConfig = Config.NonEmptyString("T3CODE_RELAY_URL");
+  const runtimeConfig = Config.NonEmptyString("VIBECODINGER_RELAY_URL");
   return (fallback ? runtimeConfig.pipe(Config.withDefault(fallback)) : runtimeConfig).pipe(
     Config.mapEffect(validateRelayUrl),
   );
@@ -62,7 +62,7 @@ export function makeRelayUrlConfig(fallback = buildTimeRelayUrl) {
 export const relayUrlConfig = makeRelayUrlConfig();
 
 export const hostedAppUrlConfig = makePublicValueConfig(
-  "T3CODE_HOSTED_APP_URL",
+  "VIBECODINGER_HOSTED_APP_URL",
   DEFAULT_HOSTED_APP_URL,
 ).pipe(Config.mapEffect(validateHostedAppUrl));
 
@@ -73,8 +73,9 @@ const NIGHTLY_HOSTED_APP_URL = "https://nightly.app.t3.codes";
  * nightly hosted app, which ships the same approval page; app.t3.codes serves stable.
  */
 export const agentApprovalAppUrlConfig = makePublicValueConfig(
-  "T3CODE_HOSTED_APP_URL",
-  typeof __T3CODE_BUILD_CHANNEL__ !== "undefined" && __T3CODE_BUILD_CHANNEL__ === "nightly"
+  "VIBECODINGER_HOSTED_APP_URL",
+  typeof __VIBECODINGER_BUILD_CHANNEL__ !== "undefined" &&
+    __VIBECODINGER_BUILD_CHANNEL__ === "nightly"
     ? NIGHTLY_HOSTED_APP_URL
     : DEFAULT_HOSTED_APP_URL,
 ).pipe(Config.mapEffect(validateHostedAppUrl));
@@ -132,11 +133,11 @@ export function makeCloudCliOAuthConfig({
 } = {}) {
   return Config.all({
     clerkPublishableKey: makePublicValueConfig(
-      "T3CODE_CLERK_PUBLISHABLE_KEY",
+      "VIBECODINGER_CLERK_PUBLISHABLE_KEY",
       clerkPublishableKeyFallback,
     ),
     clientId: makePublicValueConfig(
-      "T3CODE_CLERK_CLI_OAUTH_CLIENT_ID",
+      "VIBECODINGER_CLERK_CLI_OAUTH_CLIENT_ID",
       clerkCliOAuthClientIdFallback,
     ),
   }).pipe(

@@ -397,7 +397,9 @@ describe("vibecodinger pair", () => {
             ),
             Effect.provide(
               ConfigProvider.layer(
-                ConfigProvider.fromEnv({ env: { T3CODE_DEV_MANAGED_POLICY_PATH: policyPath } }),
+                ConfigProvider.fromEnv({
+                  env: { VIBECODINGER_DEV_MANAGED_POLICY_PATH: policyPath },
+                }),
               ),
             ),
             Effect.flip,
@@ -469,7 +471,9 @@ describe("vibecodinger pair", () => {
           runCli(["pair"]).pipe(
             Effect.provideService(HostProcess.WorkingDirectory, worktree),
             Effect.provide(
-              ConfigProvider.layer(ConfigProvider.fromEnv({ env: { T3CODE_HOME: sharedHome } })),
+              ConfigProvider.layer(
+                ConfigProvider.fromEnv({ env: { VIBECODINGER_HOME: sharedHome } }),
+              ),
             ),
             Effect.flip,
           ),
