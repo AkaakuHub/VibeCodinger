@@ -114,7 +114,7 @@ FORBIDDEN = re.compile(
     rb"|posthog|captureException\s*\(|sendBeacon\s*\(|opentelemetry/exporter|"
     rb"otlp.{0,48}(?:endpoint|exporter)|cloudflared|"
     rb"server\.checkOtlpEndpoint|TelemetryExportSettings|telemetry-export|"
-    rb"ProcessGroupMetrics\.layer|otelEnvironment:\s*(?:OtelEnvironment|otel)\b|"
+    rb"ProviderTurnAnalytics|ProviderUsageAnalytics|ProviderDimensions\.ts|ProcessGroupMetrics\.layer|otelEnvironment:\s*(?:OtelEnvironment|otel)\b|"
     rb"RelayClientTracer|withRelayClientTracing|getRelayTelemetryEnabled|parsePersistedServerObservabilitySettings|observabilitySettings\.otlp|"
     rb"\b(?:t3Home|t3_home|t3-home)\b|"
     rb"VIBECODINGER_RELAY_URL|HttpApiClient\.make\(RelayApi\b|"
