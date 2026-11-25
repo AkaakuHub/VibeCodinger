@@ -365,9 +365,6 @@ export const isProviderAvailable = (snapshot: ServerProvider): boolean =>
 export const isProviderTextGenerationCapable = (snapshot: ServerProvider): boolean =>
   snapshot.supportsTextGeneration !== false;
 
-export const OtlpEndpointSource = Schema.Literals(["environment", "bootstrap", "settings"]);
-export type OtlpEndpointSource = typeof OtlpEndpointSource.Type;
-
 export const ServerObservability = Schema.Struct({
   logsDirectoryPath: TrimmedNonEmptyString,
   localTracingEnabled: Schema.Boolean,

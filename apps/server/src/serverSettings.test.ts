@@ -414,7 +414,6 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("server settings"
       const serverSettings = yield* ServerSettingsModule.ServerSettingsService;
 
       yield* serverSettings.updateSettings({
-        observability: { otlpTracesUrl: "http://localhost:4318/v1/traces" },
         textGenerationModelSelection: {
           instanceId: ProviderInstanceId.make("codex"),
           model: DEFAULT_SERVER_SETTINGS.textGenerationModelSelection.model,
@@ -430,14 +429,11 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("server settings"
       });
 
       const next = yield* serverSettings.updateSettings({
-        observability: { otlpMetricsUrl: "http://localhost:4318/v1/metrics" },
         textGenerationModelSelection: {
           options: [{ id: "fastMode", value: false }],
         },
       });
 
-      assert.equal(next.observability.otlpTracesUrl, "http://localhost:4318/v1/traces");
-      assert.equal(next.observability.otlpMetricsUrl, "http://localhost:4318/v1/metrics");
       assert.deepEqual(
         next.textGenerationModelSelection,
         createModelSelection(
@@ -464,12 +460,12 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("server settings"
         contents: `{ "responseStreamingMode": "turn" }`,
       });
       yield* serverSettings.updateSettings({
-        observability: { otlpTracesUrl: "http://localhost:4318/v1/traces" },
+        reviewGuideInstructions: "Review locally",
       });
 
       const saved = yield* decodeServerSettingsJson(yield* fs.readFileString(config.settingsPath));
       assert.equal(saved.responseStreamingMode, "turn");
-      assert.equal(saved.observability.otlpTracesUrl, "http://localhost:4318/v1/traces");
+      assert.equal(saved.reviewGuideInstructions, "Review locally");
 
       yield* writeFileStringAtomically({
         filePath: config.settingsPath,
@@ -505,7 +501,7 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("server settings"
 
       const error = yield* Effect.flip(
         serverSettings.updateSettings({
-          observability: { otlpTracesUrl: "http://localhost:4318/v1/traces" },
+          reviewGuideInstructions: "Review locally",
         }),
       );
 

@@ -21,7 +21,7 @@ describe("electron development launcher", () => {
       VITE_DEV_SERVER_URL: "http://127.0.0.1:8526",
       VIBECODINGER_PORT: "16566",
       VIBECODINGER_HOME: "/tmp/vibecodinger",
-      VIBECODINGER_OTLP_PROTOCOL: "http/protobuf",
+      VIBECODINGER_COMMIT_HASH: "34fdafe",
     });
 
     assert.include(
@@ -30,7 +30,7 @@ describe("electron development launcher", () => {
     );
     assert.include(
       environmentScript,
-      "if [ -z \"${VIBECODINGER_OTLP_PROTOCOL:-}\" ]; then export VIBECODINGER_OTLP_PROTOCOL='http/protobuf'; fi",
+      "if [ -z \"${VIBECODINGER_COMMIT_HASH:-}\" ]; then export VIBECODINGER_COMMIT_HASH='34fdafe'; fi",
     );
     assert.notInclude(environmentScript, "\nexport VITE_DEV_SERVER_URL=");
   });

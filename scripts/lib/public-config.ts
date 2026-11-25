@@ -4,17 +4,11 @@ import * as NodePath from "node:path";
 import * as NodeURL from "node:url";
 import * as NodeUtil from "node:util";
 
-export interface T3CodePublicConfig {
+interface PublicConfig {
   readonly clerkPublishableKey: string | undefined;
   readonly clerkJwtTemplate: string | undefined;
   readonly clerkCliOAuthClientId: string | undefined;
   readonly relayUrl: string | undefined;
-  readonly mobileOtlpTracesUrl: string | undefined;
-  readonly mobileOtlpTracesDataset: string | undefined;
-  readonly mobileOtlpTracesToken: string | undefined;
-  readonly relayClientOtlpTracesUrl: string | undefined;
-  readonly relayClientOtlpTracesDataset: string | undefined;
-  readonly relayClientOtlpTracesToken: string | undefined;
 }
 
 type Environment = Readonly<Record<string, string | undefined>>;
@@ -62,46 +56,10 @@ export function loadRepoEnv({
           VITE_VIBECODINGER_RELAY_URL: config.relayUrl,
         }
       : {}),
-    ...(config.mobileOtlpTracesUrl
-      ? {
-          VIBECODINGER_MOBILE_OTLP_TRACES_URL: config.mobileOtlpTracesUrl,
-          EXPO_PUBLIC_OTLP_TRACES_URL: config.mobileOtlpTracesUrl,
-        }
-      : {}),
-    ...(config.mobileOtlpTracesDataset
-      ? {
-          VIBECODINGER_MOBILE_OTLP_TRACES_DATASET: config.mobileOtlpTracesDataset,
-          EXPO_PUBLIC_OTLP_TRACES_DATASET: config.mobileOtlpTracesDataset,
-        }
-      : {}),
-    ...(config.mobileOtlpTracesToken
-      ? {
-          VIBECODINGER_MOBILE_OTLP_TRACES_TOKEN: config.mobileOtlpTracesToken,
-          EXPO_PUBLIC_OTLP_TRACES_TOKEN: config.mobileOtlpTracesToken,
-        }
-      : {}),
-    ...(config.relayClientOtlpTracesUrl
-      ? {
-          VIBECODINGER_RELAY_CLIENT_OTLP_TRACES_URL: config.relayClientOtlpTracesUrl,
-          VITE_RELAY_OTLP_TRACES_URL: config.relayClientOtlpTracesUrl,
-        }
-      : {}),
-    ...(config.relayClientOtlpTracesDataset
-      ? {
-          VIBECODINGER_RELAY_CLIENT_OTLP_TRACES_DATASET: config.relayClientOtlpTracesDataset,
-          VITE_RELAY_OTLP_TRACES_DATASET: config.relayClientOtlpTracesDataset,
-        }
-      : {}),
-    ...(config.relayClientOtlpTracesToken
-      ? {
-          VIBECODINGER_RELAY_CLIENT_OTLP_TRACES_TOKEN: config.relayClientOtlpTracesToken,
-          VITE_RELAY_OTLP_TRACES_TOKEN: config.relayClientOtlpTracesToken,
-        }
-      : {}),
   };
 }
 
-function resolvePublicConfig(...sources: readonly Environment[]): T3CodePublicConfig {
+function resolvePublicConfig(...sources: readonly Environment[]): PublicConfig {
   return {
     clerkPublishableKey: firstNonEmpty(
       sources,
@@ -121,36 +79,6 @@ function resolvePublicConfig(...sources: readonly Environment[]): T3CodePublicCo
       "VITE_CLERK_CLI_OAUTH_CLIENT_ID",
     ),
     relayUrl: firstNonEmpty(sources, "VIBECODINGER_RELAY_URL", "VITE_VIBECODINGER_RELAY_URL"),
-    mobileOtlpTracesUrl: firstNonEmpty(
-      sources,
-      "VIBECODINGER_MOBILE_OTLP_TRACES_URL",
-      "EXPO_PUBLIC_OTLP_TRACES_URL",
-    ),
-    mobileOtlpTracesDataset: firstNonEmpty(
-      sources,
-      "VIBECODINGER_MOBILE_OTLP_TRACES_DATASET",
-      "EXPO_PUBLIC_OTLP_TRACES_DATASET",
-    ),
-    mobileOtlpTracesToken: firstNonEmpty(
-      sources,
-      "VIBECODINGER_MOBILE_OTLP_TRACES_TOKEN",
-      "EXPO_PUBLIC_OTLP_TRACES_TOKEN",
-    ),
-    relayClientOtlpTracesUrl: firstNonEmpty(
-      sources,
-      "VIBECODINGER_RELAY_CLIENT_OTLP_TRACES_URL",
-      "VITE_RELAY_OTLP_TRACES_URL",
-    ),
-    relayClientOtlpTracesDataset: firstNonEmpty(
-      sources,
-      "VIBECODINGER_RELAY_CLIENT_OTLP_TRACES_DATASET",
-      "VITE_RELAY_OTLP_TRACES_DATASET",
-    ),
-    relayClientOtlpTracesToken: firstNonEmpty(
-      sources,
-      "VIBECODINGER_RELAY_CLIENT_OTLP_TRACES_TOKEN",
-      "VITE_RELAY_OTLP_TRACES_TOKEN",
-    ),
   };
 }
 

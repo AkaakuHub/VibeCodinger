@@ -165,7 +165,6 @@ const smokeCliArchive = Effect.fn("smokeCliArchive")(function* (input: {
           VIBECODINGER_HOME: home,
           // The archive has a release channel built in, so its events would
           // look like a real new install.
-          VIBECODINGER_TELEMETRY_ENABLED: "false",
         },
         extendEnv: false,
       },

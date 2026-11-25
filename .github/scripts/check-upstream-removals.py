@@ -54,6 +54,7 @@ PROTECTED_PATHS = (
     "apps/server/src/observability/HeapSnapshot.ts",
     "apps/server/src/observability/OtlpEndpointCheck.ts",
     "apps/server/src/resourceTelemetry/ProcessGroupMetrics.ts",
+    "packages/shared/src/otelEnvironment.ts",
     "apps/server/src/relay",
     "apps/server/src/scheduledTasks/RelayDeliveryProof.ts",
     "apps/server/src/telemetry",
@@ -77,6 +78,7 @@ FORBIDDEN = re.compile(
     rb"otlp.{0,48}(?:endpoint|exporter)|cloudflared|"
     rb"server\.checkOtlpEndpoint|TelemetryExportSettings|telemetry-export|"
     rb"ProcessGroupMetrics\.layer|otelEnvironment:\s*(?:OtelEnvironment|otel)\b|"
+    rb"getRelayTelemetryEnabled|parsePersistedServerObservabilitySettings|observabilitySettings\.otlp|"
     rb"relay_public_config|relay.client.tracing.config|VIBECODINGER_TELEMETRY_CHANNEL|"
     rb"armAgentAwarenessLiveActivityForLocalWork|setAgentAwarenessRelayTokenProvider|registerLiveActivityWithRelay|"
     rb"expo-notifications|firebase-messaging|com\.google\.firebase\.MESSAGING_EVENT|"

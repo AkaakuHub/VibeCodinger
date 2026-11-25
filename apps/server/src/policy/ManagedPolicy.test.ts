@@ -165,7 +165,7 @@ it.layer(NodeServices.layer)("ManagedPolicy.load", (it) => {
               },
             },
           }),
-          // Startup reads OTLP endpoints before the policy, and environment variables outrank them.
+          // Export endpoints are no longer recognized settings.
           JSON.stringify({
             ...base,
             settings: { "observability.otlpTracesUrl": { value: "", locked: true } },
@@ -186,7 +186,7 @@ it.layer(NodeServices.layer)("ManagedPolicy.load", (it) => {
       assert.include(reasons[10], 'lock "worktreeCleanup" too');
       assert.include(reasons[11], 'lock "providerInstances.codex" as a whole');
       assert.include(reasons[12], "holds a credential");
-      assert.include(reasons[13], "a policy cannot override");
+      assert.include(reasons[13], "is not a setting this version can manage");
     }),
   );
 

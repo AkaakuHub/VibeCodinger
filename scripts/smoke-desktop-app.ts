@@ -50,7 +50,6 @@ try {
       XDG_CONFIG_HOME: NodePath.join(home, ".config"),
       XDG_DATA_HOME: NodePath.join(home, ".local/share"),
       VIBECODINGER_HOME: t3Home,
-      VIBECODINGER_TELEMETRY_ENABLED: "false",
       VIBECODINGER_DISABLE_AUTO_UPDATE: "true",
     },
     timeout: STEP_TIMEOUT_MS,

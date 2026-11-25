@@ -716,9 +716,7 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
         `${JSON.stringify({ observability: { otlpLogsUrl: "http://settings:4318/v1/logs" } })}\n`,
       );
 
-      const fd = yield* openBootstrapFd(
-        makeDesktopBootstrap({ otlpMetricsUrl: "http://bootstrap:4318/v1/metrics" }),
-      );
+      const fd = yield* openBootstrapFd(makeDesktopBootstrap());
 
       const resolved = yield* resolveServerConfig(
         {
