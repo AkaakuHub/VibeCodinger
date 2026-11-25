@@ -6,7 +6,7 @@ import * as Path from "effect/Path";
 import * as SqlClient from "effect/sql/SqlClient";
 
 import * as NodeSqliteClient from "@vibecodinger/shared/nodeSqliteClient";
-import { runSqliteState } from "./t3-sqlite-state.ts";
+import { runSqliteState } from "./vibecodinger-sqlite-state.ts";
 import * as HostProcess from "@vibecodinger/shared/HostProcess";
 import { symlinksSupported } from "@vibecodinger/shared/testing/symlinks";
 
@@ -25,7 +25,7 @@ const createFixtureDatabase = Effect.fn("createSqliteStateFixtureDatabase")(func
   }).pipe(Effect.provide(NodeSqliteClient.layer({ filename: databasePath })));
 });
 
-it.layer(NodeServices.layer)("t3-sqlite-state", (it) => {
+it.layer(NodeServices.layer)("vibecodinger-sqlite-state", (it) => {
   it.effect("enables checkpoint_fullfsync on its direct connection", () =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;

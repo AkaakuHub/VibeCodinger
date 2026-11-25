@@ -22,7 +22,7 @@ const Manifest = Schema.Struct({
   version: Version,
   vibecodinger: Schema.optionalKey(Schema.Unknown),
 });
-// npm prints a bare version string when the release has no `t3code` field.
+// npm prints a bare version string when the release has no `vibecodinger` field.
 const decodeManifest = Schema.decodeUnknownOption(
   Schema.fromJsonString(Schema.Union([Manifest, Schema.Tuple([Manifest]), Version])),
 );
@@ -90,7 +90,7 @@ export const make = Effect.fn("NpmRelease.make")(function* () {
           runner.run({
             command: npmPath,
             // Named fields keep the output small; the full package document grows with every release.
-            args: ["view", "--global", "--json", `vibecodinger@${spec}`, "version", "t3code"],
+            args: ["view", "--global", "--json", `vibecodinger@${spec}`, "version", "vibecodinger"],
             timeout: Duration.seconds(15),
             maxOutputBytes: 256 * 1024,
           }),
