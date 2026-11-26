@@ -605,7 +605,9 @@ it.layer(layerTest)("AntigravityDriver", (it) => {
       const before = yield* h.instance.snapshot.getSnapshot;
       h.controls.failResolution = true;
       const error = yield* h.refresh().pipe(Effect.flip);
-      expect(error.detail).toBe("Fixture resolution failed.");
+      expect(error.detail).toBe(
+        "Could not refresh Antigravity models. The previous model list is unchanged.",
+      );
       const after = yield* h.instance.snapshot.getSnapshot;
       expect(after.models).toEqual(before.models);
       expect(after.auth).toEqual(before.auth);
@@ -717,8 +719,8 @@ it.layer(layerTest)("AntigravityDriver", (it) => {
       Effect.gen(function* () {
         const h = yield* makeHarness({
           environment: [
-            { name: "T3_ACP_ANTIGRAVITY_THOUGHT_LEVEL", value: "1" },
-            { name: "T3_ACP_RESUME_THOUGHT_LEVEL", value: "xhigh" },
+            { name: "VIBECODINGER_ACP_ANTIGRAVITY_THOUGHT_LEVEL", value: "1" },
+            { name: "VIBECODINGER_ACP_RESUME_THOUGHT_LEVEL", value: "xhigh" },
           ],
         });
         yield* h.refresh();

@@ -3688,6 +3688,21 @@
     " 앱이 닫혔습니다"
   ],
   "dff97202cbdaec5b": "앱 표시",
+  "796b81c4875c4feb": [
+    "The ",
+    {
+      "i": 1,
+      "k": "_gt_value_1",
+      "v": "v"
+    },
+    " app needs a newer ",
+    {
+      "i": 2,
+      "k": "_gt_value_2",
+      "v": "v"
+    },
+    " server on this environment. Update the server to use it."
+  ],
   "705cf2b2ee4e0e42": [
     {
       "i": 1,

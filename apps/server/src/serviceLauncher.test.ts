@@ -1161,7 +1161,7 @@ process.exit(0);
       // launcher started the new version a second time.
       const childSource = `
 import { existsSync } from "node:fs";
-const context = JSON.parse(process.env.T3_SERVICE_LAUNCHER_CONTEXT);
+const context = JSON.parse(process.env.VIBECODINGER_SERVICE_LAUNCHER_CONTEXT);
 let answered = false;
 process.on("message", (message) => {
   if (message.type !== "committed" || answered) return;
@@ -1182,8 +1182,8 @@ setInterval(() => {}, 1_000);
           childSource,
         );
       }
-      yield* fs.makeDirectory(path.join(backupPath, "database"), { recursive: true });
-      yield* fs.writeFileString(path.join(backupPath, "database", "state.sqlite"), "before trial");
+      yield* fs.makeDirectory(backupPath, { recursive: true });
+      yield* fs.writeFileString(path.join(backupPath, "database"), "before trial");
       yield* Effect.promise(() =>
         writeServiceState(statePath, {
           protocol: SERVICE_LAUNCHER_PROTOCOL,

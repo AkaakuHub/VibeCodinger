@@ -6,7 +6,7 @@ import * as Fiber from "effect/Fiber";
 import * as FileSystem from "effect/FileSystem";
 
 import { APP_DATA_HOME } from "../e2e.config.ts";
-import { rpcClient, runPromise, test, WEB } from "./t3.ts";
+import { rpcClient, runPromise, test, WEB } from "./vc.ts";
 
 const TAIL = "end-of-first-paste";
 const OTHER_INPUT = "second-client-input";
@@ -42,9 +42,9 @@ interface PasteGate {
 test(
   "A second connection cannot insert input inside a web terminal paste",
   WEB,
-  async ({ t3, app, browser, screen }) => {
-    const cwd = await t3.project("demo", { "paste-probe.mjs": PROBE });
-    const thread = await t3.thread({
+  async ({ vc, app, browser, screen }) => {
+    const cwd = await vc.project("demo", { "paste-probe.mjs": PROBE });
+    const thread = await vc.thread({
       project: cwd,
       title: "Shared terminal paste",
       messages: ["hello"],
@@ -86,7 +86,7 @@ test(
       };
     }, TAIL);
     await browser.emulateMedia({ colorScheme: "dark", reducedMotion: "reduce" });
-    await t3.open(thread);
+    await vc.open(thread);
     await screen.getByRole("button", "Toggle terminal drawer").tap();
     const terminal = screen.getByLabel("Terminal input");
     // The terminal surface can appear before its session can accept keystrokes.

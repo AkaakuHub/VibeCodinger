@@ -7,7 +7,7 @@ import * as Effect from "effect/Effect";
 import * as Stream from "effect/Stream";
 
 import { APP_DATA_HOME } from "../e2e.config.ts";
-import { makeState, rpcClient, runPromise, test, WEB } from "./t3.ts";
+import { makeState, rpcClient, runPromise, test, WEB } from "./vc.ts";
 
 const REPLY = "The screenshot is a blue frame.";
 // A 320x180 blue PNG.
@@ -68,8 +68,8 @@ for await (const line of createInterface({ input: process.stdin })) {
 test(
   "An image a running Read is opening shows a loading frame, not Image unavailable, then the image",
   WEB,
-  async ({ t3, app, screen, browser }) => {
-    const project = await t3.project("demo");
+  async ({ vc, app, screen, browser }) => {
+    const project = await vc.project("demo");
     const script = NodePath.join(project, "pending-read-acp.mjs");
     const settingsPath = NodePath.join(APP_DATA_HOME, "userdata/settings.json");
     const originalSettings = await NodeFSP.readFile(settingsPath, "utf8");
@@ -119,7 +119,7 @@ test(
       );
       const { threadId } = JSON.parse(started.stdout) as { threadId: string };
 
-      await t3.open({ threadId });
+      await vc.open({ threadId });
       await screen.getByText("Read demo/later.png", { exact: true }).waitFor({ timeout: 60_000 });
       // The strip's frame shows either state; the bug is which one it is while the Read runs.
       const frame = browser.locator('[data-image-gallery] :is([role="status"], [role="alert"])');

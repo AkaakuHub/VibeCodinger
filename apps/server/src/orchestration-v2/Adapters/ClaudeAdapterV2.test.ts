@@ -8586,7 +8586,7 @@ describe("ClaudeAdapterV2 background wake turns", () => {
               : [],
           );
         const own: ElicitationRequest = {
-          serverName: "t3-code",
+          serverName: "vibe-codinger",
           message,
           mode: "form",
           requestedSchema: { type: "object", properties: {} },
@@ -8606,7 +8606,7 @@ describe("ClaudeAdapterV2 background wake turns", () => {
         // Under T3 Code's name, but nothing T3 Code asked this thread.
         yield* elicit({ ...own, message: "Push tools?" });
         yield* awaitCard(3);
-        assert.deepInclude(cards().at(-1), { prompt: "Push tools?", appName: "t3-code" });
+        assert.deepInclude(cards().at(-1), { prompt: "Push tools?", appName: "vibe-codinger" });
         assert.notProperty(cards().at(-1), "pushHooks");
       }).pipe(Effect.scoped, Effect.provide(testLayer)),
     );
@@ -8618,7 +8618,7 @@ describe("ClaudeAdapterV2 background wake turns", () => {
         const message = "Push tools and run this repository's hook file .husky/pre-push?";
         const pushHooks = { branch: "tools", files: [".husky/pre-push"], commands: [] };
         const own: ElicitationRequest = {
-          serverName: "t3-code",
+          serverName: "vibe-codinger",
           message,
           mode: "form",
           requestedSchema: { type: "object", properties: {} },

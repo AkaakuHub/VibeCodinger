@@ -6,7 +6,7 @@ import {
 const MAX_UNCONFIRMED_MESSAGES = 256;
 
 interface DocumentLink {
-  link: MessagePort | "window" | null;
+  link: MessagePort | false | null;
   nextProbe: number;
   deliver: (data: unknown) => void;
   readonly unconfirmed: Map<number, unknown>;
@@ -18,12 +18,12 @@ const documentLinks = new WeakMap<HTMLIFrameElement, DocumentLink>();
 
 /**
  * Ties the bridge to the frame's first document. A frame's window outlives its document, so the
- * bridge follows the port that document's bootstrap sends first, not the window. Servers without
- * the bootstrap keep the plain window bridge.
+ * bridge follows the port that document's bootstrap sends first.
  */
 export function attachMcpAppDocumentLink(
   frame: HTMLIFrameElement,
   deliver: (data: unknown) => void,
+  onMissing: () => void,
 ) {
   let state = documentLinks.get(frame);
   if (state === undefined) {
@@ -32,6 +32,7 @@ export function attachMcpAppDocumentLink(
   }
   const current = state;
   current.deliver = deliver;
+  if (current.link === false) onMissing();
   return {
     receive: (event: MessageEvent) => {
       if (event.source === null || event.source !== frame.contentWindow) return;
@@ -51,12 +52,11 @@ export function attachMcpAppDocumentLink(
           };
           return;
         }
-        current.link = "window";
-      }
-      if (current.link === "window") {
-        current.deliver(event.data);
+        current.link = false;
+        onMissing();
         return;
       }
+      if (current.link === false) return;
       // Only the first document can answer, so a reply proves it sent this message.
       if (current.unconfirmed.size >= MAX_UNCONFIRMED_MESSAGES) return;
       current.unconfirmed.set(current.nextProbe, event.data);
@@ -65,9 +65,7 @@ export function attachMcpAppDocumentLink(
       current.nextProbe += 1;
     },
     post: (message: unknown) => {
-      // Opaque origins require "*"; the window reference scopes delivery to this frame.
-      if (current.link === "window") frame.contentWindow?.postMessage(message, "*");
-      else current.link?.postMessage({ message, origin: window.location.origin });
+      if (current.link) current.link.postMessage({ message, origin: window.location.origin });
     },
   };
 }

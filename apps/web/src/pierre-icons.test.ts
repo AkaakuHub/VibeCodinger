@@ -67,10 +67,10 @@ describe("Pierre file icons", () => {
   });
 
   it.each([
-    ["src/app.test.ts", "t3-file-icon-typescript-test"],
-    ["src/App.spec.tsx", "t3-file-icon-typescript-test"],
-    ["src/app.test.js", "t3-file-icon-javascript-test"],
-    ["vitest.config.ts", "t3-file-icon-vitest"],
+    ["src/app.test.ts", "vc-file-icon-typescript-test"],
+    ["src/App.spec.tsx", "vc-file-icon-typescript-test"],
+    ["src/app.test.js", "vc-file-icon-javascript-test"],
+    ["vitest.config.ts", "vc-file-icon-vitest"],
     [".oxfmtrc.json", "file-tree-builtin-oxc"],
   ])("uses the Pierre VS Code icon for %s", (path, iconName) => {
     assert.equal(resolvePierreIconForEntry(path, "file")?.name, iconName);

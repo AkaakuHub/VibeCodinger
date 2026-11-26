@@ -1,18 +1,18 @@
 import { expect } from "e2e";
 
-import { test, WEB } from "./t3.ts";
+import { test, WEB } from "./vc.ts";
 
 test(
   "A thread started with only a terminal excerpt gets a title in the app's language",
   WEB,
-  async ({ t3, app, browser, screen }) => {
-    await t3.project("demo");
-    await t3.open("/settings/general");
+  async ({ vc, app, browser, screen }) => {
+    await vc.project("demo");
+    await vc.open("/settings/general");
     await screen.getByLabel("Language", { exact: true }).tap();
     await screen.getByText("日本語", { exact: true }).tap();
     await screen.getByLabel("言語", { exact: true }).waitFor();
 
-    await t3.open();
+    await vc.open();
     const toggle = screen.getByRole("button", "ターミナルドロワーの切り替え");
     await toggle.tap();
     const input = browser.locator('[aria-label="ターミナルの入力"][data-workspace-focus-default]');

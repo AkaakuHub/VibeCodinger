@@ -121,6 +121,12 @@ const policies = (): ReadonlyArray<Policy> => [
     toggle: "PreviewTunnel",
   },
   {
+    id: "WorktreeLayoutCommands",
+    title: "Allow project worktree layout commands",
+    help: "Disabled stops VibeCodinger from running worktree layout commands declared in vibecodinger.json, even if they were previously approved. Existing worktree folders can still be restored and removed without those commands.",
+    toggle: "WorktreeLayoutCommands",
+  },
+  {
     id: "AllowedDrivers",
     title: "Allowed providers",
     help: "Only the checked providers may run. Threads on other providers stay, marked unavailable.\n\nDisabled or Not Configured: no restriction.",
