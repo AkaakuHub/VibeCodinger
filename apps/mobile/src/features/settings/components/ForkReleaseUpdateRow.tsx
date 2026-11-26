@@ -1,18 +1,19 @@
 import { useAtomRefresh, useAtomValue } from "@effect/atom-react";
 import { CLI_RELEASES_PAGE_URL, releaseAssetUrl } from "@vibecodinger/shared/cliRelease";
-import * as Data from "effect/Data";
 import * as Effect from "effect/Effect";
+import * as Schema from "effect/Schema";
 import { AsyncResult, Atom } from "effect/reactivity";
 import { useGT } from "gt-react-native";
-import { Linking } from "react-native";
 
 import * as Dialog from "../../../components/ui/Dialog";
+import { tryOpenExternalUrl } from "../../../lib/openExternalUrl";
 import { findReleaseUpdate } from "../../updates/release-updates";
 import { SettingsRow } from "./SettingsRow";
 
-class ForkReleaseCheckError extends Data.TaggedError("ForkReleaseCheckError")<{
-  readonly cause: unknown;
-}> {}
+class ForkReleaseCheckError extends Schema.TaggedError<
+  ForkReleaseCheckError,
+  { readonly brand: unique symbol }
+>()("ForkReleaseCheckError", { cause: Schema.Defect() }) {}
 
 const releaseCheckAtom = Atom.family((version: string) =>
   Atom.make(
@@ -37,8 +38,10 @@ export function ForkReleaseUpdateRow({ version }: { readonly version: string }) 
         label={gt("Update ready")}
         value={target}
         onPress={() => {
-          void Linking.openURL(releaseAssetUrl(CLI_RELEASES_PAGE_URL, "tag", `v${target}`)).catch(
-            () => Dialog.alert(gt("Update failed")),
+          void tryOpenExternalUrl(releaseAssetUrl(CLI_RELEASES_PAGE_URL, "tag", `v${target}`)).then(
+            (opened) => {
+              if (!opened) Dialog.alert(gt("Update failed"));
+            },
           );
         }}
       />
