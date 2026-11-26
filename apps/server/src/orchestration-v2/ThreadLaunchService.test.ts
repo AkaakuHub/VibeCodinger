@@ -70,6 +70,7 @@ import * as IdAllocator from "@vibecodinger/provider-core/server/IdAllocator";
 import * as ProviderAdapterRegistry from "./ProviderAdapterRegistry.ts";
 import * as TaskFolders from "../workspace/TaskFolders.ts";
 import {
+  approveLayoutCommands,
   layerTaskFoldersWithGit,
   type TaskFoldersTestState,
 } from "../workspace/TaskFolders.testkit.ts";
@@ -3046,6 +3047,7 @@ it.live(
       state.workspaceRoot = shop;
       const harness = makeHarness({ taskFolders: layerTaskFolders });
       yield* Effect.gen(function* () {
+        yield* approveLayoutCommands;
         const launches = yield* ThreadLaunch.ThreadLaunchService;
         const launch = Effect.fnUntraced(function* (
           name: string,
@@ -3128,7 +3130,7 @@ it.live(
         const full = yield* launch("full", "full-access");
         assert.equal(full.runs[0]?.status, "starting");
         assert.equal(yield* fileSystem.readFileString(ran), "create\n");
-      }).pipe(Effect.provide(harness.layer));
+      }).pipe(Effect.provide(harness.layer.pipe(Layer.provideMerge(layerTaskFolders))));
     }).pipe(Effect.provide(Layer.mergeAll(NodeServices.layer, layerGit)), Effect.scoped);
   },
 );
