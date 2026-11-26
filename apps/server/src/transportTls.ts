@@ -28,11 +28,17 @@ const isDirectTlsRequest = (request: { readonly source: object }): boolean =>
 export const requiresSocketE2ee = (request: HttpServerRequest.HttpServerRequest): boolean => {
   if (isDirectTlsRequest(request)) return true;
   if (!(request.source instanceof NodeHttp.IncomingMessage)) return false;
-  const peer = request.source.socket.remoteAddress;
+  return isTailscaleHttpsForward(request.source.socket.remoteAddress, request.headers);
+};
+
+export const isTailscaleHttpsForward = (
+  peer: string | undefined,
+  headers: HttpServerRequest.HttpServerRequest["headers"],
+): boolean => {
   // Serve terminates HTTPS on this host. A peer outside loopback cannot assert that transport.
   if (peer === undefined || !isLocalLoopbackHost(peer.replace(/^::ffff:/, ""))) return false;
-  if (request.headers["x-forwarded-proto"] !== "https") return false;
-  const host = request.headers.host;
+  if (headers["x-forwarded-proto"] !== "https") return false;
+  const host = headers.host;
   const url = host === undefined ? null : URL.parse(`https://${host}`);
   return url !== null && isTailnetHost(url.hostname);
 };
