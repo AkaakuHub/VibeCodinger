@@ -2,6 +2,9 @@ name: Fork desktop packages
 
 on:
   workflow_call:
+    outputs:
+      version:
+        value: ${{ jobs.bundle.outputs.version }}
 
 permissions:
   actions: read

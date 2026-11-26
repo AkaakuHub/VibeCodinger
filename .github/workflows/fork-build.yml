@@ -1,6 +1,10 @@
 name: Build and publish VibeCodinger
 
 on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
     inputs:
       publish:
@@ -11,25 +15,37 @@ on:
 permissions: {}
 
 concurrency:
-  group: fork-build-and-publish
+  group: >-
+    ${{ (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' ||
+         github.event.workflow_run.event == 'push' &&
+         github.event.workflow_run.conclusion == 'success' &&
+         github.event.workflow_run.head_repository.full_name == github.repository &&
+         github.event.workflow_run.head_sha == github.sha)
+        && 'fork-build-and-publish' || github.run_id }}
   cancel-in-progress: true
 
 jobs:
   desktop:
-    if: github.repository == 'AkaakuHub/t3code' && github.ref == 'refs/heads/main'
+    if: &release_source >-
+      github.repository == 'AkaakuHub/t3code' && github.ref == 'refs/heads/main' &&
+      (github.event_name == 'workflow_dispatch' ||
+       github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_repository.full_name == github.repository &&
+       github.event.workflow_run.head_sha == github.sha)
     uses: ./.github/workflows/fork-desktop.yml
     permissions:
       actions: read
       contents: read
 
   ios:
-    if: github.repository == 'AkaakuHub/t3code' && github.ref == 'refs/heads/main'
+    if: *release_source
     uses: ./.github/workflows/fork-ios-ipa.yml
     permissions:
       contents: read
 
   android:
-    if: github.repository == 'AkaakuHub/t3code' && github.ref == 'refs/heads/main'
+    if: *release_source
     uses: ./.github/workflows/mobile-showcase-screenshots.yml
     with:
       build_only: true
@@ -37,7 +53,7 @@ jobs:
       contents: read
 
   publish:
-    if: inputs.publish
+    if: github.event_name == 'workflow_run' || inputs.publish
     needs: [desktop, ios, android]
     runs-on: ubuntu-24.04
     permissions:
@@ -55,6 +71,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
+          VERSION: ${{ needs.desktop.outputs.version }}
         run: |
           set -euo pipefail
           if [[ "$(gh api "repos/$GH_REPO/git/ref/heads/main" --jq .object.sha)" != "$GITHUB_SHA" ]]; then
@@ -85,13 +102,6 @@ jobs:
           done
 
           tag="vibecodinger-build-${GITHUB_SHA:0:12}"
+          printf -v notes 'Built from `%s`. The iPhone IPA requires signing before installation.' "$GITHUB_SHA"
           gh release create "$tag" release-assets/* --target "$GITHUB_SHA" \
-            --latest --title "VibeCodinger ${GITHUB_SHA:0:12}" \
-            --notes "Built from `$GITHUB_SHA`. The iPhone IPA requires signing before installation."
-          previous=$(gh release list --limit 100 --json tagName,isDraft \
-            --jq '.[] | select(.isDraft | not) | .tagName')
-          while IFS= read -r old; do
-            if [[ "$old" =~ ^vibecodinger-build-[0-9a-f]{12}$ && "$old" != "$tag" ]]; then
-              gh release delete "$old" --yes --cleanup-tag
-            fi
-          done <<< "$previous"
+            --latest --title "VibeCodinger $VERSION" --notes "$notes"
