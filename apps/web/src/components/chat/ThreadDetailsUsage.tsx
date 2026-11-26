@@ -77,7 +77,13 @@ export function ThreadDetailsUsage({
     >
       <div className="grid grid-cols-[auto_minmax(3rem,1fr)_auto] gap-x-3 text-xs">
         {resolved?.kind === "pool"
-          ? resolved.windows.map((window) => <PoolRow key={window.id} window={window} now={now} />)
+          ? resolved.windows.map((window) => (
+              <PoolRow
+                key={`${window.members[0]?.account.key}:${window.id}`}
+                window={window}
+                now={now}
+              />
+            ))
           : resolved &&
             (quotas.length === 0 || limitsNotice(resolved.limits) === null) && (
               <InstanceRows limits={resolved.limits} now={now} />

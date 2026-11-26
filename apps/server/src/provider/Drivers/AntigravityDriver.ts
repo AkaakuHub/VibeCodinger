@@ -93,6 +93,13 @@ import { mergeProviderInstanceEnvironment } from "@vibecodinger/provider-core/se
 import { withInstanceIdentity } from "@vibecodinger/provider-core/server/instanceIdentity";
 import { discoverAntigravitySkills, resolveAntigravityUserHome } from "./AntigravitySkills.ts";
 
+class AntigravityUsageReadError extends Schema.TaggedError<
+  AntigravityUsageReadError,
+  { readonly brand: unique symbol }
+>()("AntigravityUsageReadError", { message: Schema.String }) {}
+
+const isAntigravityUsageReadError = Schema.is(AntigravityUsageReadError);
+
 const DRIVER = ProviderDriverKind.make("antigravity");
 const decodeSettings = Schema.decodeSync(AntigravitySettings);
 const isNodeRuntimeUnavailableError = Schema.is(NodeRuntimeUnavailableError);
@@ -598,7 +605,7 @@ export const AntigravityDriver: ProviderDriver<AntigravitySettings, AntigravityD
         message: "Update Antigravity to read subscription limits.",
       });
       const probeFailed = (message: string) =>
-        makeUnavailableUsageLimits({ checkedAt, reason: "probeFailed", message });
+        Effect.fail(new AntigravityUsageReadError({ message }));
       const result = yield* Effect.gen(function* () {
         const resolved = yield* installation.resolve(settings.binaryPath, processEnvironment);
         if (resolved.version !== null && !supportsUsageCommand(resolved.version)) {
@@ -627,15 +634,24 @@ export const AntigravityDriver: ProviderDriver<AntigravitySettings, AntigravityD
             }),
           ).pipe(Effect.provideService(ChildProcessSpawner.ChildProcessSpawner, spawner));
         const version = executable.version ?? parseCliVersionResult(yield* run(["--version"]));
-        if (version === null) return probeFailed("Could not read the Antigravity CLI version.");
+        if (version === null)
+          return yield* probeFailed("Could not read the Antigravity CLI version.");
         if (!supportsUsageCommand(version)) return unsupportedVersion;
         const usage = yield* run(usageSpawn.args);
         if (usage.code !== 0) {
-          return probeFailed(`Antigravity CLI /usage exited with code ${usage.code}.`);
+          const reason =
+            /\b(?:UNAUTHENTICATED|PERMISSION_DENIED|RESOURCE_EXHAUSTED|UNAVAILABLE|DEADLINE_EXCEEDED|INVALID_ARGUMENT|FAILED_PRECONDITION|ECONNREFUSED|ECONNRESET|ENOTFOUND|ETIMEDOUT)\b/.exec(
+              usage.stderr + "\n" + usage.stdout,
+            )?.[0];
+          return yield* probeFailed(
+            `Antigravity CLI /usage exited with code ${usage.code}${reason ? ` (${reason})` : ""}.`,
+          );
         }
         const windows = parseAntigravityCliUsage(usage.stdout);
         if (windows === undefined) {
-          return probeFailed("Antigravity CLI /usage did not return a readable quota report.");
+          return yield* probeFailed(
+            "Antigravity CLI /usage did not return a readable quota report.",
+          );
         }
         return windows.length > 0
           ? makeUsageLimits({ checkedAt, windows })
@@ -646,10 +662,30 @@ export const AntigravityDriver: ProviderDriver<AntigravitySettings, AntigravityD
             });
       }).pipe(
         Effect.scoped,
-        Effect.orElseSucceed(() => probeFailed("Could not run Antigravity CLI /usage.")),
+        Effect.mapError((error) =>
+          isAntigravityUsageReadError(error)
+            ? error
+            : new AntigravityUsageReadError({ message: "Could not run Antigravity CLI /usage." }),
+        ),
         Effect.timeoutOption("60 seconds"),
+        Effect.flatMap(
+          Option.match({
+            onNone: () => probeFailed("Antigravity CLI /usage timed out."),
+            onSome: Effect.succeed,
+          }),
+        ),
+        Effect.withSpan("Antigravity.readUsageLimits", { attributes: { instanceId } }),
+        Effect.match({
+          onFailure: (error) =>
+            makeUnavailableUsageLimits({
+              checkedAt,
+              reason: "probeFailed",
+              message: error.message,
+            }),
+          onSuccess: (limits) => limits,
+        }),
       );
-      return Option.getOrElse(result, () => probeFailed("Antigravity CLI /usage timed out."));
+      return result;
     });
 
     const provider = yield* makeAntigravityProvider(settings, {

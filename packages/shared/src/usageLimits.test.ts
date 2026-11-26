@@ -1299,6 +1299,17 @@ describe("pooled account columns", () => {
     expect(accounts).toEqual(snapshot);
   });
 
+  it("keeps unidentified Antigravity limits independent across environments", () => {
+    const antigravity = (key: string, usedPercent: number) => ({
+      ...account(key, [{ ...weekly, usedPercent }]),
+      driver: ProviderDriverKind.make("antigravity"),
+      email: undefined,
+    });
+    const pools = collectLimitPools([antigravity("oracle", 18), antigravity("mac", 11)], now);
+    expect(pools.map((pool) => pool.accounts.length)).toEqual([1, 1]);
+    expect(pools.map((pool) => pool.windows[0]?.remainingPercent)).toEqual([82, 89]);
+  });
+
   it("keeps session columns across rows with opposite reset and usage orders", () => {
     const accounts = [
       account("a", [

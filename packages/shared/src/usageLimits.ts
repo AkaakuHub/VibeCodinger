@@ -516,6 +516,7 @@ export interface LimitPoolWindow {
 }
 
 export interface LimitPool {
+  readonly key: string;
   readonly driver: ServerProvider["driver"];
   readonly accounts: readonly LimitAccount[];
   readonly windows: readonly LimitPoolWindow[];
@@ -562,13 +563,17 @@ export function collectLimitPools(
   accounts: readonly LimitAccount[],
   now: number,
 ): readonly LimitPool[] {
-  const byDriver = new Map<ServerProvider["driver"], LimitAccount[]>();
+  const groups = new Map<string, { driver: LimitAccount["driver"]; members: LimitAccount[] }>();
   for (const account of accounts) {
-    const list = byDriver.get(account.driver);
-    if (list) list.push(account);
-    else byDriver.set(account.driver, [account]);
+    const key =
+      account.driver === "antigravity" && !accountKey(account.driver, account.email, account.limits)
+        ? `${account.driver}:${account.key}`
+        : account.driver;
+    const group = groups.get(key);
+    if (group) group.members.push(account);
+    else groups.set(key, { driver: account.driver, members: [account] });
   }
-  return [...byDriver].map(([driver, members]) => {
+  return [...groups].map(([key, { driver, members }]) => {
     const orderWindow = members
       .flatMap((account) => account.limits.windows)
       .sort((left, right) => WINDOW_KIND_ORDER[left.kind] - WINDOW_KIND_ORDER[right.kind])[0];
@@ -587,7 +592,7 @@ export function collectLimitPools(
         accountSortName(left).localeCompare(accountSortName(right)) ||
         left.key.localeCompare(right.key),
     );
-    return { driver, accounts: sorted, windows: poolWindows(sorted, now) };
+    return { key, driver, accounts: sorted, windows: poolWindows(sorted, now) };
   });
 }
 
