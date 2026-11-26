@@ -358,13 +358,30 @@ jobs:
           TEST_PACKAGES: ${{ needs.changes.outputs.test_packages }}
         run: |
           set -o pipefail
-          filters=(--filter '!vibecodinger' --filter '!@vibecodinger/monorepo' --filter '!@vibecodinger/web')
+          filters=(--filter '!vibecodinger' --filter '!@vibecodinger/monorepo' --filter '!@vibecodinger/web' --filter '!@vibecodinger/shared')
+          shared=true
           if [[ -n "$TEST_PACKAGES" ]]; then
             filters=()
-            for package in $TEST_PACKAGES; do filters+=(--filter "$package"); done
+            shared=false
+            for package in $TEST_PACKAGES; do
+              if [[ "$package" == '@vibecodinger/shared' ]]; then
+                shared=true
+              else
+                filters+=(--filter "$package")
+              fi
+            done
           fi
+          run_tests() {
+            if (( ${#filters[@]} )); then
+              vp run --cache --parallel --concurrency-limit 4 "${filters[@]}" test || return
+            fi
+            # The shell tests remove the current directory, which crashes Vite's file tracer.
+            if [[ "$shared" == true ]]; then
+              vp run --no-cache --filter @vibecodinger/shared test
+            fi
+          }
           # The runner's trace writer can crash on surrogate pairs in test output.
-          vp run --cache --parallel --concurrency-limit 4 "${filters[@]}" test 2>&1 | python3 -u -c '
+          run_tests 2>&1 | python3 -u -c '
           import sys
           for line in sys.stdin:
               sys.stdout.write(line.encode("ascii", "backslashreplace").decode("ascii"))
