@@ -358,26 +358,25 @@ jobs:
           TEST_PACKAGES: ${{ needs.changes.outputs.test_packages }}
         run: |
           set -o pipefail
-          filters=(--filter '!vibecodinger' --filter '!@vibecodinger/monorepo' --filter '!@vibecodinger/web' --filter '!@vibecodinger/shared')
-          shared=true
+          filters=(--filter '!vibecodinger' --filter '!@vibecodinger/monorepo' --filter '!@vibecodinger/web' --filter '!@vibecodinger/shared' --filter '!@vibecodinger/scripts')
+          # These packages test deleted working directories and nested task caches.
+          uncached=(--filter @vibecodinger/shared --filter @vibecodinger/scripts)
           if [[ -n "$TEST_PACKAGES" ]]; then
             filters=()
-            shared=false
+            uncached=()
             for package in $TEST_PACKAGES; do
-              if [[ "$package" == '@vibecodinger/shared' ]]; then
-                shared=true
-              else
-                filters+=(--filter "$package")
-              fi
+              case "$package" in
+                @vibecodinger/shared|@vibecodinger/scripts) uncached+=(--filter "$package") ;;
+                *) filters+=(--filter "$package") ;;
+              esac
             done
           fi
           run_tests() {
             if (( ${#filters[@]} )); then
               vp run --cache --parallel --concurrency-limit 4 "${filters[@]}" test || return
             fi
-            # The shell tests remove the current directory, which crashes Vite's file tracer.
-            if [[ "$shared" == true ]]; then
-              vp run --no-cache --filter @vibecodinger/shared test
+            if (( ${#uncached[@]} )); then
+              vp run --no-cache --parallel --concurrency-limit 4 "${uncached[@]}" test
             fi
           }
           # The runner's trace writer can crash on surrogate pairs in test output.
