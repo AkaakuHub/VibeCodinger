@@ -13,6 +13,8 @@ import * as Schema from "effect/Schema";
 import * as Schedule from "effect/Schedule";
 import { HttpRouter, HttpServerRequest, HttpServerResponse } from "effect/http";
 
+import { MCP_HTTP_PATH } from "./httpCors.ts";
+
 class TransportTlsError extends Schema.TaggedError<TransportTlsError>()("TransportTlsError", {
   message: Schema.String,
   cause: Schema.optional(Schema.Defect()),
@@ -31,12 +33,15 @@ export const layerRequireTls = Layer.unwrap(
       (effect) =>
         Effect.flatMap(HttpServerRequest.HttpServerRequest, (request) => {
           if (isDirectTlsRequest(request)) return effect;
-          // The headless pairing CLI discovers the local listener before minting its link.
           if (
-            request.method === "GET" &&
-            request.url === "/.well-known/vibecodinger/environment" &&
+            request.source instanceof NodeHttp.IncomingMessage &&
+            request.source.socket.remoteAddress === "127.0.0.1" &&
             /^127\.0\.0\.1(?::\d+)?$/.test(request.headers.host ?? "") &&
-            request.headers["x-forwarded-proto"] === undefined
+            request.headers["x-forwarded-proto"] === undefined &&
+            request.headers["x-forwarded-for"] === undefined &&
+            ((request.method === "GET" &&
+              request.url === "/.well-known/vibecodinger/environment") ||
+              request.url === MCP_HTTP_PATH)
           ) {
             return effect;
           }

@@ -2,6 +2,11 @@ name: Build and publish VibeCodinger
 
 on:
   workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish the packages as a GitHub release
+        type: boolean
+        default: true
 
 permissions: {}
 
@@ -32,6 +37,7 @@ jobs:
       contents: read
 
   publish:
+    if: inputs.publish
     needs: [desktop, ios, android]
     runs-on: ubuntu-24.04
     permissions:
