@@ -646,7 +646,7 @@ export const AntigravityDriver: ProviderDriver<AntigravitySettings, AntigravityD
             });
       }).pipe(
         Effect.scoped,
-        Effect.catch(() => Effect.succeed(probeFailed("Could not run Antigravity CLI /usage."))),
+        Effect.orElseSucceed(() => probeFailed("Could not run Antigravity CLI /usage.")),
         Effect.timeoutOption("60 seconds"),
       );
       return Option.getOrElse(result, () => probeFailed("Antigravity CLI /usage timed out."));
