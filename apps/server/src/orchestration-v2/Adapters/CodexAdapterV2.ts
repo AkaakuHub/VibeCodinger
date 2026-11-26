@@ -84,6 +84,7 @@ import type {
   ProviderUserInputAnswers,
   ProviderApprovalDecision,
   ProviderApprovalOption,
+  ProviderApprovalPushHooks,
   ProviderRequestKind,
   ProviderThreadId,
   ProviderTurnId,
@@ -1683,9 +1684,14 @@ export const CODEX_THREAD_CONFIG = {
 
 // request_secret can wait an hour; keep Codex's MCP timeout above that.
 const CODEX_VC_MCP_TOOL_TIMEOUT_SEC = 65 * 60;
-// Holds T3 tools Codex must call directly, never from Code Mode. Calls arrive as
+const CODEX_VC_MCP_SERVER = "vibe-codinger";
+// Holds VibeCodinger tools Codex must call directly. Calls arrive as
 // `vibe-codinger-direct.<tool>`; vibeCodingerMcpToolPresentation.ts must keep resolving that form.
 const CODEX_VC_DIRECT_MCP_SERVER = "vibe-codinger-direct";
+const CODEX_VC_MCP_SERVERS: ReadonlySet<string> = new Set([
+  CODEX_VC_MCP_SERVER,
+  CODEX_VC_DIRECT_MCP_SERVER,
+]);
 const CODEX_DIRECT_ONLY_VC_TOOLS = ["vc_thread_wait", "delegate_task"];
 
 /** Names of the stdio MCP servers in a `config/read` config, the ones Codex starts per thread. */
@@ -1745,7 +1751,7 @@ function codexThreadRuntimeParams(input: {
         ? {}
         : {
             // Override only VibeCodinger's servers so launch-argument MCP servers survive.
-            "mcp_servers.vibe-codinger": {
+            [`mcp_servers.${CODEX_VC_MCP_SERVER}`]: {
               ...vcServer,
               disabled_tools: CODEX_DIRECT_ONLY_VC_TOOLS,
             },
@@ -2123,6 +2129,7 @@ export const makeCodexAdapterV2 = Effect.fn("makeCodexAdapterV2")(function* (
   adapterOptions: CodexAdapterV2Options,
 ) {
   const mcpSessions = yield* McpProviderSessions.McpProviderSessions;
+  yield* mcpSessions.showsApprovalRequests(adapterOptions.instanceId);
   const readMcpSession = (threadId: ThreadId | null) =>
     threadId === null ? Effect.undefined : mcpSessions.read(threadId);
   const { clientFactory, digest, fileSystem, idAllocator, serverConfig } = adapterOptions;
@@ -5049,6 +5056,7 @@ export const makeCodexAdapterV2 = Effect.fn("makeCodexAdapterV2")(function* (
           readonly prompt?: string | null;
           readonly reason?: string | null | undefined;
           readonly appName?: string;
+          readonly pushHooks?: ProviderApprovalPushHooks | undefined;
           readonly options?: ReadonlyArray<ProviderApprovalOption>;
         }) {
           const createdAt = yield* DateTime.now;
@@ -5134,6 +5142,7 @@ export const makeCodexAdapterV2 = Effect.fn("makeCodexAdapterV2")(function* (
               : { prompt: input.prompt }),
             ...(reason === undefined ? {} : { reason }),
             ...(input.appName === undefined ? {} : { appName: input.appName }),
+            ...(input.pushHooks === undefined ? {} : { pushHooks: input.pushHooks }),
             ...(input.options === undefined ? {} : { options: input.options }),
           };
           return { node, request, turnItem };
@@ -6549,7 +6558,13 @@ export const makeCodexAdapterV2 = Effect.fn("makeCodexAdapterV2")(function* (
               } satisfies CodexSchema.McpServerElicitationRequestResponse;
             }
 
-            if (context.input.runtimePolicy.runtimeMode === "full-access") {
+            const ownRequest = CODEX_VC_MCP_SERVERS.has(payload.serverName)
+              ? yield* mcpSessions.findApprovalRequest(context.input.threadId, payload.message)
+              : undefined;
+            if (
+              ownRequest === undefined &&
+              context.input.runtimePolicy.runtimeMode === "full-access"
+            ) {
               return acceptance;
             }
 
@@ -6564,7 +6579,9 @@ export const makeCodexAdapterV2 = Effect.fn("makeCodexAdapterV2")(function* (
               nativeRequestId,
               requestKind: "mcp-elicitation",
               prompt: payload.message,
-              appName: described.appName,
+              ...(ownRequest === undefined
+                ? { appName: described.appName }
+                : { pushHooks: ownRequest.pushHooks }),
               options: described.options,
             });
             const decision = yield* Deferred.make<ProviderApprovalDecision, never>();
@@ -6603,7 +6620,15 @@ export const makeCodexAdapterV2 = Effect.fn("makeCodexAdapterV2")(function* (
                 }),
               ),
             );
-            return toMcpElicitationResponse(payload, resolved);
+            const response = toMcpElicitationResponse(payload, resolved);
+            if (ownRequest !== undefined) {
+              yield* mcpSessions.answerApprovalRequests(
+                context.input.threadId,
+                payload.message,
+                response.action === "accept",
+              );
+            }
+            return response;
           }).pipe(Effect.orDie),
         );
 
