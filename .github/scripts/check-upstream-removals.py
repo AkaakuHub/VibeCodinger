@@ -224,7 +224,7 @@ def normalize_package_names(tree):
         if path in paths or target != path:
             updates.append(mode + b" " + object_id + b"\t" + target + b"\0")
     with TemporaryDirectory(prefix="vibecodinger-upstream-index-") as temp:
-        env = {**os.environ, "GIT_INDEX_FILE": str(Path(temp) / "index")}
+        env = {**os.environ, "GIT_INDEX_FILE": str(Path(temp) / "index"), "GIT_WORK_TREE": temp}
         git("read-tree", tree, env=env)
         if obsolete_paths:
             git("update-index", "--force-remove", "-z", "--stdin", data=b"\0".join(obsolete_paths) + b"\0", env=env)
