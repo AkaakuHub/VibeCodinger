@@ -1890,13 +1890,13 @@ describe("CodexAdapterV2 post-settle continuation", () => {
     });
 
   it.effect.each([
-    { serverName: "t3-code", asked: true, expected: { own: true } },
-    { serverName: "t3-code-direct", asked: true, expected: { own: true } },
-    // A server T3 Code did not register, or a request T3 Code did not make: named as ever.
+    { serverName: "vibe-codinger", asked: true, expected: { own: true } },
+    { serverName: "vibe-codinger-direct", asked: true, expected: { own: true } },
+    // A server VibeCodinger did not register, or a request VibeCodinger did not make: named as ever.
     { serverName: "deploys", asked: true, expected: { own: false } },
-    { serverName: "t3-code", asked: false, expected: { own: false } },
+    { serverName: "vibe-codinger", asked: false, expected: { own: false } },
   ] as const)(
-    "shows an approval from $serverName (asked by T3 Code: $asked) as T3 Code's own: $expected.own",
+    "shows an approval from $serverName (asked by VibeCodinger: $asked) as VibeCodinger's own: $expected.own",
     ({ serverName, asked, expected }) =>
       Effect.gen(function* () {
         const nativeThreadId = "own-approval-thread";
@@ -1994,8 +1994,8 @@ describe("CodexAdapterV2 post-settle continuation", () => {
           decision: "accept",
         });
         yield* harness.firstTerminal;
-        // What the person answered in the app stays with the request T3 Code made, and with
-        // no other: a request under T3's server name that T3 Code did not make gets none.
+        // What the person answered in the app stays with the request VibeCodinger made, and with
+        // no other: a request under VibeCodinger's server name that VibeCodinger did not make gets none.
         if (ownAsked !== undefined) {
           const kept = yield* sessions.takeApprovalRequest(harness.threadId, ownAsked);
           if (expected.own) assert.deepInclude(kept, { approved: true });
@@ -2015,7 +2015,7 @@ describe("CodexAdapterV2 post-settle continuation", () => {
   );
 
   it.effect.each(["plan", "default"] as const)(
-    "shows what T3 Code's own tool asks to the person in a Full access turn (%s mode)",
+    "shows what VibeCodinger's own tool asks to the person in a Full access turn (%s mode)",
     (interactionMode) =>
       Effect.gen(function* () {
         const nativeThreadId = "own-approval-full-access-thread";
@@ -2037,7 +2037,7 @@ describe("CodexAdapterV2 post-settle continuation", () => {
                   params: {
                     threadId: nativeThreadId,
                     turnId: nativeTurnId,
-                    serverName: "t3-code",
+                    serverName: "vibe-codinger",
                     mode: "form",
                     message,
                     requestedSchema: { type: "object", properties: {} },
@@ -2067,7 +2067,7 @@ describe("CodexAdapterV2 post-settle continuation", () => {
           message,
           pushHooks,
         });
-        // Another call's request, answered while this one waits, leaves this one T3 Code's own.
+        // Another call's request, answered while this one waits, leaves this one VibeCodinger's own.
         const answered = yield* sessions.recordApprovalRequest(harness.threadId, {
           message: "Push docs and run this repository's hook file .husky/pre-push?",
         });
@@ -2090,7 +2090,9 @@ describe("CodexAdapterV2 post-settle continuation", () => {
         const request = yield* Effect.raceFirst(
           Queue.take(pending),
           harness.firstTerminal.pipe(
-            Effect.andThen(Effect.die("T3 Code's own request was answered without the person")),
+            Effect.andThen(
+              Effect.die("VibeCodinger's own request was answered without the person"),
+            ),
           ),
         );
         const card = harness.events.findLast(
