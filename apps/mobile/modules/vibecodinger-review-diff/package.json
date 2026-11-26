@@ -1,0 +1,17 @@
+{
+  "name": "@vibecodinger/mobile-review-diff-native",
+  "version": "0.0.0",
+  "private": true,
+  "expo-module": {
+    "ios": {
+      "modules": [
+        "VibeCodingerReviewDiffModule"
+      ]
+    },
+    "android": {
+      "modules": [
+        "expo.modules.vibecodingerreviewdiff.VibeCodingerReviewDiffModule"
+      ]
+    }
+  }
+}

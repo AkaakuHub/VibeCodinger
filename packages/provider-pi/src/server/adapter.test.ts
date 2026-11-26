@@ -18,7 +18,7 @@ import {
   type OrchestrationV2ProviderThread,
   OrchestrationV2UserInputQuestion,
   type OrchestrationV2ProviderTurn,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import * as Cause from "effect/Cause";
 import * as PlatformError from "effect/PlatformError";
 import * as DateTime from "effect/DateTime";
@@ -39,16 +39,16 @@ import * as TestClock from "effect/testing/TestClock";
 import * as ChildProcess from "effect/process/ChildProcess";
 import * as ChildProcessSpawner from "effect/process/ChildProcessSpawner";
 
-import * as TestProviderHost from "@t3tools/provider-testing/TestProviderHost";
-import * as ProviderContinuationRequests from "@t3tools/provider-core/server/ProviderContinuationRequests";
-import * as McpProviderSessions from "@t3tools/provider-core/server/McpProviderSessions";
-import * as IdAllocator from "@t3tools/provider-core/server/IdAllocator";
-import * as ProviderAdapter from "@t3tools/provider-core/server/ProviderAdapter";
-import * as ProviderHost from "@t3tools/provider-core/server/ProviderHost";
-import { handoffBudget } from "@t3tools/provider-core/server/handoffBudget";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { AgentScope } from "@t3tools/shared/AgentScope";
-import { toolOutputImages, compactDynamicToolOutput } from "@t3tools/shared/toolOutput";
+import * as TestProviderHost from "@vibecodinger/provider-testing/TestProviderHost";
+import * as ProviderContinuationRequests from "@vibecodinger/provider-core/server/ProviderContinuationRequests";
+import * as McpProviderSessions from "@vibecodinger/provider-core/server/McpProviderSessions";
+import * as IdAllocator from "@vibecodinger/provider-core/server/IdAllocator";
+import * as ProviderAdapter from "@vibecodinger/provider-core/server/ProviderAdapter";
+import * as ProviderHost from "@vibecodinger/provider-core/server/ProviderHost";
+import { handoffBudget } from "@vibecodinger/provider-core/server/handoffBudget";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
+import { AgentScope } from "@vibecodinger/shared/AgentScope";
+import { toolOutputImages, compactDynamicToolOutput } from "@vibecodinger/shared/toolOutput";
 import {
   makePiAdapterV2,
   PiAdapterV2Driver,
@@ -57,7 +57,7 @@ import {
 } from "./adapter.ts";
 import { makePiRpcConnection, type PiRpcRecord } from "./rpc.ts";
 import { loadMcpBridge } from "./mcpBridge.testkit.ts";
-import { PI_T3_SERVICE_TIER_COMMAND } from "./mcpExtensionSource.ts";
+import { PI_VC_SERVICE_TIER_COMMAND } from "./mcpExtensionSource.ts";
 import { turnItemOutputText } from "../../../client-runtime/src/work-log/itemDetail.ts";
 
 const layerTest = Layer.mergeAll(
@@ -256,7 +256,7 @@ const makeFakePi: Effect.Effect<FakePi> = Effect.gen(function* () {
   let serviceTier: string | null = null;
   let promptDisposition = true;
   let currentModel = "default";
-  const serviceTierCommand = `/${PI_T3_SERVICE_TIER_COMMAND}`;
+  const serviceTierCommand = `/${PI_VC_SERVICE_TIER_COMMAND}`;
 
   const emit = (record: PiRpcRecord, chunkBytes?: number) =>
     Effect.gen(function* () {
@@ -2208,11 +2208,11 @@ describe("PiAdapterV2", () => {
       // A thread's long-lived process keeps Pi's startup model refresh unless the user opts out.
       assert.notInclude(spawn.args, "--offline");
       assert.isUndefined(spawn.env.PI_OFFLINE);
-      assert.isTrue(extensions.some((path) => path?.endsWith("pi-t3-mcp-extension.ts")));
-      assert.equal(spawn.env.T3_MCP_URL, "http://127.0.0.1:43123/mcp");
-      assert.equal(spawn.env.T3_MCP_BEARER_TOKEN, "secret-pi-token");
-      assert.equal(spawn.env.T3_PI_RUNTIME_MODE, "full-access");
-      assert.equal(spawn.env.T3CODE_THREAD_ID, THREAD_ID);
+      assert.isTrue(extensions.some((path) => path?.endsWith("pi-vc-mcp-extension.ts")));
+      assert.equal(spawn.env.VIBECODINGER_MCP_URL, "http://127.0.0.1:43123/mcp");
+      assert.equal(spawn.env.VIBECODINGER_MCP_BEARER_TOKEN, "secret-pi-token");
+      assert.equal(spawn.env.VIBECODINGER_PI_RUNTIME_MODE, "full-access");
+      assert.equal(spawn.env.VIBECODINGER_THREAD_ID, THREAD_ID);
     }).pipe(Effect.scoped, Effect.provide(layerTest)),
   );
 
@@ -2871,15 +2871,15 @@ describe("PiAdapterV2", () => {
         fake
           .allRequests()
           .flatMap((request) =>
-            String(request["message"]).startsWith(`/${PI_T3_SERVICE_TIER_COMMAND}`)
+            String(request["message"]).startsWith(`/${PI_VC_SERVICE_TIER_COMMAND}`)
               ? [request["message"]]
               : [],
           ),
         [
-          `/${PI_T3_SERVICE_TIER_COMMAND} priority`,
-          `/${PI_T3_SERVICE_TIER_COMMAND} priority`,
-          `/${PI_T3_SERVICE_TIER_COMMAND} ultrafast`,
-          `/${PI_T3_SERVICE_TIER_COMMAND}`,
+          `/${PI_VC_SERVICE_TIER_COMMAND} priority`,
+          `/${PI_VC_SERVICE_TIER_COMMAND} priority`,
+          `/${PI_VC_SERVICE_TIER_COMMAND} ultrafast`,
+          `/${PI_VC_SERVICE_TIER_COMMAND}`,
         ],
       );
     }).pipe(Effect.scoped, Effect.provide(layerTest)),
@@ -3483,11 +3483,11 @@ describe("PiAdapterV2", () => {
             expected: { content, structuredContent: structured },
           },
           {
-            toolName: "mcp__t3-code__preview_snapshot",
+            toolName: "mcp__vibe-codinger__preview_snapshot",
             result: {
               content,
               structuredContent: scriptResult,
-              details: { server: "t3-code", tool: "preview_snapshot" },
+              details: { server: "vibe-codinger", tool: "preview_snapshot" },
             },
             expected: { content, structuredContent: { threadId: "child-thread" } },
           },
@@ -3502,7 +3502,7 @@ describe("PiAdapterV2", () => {
             expected: { content, structuredContent: { content: ["domain content"], ready: true } },
           },
           {
-            toolName: "mcp__t3-code__preview_snapshot",
+            toolName: "mcp__vibe-codinger__preview_snapshot",
             result: {
               content: [
                 { type: "text", text: "first" },
@@ -3514,7 +3514,7 @@ describe("PiAdapterV2", () => {
                   { type: "text", text: "second" },
                 ],
               },
-              details: { server: "t3-code", tool: "preview_snapshot" },
+              details: { server: "vibe-codinger", tool: "preview_snapshot" },
             },
             expected: {
               content: [
@@ -3688,7 +3688,9 @@ describe("PiAdapterV2", () => {
           const bridge = yield* Effect.promise(() =>
             loadMcpBridge({ modern: true, result: { content, structuredContent: metadata } }),
           );
-          const tool = bridge.tools.find((tool) => tool.name === "mcp__t3-code__preview_snapshot")!;
+          const tool = bridge.tools.find(
+            (tool) => tool.name === "mcp__vibe-codinger__preview_snapshot",
+          )!;
           const result = yield* Effect.promise(() => tool.execute("screenshot", {}));
           assert.deepEqual(result.structuredContent, { content, structuredContent: metadata });
           yield* fake.emit(
@@ -4565,7 +4567,7 @@ describe("PiAdapterV2", () => {
         leafId: "a3",
       };
 
-      // The adopted wake precedes T3's first turn; its steer must be discarded with it.
+      // The adopted wake precedes VibeCodinger's first turn; its steer must be discarded with it.
       fake.queueEntries(entries);
       yield* rollBackToStart(150);
       assert.deepEqual(forkedEntries(), ["u2"]);
@@ -7109,7 +7111,7 @@ describe("PiAdapterV2", () => {
               yield* fake.takeRequest("get_state");
             }
             yield* fake.emit({
-              type: "t3.settle_probe",
+              type: "vc.settle_probe",
               providerTurnId,
               settleProbeGeneration: 2,
               data: { isStreaming: false, isCompacting: false, pendingMessageCount: 0 },

@@ -3,20 +3,20 @@ import * as NodeCrypto from "node:crypto";
 export type {
   ProviderMaintenanceCapabilities,
   ProviderMaintenanceCommandAction,
-} from "@t3tools/provider-core/server/maintenance";
+} from "@vibecodinger/provider-core/server/maintenance";
 import type {
   ProviderMaintenanceCapabilities,
   ProviderMaintenanceCommandAction,
-} from "@t3tools/provider-core/server/maintenance";
+} from "@vibecodinger/provider-core/server/maintenance";
 import {
   ProviderDriverKind,
   type ServerProvider,
   type ServerProviderVersionAdvisory,
-} from "@t3tools/contracts";
-import { compareSemverVersions, satisfiesSemverRange } from "@t3tools/shared/semver";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { causeErrorTag } from "@t3tools/shared/observability";
-import { resolveCommandPath, resolveSpawnCommand } from "@t3tools/shared/shell";
+} from "@vibecodinger/contracts";
+import { compareSemverVersions, satisfiesSemverRange } from "@vibecodinger/shared/semver";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
+import { causeErrorTag } from "@vibecodinger/shared/observability";
+import { resolveCommandPath, resolveSpawnCommand } from "@vibecodinger/shared/shell";
 import * as Cache from "effect/Cache";
 import * as Config from "effect/Config";
 import * as DateTime from "effect/DateTime";
@@ -744,7 +744,7 @@ export const resolveMiseProviderMaintenance = Effect.fn("resolveMiseProviderMain
     // Asked even off mise's usual paths, since `MISE_DATA_DIR` can put installs anywhere.
     const which = nonEmptyString(yield* runProbe(misePath, ["which", miseTool], context.env));
     const resolvedPath = which ? yield* realPath(which) : null;
-    // Through a shim T3 Code runs whatever mise resolves; otherwise the configured binary.
+    // Through a shim VibeCodinger runs whatever mise resolves; otherwise the configured binary.
     const binaryPath = isShim ? resolvedPath : context.realCommandPath;
     if (!binaryPath) return manual(context.realCommandPath);
     const binary = normalizeCommandPath(binaryPath);
@@ -1400,7 +1400,7 @@ export const makeCachedProviderMaintenanceResolution = Effect.fn(
 
 function manualUpdateMessage(latestVersion: string, installPath: string | undefined): string {
   return installPath
-    ? `Version ${latestVersion} is out. T3 Code runs ${installPath}; update it with the app or tool that installed it.`
+    ? `Version ${latestVersion} is out. VibeCodinger runs ${installPath}; update it with the app or tool that installed it.`
     : `Version ${latestVersion} is out. Update it with the app or tool that installed it.`;
 }
 

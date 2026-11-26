@@ -1,4 +1,4 @@
-import * as SharedObservability from "@t3tools/shared/observability";
+import * as SharedObservability from "@vibecodinger/shared/observability";
 import * as Cause from "effect/Cause";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";

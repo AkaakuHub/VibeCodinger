@@ -1,7 +1,10 @@
-import { settlePromise, squashAtomCommandFailure } from "@t3tools/client-runtime/state/runtime";
+import {
+  settlePromise,
+  squashAtomCommandFailure,
+} from "@vibecodinger/client-runtime/state/runtime";
 import { AsyncResult } from "effect/reactivity";
-import type { EnvironmentId, ThreadId } from "@t3tools/contracts";
-import { formatDiffCount } from "@t3tools/client-runtime/diff-count";
+import type { EnvironmentId, ThreadId } from "@vibecodinger/contracts";
+import { formatDiffCount } from "@vibecodinger/client-runtime/diff-count";
 import { LegendList } from "@legendapp/list/react-native";
 import { useNavigation, type StaticScreenProps } from "@react-navigation/native";
 import { AppBar } from "../../components/ui/AppBar";
@@ -196,7 +199,7 @@ const SHOWCASE_ENABLED = process.env.EXPO_PUBLIC_SHOWCASE === "1";
 const ReviewNotice = function ReviewNotice(props: { readonly notice: string }) {
   return (
     <ContentBand tone="warning">
-      <Text className="text-xs font-t3-bold uppercase text-warning-foreground">
+      <Text className="text-xs font-vc-bold uppercase text-warning-foreground">
         <T>Partial diff</T>
       </Text>
       <Text className="text-xs leading-normal text-warning-foreground">{props.notice}</Text>
@@ -222,7 +225,7 @@ function ReviewSelectionActionBar(props: {
         tintColorClassName="accent-primary-foreground"
         type="monochrome"
       />
-      <Text className="text-base font-t3-bold text-primary-foreground">{props.title}</Text>
+      <Text className="text-base font-vc-bold text-primary-foreground">{props.title}</Text>
     </>
   );
 
@@ -289,18 +292,18 @@ const ReviewFileNavigatorRow = function ReviewFileNavigatorRow(props: {
       <Text
         className={
           selected
-            ? "text-xs font-t3-bold text-foreground"
-            : "text-xs font-t3-medium text-foreground-secondary"
+            ? "text-xs font-vc-bold text-foreground"
+            : "text-xs font-vc-medium text-foreground-secondary"
         }
         numberOfLines={2}
       >
         {file.path}
       </Text>
       <View className="mt-1 flex-row gap-2">
-        <Text className="text-2xs font-t3-bold text-adaptive-emerald-700-300">
+        <Text className="text-2xs font-vc-bold text-adaptive-emerald-700-300">
           +{formatDiffCount(file.additions)}
         </Text>
-        <Text className="text-2xs font-t3-bold text-adaptive-rose-700-300">
+        <Text className="text-2xs font-vc-bold text-adaptive-rose-700-300">
           -{formatDiffCount(file.deletions)}
         </Text>
       </View>
@@ -640,7 +643,7 @@ export function ReviewSheet(props: ReviewSheetProps) {
     if (error) {
       children.push(
         <ContentBand key="review-error">
-          <Text className="text-sm font-t3-bold text-foreground">
+          <Text className="text-sm font-vc-bold text-foreground">
             <T>Review unavailable</T>
           </Text>
           <Text className="text-xs leading-normal text-foreground-muted">{error}</Text>

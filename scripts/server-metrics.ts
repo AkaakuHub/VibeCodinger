@@ -9,9 +9,9 @@ import * as NodeHttpServer from "@effect/platform-node/NodeHttpServer";
 import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
 import * as NodeServices from "@effect/platform-node/NodeServices";
 import * as NodeSocket from "@effect/platform-node/NodeSocket";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import * as NodeSqliteClient from "@t3tools/shared/nodeSqliteClient";
-import { fromJsonStringPretty } from "@t3tools/shared/schemaJson";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
+import * as NodeSqliteClient from "@vibecodinger/shared/nodeSqliteClient";
+import { fromJsonStringPretty } from "@vibecodinger/shared/schemaJson";
 import * as Clock from "effect/Clock";
 import * as Cause from "effect/Cause";
 import * as Console from "effect/Console";
@@ -43,7 +43,7 @@ import {
   ORCHESTRATION_PROTOCOL_VERSION_TEXT,
   ThreadId,
   WsRpcGroup,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import {
   HttpClient,
   HttpClientRequest,
@@ -793,7 +793,7 @@ const prepareSeed = Effect.fn("serverMetrics.prepareSeed")(function* (
 ) {
   const fs = yield* FileSystem.FileSystem;
   const node = yield* HostProcess.ExecutablePath;
-  const dir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-server-metrics-seed-" });
+  const dir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-server-metrics-seed-" });
   yield* Console.error(`seeding ${checkout} from the real database (read-only)...`);
   // Its output names the kept projects, so it stays out of ours.
   const seeded = yield* run(
@@ -868,7 +868,7 @@ const startServer = Effect.fn("serverMetrics.startServer")(function* (
   );
   const dropped = new Set([
     "ANTHROPIC_AUTH_TOKEN",
-    "T3CODE_HOME",
+    "VIBECODINGER_HOME",
     "CLAUDE_CONFIG_DIR",
     ...(environment.noAgentScope ? ["XDG_RUNTIME_DIR"] : []),
   ]);
@@ -884,7 +884,7 @@ const startServer = Effect.fn("serverMetrics.startServer")(function* (
     ANTHROPIC_API_KEY: "sk-bench",
     CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1",
     OTEL_SDK_DISABLED: "true",
-    T3CODE_DEV_SEED: "0",
+    VIBECODINGER_DEV_SEED: "0",
     ...options.forge?.env,
   };
   const port = yield* freePort;
@@ -1673,7 +1673,7 @@ const runOnce = Effect.fn("serverMetrics.runOnce")(function* (options: RunOption
   const platform = yield* HostProcess.Platform;
   const path = yield* Path.Path;
   const machine = yield* watchMachine;
-  const home = yield* fs.makeTempDirectoryScoped({ prefix: "t3-server-metrics-" });
+  const home = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-server-metrics-" });
   const api = yield* serveFakeAnthropic();
   const environment: Environment = {
     home,

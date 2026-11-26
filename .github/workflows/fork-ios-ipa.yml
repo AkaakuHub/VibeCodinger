@@ -1,0 +1,165 @@
+name: Fork iPhone IPA
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "New draft release tag, for example ios-v2.3.0"
+        type: string
+        required: true
+
+permissions: {}
+
+concurrency:
+  group: fork-ios-ipa-${{ github.event.pull_request.number || inputs.release_tag }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  package:
+    if: >-
+      github.repository == 'AkaakuHub/t3code' &&
+      ((github.event_name == 'pull_request' &&
+        github.event.pull_request.head.repo.full_name == github.repository &&
+        !startsWith(github.head_ref, 'review/upstream-')) ||
+       (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'))
+    runs-on: xcode-27
+    timeout-minutes: 60
+    permissions:
+      contents: read
+    env:
+      APP_VARIANT: production
+      VIBECODINGER_IOS_PERSONAL_TEAM: "1"
+      VIBECODINGER_IOS_PERSONAL_TEAM_BUNDLE_ID: net.akaaku.vibecodinger
+      EXPO_NO_GIT_STATUS: "1"
+      EXPO_NO_TELEMETRY: "1"
+      NODE_OPTIONS: --max-old-space-size=8192
+    steps:
+      - name: Checkout build source
+        shell: bash
+        run: |
+          git init .
+          git fetch --no-tags --depth=1 "https://github.com/$GITHUB_REPOSITORY.git" "$GITHUB_SHA"
+          git sparse-checkout set --no-cone '/*' '!/.repos/'
+          git checkout --detach FETCH_HEAD
+
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@250f29ce396baf5e8f24498e17c0dfdebabc26eb # v1.15.0
+        with:
+          node-version-file: package.json
+          cache: true
+          cache-dependency-path: pnpm-lock.yaml
+          run-install: false
+
+      - name: Install mobile dependencies
+        run: vp install --frozen-lockfile --filter=@vibecodinger/mobile... --filter=@vibecodinger/scripts...
+
+      - name: Generate the Xcode project
+        working-directory: apps/mobile
+        run: vp exec expo prebuild --clean --platform ios --no-install
+
+      - name: Identify the iOS toolchain
+        id: toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcode=$( { xcodebuild -version; xcrun --sdk iphoneos --show-sdk-build-version; } | shasum -a 256 | cut -d ' ' -f 1 )
+          echo "xcode=$xcode" >> "$GITHUB_OUTPUT"
+          echo "cocoapods=$(pod --version)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache CocoaPods downloads
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/Library/Caches/CocoaPods
+          key: ios-pods-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.toolchain.outputs.cocoapods }}-${{ hashFiles('pnpm-lock.yaml', 'apps/mobile/ios/Podfile', 'apps/mobile/ios/Podfile.properties.json') }}
+          restore-keys: ios-pods-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.toolchain.outputs.cocoapods }}-
+
+      - name: Install CocoaPods dependencies
+        working-directory: apps/mobile/ios
+        run: pod install
+
+      - name: Cache Xcode compilation results
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        env:
+          CACHE_PREFIX: ios-compile-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.toolchain.outputs.xcode }}-${{ hashFiles('pnpm-lock.yaml', 'apps/mobile/ios/Podfile.lock') }}-
+        with:
+          path: ${{ runner.temp }}/vibecodinger-derived-data/CompilationCache.noindex
+          key: ${{ env.CACHE_PREFIX }}${{ hashFiles('apps/mobile/app.config.ts', 'apps/mobile/modules/**/ios/**', 'apps/mobile/modules/**/*.podspec', 'apps/mobile/plugins/**') }}
+          restore-keys: ${{ env.CACHE_PREFIX }}
+
+      - name: Build and verify the Personal Team IPA
+        working-directory: apps/mobile
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/VibeCodinger.xcarchive"
+          xcrun xcodebuild archive \
+            -workspace ios/VibeCodinger.xcworkspace \
+            -scheme VibeCodinger \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath "$archive" \
+            -derivedDataPath "$RUNNER_TEMP/vibecodinger-derived-data" \
+            -showBuildTimingSummary \
+            COMPILATION_CACHE_CAS_PATH="$RUNNER_TEMP/vibecodinger-derived-data/CompilationCache.noindex" \
+            COMPILATION_CACHE_ENABLE_CACHING=YES \
+            COMPILATION_CACHE_ENABLE_DIAGNOSTIC_REMARKS=YES \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
+          app="$archive/Products/Applications/VibeCodinger.app"
+          test -f "$app/Info.plist"
+          test "$(/usr/libexec/PlistBuddy -c 'Print CFBundleIdentifier' "$app/Info.plist")" = "$VIBECODINGER_IOS_PERSONAL_TEAM_BUNDLE_ID"
+          test -f "$app/main.jsbundle"
+          executable=$(/usr/libexec/PlistBuddy -c 'Print CFBundleExecutable' "$app/Info.plist")
+          xcrun lipo -verify_arch arm64 "$app/$executable"
+          test ! -e "$app/embedded.mobileprovision"
+          test -z "$(find "$app" -name '*.appex' -print -quit)"
+
+          staging=$(mktemp -d "$RUNNER_TEMP/vibecodinger-ipa.XXXXXXXX")
+          mkdir -p "$staging/Payload" "$RUNNER_TEMP/release-assets"
+          ditto "$app" "$staging/Payload/VibeCodinger.app"
+          ipa="$RUNNER_TEMP/release-assets/VibeCodinger-unsigned.ipa"
+          (cd "$staging" && ditto -c -k --keepParent Payload "$ipa")
+          unzip -tq "$ipa"
+          (cd "$RUNNER_TEMP/release-assets" && shasum -a 256 VibeCodinger-unsigned.ipa > VibeCodinger-unsigned.ipa.sha256)
+
+      - name: Upload iPhone IPA
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: unsigned-iphone-ipa
+          path: ${{ runner.temp }}/release-assets/
+          if-no-files-found: error
+          compression-level: 0
+
+  draft-release:
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    needs: package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download verified IPA
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: unsigned-iphone-ipa
+
+      - name: Create draft release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          if [[ ! "$RELEASE_TAG" =~ ^ios-v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.-]+)?$ ]]; then
+            echo '::error::Use a tag such as ios-v2.3.0.'
+            exit 1
+          fi
+          if git ls-remote --exit-code "https://github.com/$GITHUB_REPOSITORY.git" "refs/tags/$RELEASE_TAG" >/dev/null; then
+            echo '::error::Choose a new release tag.'
+            exit 1
+          fi
+          sha256sum --check VibeCodinger-unsigned.ipa.sha256
+          gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" --title "$RELEASE_TAG" --draft --prerelease \
+            --notes 'Personal Team iPhone IPA. In AltStore Classic, set up Remote AltServer, then import the IPA under My Apps to sign and install it.' \
+            VibeCodinger-unsigned.ipa VibeCodinger-unsigned.ipa.sha256

@@ -8,7 +8,7 @@ On mobile, choose **Usage** in the workspace navigation.
 
 ## Understand your usage
 
-**Usage** combines Codex, Claude Code, Grok Build, OpenCode, Antigravity, Pi, Muse Code, and Cursor history
+**Usage** combines Codex, Claude Code, Grok Build, OpenCode, Pi, Muse Code, and Cursor history
 from your connected environments. It shows token use, cache savings, model breakdowns, and estimated API-equivalent
 cost, split by token type and by speed. These estimates are not your subscription bill.
 **Premium** is what Fast and Ultrafast requests cost above standard rates. Cost that cannot be
@@ -27,9 +27,9 @@ such as `365`, or to `"unlimited"`. Usage views still show at most 90 days. Lowe
 prunes older history on the next refresh, and raising it again does not bring pruned history back.
 While `settings.json` cannot be read, nothing is pruned.
 
-OpenCode reads its SQLite database and older JSON history. Antigravity reads local conversation
-databases, including T3-managed profiles. Set `OPENCODE_DATA_DIR` or `ANTIGRAVITY_DATA_DIR` on the
+OpenCode reads its SQLite database and older JSON history. Set `OPENCODE_DATA_DIR` on the
 server to read a different data directory; comma-separated paths read multiple directories.
+Antigravity's current model quotas appear under **Usage → Limits** through the official CLI.
 
 Cursor reads account usage from Cursor's API for the account you signed in with in T3 or set as
 `CURSOR_API_KEY`. This includes headless T3 sessions and desktop usage across machines; the same
@@ -50,7 +50,7 @@ depend on each project's working directory and cannot be reliably discovered by 
 sharing a history directory count once.
 
 The server saves its first hostname in `<T3 home>/usage-host-id`, so a recreated container keeps
-its usage identity when T3 home is persisted. Set `T3CODE_HOST_ID` to choose the identity
+its usage identity when T3 home is persisted. Set `VIBECODINGER_HOST_ID` to choose the identity
 explicitly.
 
 When your app and server support different providers, usage totals may cover only the providers
@@ -94,7 +94,7 @@ the dialog.
 ## Show only some models
 
 To count only some models, or to leave some out, add `usageModelFilter` to the server's
-`settings.json` in its `userdata` directory, such as `~/.t3/userdata/settings.json`:
+`settings.json` in its `userdata` directory, such as `~/.vibecodinger/userdata/settings.json`:
 
 ```json
 {

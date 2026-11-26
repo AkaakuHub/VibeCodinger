@@ -7,9 +7,10 @@ import * as NodeURL from "node:url";
 import { describe, expect, it } from "vite-plus/test";
 
 import { isEntrypoint } from "./entrypoint.ts";
-import { symlinksSupported } from "@t3tools/shared/testing/symlinks";
+import { symlinksSupported } from "@vibecodinger/shared/testing/symlinks";
 
-const makeTempDir = () => NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-entrypoint-test-"));
+const makeTempDir = () =>
+  NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "vibecodinger-entrypoint-test-"));
 
 describe("isEntrypoint", () => {
   it("matches the entrypoint path when the runtime has no import.meta.main", () => {

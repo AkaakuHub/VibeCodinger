@@ -3,9 +3,8 @@ import {
   EnvironmentId,
   type ServerConfig,
   type ServerConfigStreamEvent,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import { describe, expect, it } from "@effect/vitest";
-import { RelayClientTracer } from "@t3tools/shared/relayTracing";
 import * as Cause from "effect/Cause";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
@@ -23,7 +22,6 @@ import * as Stream from "effect/Stream";
 import * as SubscriptionRef from "effect/SubscriptionRef";
 import * as Clock from "effect/Clock";
 import * as TestClock from "effect/testing/TestClock";
-import * as Tracer from "effect/Tracer";
 
 import * as RemoteEnvironmentAuthorization from "../authorization/service.ts";
 import * as ConnectionCredentialStore from "./credentialStore.ts";
@@ -1879,23 +1877,12 @@ describe("EnvironmentSupervisor", () => {
 
   it.effect("releases and reconnects a relay session when credentials change", () =>
     Effect.gen(function* () {
-      const relaySpans: Array<Tracer.NativeSpan> = [];
-      const relayTracer = Tracer.make({
-        span(options) {
-          const span = new Tracer.NativeSpan(options);
-          relaySpans.push(span);
-          return span;
-        },
-      });
       const harness = yield* makeHarness({
         prepare: () => Effect.succeed(preparedFor(RELAY_TARGET)),
       });
       const supervisor = yield* EnvironmentSupervisor.make(RELAY_ENTRY, {
         initiallyDesired: true,
-      }).pipe(
-        Effect.provide(harness.dependencies),
-        Effect.provideService(RelayClientTracer, Option.some(relayTracer)),
-      );
+      }).pipe(Effect.provide(harness.dependencies));
 
       yield* awaitState(supervisor.state, (state) => state.phase === "connected");
       yield* harness.wake("credentials-changed");
@@ -1906,13 +1893,6 @@ describe("EnvironmentSupervisor", () => {
 
       expect(yield* Ref.get(harness.sessionCount)).toBe(2);
       expect(yield* Ref.get(harness.releaseCount)).toBe(1);
-      const attempts = relaySpans.filter((span) => span.name === "relay.connection.attempt");
-      expect(attempts).toHaveLength(2);
-      for (const span of attempts) {
-        expect(span.attributes.get("environment.id")).toBe(RELAY_TARGET.environmentId);
-        expect(span.attributes.get("environment.target.kind")).toBe(RELAY_TARGET._tag);
-        expect(span.attributes.has("environment.label")).toBe(false);
-      }
     }),
   );
 
@@ -1945,7 +1925,7 @@ describe("EnvironmentSupervisor", () => {
         const pathname = new URL(request.url).pathname;
         httpPaths.push(pathname);
         switch (pathname) {
-          case "/.well-known/t3/environment":
+          case "/.well-known/vibecodinger/environment":
             return Promise.resolve(
               Response.json({
                 environmentId: TARGET.environmentId,
@@ -1982,7 +1962,7 @@ describe("EnvironmentSupervisor", () => {
                   policy: "loopback-browser",
                   bootstrapMethods: ["one-time-token"],
                   sessionMethods: ["dpop-access-token"],
-                  sessionCookieName: "t3_session_test",
+                  sessionCookieName: "vibecodinger_session_test",
                 },
                 scopes: AuthStandardClientScopes,
               }),
@@ -2000,13 +1980,6 @@ describe("EnvironmentSupervisor", () => {
       const relay = ManagedRelay.ManagedRelayClient.of({
         relayUrl: "https://relay.example.test",
         listEnvironments: unused,
-        listDevices: unused,
-        createEnvironmentLinkChallenge: unused,
-        linkEnvironment: unused,
-        unlinkEnvironment: unused,
-        getT3ChatLink: unused,
-        createT3ChatLinkRequest: unused,
-        unlinkT3Chat: unused,
         getEnvironmentStatus: unused,
         connectEnvironment: Effect.fn("TestConnectionHttp.connectEnvironment")(function* () {
           yield* Ref.update(bootstrapCalls, (count) => count + 1);
@@ -2024,11 +1997,6 @@ describe("EnvironmentSupervisor", () => {
             expiresAt: "2026-09-04T01:00:00.000Z",
           };
         }),
-        registerDevice: unused,
-        unregisterDevice: unused,
-        registerLiveActivity: unused,
-        getAgentActivitySnapshot: unused,
-        resetTokenCache: Effect.void,
       });
       const layerHttp = RpcHttp.layerRemoteHttpClient(fetchFn);
       const remoteAuthorization = yield* RemoteEnvironmentAuthorization.make.pipe(

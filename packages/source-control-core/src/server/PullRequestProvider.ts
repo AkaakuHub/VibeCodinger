@@ -42,8 +42,8 @@ import type {
   PullRequestViewerPermissions,
   PullRequestVisibility,
   SourceControlProviderKind,
-} from "@t3tools/contracts";
-import { SourceControlProviderKind as SourceControlProviderKindSchema } from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
+import { SourceControlProviderKind as SourceControlProviderKindSchema } from "@vibecodinger/contracts";
 
 export class PullRequestProviderError extends Schema.TaggedError<PullRequestProviderError>()(
   "PullRequestProviderError",

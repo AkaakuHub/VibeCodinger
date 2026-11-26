@@ -1,8 +1,8 @@
-import type { ScopedThreadRef } from "@t3tools/contracts";
+import type { ScopedThreadRef } from "@vibecodinger/contracts";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
+} from "@vibecodinger/client-runtime/state/runtime";
 import { recordVisitForThread } from "~/browserHistoryStore";
 import { readLocalApi } from "~/localApi";
 import { previewEnvironment } from "~/state/preview";

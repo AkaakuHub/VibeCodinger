@@ -1,7 +1,7 @@
 import type {
   OrchestrationV2SearchThreadInput,
   OrchestrationV2SearchThreadResult,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import type {
   ActiveThreadListEntry,
   ProjectionRecordField,
@@ -43,11 +43,11 @@ import {
   type ScheduledTaskId,
   ThreadId,
   type TurnItemId,
-} from "@t3tools/contracts";
-import { delegatedTaskProgress } from "@t3tools/provider-core/server/subagentProjection";
-import { derivePendingBackgroundWork } from "@t3tools/shared/orchestrationV2PendingBackgroundWork";
-import { threadTranscriptHeader } from "@t3tools/shared/threadTranscript";
-import { AgentScope } from "@t3tools/shared/AgentScope";
+} from "@vibecodinger/contracts";
+import { delegatedTaskProgress } from "@vibecodinger/provider-core/server/subagentProjection";
+import { derivePendingBackgroundWork } from "@vibecodinger/shared/orchestrationV2PendingBackgroundWork";
+import { threadTranscriptHeader } from "@vibecodinger/shared/threadTranscript";
+import { AgentScope } from "@vibecodinger/shared/AgentScope";
 import * as Clock from "effect/Clock";
 import * as Context from "effect/Context";
 import * as DateTime from "effect/DateTime";
@@ -440,6 +440,10 @@ export interface ThreadManagementServiceShape {
     readonly threadId: ThreadId;
     readonly itemId: TurnItemId;
   }) => Effect.Effect<OrchestrationV2GetTurnItemResult, Orchestrator.OrchestratorV2Error>;
+  readonly getRunAnswerPreview: (input: {
+    readonly threadId: ThreadId;
+    readonly runId: RunId;
+  }) => Effect.Effect<string | null, Orchestrator.OrchestratorV2Error>;
   readonly getThreadRecords: Orchestrator.OrchestratorV2["Service"]["getThreadRecords"];
   readonly getThreadProjection: (
     threadId: ThreadId,
@@ -568,7 +572,7 @@ export interface ThreadManagementServiceShape {
 export class ThreadManagementService extends Context.Service<
   ThreadManagementService,
   ThreadManagementServiceShape
->()("t3/orchestration-v2/ThreadManagementService") {}
+>()("vibecodinger/orchestration-v2/ThreadManagementService") {}
 
 export const ACTIVE_RUN_STATUSES = [
   "preparing",
@@ -1997,6 +2001,36 @@ const make = Effect.gen(function* () {
       },
     ),
     getThreadTitles: orchestrator.getThreadTitles,
+    getRunAnswerPreview: Effect.fn("ThreadManagementService.getRunAnswerPreview")(function* ({
+      threadId,
+      runId,
+    }) {
+      const records = yield* orchestrator.getThreadRecords(threadId, ["runs", "turnItems"], {
+        runIds: [runId],
+        turnItemRunId: runId,
+        turnItemTypes: ["assistant_message"],
+      });
+      if (records.runs[0]?.status !== "completed") return null;
+      const answer = records.turnItems.findLast(
+        (item) =>
+          item.type === "assistant_message" &&
+          !item.streaming &&
+          item.delivery !== "async" &&
+          (item.phase === undefined || item.phase === "final_answer") &&
+          (item.textOmitted === true || item.text.trim().length > 0),
+      );
+      if (answer?.type !== "assistant_message") return null;
+      const text =
+        answer.textOmitted === true
+          ? (yield* orchestrator.getMessagesById(threadId, [answer.messageId])).get(
+              answer.messageId,
+            )?.text
+          : answer.text;
+      const preview = text?.trim().replace(/\s+/g, " ");
+      if (!preview) return null;
+      const characters = Array.from(preview);
+      return characters.length > 240 ? characters.slice(0, 239).join("") + "…" : preview;
+    }),
     getThreadLinkMetadata: orchestrator.getThreadLinkMetadata,
     listProjectThreads,
     sendToThread,

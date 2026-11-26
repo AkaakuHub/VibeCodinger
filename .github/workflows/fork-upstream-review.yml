@@ -1,0 +1,143 @@
+name: Propose upstream changes
+
+on:
+  schedule:
+    - cron: "23 20 * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: fork-upstream-review
+  cancel-in-progress: false
+
+jobs:
+  propose:
+    if: github.repository == 'AkaakuHub/t3code' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PROPOSAL_TOKEN: ${{ secrets.UPSTREAM_REVIEW_TOKEN }}
+    steps:
+      - name: Prepare a review branch without running upstream code
+        shell: bash
+        run: |
+          set -euo pipefail
+          export GIT_CONFIG_COUNT=1
+          export GIT_CONFIG_KEY_0=core.hooksPath
+          export GIT_CONFIG_VALUE_0=/dev/null
+          export GIT_AUTHOR_NAME='github-actions[bot]'
+          export GIT_AUTHOR_EMAIL='41898282+github-actions[bot]@users.noreply.github.com'
+          export GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME"
+          export GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
+
+          gh auth setup-git
+          remote="https://github.com/$GITHUB_REPOSITORY.git"
+          git init --bare "$RUNNER_TEMP/upstream-review.git"
+          cd "$RUNNER_TEMP/upstream-review.git"
+          git fetch --no-tags "$remote" refs/heads/main:refs/heads/fork-main
+          git fetch --no-tags https://github.com/pingdotgg/t3code.git refs/heads/main:refs/heads/upstream-main
+          base=$(git rev-parse refs/heads/fork-main)
+          upstream=$(git rev-parse refs/heads/upstream-main)
+          reviewed=$(git show "$base:.github/upstream-reviewed" 2>/dev/null || git merge-base "$base" "$upstream")
+          if [[ ! "$reviewed" =~ ^[0-9a-f]{40}$ ]] || ! git merge-base --is-ancestor "$reviewed" "$upstream"; then
+            echo "::error::The last reviewed commit is missing from upstream history."
+            exit 1
+          fi
+          if [[ "$upstream" == "$reviewed" ]]; then
+            exit 0
+          fi
+          head="review/upstream-$upstream"
+
+          existing=$(gh pr list --repo "$GITHUB_REPOSITORY" --state all --head "$head" --json number --jq 'length')
+          if [[ "$existing" != 0 ]]; then
+            exit 0
+          fi
+
+          draft=()
+          status=0
+          guard="$RUNNER_TEMP/check-upstream-removals.py"
+          git show "$base:.github/scripts/check-upstream-removals.py" > "$guard"
+          normalized=$(TMPDIR="$RUNNER_TEMP" python3 "$guard" normalize-package-names "$reviewed" "$upstream")
+          read -r reviewed_tree upstream_tree <<< "$normalized"
+          ancestor=$(git commit-tree "$reviewed_tree" -m "Last reviewed upstream tree")
+          current=$(git commit-tree "$base^{tree}" -p "$ancestor" -m "Current fork tree")
+          incoming=$(git commit-tree "$upstream_tree" -p "$ancestor" -m "Incoming upstream tree")
+          git merge-tree --write-tree --name-only "$current" "$incoming" > "$RUNNER_TEMP/upstream-merge.txt" || status=$?
+          if (( status > 1 )); then
+            echo "::error::Could not prepare the upstream tree."
+            exit 1
+          fi
+          read -r tree < "$RUNNER_TEMP/upstream-merge.txt"
+          git cat-file -e "$tree^{tree}"
+          if (( status == 1 )); then
+            draft=(--draft)
+          fi
+
+          export GIT_INDEX_FILE="$RUNNER_TEMP/upstream-review.index"
+          export GIT_WORK_TREE="$RUNNER_TEMP/upstream-review-empty"
+          mkdir "$GIT_WORK_TREE"
+          git read-tree "$tree"
+          python3 "$guard" restore "$base" "$tree" > "$RUNNER_TEMP/kept-fork-paths.txt"
+          stamp=$(printf '%s\n' "$upstream" | git hash-object -w --stdin)
+          git update-index --add --cacheinfo "100644,$stamp,.github/upstream-reviewed"
+          tree=$(git write-tree)
+          if ! python3 "$guard" verify "$base" "$tree" 2> "$RUNNER_TEMP/fork-guard.txt"; then
+            draft=(--draft)
+          fi
+
+          {
+            echo 'Review the pinned upstream changes before merging.'
+            echo
+            echo "Upstream commit: https://github.com/pingdotgg/t3code/commit/$upstream"
+            echo
+            echo 'Review analytics, endpoints, identifiers, credential handling, dependencies, and build/install scripts for new outbound collection.'
+            echo 'The proposal preserves the fork-owned workflow and privacy paths.'
+            if [[ -s "$RUNNER_TEMP/kept-fork-paths.txt" ]]; then
+              echo
+              echo 'Fork versions retained for these upstream changes:'
+              sed 's/^/- /' "$RUNNER_TEMP/kept-fork-paths.txt"
+            fi
+            if [[ -s "$RUNNER_TEMP/fork-guard.txt" ]]; then
+              echo
+              echo 'Resolve the following privacy-check failures before approving:'
+              sed 's/^/- /' "$RUNNER_TEMP/fork-guard.txt"
+            fi
+            echo 'The proposed .github/upstream-reviewed records the exact commit for the next comparison.'
+            changed=$(git diff --no-ext-diff --no-textconv --name-only -i -G 'telemetry|posthog|axiom|otlp|analytics|sendBeacon|distinct_id|crashReport' "$base" "$tree")
+            if [[ -n "$changed" ]]; then
+              echo
+              echo 'Paths with changes matching telemetry-related terms (review the full diff too):'
+              printf '%s\n' "$changed" | sed 's/^/- /'
+            fi
+            if (( status == 1 )); then
+              echo
+              echo '**Conflicts: resolve these on this branch before marking it ready.**'
+              echo
+              awk 'NR > 1 && NF {print "- " $0} NR > 1 && !NF {exit}' "$RUNNER_TEMP/upstream-merge.txt"
+            fi
+            echo 'No approval or merge is performed by this workflow.'
+          } > "$RUNNER_TEMP/upstream-review-body.md"
+
+          if [[ -z "$PROPOSAL_TOKEN" ]]; then
+            echo "::error::Set UPSTREAM_REVIEW_TOKEN to a dedicated repository token with Contents and Pull requests write access."
+            exit 1
+          fi
+          export GH_TOKEN="$PROPOSAL_TOKEN"
+          if git ls-remote --exit-code --heads "$remote" "refs/heads/$head" >/dev/null; then
+            git fetch --no-tags "$remote" "refs/heads/$head"
+            if [[ "$(git show -s --format=%P FETCH_HEAD)" != "$base" ||
+                  "$(git rev-parse 'FETCH_HEAD^{tree}')" != "$tree" ]]; then
+              echo "::error::The existing proposal branch differs from this review snapshot."
+              exit 1
+            fi
+          else
+            commit=$(git commit-tree "$tree" -p "$base" -m "Import T3 Code upstream for review")
+            git push "$remote" "$commit:refs/heads/$head"
+          fi
+          gh pr create --repo "$GITHUB_REPOSITORY" --base main --head "$head" "${draft[@]}" \
+            --title "Review T3 Code upstream ${upstream:0:12}" \
+            --body-file "$RUNNER_TEMP/upstream-review-body.md"

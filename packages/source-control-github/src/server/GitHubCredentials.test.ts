@@ -7,10 +7,14 @@ import * as Redacted from "effect/Redacted";
 import { HttpClient } from "effect/http";
 import { ChildProcessSpawner } from "effect/process";
 
-import { DEFAULT_SERVER_SETTINGS, SecretProviderId, SecretProviderKind } from "@t3tools/contracts";
-import type * as SourceControlHost from "@t3tools/source-control-core/server/SourceControlHost";
-import { applyServerSettingsPatch } from "@t3tools/shared/serverSettings";
-import * as TestSourceControlHost from "@t3tools/source-control-testing/TestSourceControlHost";
+import {
+  DEFAULT_SERVER_SETTINGS,
+  SecretProviderId,
+  SecretProviderKind,
+} from "@vibecodinger/contracts";
+import type * as SourceControlHost from "@vibecodinger/source-control-core/server/SourceControlHost";
+import { applyServerSettingsPatch } from "@vibecodinger/shared/serverSettings";
+import * as TestSourceControlHost from "@vibecodinger/source-control-testing/TestSourceControlHost";
 import * as GitHubCredentials from "./GitHubCredentials.ts";
 
 const TOKEN_VARIABLES = [

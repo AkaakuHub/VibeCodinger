@@ -3,12 +3,13 @@ import {
   type DesktopSshEnvironmentBootstrap,
   type DesktopSshEnvironmentTarget,
   EnvironmentId,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import type * as Option from "effect/Option";
+import { msg } from "gt-i18n";
 
-import type { ConnectionAttemptError } from "../connection/model.ts";
+import { type ConnectionAttemptError, ConnectionBlockedError } from "../connection/model.ts";
 
 export interface PreparedSshEnvironment {
   readonly bootstrap: DesktopSshEnvironmentBootstrap;
@@ -25,34 +26,47 @@ export interface CloudSessionIdentity {
   readonly accountId: string;
 }
 
+const pairDirectly = msg("This environment needs to be paired directly.");
+
 export class CloudSession extends Context.Service<
   CloudSession,
   {
     readonly identity: Effect.Effect<Option.Option<CloudSessionIdentity>>;
     readonly clerkToken: Effect.Effect<string, ConnectionAttemptError>;
   }
->()("@t3tools/client-runtime/platform/capabilities/CloudSession") {}
+>()("@vibecodinger/client-runtime/platform/capabilities/CloudSession") {
+  static readonly disabled = CloudSession.of({
+    identity: Effect.succeedNone,
+    clerkToken: Effect.fail(
+      new ConnectionBlockedError({
+        reason: "authentication",
+        detail: pairDirectly,
+        i18nMessage: [pairDirectly],
+      }),
+    ),
+  });
+}
 
 export class RelayDeviceIdentity extends Context.Service<
   RelayDeviceIdentity,
   {
     readonly deviceId: Effect.Effect<Option.Option<string>, ConnectionAttemptError>;
   }
->()("@t3tools/client-runtime/platform/capabilities/RelayDeviceIdentity") {}
+>()("@vibecodinger/client-runtime/platform/capabilities/RelayDeviceIdentity") {}
 
 export class ClientPresentation extends Context.Service<
   ClientPresentation,
   {
     readonly metadata: AuthClientPresentationMetadata;
   }
->()("@t3tools/client-runtime/platform/capabilities/ClientPresentation") {}
+>()("@vibecodinger/client-runtime/platform/capabilities/ClientPresentation") {}
 
 export class PrimaryEnvironmentAuth extends Context.Service<
   PrimaryEnvironmentAuth,
   {
     readonly bearerToken: Effect.Effect<Option.Option<string>, ConnectionAttemptError>;
   }
->()("@t3tools/client-runtime/platform/capabilities/PrimaryEnvironmentAuth") {}
+>()("@vibecodinger/client-runtime/platform/capabilities/PrimaryEnvironmentAuth") {}
 
 export class SshEnvironmentGateway extends Context.Service<
   SshEnvironmentGateway,
@@ -81,4 +95,4 @@ export class SshEnvironmentGateway extends Context.Service<
       target: DesktopSshEnvironmentTarget,
     ) => Effect.Effect<void, ConnectionAttemptError>;
   }
->()("@t3tools/client-runtime/platform/capabilities/SshEnvironmentGateway") {}
+>()("@vibecodinger/client-runtime/platform/capabilities/SshEnvironmentGateway") {}

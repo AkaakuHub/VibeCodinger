@@ -6,13 +6,13 @@ import {
   type PullRequestReviewCommentDraft,
   type PullRequestReviewThread,
   type PullRequestState,
-} from "@t3tools/contracts";
-import { sortChecks } from "@t3tools/source-control-core/server/pullRequestChecks";
+} from "@vibecodinger/contracts";
+import { sortChecks } from "@vibecodinger/source-control-core/server/pullRequestChecks";
 import type {
   ProviderChangeRequest,
   ProviderChangeRequestActivity,
   ProviderChangeRequestStack,
-} from "@t3tools/source-control-core/server/PullRequestProvider";
+} from "@vibecodinger/source-control-core/server/PullRequestProvider";
 import * as DateTime from "effect/DateTime";
 import * as Schema from "effect/Schema";
 
@@ -253,7 +253,9 @@ export const headBranchName = (head: string) =>
   head.replace(/^refs\/heads\//u, "").replace(/^[^/:]+:/u, "");
 
 /** Absent when Source names no visibility, so a reader tells unknown from public. */
-const visibilityOf = (pull: Pick<SourcePull, "visibility">) =>
+const visibilityOf = (
+  pull: Pick<SourcePull, "visibility">,
+): Pick<ProviderChangeRequest, "visibility"> =>
   pull.visibility === "private" || pull.visibility === "public"
     ? { visibility: pull.visibility }
     : {};

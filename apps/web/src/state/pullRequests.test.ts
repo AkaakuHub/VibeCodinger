@@ -1,4 +1,4 @@
-import { SourceControlProviderKind } from "@t3tools/contracts";
+import { SourceControlProviderKind } from "@vibecodinger/contracts";
 import {
   EnvironmentId,
   ProjectId,
@@ -8,7 +8,7 @@ import {
   PullRequestOperationError,
   type PullRequestListResult,
   type PullRequestSummary,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import * as Cause from "effect/Cause";
 import * as Effect from "effect/Effect";
 import { AsyncResult, Atom } from "effect/reactivity";
@@ -24,9 +24,9 @@ vi.mock("@effect/atom-react", async (importOriginal) => ({
   useAtomValue: (atom: Atom.Atom<unknown>) => registry.get(atom),
 }));
 vi.mock("../rpc/atomRegistry", () => ({ appAtomRegistry: registry }));
-vi.mock("@t3tools/client-runtime/state/pull-requests", async (importOriginal) => {
+vi.mock("@vibecodinger/client-runtime/state/pull-requests", async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import("@t3tools/client-runtime/state/pull-requests")>();
+    await importOriginal<typeof import("@vibecodinger/client-runtime/state/pull-requests")>();
   return {
     ...actual,
     createPullRequestEnvironmentAtoms: (
@@ -584,12 +584,12 @@ describe("pull request list answers across a reload", () => {
 
   it("removes the composite snapshots it replaced", () => {
     const storage = makeStorage();
-    storage.held.set("t3.pullRequests.list:env-local,env-remote", "{}");
-    storage.held.set("t3.pullRequests.list:env-local", "{}");
+    storage.held.set("vc.pullRequests.list:env-local,env-remote", "{}");
+    storage.held.set("vc.pullRequests.list:env-local", "{}");
     storage.held.set("t3.other", "kept");
     rememberPullRequestListAnswer(storage, { environmentId: local, input }, answer([]));
     expect(
-      [...storage.held.keys()].filter((key) => key.startsWith("t3.pullRequests.list:")),
+      [...storage.held.keys()].filter((key) => key.startsWith("vc.pullRequests.list:")),
     ).toEqual([]);
     expect(storage.held.get("t3.other")).toBe("kept");
   });

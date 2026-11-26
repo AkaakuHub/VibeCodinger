@@ -14,7 +14,10 @@ describe("buildRuntimeInstructions", () => {
       pullRequestLinking: false,
     });
 
-    assert.include(instructions, "through the Antigravity harness, as gemini-3.8-flash.");
+    assert.include(
+      instructions,
+      "identify VibeCodinger as the app and Antigravity as the harness, as gemini-3.8-flash.",
+    );
     assert.notInclude(instructions, "<pull_request_linking>");
   });
 
@@ -59,10 +62,10 @@ describe("buildRuntimeInstructions", () => {
   });
 
   it("carries the feedback line of the agent feedback mode, and none while it is off", () => {
-    assert.notInclude(buildRuntimeInstructions({ harness: "Codex" }), "t3_feedback");
+    assert.notInclude(buildRuntimeInstructions({ harness: "Codex" }), "vc_feedback");
     assert.notInclude(
       buildRuntimeInstructions({ harness: "Codex", agentFeedback: "off" }),
-      "t3_feedback",
+      "vc_feedback",
     );
     for (const agentFeedback of ["on-request", "auto"] as const) {
       for (const pullRequestLinking of [true, false]) {

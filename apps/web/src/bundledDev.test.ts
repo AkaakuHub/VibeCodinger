@@ -13,7 +13,7 @@ import { expect, it } from "vite-plus/test";
 const execFile = NodeUtil.promisify(NodeChildProcess.execFile);
 
 it("initializes React refresh before a shared UI chunk runs in bundled dev", async () => {
-  const root = await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "t3-bootstrap-"));
+  const root = await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "vibecodinger-bootstrap-"));
   const output = NodePath.join(root, "output");
   let resolveBundle!: (files: Map<string, string>) => void;
   let rejectBundle!: (error: unknown) => void;
@@ -29,6 +29,7 @@ it("initializes React refresh before a shared UI chunk runs in bundled dev", asy
     for (const file of [
       "index.html",
       "src/bootstrap.ts",
+      "src/branding.logic.ts",
       "src/lib/bootError.ts",
       "src/lib/chunkReloadGuard.ts",
     ]) {

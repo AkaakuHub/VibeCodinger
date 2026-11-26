@@ -1,6 +1,6 @@
-import { threadKey } from "@t3tools/client-runtime/state/entities";
+import { threadKey } from "@vibecodinger/client-runtime/state/entities";
 import { describe, expect, it, vi } from "vite-plus/test";
-import { EnvironmentId, ProjectId, ProviderInstanceId, ThreadId } from "@t3tools/contracts";
+import { EnvironmentId, ProjectId, ProviderInstanceId, ThreadId } from "@vibecodinger/contracts";
 import type { Thread } from "../types";
 import { makeThreadFixture } from "../test-fixtures";
 import {
@@ -647,7 +647,7 @@ describe("buildThreadActionItems", () => {
     });
     const items = buildThreadActionItems({
       threads: [idThread, titleThread],
-      projectByKey: new Map([[`${LOCAL_ENVIRONMENT_ID}:${PROJECT_ID}`, { title: "T3 Code" }]]),
+      projectByKey: new Map([[`${LOCAL_ENVIRONMENT_ID}:${PROJECT_ID}`, { title: "VibeCodinger" }]]),
       icon: null,
       runThread: async (_thread) => undefined,
     });

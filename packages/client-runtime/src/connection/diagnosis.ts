@@ -1,8 +1,8 @@
 import {
-  t3ConnectTroubleshootingUrl,
-  type T3ConnectTroubleshootingSection,
-} from "@t3tools/contracts";
-import type { RelayEnvironmentStatusResponse } from "@t3tools/contracts/relay";
+  vcConnectTroubleshootingUrl,
+  type VibeCodingerConnectTroubleshootingSection,
+} from "@vibecodinger/contracts";
+import type { RelayEnvironmentStatusResponse } from "@vibecodinger/contracts/relay";
 import * as DateTime from "effect/DateTime";
 
 import type {
@@ -111,7 +111,7 @@ function headline(
     case "approval_pending":
       return resolve(msg("{host} is waiting for someone to approve this device", { host }));
     case "outdated":
-      return resolve(msg("{host} runs an older T3 Code", { host }));
+      return resolve(msg("{host} runs an older VibeCodinger", { host }));
     case "clock_skew":
       return resolve(msg("This device's clock is off"));
     case "not_linked":
@@ -126,9 +126,9 @@ function headline(
     case "tunnel_down":
       return resolve(msg("{host}'s tunnel is offline", { host }));
     case "origin_unreachable":
-      return resolve(msg("Tunnel works, but T3 Code on {host} did not answer", { host }));
+      return resolve(msg("Tunnel works, but VibeCodinger on {host} did not answer", { host }));
     case "invalid_response":
-      return resolve(msg("T3 Code on {host} sent an unexpected answer", { host }));
+      return resolve(msg("VibeCodinger on {host} sent an unexpected answer", { host }));
     case "dns":
       return resolve(msg("{host}'s tunnel address did not resolve", { host }));
     case "tls":
@@ -157,8 +157,8 @@ function headline(
         : resolve(msg("T3 Connect could not reach {host}'s tunnel", { host }));
     case "server":
       return failure?.reason === "authentication" || failure?.reason === "permission"
-        ? resolve(msg("T3 Code on {host} did not accept this device", { host }))
-        : resolve(msg("T3 Code on {host} did not answer", { host }));
+        ? resolve(msg("VibeCodinger on {host} did not accept this device", { host }))
+        : resolve(msg("VibeCodinger on {host} did not answer", { host }));
   }
 }
 
@@ -173,11 +173,13 @@ function steps(
   );
   switch (located.cause) {
     case "offline":
-      return [resolve(msg("Connect this device to the internet. T3 Code reconnects on its own."))];
+      return [
+        resolve(msg("Connect this device to the internet. VibeCodinger reconnects on its own.")),
+      ];
     case "session_pending":
       return [
-        resolve(msg("Wait a moment. T3 Code retries on its own.")),
-        resolve(msg("If it keeps waiting, reload or restart T3 Code on this device.")),
+        resolve(msg("Wait a moment. VibeCodinger retries on its own.")),
+        resolve(msg("If it keeps waiting, reload or restart VibeCodinger on this device.")),
       ];
     case "approval_pending": {
       const code =
@@ -197,7 +199,7 @@ function steps(
               ),
             ),
         resolve(
-          msg("Or run `t3 auth connect-device approve {code}` on {host}.", {
+          msg("Or run `vibecodinger auth connect-device approve {code}` on {host}.", {
             code: code ?? "<code>",
             host,
           }),
@@ -205,7 +207,7 @@ function steps(
       ];
     }
     case "outdated":
-      return [resolve(msg("Update T3 Code on {host}.", { host }))];
+      return [resolve(msg("Update VibeCodinger on {host}.", { host }))];
     case "clock_skew":
       return [
         resolve(
@@ -224,10 +226,10 @@ function steps(
         ),
       ];
     case "tunnel_pending":
-      return [resolve(msg("Wait a minute. T3 Code retries on its own.")), checkHost];
+      return [resolve(msg("Wait a minute. VibeCodinger retries on its own.")), checkHost];
     case "relay_error":
       return [
-        resolve(msg("Wait a few minutes. T3 Code retries on its own.")),
+        resolve(msg("Wait a few minutes. VibeCodinger retries on its own.")),
         resolve(msg("If it keeps failing, copy the diagnostics and report it.")),
       ];
     case "tunnel_not_enabled":
@@ -239,7 +241,7 @@ function steps(
     case "released":
     case "tunnel_down":
       return [
-        resolve(msg("Make sure {host} is awake and T3 Code is running on it.", { host })),
+        resolve(msg("Make sure {host} is awake and VibeCodinger is running on it.", { host })),
         checkHost,
         resolve(
           msg(
@@ -250,7 +252,7 @@ function steps(
       ];
     case "origin_unreachable":
     case "invalid_response":
-      return [resolve(msg("Open or restart T3 Code on {host}.", { host })), checkHost];
+      return [resolve(msg("Open or restart VibeCodinger on {host}.", { host })), checkHost];
     // The relay saw these on its way to the host, so the fix is on the host.
     case "dns":
     case "tls":
@@ -264,7 +266,7 @@ function steps(
   switch (located.hop) {
     case "device":
       return [
-        resolve(msg("Restart T3 Code on this device.")),
+        resolve(msg("Restart VibeCodinger on this device.")),
         resolve(
           msg("If it keeps failing, remove {host} from this device and add it again.", { host }),
         ),
@@ -296,7 +298,7 @@ function steps(
             ),
           ]
         : [
-            resolve(msg("Make sure T3 Code is running on {host}.", { host })),
+            resolve(msg("Make sure VibeCodinger is running on {host}.", { host })),
             resolve(msg("Retry. If it keeps failing, copy the diagnostics.")),
           ];
   }
@@ -305,12 +307,12 @@ function steps(
 function helpSection(
   located: Located,
   failure: ConnectionAttemptError | null,
-): T3ConnectTroubleshootingSection {
+): VibeCodingerConnectTroubleshootingSection {
   switch (located.cause) {
     case "offline":
       return "this-device-cant-reach-t3-connect";
     case "outdated":
-      return "the-host-runs-an-older-t3-code";
+      return "the-host-runs-an-older-vibe-codinger";
     case "clock_skew":
       return "the-clock-is-off";
     case "session_pending":
@@ -326,7 +328,7 @@ function helpSection(
       return "the-hosts-tunnel-is-offline";
     case "origin_unreachable":
     case "invalid_response":
-      return "the-tunnel-works-but-t3-code-does-not-answer";
+      return "the-tunnel-works-but-vibe-codinger-does-not-answer";
     case "dns":
     case "tls":
     case "refused":
@@ -352,11 +354,11 @@ function helpSection(
     case "server":
       return failure?.reason === "authentication" || failure?.reason === "permission"
         ? "sign-in-account-or-link-problems"
-        : "the-tunnel-works-but-t3-code-does-not-answer";
+        : "the-tunnel-works-but-vibe-codinger-does-not-answer";
   }
 }
 
-const T3_CONNECT_NAME = "T3 Connect";
+const VIBECODINGER_CONNECT_NAME = "T3 Connect";
 
 const HOP_ORDER = {
   relay: ["device", "relay", "tunnel", "server"],
@@ -368,11 +370,11 @@ function hopLabel(hop: ConnectionHop, host: string, resolve: MFunctionType): str
     case "device":
       return resolve(msg("This device"));
     case "relay":
-      return T3_CONNECT_NAME;
+      return VIBECODINGER_CONNECT_NAME;
     case "tunnel":
       return resolve(msg("{host} tunnel", { host }));
     case "server":
-      return resolve(msg("T3 Code on {host}", { host }));
+      return resolve(msg("VibeCodinger on {host}", { host }));
   }
 }
 
@@ -443,7 +445,7 @@ export function presentConnectionDiagnosis(
     facts,
     moreInfoUrl:
       relayPath || located.cause === "session_pending"
-        ? t3ConnectTroubleshootingUrl(helpSection(located, failure))
+        ? vcConnectTroubleshootingUrl(helpSection(located, failure))
         : null,
   };
 }
@@ -453,7 +455,7 @@ const HOP_MARK = { ok: "ok", failed: "FAILED", unchecked: "not checked" } as con
 /** One plain-text block for bug reports. */
 export function connectionDiagnosisText(hostLabel: string, diagnosis: ConnectionDiagnosis): string {
   return [
-    `T3 Code connection to ${hostLabel}: ${diagnosis.headline}`,
+    `VibeCodinger connection to ${hostLabel}: ${diagnosis.headline}`,
     "",
     ...diagnosis.hops.map((hop) => `${hop.label}: ${HOP_MARK[hop.result]}`),
     "",

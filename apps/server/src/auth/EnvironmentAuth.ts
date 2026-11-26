@@ -24,9 +24,9 @@ import {
   DpopFailureReason,
   type DpopFailureReason as DpopFailureReasonType,
   mcpClientScopes,
-} from "@t3tools/contracts";
-import { isLocalLoopbackHost } from "@t3tools/shared/hostClassification";
-import { encodeOAuthScope } from "@t3tools/shared/oauthScope";
+} from "@vibecodinger/contracts";
+import { isLocalLoopbackHost } from "@vibecodinger/shared/hostClassification";
+import { encodeOAuthScope } from "@vibecodinger/shared/oauthScope";
 import * as Context from "effect/Context";
 import * as Digest from "effect/crypto/Digest";
 import * as DateTime from "effect/DateTime";
@@ -100,7 +100,7 @@ export interface McpClientSession {
   readonly sessionId: AuthSessionId;
   readonly label: string;
   readonly access: AuthMcpClientAccess;
-  /** Another T3 Code environment's link, whose work here stays within it. */
+  /** Another VibeCodinger environment's link, whose work here stays within it. */
   readonly peerLink: boolean;
   /** When a peer link's session ends unless it is used again; the linking side keeps this. */
   readonly linkExpiresAt?: DateTime.Utc;
@@ -673,7 +673,7 @@ export class EnvironmentAuth extends Context.Service<
       ServerAuthMcpApprovalCodeError | ServerAuthInternalError
     >;
   }
->()("t3/auth/EnvironmentAuth") {}
+>()("vibecodinger/auth/EnvironmentAuth") {}
 
 type BootstrapExchangeResult = {
   readonly response: AuthBrowserSessionResult;
@@ -1808,8 +1808,6 @@ const mcpApprovalLevel = (subject: string): AuthMcpClientAccess | undefined => {
 };
 
 /** Subjects of sessions and links a pairing link created, keyed by how the client paired. */
-const LINK_PAIRED_SUBJECTS = { link: "one-time-token", connect: CLOUD_CONNECT_SUBJECT } as const;
-
 /**
  * Revokes sessions and unused links from pairing the policy no longer allows, so a policy rolled
  * out to a machine that already had phones paired takes effect on the next start.
@@ -1824,10 +1822,8 @@ const revokePairedClientsThePolicyDisallows = Effect.fn(
   },
 ) {
   const remoteAllowed = ManagedLimits.allowsRemoteClients(policy);
-  const disallowed = new Set<string>();
-  if (!remoteAllowed) disallowed.add(LINK_PAIRED_SUBJECTS.link);
-  if (!ManagedLimits.allowsConnect(policy)) disallowed.add(LINK_PAIRED_SUBJECTS.connect);
-  if (disallowed.size === 0) return;
+  const disallowed = new Set<string>([CLOUD_CONNECT_SUBJECT]);
+  if (!remoteAllowed) disallowed.add("one-time-token");
   const sessions = (yield* stores.sessions.listActive()).filter(
     (session) =>
       disallowed.has(session.subject) ||

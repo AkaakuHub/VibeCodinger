@@ -3,7 +3,7 @@ import {
   ClientCapabilities,
   PlatformConnectionSource,
   Persistence,
-} from "@t3tools/client-runtime/platform";
+} from "@vibecodinger/client-runtime/platform";
 import {
   BearerConnectionCredential,
   BearerConnectionProfile,
@@ -19,11 +19,10 @@ import {
   PrimaryConnectionTarget,
   sshTargetKey,
   Wakeups,
-} from "@t3tools/client-runtime/connection";
-import { bootstrapRemoteBearerSession } from "@t3tools/client-runtime/authorization";
-import { fetchRemoteEnvironmentDescriptor } from "@t3tools/client-runtime/environment";
-import { managedRelayAccountChanges, managedRelaySessionAtom } from "@t3tools/client-runtime/relay";
-import { EnvironmentRpcRequestObserver } from "@t3tools/client-runtime/rpc";
+} from "@vibecodinger/client-runtime/connection";
+import { bootstrapRemoteBearerSession } from "@vibecodinger/client-runtime/authorization";
+import { fetchRemoteEnvironmentDescriptor } from "@vibecodinger/client-runtime/environment";
+import { EnvironmentRpcRequestObserver } from "@vibecodinger/client-runtime/rpc";
 import {
   AuthStandardClientScopes,
   type DesktopBridge,
@@ -32,7 +31,7 @@ import {
   type DesktopSshEnvironmentTarget,
   type EnvironmentId,
   PRIMARY_LOCAL_ENVIRONMENT_ID,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import * as Clock from "effect/Clock";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
@@ -53,7 +52,6 @@ import {
 import { clearComposerDraftsEnvironment } from "../composerDraftStore";
 import { isHostedStaticApp } from "../hostedPairing";
 import { isLocalEnvironmentDisabled } from "../localEnvironment";
-import { appAtomRegistry } from "../rpc/atomRegistry";
 import { acknowledgeRpcRequest, trackRpcRequestSent } from "../rpc/requestLatencyState";
 import {
   desktopLocalConnectionId,
@@ -160,9 +158,6 @@ const layerWakeups = Wakeups.layer({
               window.removeEventListener("focus", listener);
             }),
         ).pipe(Effect.asVoid),
-      ),
-      managedRelayAccountChanges(appAtomRegistry).pipe(
-        Stream.map(() => "credentials-changed" as const),
       ),
       networkPathChanges,
     ],
@@ -274,7 +269,7 @@ export const provisionDesktopSshEnvironment = Effect.fn(
         reason: "configuration",
         detail: m(
           msg(
-            "{label} runs T3 Code {serverVersion}, but this desktop is {appVersion}, and that server could not accept its pairing. Restart the T3 server on {label} so it runs {appVersion}, then retry.",
+            "{label} runs VibeCodinger {serverVersion}, but this desktop is {appVersion}, and that server could not accept its pairing. Restart the VibeCodinger server on {label} so it runs {appVersion}, then retry.",
             {
               label: descriptor.label,
               serverVersion: descriptor.serverVersion,
@@ -352,36 +347,6 @@ const layerCapabilities = Layer.effectContext(
     const presentation = ClientCapabilities.ClientPresentation.of({
       metadata: currentClientMetadata(),
     });
-    const cloudSession = ClientCapabilities.CloudSession.of({
-      identity: Effect.sync(() =>
-        Option.fromNullishOr(appAtomRegistry.get(managedRelaySessionAtom)),
-      ),
-      clerkToken: Effect.gen(function* () {
-        const session = appAtomRegistry.get(managedRelaySessionAtom);
-        if (session === null) {
-          return yield* new ConnectionBlockedError({
-            reason: "authentication",
-            detail: m(msg("Sign in to T3 Connect to connect this environment.")),
-          });
-        }
-        const token = yield* session.readClerkToken().pipe(
-          Effect.mapError(
-            (error) =>
-              new ConnectionTransientError({
-                reason: "network",
-                detail: error.message,
-              }),
-          ),
-        );
-        if (token === null) {
-          return yield* new ConnectionBlockedError({
-            reason: "authentication",
-            detail: m(msg("The T3 Connect session is unavailable.")),
-          });
-        }
-        return token;
-      }),
-    });
     const identity = ClientCapabilities.RelayDeviceIdentity.of({
       deviceId: Effect.succeedNone,
     });
@@ -441,7 +406,10 @@ const layerCapabilities = Layer.effectContext(
       }),
     });
 
-    return Context.make(ClientCapabilities.CloudSession, cloudSession).pipe(
+    return Context.make(
+      ClientCapabilities.CloudSession,
+      ClientCapabilities.CloudSession.disabled,
+    ).pipe(
       Context.add(ClientCapabilities.PrimaryEnvironmentAuth, primaryAuth),
       Context.add(ClientCapabilities.RelayDeviceIdentity, identity),
       Context.add(ClientCapabilities.ClientPresentation, presentation),

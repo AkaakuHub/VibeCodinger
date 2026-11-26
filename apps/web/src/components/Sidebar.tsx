@@ -1,9 +1,9 @@
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
+import { thrownErrorMessage } from "@vibecodinger/client-runtime/errors";
 import { msg, T, useGT, useMessages } from "gt-react";
 import { m } from "../i18n/messages";
 import { attachSidebarTree } from "../lib/sidebarTree";
-import { type EnvironmentId, type ScopedProjectRef } from "@t3tools/contracts";
-import type { EnvironmentServerConfig } from "@t3tools/client-runtime/connection";
+import { type EnvironmentId, type ScopedProjectRef } from "@vibecodinger/contracts";
+import type { EnvironmentServerConfig } from "@vibecodinger/client-runtime/connection";
 import {
   dropThreadContext,
   endThreadContextDrag,
@@ -31,42 +31,45 @@ import {
   canSnooze,
   effectiveSnoozed,
   threadWokeAt,
-} from "@t3tools/client-runtime/state/thread-settled";
+} from "@vibecodinger/client-runtime/state/thread-settled";
 import {
   asLaunchingThread,
   createInboxReturnTracker,
   isThreadWorking,
-} from "@t3tools/client-runtime/state/thread-inbox";
-import { activeThreadSortKey, sortSettledThreads } from "@t3tools/client-runtime/state/thread-sort";
+} from "@vibecodinger/client-runtime/state/thread-inbox";
+import {
+  activeThreadSortKey,
+  sortSettledThreads,
+} from "@vibecodinger/client-runtime/state/thread-sort";
 import {
   nextShownOrder,
   threadSearchMatchKey,
   threadSearchSubject,
   type ShownOrder,
-} from "@t3tools/client-runtime/state/thread-search";
-import { foldSearchQuery, rankMessageMatches } from "@t3tools/shared/paletteSearch";
+} from "@vibecodinger/client-runtime/state/thread-search";
+import { foldSearchQuery, rankMessageMatches } from "@vibecodinger/shared/paletteSearch";
 import { findForMessageMatch, openThreadFindOnQuery } from "./chat/threadFindStore";
 import {
   threadRuntimeCanArchive,
   type EnvironmentThreadShell,
-} from "@t3tools/client-runtime/state/models";
+} from "@vibecodinger/client-runtime/state/models";
 import {
   parseScopedThreadKey,
   scopeProjectRef,
   scopeThreadRef,
   scopedThreadKey,
-} from "@t3tools/client-runtime/environment";
+} from "@vibecodinger/client-runtime/environment";
 import {
   AuthOrchestrationOperateScope,
   type ContextMenuSource,
   ProjectId,
   type ScopedThreadRef,
   type ThreadId,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import {
   resolveListedAncestorThreadRef,
   type OlderSettledScope,
-} from "@t3tools/client-runtime/state/threads";
+} from "@vibecodinger/client-runtime/state/threads";
 
 import {
   CheckIcon,
@@ -94,7 +97,7 @@ import {
   settlePromise,
   squashAtomCommandFailure,
   type AtomCommandResult,
-} from "@t3tools/client-runtime/state/runtime";
+} from "@vibecodinger/client-runtime/state/runtime";
 import { isElectron } from "../env";
 import {
   resolveShortcutCommand,
@@ -106,13 +109,12 @@ import {
 import { isModelPickerOpen } from "../modelPickerVisibility";
 import { isMacPlatform } from "~/lib/utils";
 import { readLocalApi } from "../localApi";
-import { configuredHostedAppUrl } from "../hostedPairing";
 import { useSidebarPendingFileDropStore } from "../sidebarPendingFileDropStore";
 import { SidebarFolderDrop } from "./sidebar/SidebarFolderDrop";
 import {
   pickableProjectGroups,
   selectProjectGroupingSettings,
-} from "@t3tools/client-runtime/state/project-grouping";
+} from "@vibecodinger/client-runtime/state/project-grouping";
 import {
   buildSidebarProjectPickerEntries,
   projectGroupsSpanEnvironments,
@@ -163,9 +165,6 @@ import { useOlderSettledShelf, useOlderSettledShelfGrowth } from "../state/older
 import { useThreadSearch } from "../state/queries";
 import { useOrchestrationCommand } from "../state/use-orchestration-command";
 import { readEnvironmentScope, useEnvironmentScope } from "../state/session";
-import { appAtomRegistry } from "../rpc/atomRegistry";
-import { canShareWithGuestAtom } from "./chat/guestShareAvailability";
-import { openGuestShareDialog } from "./chat/guestShareDialogState";
 import {
   buildThreadRouteParams,
   resolveActiveThreadRouteRef,
@@ -243,7 +242,7 @@ import {
 import { stackedThreadToast, toastManager } from "./ui/toast";
 import { titleRegenerationToast } from "./threadTitleRegenerationToast";
 import { copyThreadReference } from "../lib/copyThreadReference";
-import { threadChipCopyTarget } from "@t3tools/client-runtime/thread-reference";
+import { threadChipCopyTarget } from "@vibecodinger/client-runtime/thread-reference";
 import { Button } from "./ui/button";
 import { isProjectPinShortcut, ProjectPinButton } from "./ProjectPinButton";
 import {
@@ -344,9 +343,9 @@ const EMPTY_DRAFT_IDS: readonly DraftId[] = [];
 
 const SETTLED_TAIL_INITIAL_COUNT = 10;
 const SETTLED_TAIL_PAGE_COUNT = 25;
-const SETTLED_SHELF_EXPANDED_KEY = "t3code:sidebar:settled-expanded";
-const SNOOZED_SHELF_EXPANDED_KEY = "t3code:sidebar:snoozed-expanded";
-const WORKING_SHELF_EXPANDED_KEY = "t3code:sidebar:working-expanded";
+const SETTLED_SHELF_EXPANDED_KEY = "vibecodinger:sidebar:settled-expanded";
+const SNOOZED_SHELF_EXPANDED_KEY = "vibecodinger:sidebar:snoozed-expanded";
+const WORKING_SHELF_EXPANDED_KEY = "vibecodinger:sidebar:working-expanded";
 
 const inboxReturns = createInboxReturnTracker();
 
@@ -1167,7 +1166,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
   // scope. Route changes arrive from history, links and the palette, and only this
   // component holds the project groups that decide a widening, so no single
   // navigation handler can make the write.
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- writes a route reveal's widened project scope back to the persisted sidebar scope and clears selection
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- writes a route reveal's widened project scope back to the persisted sidebar scope and clears selection
   useEffect(() => {
     if (!revealWidensScope) return;
     clearSelection();
@@ -1697,7 +1696,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
       }
     })();
   };
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- registers this sidebar's settle handler in the module-level settleAndAdvance registry
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- registers this sidebar's settle handler in the module-level settleAndAdvance registry
   useEffect(() => registerSettleAndAdvance(attemptSettle), [attemptSettle]);
   const settleThreads = (threadKeys: readonly string[]) => {
     const coSettlingKeys = new Set(threadKeys);
@@ -1850,7 +1849,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
   };
   const dndSensors = useSensors(useSensor(SidebarPointerSensor, pointerSensorOptions));
   const sectionByThreadKeyRef = useRef(sectionByThreadKey);
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- publishes committed list data to refs read by stable drag and sweep callbacks
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- publishes committed list data to refs read by stable drag and sweep callbacks
   useLayoutEffect(() => {
     projectGroupsRef.current = projectGroups;
     orderedThreadKeysRef.current = orderedThreadKeys;
@@ -2040,7 +2039,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
     // Update the local list too; threadByKey already omits rows moved into collapsed shelves.
     sidebarListItems = sidebarListItemsFresh;
   }
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- cancels the dnd-kit drag sensor when the dragged row leaves the list
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- cancels the dnd-kit drag sensor when the dragged row leaves the list
   useEffect(() => {
     if (
       dragState !== null &&
@@ -2066,7 +2065,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
     ":",
   );
   const previousShelfExpansionKeyRef = useRef(shelfExpansionKey);
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- records moved rows and updates list motion after each layout-affecting commit
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- records moved rows and updates list motion after each layout-affecting commit
   useLayoutEffect(() => {
     shiftGuardRef.current?.update();
     // Shelf rows would travel over stationary headers below the bottom-anchored shelf.
@@ -2731,9 +2730,6 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
               isRegeneratingTitle,
               isRunning: !threadRuntimeCanArchive(thread.runtime),
               hasCompletedRun: thread.latestRun?.completedAt != null,
-              canShareWithGuest: appAtomRegistry.get(
-                canShareWithGuestAtom(threadRef.environmentId),
-              ),
               canTurnIntoProject: canTurnThreadIntoProject(threadRef),
               canRename: !fromSearch,
               supports: {
@@ -2858,9 +2854,6 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
           case "rename":
             startThreadRename(threadRef, thread.title);
             return;
-          case "share-guest":
-            openGuestShareDialog(threadRef);
-            return;
           case "regenerate-title": {
             if (isRegeneratingTitle) return;
             const toast = titleRegenerationToast([
@@ -2894,9 +2887,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
             }
             return;
           case "copy-thread":
-            void copyThreadReference(
-              threadChipCopyTarget(threadRef, thread.title, configuredHostedAppUrl(), m),
-            );
+            void copyThreadReference(threadChipCopyTarget(threadRef, thread.title, undefined, m));
             return;
           case "copy-thread-id":
             copyThreadIdToClipboard(thread.id, { threadId: thread.id });
@@ -2967,7 +2958,7 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
       handleThreadContextMenu(threadRef, position, source, true),
   );
 
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- subscribes to window keydown for thread navigation shortcuts using the current thread list
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- subscribes to window keydown for thread navigation shortcuts using the current thread list
   useEffect(() => {
     const onWindowKeyDown = (event: KeyboardEvent) => {
       if (event.defaultPrevented || event.repeat || isCommandPaletteOpen() || isModelPickerOpen()) {

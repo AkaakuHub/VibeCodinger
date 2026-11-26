@@ -3,7 +3,10 @@ import * as NodeFS from "node:fs";
 // @effect-diagnostics-next-line nodeBuiltinImport:off - A peer with a certificate this machine does not trust.
 import * as NodeHttps from "node:https";
 import { NodeHttpServer } from "@effect/platform-node";
-import { type ExecutionEnvironmentDescriptor, OrchestratorMcpFailure } from "@t3tools/contracts";
+import {
+  type ExecutionEnvironmentDescriptor,
+  OrchestratorMcpFailure,
+} from "@vibecodinger/contracts";
 import { expect, it } from "@effect/vitest";
 import * as Context from "effect/Context";
 import * as DateTime from "effect/DateTime";
@@ -191,7 +194,7 @@ it.effect("links with a pairing code, and the peer holds its agents to the limit
       });
       // B lists the link under A's name, where it can be revoked.
       expect((yield* linkedSessions(b)).map((session) => session.client.label)).toEqual([
-        "T3 Code · Laptop",
+        "VibeCodinger · Laptop",
       ]);
       expect(
         (yield* a.links.list).map(({ environmentId, status }) => [environmentId, status]),
@@ -200,8 +203,8 @@ it.effect("links with a pairing code, and the peer holds its agents to the limit
       // The caller's limits narrow the link's access; they never widen it.
       expect(
         yield* probe(a, { runtimeMode: "approval-required", interactionMode: "plan" }),
-      ).toEqual({ caller: "T3 Code · Laptop", modes: "approval-required/plan" });
-      expect(yield* probe(a)).toEqual({ caller: "T3 Code · Laptop", modes: "auto/default" });
+      ).toEqual({ caller: "VibeCodinger · Laptop", modes: "approval-required/plan" });
+      expect(yield* probe(a)).toEqual({ caller: "VibeCodinger · Laptop", modes: "auto/default" });
 
       // A refusal keeps the peer's reason.
       const notFound = yield* probe(a, undefined, "refuse").pipe(Effect.flip);
@@ -256,7 +259,7 @@ it.effect(
         expect(waiting.code).toBe("orchestration_error");
         expect(waiting.message).toContain("has Linked environments turned off");
         yield* b.settings.updateSettings({ linkedEnvironmentsEnabled: true });
-        expect(yield* probe(a)).toEqual({ caller: "T3 Code · Laptop", modes: "auto/default" });
+        expect(yield* probe(a)).toEqual({ caller: "VibeCodinger · Laptop", modes: "auto/default" });
       }),
     ).pipe(Effect.provide(NodeHttpServer.layerTest)),
 );
@@ -358,7 +361,7 @@ it.effect("never follows a peer's redirect with the pairing code", () =>
       );
       // Answers as B, then sends every linking request on to another address.
       const front = yield* serveRaw((request) =>
-        request.url.startsWith("/.well-known/t3/environment")
+        request.url.startsWith("/.well-known/vibecodinger/environment")
           ? HttpClient.get(`${b.url}${request.url}`).pipe(
               Effect.flatMap((response) => response.text),
               Effect.map((body) =>
@@ -439,7 +442,7 @@ it.effect("lists a peer as reachable at another address while its first one slee
   Effect.scoped(
     Effect.gen(function* () {
       const b = yield* serveB(box);
-      const described = yield* HttpClient.get(`${b.url}/.well-known/t3/environment`).pipe(
+      const described = yield* HttpClient.get(`${b.url}/.well-known/vibecodinger/environment`).pipe(
         Effect.flatMap((response) => response.text),
         Effect.provide(FetchHttpClient.layer),
       );
@@ -466,7 +469,7 @@ it.effect("resolves a link at its answering address without waiting out a sleepi
   Effect.scoped(
     Effect.gen(function* () {
       const b = yield* serveB(box);
-      const described = yield* HttpClient.get(`${b.url}/.well-known/t3/environment`).pipe(
+      const described = yield* HttpClient.get(`${b.url}/.well-known/vibecodinger/environment`).pipe(
         Effect.flatMap((response) => response.text),
         Effect.provide(FetchHttpClient.layer),
       );
@@ -505,7 +508,7 @@ it.effect("cancelling a descriptor probe aborts its request and leaves later res
         (httpEffect) =>
           Effect.gen(function* () {
             const request = yield* HttpServerRequest.HttpServerRequest;
-            if (request.url.startsWith("/.well-known/t3/environment")) {
+            if (request.url.startsWith("/.well-known/vibecodinger/environment")) {
               yield* Ref.update(requests, (count) => count + 1);
               if (yield* Ref.get(hold)) {
                 return yield* Deferred.succeed(entered, undefined).pipe(
@@ -554,7 +557,7 @@ it.live("one dropped descriptor request does not list a live peer as unreachable
           Effect.gen(function* () {
             const request = yield* HttpServerRequest.HttpServerRequest;
             if (
-              request.url.startsWith("/.well-known/t3/environment") &&
+              request.url.startsWith("/.well-known/vibecodinger/environment") &&
               (yield* Ref.getAndSet(dropNext, false))
             ) {
               return HttpServerResponse.empty({ status: 503 });
@@ -856,26 +859,31 @@ it.effect("linking a picked machine that answers nowhere names it and links noth
   ).pipe(Effect.provide(NodeHttpServer.layerTest)),
 );
 
-it.live("linking an address with nothing listening says so, unlike one that is not T3 Code", () =>
-  Effect.scoped(
-    Effect.gen(function* () {
-      // Any test worker can reuse a closed ephemeral port; port 2 is privileged and outside that range.
-      const closed = "http://127.0.0.1:2";
-      const notT3 = yield* serveRaw(() =>
-        Effect.succeed(
-          HttpServerResponse.text("<h1>Not Found</h1>", { status: 404, contentType: "text/html" }),
-        ),
-      );
-      const a = yield* makeA(laptop);
-      const linking = (url: string) =>
-        a.links.link({ url, pairingCode: "unused", access: "auto" }).pipe(Effect.flip);
-      expect((yield* linking(closed)).message).toBe(`${closed} did not answer (ECONNREFUSED).`);
-      expect((yield* linking(notT3)).message).toBe(
-        `${notT3} answered, but not as a T3 Code environment this version understands.`,
-      );
-      expect(yield* a.links.list).toEqual([]);
-    }),
-  ).pipe(Effect.provide(NodeHttpServer.layerTest)),
+it.live(
+  "linking an address with nothing listening says so, unlike one that is not VibeCodinger",
+  () =>
+    Effect.scoped(
+      Effect.gen(function* () {
+        // Any test worker can reuse a closed ephemeral port; port 2 is privileged and outside that range.
+        const closed = "http://127.0.0.1:2";
+        const notT3 = yield* serveRaw(() =>
+          Effect.succeed(
+            HttpServerResponse.text("<h1>Not Found</h1>", {
+              status: 404,
+              contentType: "text/html",
+            }),
+          ),
+        );
+        const a = yield* makeA(laptop);
+        const linking = (url: string) =>
+          a.links.link({ url, pairingCode: "unused", access: "auto" }).pipe(Effect.flip);
+        expect((yield* linking(closed)).message).toBe(`${closed} did not answer (ECONNREFUSED).`);
+        expect((yield* linking(notT3)).message).toBe(
+          `${notT3} answered, but not as a VibeCodinger environment this version understands.`,
+        );
+        expect(yield* a.links.list).toEqual([]);
+      }),
+    ).pipe(Effect.provide(NodeHttpServer.layerTest)),
 );
 
 /** An https listener whose certificate this machine does not trust. */

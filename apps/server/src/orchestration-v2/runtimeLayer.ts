@@ -1,5 +1,4 @@
 import * as WorktreeBranchSync from "./WorktreeBranchSync.ts";
-import * as GuestShareService from "../guest/GuestShareService.ts";
 import * as UsageLimitRecoveryWorker from "./UsageLimitRecoveryWorker.ts";
 import * as Scheduler from "../scheduling/Scheduler.ts";
 import * as Layer from "effect/Layer";
@@ -31,14 +30,14 @@ import * as EffectWorker from "./EffectWorker.ts";
 import * as EventSink from "./EventSink.ts";
 import * as ThreadViewers from "./ThreadViewers.ts";
 import * as EventStore from "./EventStore.ts";
-import * as IdAllocator from "@t3tools/provider-core/server/IdAllocator";
+import * as IdAllocator from "@vibecodinger/provider-core/server/IdAllocator";
 import * as LegacyV1ThreadImporter from "./legacy/LegacyV1ThreadImporter.ts";
 import * as Orchestrator from "./Orchestrator.ts";
 import * as ProjectionStore from "./ProjectionStore.ts";
 import * as ProjectionMaintenance from "./ProjectionMaintenance.ts";
 import * as ProjectStore from "./ProjectStore.ts";
 import * as ProviderAdapterRegistry from "./ProviderAdapterRegistry.ts";
-import * as ProviderContinuationRequests from "@t3tools/provider-core/server/ProviderContinuationRequests";
+import * as ProviderContinuationRequests from "@vibecodinger/provider-core/server/ProviderContinuationRequests";
 import * as ProviderContinuationService from "./ProviderContinuationService.ts";
 import * as ThreadTitleRegenerationService from "./ThreadTitleRegenerationService.ts";
 import * as ProviderEventIngestor from "./ProviderEventIngestor.ts";
@@ -444,9 +443,6 @@ export const layerProduction = Layer.mergeAll(
   layerScratchThreadPromotionProvided,
   layerSecretRequestsProvided,
   layerFeedbackStoreProvided,
-  GuestShareService.layer.pipe(
-    Layer.provide(Layer.merge(layerOrchestratorProvided, layerCommandOutputHubProvided)),
-  ),
   UsageLimitRecoveryWorker.layer.pipe(
     Layer.provide(
       Layer.mergeAll(

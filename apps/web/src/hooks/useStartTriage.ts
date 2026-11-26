@@ -1,14 +1,15 @@
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
-import { scopeProjectRef } from "@t3tools/client-runtime/environment";
+import { thrownErrorMessage } from "@vibecodinger/client-runtime/errors";
+import { scopeProjectRef } from "@vibecodinger/client-runtime/environment";
 import {
   type AtomCommandResult,
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
-import type { EnvironmentId } from "@t3tools/contracts";
+} from "@vibecodinger/client-runtime/state/runtime";
+import type { EnvironmentId } from "@vibecodinger/contracts";
 import { useRouter } from "@tanstack/react-router";
 import { msg } from "gt-react";
 
+import { TRIAGE_CLI_COMMAND } from "~/branding.logic";
 import { stackedThreadToast, toastManager } from "~/components/ui/toast";
 import { currentClientMetadata } from "~/connection/platform";
 import { m } from "~/i18n/messages";
@@ -18,8 +19,6 @@ import { useAtomCommand } from "~/state/use-atom-command";
 import { writeTextToClipboard } from "./useCopyToClipboard";
 import { useNewThreadHandler } from "./useHandleNewThread";
 import { useScratchProject } from "./useScratchProject";
-
-export const TRIAGE_CLI_COMMAND = "npx t3 triage";
 
 const copyTriageCliCommand = () =>
   writeTextToClipboard(TRIAGE_CLI_COMMAND, {
@@ -34,7 +33,7 @@ const copyTriageCliCommand = () =>
   );
 
 /**
- * In-app `t3 triage`: the server writes the session files and starts cloning
+ * In-app `vibecodinger triage`: the server writes the session files and starts cloning
  * the matching source, then a No project draft opens with the playbook linked.
  * The draft hero explains the rest; the user picks a provider and describes
  * the problem.
@@ -89,7 +88,7 @@ export function useStartTriage() {
     // A null result means the user went elsewhere; only a throw is a failure.
     await handleNewThread(scopeProjectRef(project.value.environmentId, project.value.id), {
       prompt: prepared.value.prompt,
-    }).catch(() => fail(m(msg("T3 Code could not open a new thread."))));
+    }).catch(() => fail(m(msg("VibeCodinger could not open a new thread."))));
   };
 
   return async (environmentId: EnvironmentId) => {

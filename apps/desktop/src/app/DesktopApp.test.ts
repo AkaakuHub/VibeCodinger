@@ -9,7 +9,7 @@ import * as FileSystem from "effect/FileSystem";
 import * as Path from "effect/Path";
 import * as HttpClient from "effect/http/HttpClient";
 import { ChildProcessSpawner } from "effect/process";
-import * as NetService from "@t3tools/shared/Net";
+import * as NetService from "@vibecodinger/shared/Net";
 import * as Fiber from "effect/Fiber";
 import * as Option from "effect/Option";
 import * as Ref from "effect/Ref";
@@ -17,8 +17,6 @@ import * as Stream from "effect/Stream";
 import { vi } from "vite-plus/test";
 
 vi.mock("electron", () => ({}));
-vi.mock("@clerk/electron", () => ({ createClerkBridge: vi.fn() }));
-vi.mock("@clerk/electron/storage", () => ({ storage: vi.fn() }));
 vi.mock("../ipc/DesktopIpcHandlers.ts", () => ({
   installDesktopIpcHandlers: () => Effect.void,
 }));
@@ -28,9 +26,8 @@ vi.mock("./DesktopStartupRecovery.ts", () => ({ listen: Effect.void }));
 import * as DesktopApp from "./DesktopApp.ts";
 import * as DesktopAppActivation from "./DesktopAppActivation.ts";
 import * as DesktopAppIdentity from "./DesktopAppIdentity.ts";
-import * as DesktopClerk from "./DesktopClerk.ts";
+import * as DesktopLaunchLinks from "./DesktopLaunchLinks.ts";
 import * as DesktopEnvironment from "./DesktopEnvironment.ts";
-import * as DesktopLegacyLocalStorage from "./DesktopLegacyLocalStorage.ts";
 import * as DesktopLifecycle from "./DesktopLifecycle.ts";
 import * as DesktopLinuxUrlHandler from "./DesktopLinuxUrlHandler.ts";
 import * as DesktopPreReadyPlatform from "./DesktopPreReadyPlatform.ts";
@@ -137,9 +134,9 @@ const runStubbedDesktop = (stub: StubbedDesktop) =>
           register: Effect.void,
           relaunch: () => Effect.void,
         }),
-        Effect.provideService(DesktopClerk.DesktopClerk, {
+        Effect.provideService(DesktopLaunchLinks.DesktopLaunchLinks, {
           configure: Effect.void,
-        } as DesktopClerk.DesktopClerk["Service"]),
+        }),
         Effect.provideService(ElectronSafeStorage.ElectronSafeStorage, {
           selectedStorageBackend: Effect.succeedNone,
         } as unknown as ElectronSafeStorage.ElectronSafeStorage["Service"]),
@@ -160,9 +157,6 @@ const runStubbedDesktop = (stub: StubbedDesktop) =>
         Effect.provideService(ElectronProtocol.ElectronProtocol, {
           registerDesktopProtocol: () => Effect.void,
         } as unknown as ElectronProtocol.ElectronProtocol["Service"]),
-        Effect.provideService(DesktopLegacyLocalStorage.DesktopLegacyLocalStorage, {
-          load: () => Effect.void,
-        } as unknown as DesktopLegacyLocalStorage.DesktopLegacyLocalStorage["Service"]),
         Effect.provideService(DesktopSnapShot.DesktopSnapShot, {
           initialize: Effect.void,
         } as DesktopSnapShot.DesktopSnapShot["Service"]),
@@ -336,7 +330,7 @@ it.effect(
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-desktop-app-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-desktop-app-" });
       const launcher = DesktopCliShim.launcherPath({
         path,
         baseDir,
@@ -350,7 +344,7 @@ it.effect(
         DesktopCliShim.renderCliShim({
           target: { kind: "appimage", appImage: removedAppImage, executableName: "t3code" },
           shimPath: launcher,
-          t3Home: baseDir,
+          appDataHome: baseDir,
         }),
       );
       yield* fs.writeFileString(updatedAppImage, "", { mode: 0o755 });

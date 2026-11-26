@@ -8,7 +8,7 @@ import type {
   ManagedPolicyClient,
   ManagedPolicyDocument,
   ServerAuthPolicy,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import {
   disableTailscaleServe,
   disableTailscaleServeTcp,
@@ -17,12 +17,12 @@ import {
   readTailscaleStatus,
   type TailscaleServeRoute,
   type TailscaleStderrDiagnostic,
-} from "@t3tools/tailscale";
+} from "@vibecodinger/tailscale";
 import * as Effect from "effect/Effect";
 import * as PlatformError from "effect/PlatformError";
 import * as Schema from "effect/Schema";
 
-import * as NetService from "@t3tools/shared/Net";
+import * as NetService from "@vibecodinger/shared/Net";
 
 import { loopbackBindAddress } from "../auth/utils.ts";
 
@@ -87,8 +87,6 @@ const refuse = (policy: PolicyDocument, action: string, detail?: string) =>
     action,
     ...(detail === undefined ? {} : { detail }),
   });
-
-export const refuseConnect = (policy: PolicyDocument) => refuse(policy, "T3 Connect");
 
 // Node throws ENOTDIR, outside the spawner's error mapping, when PATH ends in a file.
 const isMissingCli = (cause: unknown) =>
@@ -227,7 +225,7 @@ export const checkServerReachability = Effect.fn("managedLimits.checkServerReach
       refuseRemoteClients(
         policy,
         input.privateNetworkOnly === true
-          ? "so the background service cannot listen on private networks; set T3CODE_HOST=127.0.0.1 in its service.env"
+          ? "so the background service cannot listen on private networks; set VIBECODINGER_HOST=127.0.0.1 in its service.env"
           : `so the server cannot listen on ${input.host === "" ? "every interface" : (input.host ?? "this host")}`,
       );
     if (!allowsAuthPolicy(policy, input.authPolicy)) {

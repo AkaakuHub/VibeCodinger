@@ -88,14 +88,14 @@ describe("deriveAuthClientMetadata", () => {
         },
       } as never,
       presented: {
-        label: "T3 Code Mobile",
+        label: "VibeCodinger Mobile",
         deviceType: "mobile",
         os: "iOS",
       },
     });
 
     expect(metadata).toMatchObject({
-      label: "T3 Code Mobile",
+      label: "VibeCodinger Mobile",
       browser: "Electron",
       deviceType: "mobile",
       ipAddress: "192.168.213.72",
@@ -111,7 +111,7 @@ describe("session cookie isolation", () => {
       mode: "web",
       port: 5775,
       host: "127.0.0.1",
-      instanceKey: "/tmp/t3-agent-one",
+      instanceKey: "/tmp/vc-agent-one",
       environmentId: "environment-one",
       development: true,
     });
@@ -119,13 +119,13 @@ describe("session cookie isolation", () => {
       mode: "web",
       port: 5775,
       host: "127.0.0.1",
-      instanceKey: "/tmp/t3-agent-two",
+      instanceKey: "/tmp/vc-agent-two",
       environmentId: "environment-two",
       development: true,
     });
 
-    expect(first).toMatch(/^t3_session_5775_[a-f0-9]{12}$/);
-    expect(second).toMatch(/^t3_session_5775_[a-f0-9]{12}$/);
+    expect(first).toMatch(/^vibecodinger_session_5775_[a-f0-9]{12}$/);
+    expect(second).toMatch(/^vibecodinger_session_5775_[a-f0-9]{12}$/);
     expect(first).not.toBe(second);
   });
 
@@ -148,8 +148,8 @@ describe("session cookie isolation", () => {
       development: false,
     });
 
-    expect(first).toMatch(/^t3_session_[a-f0-9]{12}$/);
-    expect(second).toMatch(/^t3_session_[a-f0-9]{12}$/);
+    expect(first).toMatch(/^vibecodinger_session_[a-f0-9]{12}$/);
+    expect(second).toMatch(/^vibecodinger_session_[a-f0-9]{12}$/);
     expect(first).not.toBe(second);
   });
 
@@ -158,7 +158,7 @@ describe("session cookie isolation", () => {
       mode: "web",
       port: 8080,
       host: "0.0.0.0",
-      instanceKey: "/srv/t3",
+      instanceKey: "/srv/vibecodinger",
       environmentId: "environment-one",
       development: false,
     });
@@ -166,7 +166,7 @@ describe("session cookie isolation", () => {
       mode: "web",
       port: 9090,
       host: "app.example.com",
-      instanceKey: "/srv/t3",
+      instanceKey: "/srv/vibecodinger",
       environmentId: "environment-one",
       development: false,
     });

@@ -3,7 +3,7 @@ import type {
   DesktopAppStageLabel,
   DesktopRuntimeArch,
   DesktopRuntimeInfo,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import * as Config from "effect/Config";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
@@ -16,7 +16,6 @@ import * as DesktopConfig from "./DesktopConfig.ts";
 import { resolveLinuxDesktopEntryName } from "./DesktopEarlyElectronStartup.ts";
 import { resolveDesktopBaseDir, resolveDesktopStateDir } from "./DesktopStatePaths.ts";
 import { isNightlyDesktopVersion } from "../updates/updateChannels.ts";
-import type { OtlpProtocol } from "@t3tools/shared/observability";
 
 export interface MakeDesktopEnvironmentInput {
   readonly dirname: string;
@@ -62,15 +61,9 @@ export class DesktopEnvironment extends Context.Service<
     readonly compileCachePath: string;
     readonly appUpdateYmlPath: string;
     readonly devServerUrl: Option.Option<URL>;
-    readonly devRemoteT3ServerEntryPath: Option.Option<string>;
+    readonly devRemoteServerEntryPath: Option.Option<string>;
     readonly configuredBackendPort: Option.Option<number>;
     readonly commitHashOverride: Option.Option<string>;
-    readonly otlpTracesUrl: Option.Option<string>;
-    readonly otlpMetricsUrl: Option.Option<string>;
-    readonly otlpLogsUrl: Option.Option<string>;
-    readonly otlpExportIntervalMs: number;
-    readonly otlpHeaders: Option.Option<Record<string, string>>;
-    readonly otlpProtocol: OtlpProtocol;
     readonly branding: DesktopAppBranding;
     readonly displayName: string;
     readonly appUserModelId: string;
@@ -83,9 +76,9 @@ export class DesktopEnvironment extends Context.Service<
     readonly resolvePickFolderDefaultPath: (rawOptions: unknown) => Option.Option<string>;
     readonly resolveResourcePathCandidates: (fileName: string) => readonly string[];
   }
->()("@t3tools/desktop/app/DesktopEnvironment") {}
+>()("@vibecodinger/desktop/app/DesktopEnvironment") {}
 
-const APP_BASE_NAME = "T3 Code";
+const APP_BASE_NAME = "VibeCodinger";
 
 function resolveDesktopAppStageLabel(input: {
   readonly isDevelopment: boolean;
@@ -159,7 +152,7 @@ const make = Effect.fn("desktop.environment.make")(function* (
   const baseDir = resolveDesktopBaseDir({
     homeDirectory,
     joinPath: path.join,
-    t3Home: config.t3Home,
+    appDataHome: config.appDataHome,
   });
   const rootDir = path.resolve(input.dirname, "../../..");
   const appRoot = input.isPackaged ? input.appPath : rootDir;
@@ -176,7 +169,7 @@ const make = Effect.fn("desktop.environment.make")(function* (
     baseDir,
     isDevelopment,
     joinPath: path.join,
-    t3Home: config.t3Home,
+    appDataHome: config.appDataHome,
   });
   const linuxApplicationsDir = path.join(
     Option.getOrElse(config.xdgDataHome, () => path.join(homeDirectory, ".local", "share")),
@@ -216,19 +209,13 @@ const make = Effect.fn("desktop.environment.make")(function* (
       ? path.join(resourcesPath, "app-update.yml")
       : path.join(input.appPath, "dev-app-update.yml"),
     devServerUrl,
-    devRemoteT3ServerEntryPath: config.devRemoteT3ServerEntryPath,
+    devRemoteServerEntryPath: config.devRemoteServerEntryPath,
     configuredBackendPort: config.configuredBackendPort,
     commitHashOverride: config.commitHashOverride,
-    otlpTracesUrl: config.otlpTracesUrl,
-    otlpMetricsUrl: config.otlpMetricsUrl,
-    otlpLogsUrl: config.otlpLogsUrl,
-    otlpExportIntervalMs: config.otlpExportIntervalMs,
-    otlpHeaders: config.otlpHeaders,
-    otlpProtocol: config.otlpProtocol,
     branding,
     displayName,
     appUserModelId: Option.getOrElse(config.appUserModelIdOverride, () =>
-      isDevelopment ? "com.t3tools.t3code.dev" : "com.t3tools.t3code",
+      isDevelopment ? "net.akaaku.vibecodinger.dev" : "net.akaaku.vibecodinger",
     ),
     linuxDesktopEntryName: resolveLinuxDesktopEntryName(isDevelopment),
     linuxApplicationsDir,

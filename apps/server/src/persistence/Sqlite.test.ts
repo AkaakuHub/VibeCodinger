@@ -7,8 +7,8 @@ import type * as NodeWorkerThreads from "node:worker_threads";
 import * as NodeCrypto from "@effect/platform-node/NodeCrypto";
 import * as NodeServices from "@effect/platform-node/NodeServices";
 import { assert, it } from "@effect/vitest";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import * as NodeSqliteClient from "@t3tools/shared/nodeSqliteClient";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
+import * as NodeSqliteClient from "@vibecodinger/shared/nodeSqliteClient";
 import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";
 import * as Layer from "effect/Layer";
@@ -51,7 +51,7 @@ const openDeletedTempFiles = () =>
 it.effect.skipIf(HostProcess.Platform.defaultValue() !== "linux")(
   "keeps a write transaction's statement journal off the temp directory",
   () => {
-    const tempDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-sqlite-temp-"));
+    const tempDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "vibecodinger-sqlite-temp-"));
     const persistence = SqlitePersistence.layerFromPath(
       NodePath.join(tempDir, "state.sqlite"),
     ).pipe(Layer.provide(NodeServices.layer));
@@ -80,7 +80,7 @@ it.effect.skipIf(HostProcess.Platform.defaultValue() !== "linux")(
 );
 
 it.effect("drops planner statistics a database already has", () => {
-  const tempDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-sqlite-stats-"));
+  const tempDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "vibecodinger-sqlite-stats-"));
   const dbPath = NodePath.join(tempDir, "state.sqlite");
   const persistence = () =>
     SqlitePersistence.layerFromPath(dbPath).pipe(Layer.provide(NodeServices.layer));
@@ -121,7 +121,9 @@ it.effect("drops planner statistics a database already has", () => {
 });
 
 it.effect("upgrades an existing database on a read-write worker connection", () => {
-  const tempDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-sqlite-upgrade-"));
+  const tempDir = NodeFS.mkdtempSync(
+    NodePath.join(NodeOS.tmpdir(), "vibecodinger-sqlite-upgrade-"),
+  );
   const dbPath = NodePath.join(tempDir, "state.sqlite");
 
   return Effect.gen(function* () {
@@ -159,7 +161,7 @@ it.effect("upgrades an existing database on a read-write worker connection", () 
 });
 
 it.effect("names a database file that is not SQLite", () => {
-  const tempDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "t3-sqlite-notadb-"));
+  const tempDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "vibecodinger-sqlite-notadb-"));
   const dbPath = NodePath.join(tempDir, "state.sqlite");
   NodeFS.writeFileSync(dbPath, "not a db\n");
 
@@ -181,7 +183,7 @@ it.effect("names a database file that is not SQLite", () => {
   );
 });
 
-const ownT3Home = Effect.fn(function* () {
+const ownAppDataHome = Effect.fn(function* () {
   const { serverRuntimeStatePath } = yield* ServerConfig.ServerConfig;
   // An empty home, so no boot service installed on this machine is read.
   const home = yield* (yield* FileSystem.FileSystem).makeTempDirectoryScoped();
@@ -211,14 +213,16 @@ const latestRecordedMigrationId = Effect.gen(function* () {
   return rows[0]?.id;
 });
 
-const layerT3Home = ServerConfig.layerTest(process.cwd(), { prefix: "t3-sqlite-cli-" });
+const layerAppDataHome = ServerConfig.layerTest(process.cwd(), {
+  prefix: "vibecodinger-sqlite-cli-",
+});
 
 it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("layerCliConfig", (it) => {
-  it.effect("does not migrate a T3 home a running server owns", () =>
+  it.effect("does not migrate a VibeCodinger home a running server owns", () =>
     Effect.gen(function* () {
       const recorded = Math.max(...migrationManifest.map(([id]) => id)) - 1;
       yield* migrateTo(recorded);
-      yield* ownT3Home();
+      yield* ownAppDataHome();
 
       const opened = yield* Effect.void.pipe(
         Effect.provide(SqlitePersistence.layerCliConfig),
@@ -230,15 +234,15 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("layerCliConfig",
       if (opened._tag === "Failure") {
         assert.instanceOf(opened.failure, SqlitePersistence.ServerOwnsDatabaseError);
       }
-    }).pipe(Effect.scoped, Effect.provide(layerT3Home)),
+    }).pipe(Effect.scoped, Effect.provide(layerAppDataHome)),
   );
 
-  it.effect("opens a current T3 home while a running server owns it", () =>
+  it.effect("opens a current VibeCodinger home while a running server owns it", () =>
     Effect.gen(function* () {
       yield* migrateTo();
-      yield* ownT3Home();
+      yield* ownAppDataHome();
 
       yield* Effect.void.pipe(Effect.provide(SqlitePersistence.layerCliConfig));
-    }).pipe(Effect.scoped, Effect.provide(layerT3Home)),
+    }).pipe(Effect.scoped, Effect.provide(layerAppDataHome)),
   );
 });

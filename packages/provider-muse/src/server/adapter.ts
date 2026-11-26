@@ -23,11 +23,11 @@ import {
   type RuntimeRequestId,
   type ServerProviderModel,
   type ThreadId,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import type { MuseSettings } from "../settings.ts";
-import { AgentScope } from "@t3tools/shared/AgentScope";
-import { getModelSelectionStringOptionValue } from "@t3tools/shared/model";
-import { formatDuration } from "@t3tools/shared/orchestrationTiming";
+import { AgentScope } from "@vibecodinger/shared/AgentScope";
+import { getModelSelectionStringOptionValue } from "@vibecodinger/shared/model";
+import { formatDuration } from "@vibecodinger/shared/orchestrationTiming";
 import * as Cause from "effect/Cause";
 import * as DateTime from "effect/DateTime";
 import * as Deferred from "effect/Deferred";
@@ -39,10 +39,10 @@ import * as Semaphore from "effect/Semaphore";
 import * as Scope from "effect/Scope";
 import * as Stream from "effect/Stream";
 
-import * as ProviderHost from "@t3tools/provider-core/server/ProviderHost";
-import * as McpProviderSession from "@t3tools/provider-core/server/mcpSession";
-import * as McpProviderSessions from "@t3tools/provider-core/server/McpProviderSessions";
-import { buildRuntimeInstructions } from "@t3tools/provider-core/server/runtimeInstructions";
+import * as ProviderHost from "@vibecodinger/provider-core/server/ProviderHost";
+import * as McpProviderSession from "@vibecodinger/provider-core/server/mcpSession";
+import * as McpProviderSessions from "@vibecodinger/provider-core/server/McpProviderSessions";
+import { buildRuntimeInstructions } from "@vibecodinger/provider-core/server/runtimeInstructions";
 import { museModelCapabilities, resolveMuseReasoningEffort } from "./modelCatalog.ts";
 import {
   MuseApproval,
@@ -78,29 +78,29 @@ import {
   type createMuseSdkHost,
   type MuseSdkHost,
 } from "./sdk.ts";
-import type * as ProviderEventLoggers from "@t3tools/provider-core/server/ProviderEventLoggers";
-import type { ManagedServerProvider } from "@t3tools/provider-core/server/snapshot";
+import type * as ProviderEventLoggers from "@vibecodinger/provider-core/server/ProviderEventLoggers";
+import type { ManagedServerProvider } from "@vibecodinger/provider-core/server/snapshot";
 import {
   providerMessageTextWithAttachmentPaths,
   isProviderNativeImageAttachment,
-} from "@t3tools/provider-core/server/attachmentPrompt";
-import * as IdAllocator from "@t3tools/provider-core/server/IdAllocator";
-import * as ProviderAdapter from "@t3tools/provider-core/server/ProviderAdapter";
+} from "@vibecodinger/provider-core/server/attachmentPrompt";
+import * as IdAllocator from "@vibecodinger/provider-core/server/IdAllocator";
+import * as ProviderAdapter from "@vibecodinger/provider-core/server/ProviderAdapter";
 import {
   backgroundWorkNotification,
   type BackgroundWorkReport,
-} from "@t3tools/provider-core/server/notification";
-import type * as ProviderContinuationRequests from "@t3tools/provider-core/server/ProviderContinuationRequests";
+} from "@vibecodinger/provider-core/server/notification";
+import type * as ProviderContinuationRequests from "@vibecodinger/provider-core/server/ProviderContinuationRequests";
 import {
   makeProviderFailure,
   makeProviderRetryTurnItem,
-} from "@t3tools/provider-core/server/failure";
+} from "@vibecodinger/provider-core/server/failure";
 import {
   makeSubagentChildThread,
   makeSubagentConversationArtifacts,
   subagentThreadTitle,
-} from "@t3tools/provider-core/server/subagentProjection";
-import { turnScopedSelectionTransition } from "@t3tools/provider-core/server/selectionTransition";
+} from "@vibecodinger/provider-core/server/subagentProjection";
+import { turnScopedSelectionTransition } from "@vibecodinger/provider-core/server/selectionTransition";
 import { museItemStatus, museToolPresentation } from "./itemPresentation.ts";
 
 const MUSE_PROVIDER = ProviderDriverKind.make("muse");
@@ -356,7 +356,7 @@ export const makeMuseAdapterV2 = Effect.fn("makeMuseAdapterV2")(function* (
       let relaunchable = false;
       let nativeSessionId: string | undefined;
       let thread: OrchestrationV2ProviderThread | undefined;
-      let hasT3Mcp = false;
+      let hasVibeCodingerMcp = false;
       let active: ActiveTurn | undefined;
       let lastProviderTurn: OrchestrationV2ProviderTurn | undefined;
       let latestSubscriptionUsage: MuseSubscriptionUsage | undefined;
@@ -1957,7 +1957,7 @@ export const makeMuseAdapterV2 = Effect.fn("makeMuseAdapterV2")(function* (
             ? {
                 mcpServers: {
                   // Muse's required default fails runs if T3 tools are unreachable; make them optional.
-                  "t3-code": {
+                  "vibe-codinger": {
                     transport: "streamableHttp",
                     mode: "optional",
                     url: mcpSession.endpoint,
@@ -2032,7 +2032,7 @@ export const makeMuseAdapterV2 = Effect.fn("makeMuseAdapterV2")(function* (
                 createdAt,
                 updatedAt: createdAt,
               };
-          hasT3Mcp = mcpSession !== undefined;
+          hasVibeCodingerMcp = mcpSession !== undefined;
           session = {
             ...session,
             model: result.session.modelId ?? args.modelSelection.model,
@@ -2211,7 +2211,9 @@ export const makeMuseAdapterV2 = Effect.fn("makeMuseAdapterV2")(function* (
                   {
                     type: "text",
                     text: buildRuntimeInstructions({
-                      agentFeedback: hasT3Mcp ? (turnInput.agentFeedback ?? "off") : "off",
+                      agentFeedback: hasVibeCodingerMcp
+                        ? (turnInput.agentFeedback ?? "off")
+                        : "off",
                       harness: "Muse Code",
                       model: session.model ?? undefined,
                       reasoningEffort: effort,
@@ -2518,7 +2520,7 @@ export const makeMuseAdapterV2 = Effect.fn("makeMuseAdapterV2")(function* (
               driver: MUSE_PROVIDER,
               providerThreadId: args.providerThread.id,
               checkpointId: args.target.checkpointId,
-              cause: "Muse Code does not support conversation rollback in T3 Code.",
+              cause: "Muse Code does not support conversation rollback in VibeCodinger.",
             }),
           ),
         forkThread: (args) =>
@@ -2526,7 +2528,7 @@ export const makeMuseAdapterV2 = Effect.fn("makeMuseAdapterV2")(function* (
             new ProviderAdapter.ProviderAdapterForkThreadError({
               driver: MUSE_PROVIDER,
               providerThreadId: args.sourceProviderThread.id,
-              cause: "Muse Code does not support native forks in T3 Code.",
+              cause: "Muse Code does not support native forks in VibeCodinger.",
             }),
           ),
       };

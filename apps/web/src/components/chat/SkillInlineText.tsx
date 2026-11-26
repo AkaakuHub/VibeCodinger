@@ -1,9 +1,9 @@
-import { collectComposerModelMentions } from "@t3tools/client-runtime/composer-model-mentions";
-import type { EnvironmentId, ScopedThreadRef, ServerProviderSkill } from "@t3tools/contracts";
-import { formatProviderSkillDisplayName } from "@t3tools/shared/inlineSkills";
+import { collectComposerModelMentions } from "@vibecodinger/client-runtime/composer-model-mentions";
+import type { EnvironmentId, ScopedThreadRef, ServerProviderSkill } from "@vibecodinger/contracts";
+import { formatProviderSkillDisplayName } from "@vibecodinger/shared/inlineSkills";
 import { T, useGT } from "gt-react";
 import { Children, cloneElement, isValidElement, type ReactNode } from "react";
-import { matchInlineSkills } from "@t3tools/shared/inlineSkills";
+import { matchInlineSkills } from "@vibecodinger/shared/inlineSkills";
 
 import { useRightPanelStore } from "~/rightPanelStore";
 import { SKILL_CHIP_ICON_SVG } from "../composerInlineChip";

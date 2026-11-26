@@ -1,4 +1,4 @@
-import { ProjectId } from "@t3tools/contracts";
+import { ProjectId } from "@vibecodinger/contracts";
 import { describe, expect, it } from "vite-plus/test";
 
 import { pullRequestCandidateForIssueLink } from "./pullRequestNavigation";

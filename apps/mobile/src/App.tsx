@@ -1,4 +1,5 @@
 import { installPermissionUpdateNotice } from "./features/connection/permissionUpdateNotice";
+import { installCompletionNotifications } from "./features/agent-awareness/completionNotifications";
 import { installComposerAttachmentUploads } from "./state/composer-attachment-uploads";
 import { installThreadOutboxDelivery } from "./state/threadOutboxDelivery";
 import * as Linking from "expo-linking";
@@ -20,13 +21,11 @@ import {
   type NavigationState,
 } from "@react-navigation/native";
 import { pipe } from "effect/Function";
-import { DEFAULT_HOSTED_APP_URL } from "@t3tools/shared/connectAuth";
 
 import { RegistryContext, useAtomValue } from "@effect/atom-react";
 import { ProjectChipIconRasterizer } from "./native/ProjectChipIconImages";
 import { ThreadArrangementHost } from "./features/threads/ThreadArrangementSheet";
 import * as Dialog from "./components/ui/Dialog";
-import { CloudAuthProvider } from "./features/cloud/CloudAuthProvider";
 import { prepareNativeShowcaseCapture } from "./features/showcase/nativeShowcaseScene";
 import { installShowcaseCapture } from "./features/showcase/ShowcaseCaptureCoordinator";
 import {
@@ -34,10 +33,6 @@ import {
   pruneIncomingShareImports,
   startIncomingShareInbox,
 } from "./features/sharing/IncomingShareProvider";
-import {
-  installAgentNotificationNavigation,
-  setAgentNotificationPathname,
-} from "./features/agent-awareness/notificationNavigation";
 import {
   installAppShortcuts,
   republishAppShortcuts,
@@ -48,7 +43,7 @@ import {
   installAppearanceRuntime,
   useAppearancePreferences,
 } from "./features/settings/appearance/AppearancePreferencesProvider";
-import { RootStack, rootPathnameFromState, workspaceLocationFromState } from "./Stack";
+import { RootStack, rootPathnameFromState } from "./Stack";
 import { I18nProvider } from "./i18n/I18nProvider";
 import { DEFAULT_LOCALE } from "./i18n/locales";
 import { appAtomRegistry } from "./state/atom-registry";
@@ -57,7 +52,6 @@ import { environmentThreadShells, threadEnvironment } from "./state/threads";
 import { environmentShell, shellCachesReadAtom } from "./state/shell";
 import { OverlayPortalHost } from "./components/ui/OverlayPortal";
 import { shouldHandleAppLink, restoreDraftLinkState } from "./lib/appLinking";
-import { hasCloudPublicConfig } from "./features/cloud/publicConfig";
 import { takeScheduledTaskNewLink } from "./features/settings/scheduled-task-editor-state";
 import {
   pairingFormLinkAction,
@@ -79,7 +73,6 @@ import {
 import { useMobileNavigationTheme } from "./lib/useMobileNavigationTheme";
 import { installUiRuntimeMemoryWarningGc } from "./lib/useUiRuntimeMemoryWarningGc";
 import { SubscriptionUsageCoordinator } from "./widgets/SubscriptionUsageCoordinator";
-import { ConnectDeviceApprovalCoordinator } from "./features/connection/ConnectDeviceApprovalCoordinator";
 import { installSubscriptionUsageRefresh } from "./widgets/useSubscriptionUsage";
 import { GlobalVoiceInputControl } from "./features/voice-input/GlobalVoiceInputControl";
 import {
@@ -140,13 +133,12 @@ function getAppStateFromPath(path: string, options: Parameters<typeof getStateFr
 const appLinking = {
   prefixes: [
     Linking.createURL("/"),
-    "t3code://",
-    "t3code-dev://",
-    "t3code-preview://",
-    DEFAULT_HOSTED_APP_URL,
+    "vibecodinger://",
+    "vibecodinger-dev://",
+    "vibecodinger-preview://",
   ],
   config: { initialRouteName: "Home" },
-  filter: (url: string) => shouldHandleAppLink(url, hasCloudPublicConfig()),
+  filter: shouldHandleAppLink,
   getInitialURL: async () => (await Linking.getInitialURL()) ?? (await launchWorkspaceURL()),
   getActionFromState: (
     state: Parameters<typeof getActionFromState>[0],
@@ -184,7 +176,6 @@ function handleNavigationStateChange(state: NavigationState | undefined): void {
   if (!state) return;
   // A launch that opens another route has no Home rows for the splash to wait for.
   if (state.routes[state.index]?.name !== "Home") settleLaunchSplashHomeRows();
-  setAgentNotificationPathname(workspaceLocationFromState(state).pathname);
   recordAppShortcutNavigationState(state);
   pruneNewTaskFlowStates(state);
   pruneNewTaskBranchCheckouts(state);
@@ -210,10 +201,10 @@ const appServiceDisposers = [
   installAppearanceRuntime(),
   installSubscriptionUsageRefresh(),
   installPermissionUpdateNotice(),
+  installCompletionNotifications(),
   installThreadOutboxDelivery(),
   installComposerAttachmentUploads(),
   startIncomingShareInbox(),
-  installAgentNotificationNavigation(linkToAppPath),
   installAppShortcuts(linkToAppPath),
   installAppUpdateChecks(),
   installShowcaseCapture(rootPathnameFromState),
@@ -233,13 +224,13 @@ function SplashScreenCoordinator() {
   const [waitEnded, setWaitEnded] = useState(false);
   const hidden = useRef(false);
 
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- starts the limit on how long the native splash screen waits for cached shells and their rows
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- starts the limit on how long the native splash screen waits for cached shells and their rows
   useEffect(() => {
     const timer = setTimeout(() => setWaitEnded(true), SPLASH_WAIT_MS);
     return () => clearTimeout(timer);
   }, []);
 
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- hides the native splash screen once preferences have loaded and the cached rows are laid out
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- hides the native splash screen once preferences have loaded and the cached rows are laid out
   useEffect(() => {
     const canHide = splashCanHide({
       preferencesReady: isReady,
@@ -262,7 +253,7 @@ function QuickActionsLanguage() {
   const locale = useLocale();
   // Shortcuts published before the catalog loaded are English.
   const publishedLocale = useRef(DEFAULT_LOCALE);
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- the launcher keeps quick action titles from the last publish, so a language switch republishes them
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- the launcher keeps quick action titles from the last publish, so a language switch republishes them
   useEffect(() => {
     if (Platform.OS !== "android" || publishedLocale.current === locale) return;
     publishedLocale.current = locale;
@@ -274,13 +265,11 @@ function QuickActionsLanguage() {
 export default function App() {
   return (
     <RegistryContext.Provider value={appAtomRegistry}>
-      <CloudAuthProvider>
-        <AppearancePreferencesProvider>
-          <I18nProvider>
-            <AppContent />
-          </I18nProvider>
-        </AppearancePreferencesProvider>
-      </CloudAuthProvider>
+      <AppearancePreferencesProvider>
+        <I18nProvider>
+          <AppContent />
+        </I18nProvider>
+      </AppearancePreferencesProvider>
     </RegistryContext.Provider>
   );
 }
@@ -289,11 +278,11 @@ function AppContent() {
   const { themeAppearance } = useAppearancePreferences();
   const navigationTheme = useMobileNavigationTheme();
 
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- matches the Android navigation bar to the app theme, as StatusBar does for the status bar
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- matches the Android navigation bar to the app theme, as StatusBar does for the status bar
   useEffect(() => {
     if (Platform.OS !== "android") return;
     void requireNativeModule<{ setNavigationBarStyle(light: boolean): Promise<void> }>(
-      "T3NativeControls",
+      "VibeCodingerNativeControls",
     ).setNavigationBarStyle(themeAppearance === "light");
   }, [themeAppearance]);
 
@@ -302,7 +291,6 @@ function AppContent() {
       <SplashScreenCoordinator />
       <QuickActionsLanguage />
       <SubscriptionUsageCoordinator />
-      <ConnectDeviceApprovalCoordinator />
       <GestureHandlerRootView className="flex-1">
         <KeyboardProvider statusBarTranslucent>
           <SafeAreaProvider>

@@ -19,13 +19,11 @@ import * as Schema from "effect/Schema";
 import {
   DesktopBackendBootstrap,
   type DesktopBackendBootstrap as DesktopBackendBootstrapValue,
-} from "@t3tools/contracts";
-import * as NetService from "@t3tools/shared/Net";
-import { DEFAULT_SIGNAL_EXPORT } from "@t3tools/shared/observability";
-import * as OtelEnvironment from "@t3tools/shared/otelEnvironment";
+} from "@vibecodinger/contracts";
+import * as NetService from "@vibecodinger/shared/Net";
 import * as NodeCrypto from "@effect/platform-node/NodeCrypto";
 import * as NodeServices from "@effect/platform-node/NodeServices";
-import * as HostProcess from "@t3tools/shared/HostProcess";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
 import packageJson from "../../package.json" with { type: "json" };
 import { ServiceLauncherHostProcess } from "../cloud/serviceLauncherClient.ts";
 import {
@@ -65,7 +63,7 @@ const makeDesktopBootstrap = (
   mode: "desktop",
   noBrowser: true,
   port: 4888,
-  t3Home: "/tmp/t3-bootstrap-home",
+  appDataHome: "/tmp/vibecodinger-bootstrap-home",
   host: "127.0.0.1",
   desktopBootstrapToken: "desktop-bootstrap-token",
   tailscaleServeEnabled: false,
@@ -96,19 +94,15 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
     traceBatchWindowMs: 1_000,
     traceMaxBytes: 10 * 1024 * 1024,
     traceMaxFiles: 10,
-    otlpTracesUrl: undefined,
-    otlpMetricsUrl: undefined,
-    otlpLogsUrl: undefined,
-    otlpTracesExport: DEFAULT_SIGNAL_EXPORT,
-    otlpMetricsExport: DEFAULT_SIGNAL_EXPORT,
-    otlpLogsExport: DEFAULT_SIGNAL_EXPORT,
-    otelEnvironment: OtelEnvironment.none,
     devAllowedOrigins: [],
   } as const;
 
   const openBootstrapFd = Effect.fn(function* (payload: DesktopBackendBootstrapValue) {
     const fs = yield* FileSystem.FileSystem;
-    const filePath = yield* fs.makeTempFileScoped({ prefix: "t3-bootstrap-", suffix: ".ndjson" });
+    const filePath = yield* fs.makeTempFileScoped({
+      prefix: "vibecodinger-bootstrap-",
+      suffix: ".ndjson",
+    });
     const encoded = yield* encodeDesktopBootstrap(payload);
     yield* fs.writeFileString(filePath, `${encoded}\n`);
     return yield* Effect.acquireRelease(
@@ -129,7 +123,7 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-cli-preflight-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-cli-preflight-" });
       const child = yield* liveProcess;
       assert(child.pid !== undefined);
       for (const [name, pid, mode, rejectRunningServer] of [
@@ -195,35 +189,41 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
       Effect.result,
     );
 
-  it.effect("refuses a manual web launch while a lock-aware server owns the T3 home", () =>
-    Effect.gen(function* () {
-      const fs = yield* FileSystem.FileSystem;
-      const path = yield* Path.Path;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-cli-preflight-live-" });
-      const child = yield* liveProcess;
-      assert(child.pid !== undefined);
-      const owner = yield* acquireOwnership(baseDir);
-      yield* owner.publish({
-        version: 1,
-        pid: child.pid,
-        port: 3773,
-        origin: "http://127.0.0.1:3773",
-        startedAt: "2026-10-01T00:00:00.000Z",
-      });
-      const cwd = path.join(baseDir, "project");
-      const result = yield* resolveManualWebLaunch(baseDir, cwd);
-      assert(Result.isFailure(result));
-      expect(result.failure).toContain("A T3 Code server is already running");
-      expect(result.failure).toContain(`pid ${child.pid}`);
-      expect(yield* fs.exists(cwd)).toBe(false);
-    }),
+  it.effect(
+    "refuses a manual web launch while a lock-aware server owns the VibeCodinger data directory",
+    () =>
+      Effect.gen(function* () {
+        const fs = yield* FileSystem.FileSystem;
+        const path = yield* Path.Path;
+        const baseDir = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-cli-preflight-live-",
+        });
+        const child = yield* liveProcess;
+        assert(child.pid !== undefined);
+        const owner = yield* acquireOwnership(baseDir);
+        yield* owner.publish({
+          version: 1,
+          pid: child.pid,
+          port: 3773,
+          origin: "http://127.0.0.1:3773",
+          startedAt: "2026-10-01T00:00:00.000Z",
+        });
+        const cwd = path.join(baseDir, "project");
+        const result = yield* resolveManualWebLaunch(baseDir, cwd);
+        assert(Result.isFailure(result));
+        expect(result.failure).toContain("A VibeCodinger server is already running");
+        expect(result.failure).toContain(`pid ${child.pid}`);
+        expect(yield* fs.exists(cwd)).toBe(false);
+      }),
   );
 
   it.effect("refuses a manual web launch when a pre-lock record belongs to a live process", () =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-cli-preflight-legacy-" });
+      const baseDir = yield* fs.makeTempDirectoryScoped({
+        prefix: "vibecodinger-cli-preflight-legacy-",
+      });
       const child = yield* liveProcess;
       assert(child.pid !== undefined);
       const stateDir = path.join(baseDir, "userdata");
@@ -252,7 +252,9 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-cli-preflight-reused-" });
+        const baseDir = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-cli-preflight-reused-",
+        });
         const child = yield* liveProcess;
         assert(child.pid !== undefined);
         // The killed server's lock file stays behind, released.
@@ -280,9 +282,11 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
       const path = yield* Path.Path;
       const child = yield* liveProcess;
       assert(child.pid !== undefined);
-      for (const source of ["flag", "T3CODE_HOME", "default"] as const) {
-        const home = yield* fs.makeTempDirectoryScoped({ prefix: "t3-cli-preflight-pair-" });
-        const baseDir = source === "default" ? path.join(home, ".t3") : home;
+      for (const source of ["flag", "VIBECODINGER_HOME", "default"] as const) {
+        const home = yield* fs.makeTempDirectoryScoped({
+          prefix: "vibecodinger-cli-preflight-pair-",
+        });
+        const baseDir = source === "default" ? path.join(home, ".vibecodinger") : home;
         const stateDir = path.join(baseDir, "userdata");
         yield* fs.makeDirectory(stateDir, { recursive: true });
         yield* fs.writeFileString(
@@ -309,7 +313,7 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
               NetService.layer,
               ConfigProvider.layer(
                 ConfigProvider.fromEnv({
-                  env: source === "T3CODE_HOME" ? { T3CODE_HOME: baseDir } : {},
+                  env: source === "VIBECODINGER_HOME" ? { VIBECODINGER_HOME: baseDir } : {},
                 }),
               ),
             ),
@@ -330,7 +334,9 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
   it.effect("enables a trimmed reusable auth token only for web dev mode", () =>
     Effect.gen(function* () {
       const baseDir = yield* FileSystem.FileSystem.pipe(
-        Effect.flatMap((fs) => fs.makeTempDirectoryScoped({ prefix: "t3-cli-dev-auth-" })),
+        Effect.flatMap((fs) =>
+          fs.makeTempDirectoryScoped({ prefix: "vibecodinger-cli-dev-auth-" }),
+        ),
       );
       const flags = {
         mode: Option.some("web" as const),
@@ -350,7 +356,7 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
       const layerConfig = ConfigProvider.layer(
         ConfigProvider.fromEnv({
           env: {
-            T3CODE_DEV_AUTH_TOKEN: "  reusable-dev-auth-token-that-is-long-enough  ",
+            VIBECODINGER_DEV_AUTH_TOKEN: "  reusable-dev-auth-token-that-is-long-enough  ",
           },
         }),
       );
@@ -375,7 +381,9 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
     Effect.gen(function* () {
       const secret = "short-secret";
       const baseDir = yield* FileSystem.FileSystem.pipe(
-        Effect.flatMap((fs) => fs.makeTempDirectoryScoped({ prefix: "t3-cli-dev-auth-invalid-" })),
+        Effect.flatMap((fs) =>
+          fs.makeTempDirectoryScoped({ prefix: "vibecodinger-cli-dev-auth-invalid-" }),
+        ),
       );
       const flags = {
         mode: Option.some("web" as const),
@@ -393,7 +401,7 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
         lan: Option.none<boolean>(),
       };
       const layerConfig = ConfigProvider.layer(
-        ConfigProvider.fromEnv({ env: { T3CODE_DEV_AUTH_TOKEN: secret } }),
+        ConfigProvider.fromEnv({ env: { VIBECODINGER_DEV_AUTH_TOKEN: secret } }),
       );
       const error = yield* resolveServerConfig(flags, Option.none()).pipe(
         Effect.provide(Layer.mergeAll(layerConfig, NetService.layer)),
@@ -419,7 +427,7 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
   it.effect("preserves explicit false CLI boolean flags over env and bootstrap values", () =>
     Effect.gen(function* () {
       const { join } = yield* Path.Path;
-      const baseDir = join(NodeOS.tmpdir(), "t3-cli-config-false-flags");
+      const baseDir = join(NodeOS.tmpdir(), "vibecodinger-cli-config-false-flags");
       const fd = yield* openBootstrapFd(
         makeDesktopBootstrap({
           noBrowser: true,
@@ -455,10 +463,10 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
             ConfigProvider.layer(
               ConfigProvider.fromEnv({
                 env: {
-                  T3CODE_BOOTSTRAP_FD: String(fd),
-                  T3CODE_NO_BROWSER: "true",
-                  T3CODE_AUTO_BOOTSTRAP_PROJECT_FROM_CWD: "true",
-                  T3CODE_LOG_WS_EVENTS: "true",
+                  VIBECODINGER_BOOTSTRAP_FD: String(fd),
+                  VIBECODINGER_NO_BROWSER: "true",
+                  VIBECODINGER_AUTO_BOOTSTRAP_PROJECT_FROM_CWD: "true",
+                  VIBECODINGER_LOG_WS_EVENTS: "true",
                 },
               }),
             ),
@@ -492,12 +500,12 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
   it.effect("applies flag then env precedence over bootstrap envelope values", () =>
     Effect.gen(function* () {
       const { join } = yield* Path.Path;
-      const baseDir = join(NodeOS.tmpdir(), "t3-cli-config-env-wins");
+      const baseDir = join(NodeOS.tmpdir(), "vibecodinger-cli-config-env-wins");
       const fd = yield* openBootstrapFd(
         makeDesktopBootstrap({
           port: 4888,
           host: "127.0.0.2",
-          t3Home: "/tmp/t3-bootstrap-home",
+          appDataHome: "/tmp/vibecodinger-bootstrap-home",
           noBrowser: false,
           desktopBootstrapToken: "desktop-token",
           tailscaleServeEnabled: false,
@@ -532,12 +540,12 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
             ConfigProvider.layer(
               ConfigProvider.fromEnv({
                 env: {
-                  T3CODE_MODE: "web",
-                  T3CODE_BOOTSTRAP_FD: String(fd),
-                  T3CODE_HOME: baseDir,
-                  T3CODE_NO_BROWSER: "true",
-                  T3CODE_AUTO_BOOTSTRAP_PROJECT_FROM_CWD: "true",
-                  T3CODE_LOG_WS_EVENTS: "true",
+                  VIBECODINGER_MODE: "web",
+                  VIBECODINGER_BOOTSTRAP_FD: String(fd),
+                  VIBECODINGER_HOME: baseDir,
+                  VIBECODINGER_NO_BROWSER: "true",
+                  VIBECODINGER_AUTO_BOOTSTRAP_PROJECT_FROM_CWD: "true",
+                  VIBECODINGER_LOG_WS_EVENTS: "true",
                 },
               }),
             ),
@@ -568,177 +576,10 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
     }),
   );
 
-  it.effect("disables OTLP endpoints supplied by the desktop bootstrap", () =>
-    Effect.gen(function* () {
-      const fs = yield* FileSystem.FileSystem;
-      const baseDir = yield* fs.makeTempDirectoryScoped({
-        prefix: "t3-cli-config-otlp-bootstrap-",
-      });
-      const fd = yield* openBootstrapFd(
-        makeDesktopBootstrap({
-          otlpTracesUrl: "http://localhost:4318/v1/traces",
-          otlpMetricsUrl: "http://localhost:4318/v1/metrics",
-          otlpLogsUrl: "http://localhost:4318/v1/logs",
-        }),
-      );
-
-      const resolved = yield* resolveServerConfig(
-        { ...minimalDesktopFlags(baseDir), bootstrapFd: Option.some(fd) },
-        Option.none(),
-      ).pipe(
-        Effect.provide(
-          Layer.mergeAll(
-            ConfigProvider.layer(ConfigProvider.fromEnv({ env: {} })),
-            NetService.layer,
-          ),
-        ),
-      );
-
-      expect(resolved.otlpTracesUrl).toBeUndefined();
-      expect(resolved.otlpMetricsUrl).toBeUndefined();
-      expect(resolved.otlpLogsUrl).toBeUndefined();
-    }),
-  );
-
-  it.effect("disables OTLP endpoints supplied in saved settings", () =>
-    Effect.gen(function* () {
-      const fs = yield* FileSystem.FileSystem;
-      const path = yield* Path.Path;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-cli-config-otlp-settings-" });
-      const derivedPaths = yield* deriveExplicitServerPaths(baseDir, undefined);
-      yield* fs.makeDirectory(path.dirname(derivedPaths.settingsPath), { recursive: true });
-      yield* fs.writeFileString(
-        derivedPaths.settingsPath,
-        `${JSON.stringify({
-          observability: {
-            otlpTracesUrl: "http://localhost:4318/v1/traces",
-            otlpMetricsUrl: "http://localhost:4318/v1/metrics",
-            otlpLogsUrl: "http://localhost:4318/v1/logs",
-          },
-        })}\n`,
-      );
-
-      const resolved = yield* resolveServerConfig(minimalDesktopFlags(baseDir), Option.none()).pipe(
-        Effect.provide(
-          Layer.mergeAll(
-            ConfigProvider.layer(ConfigProvider.fromEnv({ env: {} })),
-            NetService.layer,
-          ),
-        ),
-      );
-
-      expect(resolved.otlpTracesUrl).toBeUndefined();
-      expect(resolved.otlpMetricsUrl).toBeUndefined();
-      expect(resolved.otlpLogsUrl).toBeUndefined();
-    }),
-  );
-
-  it.effect("zeroes an endpoint stored in Settings when the SDK is disabled", () =>
-    Effect.gen(function* () {
-      const fs = yield* FileSystem.FileSystem;
-      const path = yield* Path.Path;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-cli-config-otel-off-" });
-      const derivedPaths = yield* deriveExplicitServerPaths(baseDir, undefined);
-      yield* fs.makeDirectory(path.dirname(derivedPaths.settingsPath), { recursive: true });
-      yield* fs.writeFileString(
-        derivedPaths.settingsPath,
-        `${JSON.stringify({
-          observability: {
-            otlpTracesUrl: "http://localhost:4318/v1/traces",
-            otlpMetricsUrl: "http://localhost:4318/v1/metrics",
-            otlpLogsUrl: "http://localhost:4318/v1/logs",
-          },
-        })}\n`,
-      );
-
-      const resolved = yield* resolveServerConfig(
-        {
-          mode: Option.some("desktop"),
-          port: Option.some(4888),
-          host: Option.none(),
-          baseDir: Option.some(baseDir),
-          cwd: Option.none(),
-          devUrl: Option.none(),
-          noBrowser: Option.none(),
-          bootstrapFd: Option.none(),
-          autoBootstrapProjectFromCwd: Option.none(),
-          logWebSocketEvents: Option.none(),
-          tailscaleServeEnabled: Option.none(),
-          tailscaleServePort: Option.none(),
-          lan: Option.none(),
-        },
-        Option.none(),
-      ).pipe(
-        Effect.provide(
-          Layer.mergeAll(
-            ConfigProvider.layer(ConfigProvider.fromEnv({ env: { OTEL_SDK_DISABLED: "true" } })),
-            NetService.layer,
-          ),
-        ),
-      );
-
-      expect(resolved.otlpTracesUrl).toBeUndefined();
-      expect(resolved.otlpMetricsUrl).toBeUndefined();
-      expect(resolved.otlpLogsUrl).toBeUndefined();
-      expect(resolved.otelEnvironment.disabled).toBe(true);
-    }),
-  );
-
-  it.effect("keeps OTLP disabled when explicitly enabled", () =>
-    Effect.gen(function* () {
-      const fs = yield* FileSystem.FileSystem;
-      const path = yield* Path.Path;
-      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-cli-config-otel-on-" });
-      const derivedPaths = yield* deriveExplicitServerPaths(baseDir, undefined);
-      yield* fs.makeDirectory(path.dirname(derivedPaths.settingsPath), { recursive: true });
-      yield* fs.writeFileString(
-        derivedPaths.settingsPath,
-        `${JSON.stringify({
-          observability: {
-            otlpTracesUrl: "http://localhost:4318/v1/traces",
-          },
-        })}\n`,
-      );
-
-      const resolved = yield* resolveServerConfig(
-        {
-          mode: Option.some("desktop"),
-          port: Option.some(4888),
-          host: Option.none(),
-          baseDir: Option.some(baseDir),
-          cwd: Option.none(),
-          devUrl: Option.none(),
-          noBrowser: Option.none(),
-          bootstrapFd: Option.none(),
-          autoBootstrapProjectFromCwd: Option.none(),
-          logWebSocketEvents: Option.none(),
-          tailscaleServeEnabled: Option.none(),
-          tailscaleServePort: Option.none(),
-          lan: Option.none(),
-        },
-        Option.none(),
-      ).pipe(
-        Effect.provide(
-          Layer.mergeAll(
-            ConfigProvider.layer(
-              ConfigProvider.fromEnv({
-                env: { T3CODE_OTEL_SDK_DISABLED: "false", OTEL_SDK_DISABLED: "true" },
-              }),
-            ),
-            NetService.layer,
-          ),
-        ),
-      );
-
-      expect(resolved.otelEnvironment.disabled).toBe(false);
-      expect(resolved.otlpTracesUrl).toBeUndefined();
-    }),
-  );
-
   it.effect("forces noBrowser and disables auto-bootstrap for headless startup presentation", () =>
     Effect.gen(function* () {
       const { join } = yield* Path.Path;
-      const baseDir = join(NodeOS.tmpdir(), "t3-cli-config-headless-base");
+      const baseDir = join(NodeOS.tmpdir(), "vibecodinger-cli-config-headless-base");
       const derivedPaths = yield* deriveExplicitServerPaths(baseDir, undefined);
 
       const resolved = yield* resolveServerConfig(
@@ -767,8 +608,8 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
             ConfigProvider.layer(
               ConfigProvider.fromEnv({
                 env: {
-                  T3CODE_NO_BROWSER: "false",
-                  T3CODE_AUTO_BOOTSTRAP_PROJECT_FROM_CWD: "true",
+                  VIBECODINGER_NO_BROWSER: "false",
+                  VIBECODINGER_AUTO_BOOTSTRAP_PROJECT_FROM_CWD: "true",
                 },
               }),
             ),
@@ -799,52 +640,6 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
     }),
   );
 
-  it.effect("keeps whitespace-separated pairs and literal equals signs in OTLP headers", () =>
-    Effect.gen(function* () {
-      const { join } = yield* Path.Path;
-      const baseDir = join(NodeOS.tmpdir(), "t3-cli-config-otlp-headers-loose-base");
-
-      const resolved = yield* resolveServerConfig(
-        {
-          mode: Option.some("web"),
-          port: Option.some(3773),
-          host: Option.none(),
-          baseDir: Option.some(baseDir),
-          cwd: Option.none(),
-          devUrl: Option.none(),
-          noBrowser: Option.none(),
-          bootstrapFd: Option.none(),
-          autoBootstrapProjectFromCwd: Option.none(),
-          logWebSocketEvents: Option.none(),
-          tailscaleServeEnabled: Option.none(),
-          tailscaleServePort: Option.none(),
-          lan: Option.none(),
-        },
-        Option.none(),
-      ).pipe(
-        Effect.provide(
-          Layer.mergeAll(
-            ConfigProvider.layer(
-              ConfigProvider.fromEnv({
-                env: {
-                  T3CODE_OTLP_HEADERS: "authorization=Bearer abc==, x-tenant=t3",
-                  T3CODE_OTLP_TRACES_URL: "http://collector.internal:4318",
-                },
-              }),
-            ),
-            NetService.layer,
-          ),
-        ),
-      );
-
-      expect(resolved.otlpTracesExport.headers).toEqual({
-        authorization: "Bearer abc==",
-        "x-tenant": "t3",
-      });
-      expect(resolved.otlpTracesUrl).toBeUndefined();
-    }),
-  );
-
   const minimalWebFlags = (baseDir: string) => ({
     mode: Option.some("web" as const),
     port: Option.some(3773),
@@ -864,7 +659,9 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
   it.effect("uses the automatic port selector only when no port is configured", () =>
     Effect.gen(function* () {
       const baseDir = yield* FileSystem.FileSystem.pipe(
-        Effect.flatMap((fs) => fs.makeTempDirectoryScoped({ prefix: "t3-cli-auto-port-" })),
+        Effect.flatMap((fs) =>
+          fs.makeTempDirectoryScoped({ prefix: "vibecodinger-cli-auto-port-" }),
+        ),
       );
       const selected: Array<readonly [number, string | undefined]> = [];
       const selectAutomaticPort = (preferred: number, host: string | undefined) =>
@@ -905,12 +702,12 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
     }),
   );
 
-  it.effect("ignores export endpoints from environment, bootstrap, and saved settings", () =>
+  it.effect("starts with local diagnostics when old export settings are present", () =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const baseDir = yield* fs.makeTempDirectoryScoped({
-        prefix: "t3-cli-config-otel-precedence-",
+        prefix: "vibecodinger-cli-config-local-diagnostics-",
       });
       const derivedPaths = yield* deriveExplicitServerPaths(baseDir, undefined);
       yield* fs.makeDirectory(path.dirname(derivedPaths.settingsPath), { recursive: true });
@@ -919,18 +716,11 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
         `${JSON.stringify({ observability: { otlpLogsUrl: "http://settings:4318/v1/logs" } })}\n`,
       );
 
-      const fd = yield* openBootstrapFd(
-        makeDesktopBootstrap({
-          otlpMetricsUrl: "http://bootstrap:4318/v1/metrics",
-          otlpLogsUrl: "",
-        }),
-      );
+      const fd = yield* openBootstrapFd(makeDesktopBootstrap());
 
       const resolved = yield* resolveServerConfig(
         {
-          ...minimalWebFlags(baseDir),
-          mode: Option.some("desktop"),
-          port: Option.some(4888),
+          ...minimalDesktopFlags(baseDir),
           bootstrapFd: Option.some(fd),
         },
         Option.none(),
@@ -940,8 +730,8 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
             ConfigProvider.layer(
               ConfigProvider.fromEnv({
                 env: {
-                  T3CODE_OTLP_TRACES_URL: "http://t3:4318/v1/traces",
-                  T3CODE_OTLP_HEADERS: "x-key=secret",
+                  VIBECODINGER_OTLP_TRACES_URL: "http://vibecodinger:4318/v1/traces",
+                  VIBECODINGER_OTLP_EXPORT_INTERVAL_MS: "invalid",
                   OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: "http://otel-traces:4318/custom",
                   OTEL_EXPORTER_OTLP_METRICS_ENDPOINT: "http://otel-metrics:4318/custom",
                   OTEL_EXPORTER_OTLP_HEADERS: "x-key=otel",
@@ -953,117 +743,76 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
         ),
       );
 
-      expect(resolved.otlpTracesUrl).toBeUndefined();
-      expect(resolved.otlpMetricsUrl).toBeUndefined();
-      expect(resolved.otlpLogsUrl).toBeUndefined();
+      expect(resolved).toMatchObject({
+        ...defaultObservabilityConfig,
+        port: 4888,
+        noBrowser: true,
+      });
     }),
   );
 
   it.effect(
-    "exports nothing for a signal an OTEL endpoint claimed with a protocol or headers that do not read",
+    "listens on private networks per VIBECODINGER_LAN, else under the service launcher",
     () =>
       Effect.gen(function* () {
-        const fs = yield* FileSystem.FileSystem;
-        const path = yield* Path.Path;
-        const baseDir = yield* fs.makeTempDirectoryScoped({
-          prefix: "t3-cli-config-otel-off-",
-        });
-        const derivedPaths = yield* deriveExplicitServerPaths(baseDir, undefined);
-        yield* fs.makeDirectory(path.dirname(derivedPaths.settingsPath), { recursive: true });
-        yield* fs.writeFileString(
-          derivedPaths.settingsPath,
-          `${JSON.stringify({ observability: { otlpLogsUrl: "http://settings:4318/v1/logs" } })}\n`,
-        );
-
-        const fd = yield* openBootstrapFd(
-          makeDesktopBootstrap({ otlpMetricsUrl: "http://bootstrap:4318/v1/metrics" }),
-        );
-
-        const resolved = yield* resolveServerConfig(
-          {
-            ...minimalWebFlags(baseDir),
-            mode: Option.some("desktop"),
-            port: Option.some(4888),
-            bootstrapFd: Option.some(fd),
-          },
-          Option.none(),
-        ).pipe(
-          Effect.provide(
-            Layer.mergeAll(
-              ConfigProvider.layer(
-                ConfigProvider.fromEnv({
-                  env: {
-                    T3CODE_OTLP_TRACES_URL: "http://t3:4318/v1/traces",
-                    OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel:4318",
-                    OTEL_EXPORTER_OTLP_HEADERS: "x-key=%zz",
-                  },
-                }),
+        const { join } = yield* Path.Path;
+        const baseDir = join(NodeOS.tmpdir(), "vibecodinger-cli-config-service-host");
+        const resolveHost = (input: {
+          readonly connected: boolean;
+          readonly env?: Record<string, string>;
+        }) =>
+          resolveServerConfig(minimalWebFlags(baseDir), Option.none()).pipe(
+            Effect.map(({ host, privateNetworkOnly }) => ({ host, privateNetworkOnly })),
+            Effect.provide(
+              Layer.mergeAll(
+                ConfigProvider.layer(ConfigProvider.fromEnv({ env: input.env ?? {} })),
+                NetService.layer,
               ),
-              NetService.layer,
             ),
-          ),
-        );
-
-        expect(resolved.otlpTracesUrl).toBeUndefined();
-        expect(resolved.otlpMetricsUrl).toBeUndefined();
-        expect(resolved.otlpLogsUrl).toBeUndefined();
-      }),
-  );
-
-  it.effect("listens on private networks per T3CODE_LAN, else under the service launcher", () =>
-    Effect.gen(function* () {
-      const { join } = yield* Path.Path;
-      const baseDir = join(NodeOS.tmpdir(), "t3-cli-config-service-host");
-      const resolveHost = (input: {
-        readonly connected: boolean;
-        readonly env?: Record<string, string>;
-      }) =>
-        resolveServerConfig(minimalWebFlags(baseDir), Option.none()).pipe(
-          Effect.map(({ host, privateNetworkOnly }) => ({ host, privateNetworkOnly })),
-          Effect.provide(
-            Layer.mergeAll(
-              ConfigProvider.layer(ConfigProvider.fromEnv({ env: input.env ?? {} })),
-              NetService.layer,
-            ),
-          ),
-          Effect.provideService(HostProcess.Environment, {
-            [SERVICE_LAUNCHER_CONTEXT_ENV]: JSON.stringify({
-              protocol: SERVICE_LAUNCHER_PROTOCOL,
-              childVersion: packageJson.version,
+            Effect.provideService(HostProcess.Environment, {
+              [SERVICE_LAUNCHER_CONTEXT_ENV]: JSON.stringify({
+                protocol: SERVICE_LAUNCHER_PROTOCOL,
+                childVersion: packageJson.version,
+              }),
             }),
-          }),
-          Effect.provideService(ServiceLauncherHostProcess, {
-            connected: input.connected,
-            send: () => false,
-            on: () => undefined,
-            off: () => undefined,
-          }),
-        );
+            Effect.provideService(ServiceLauncherHostProcess, {
+              connected: input.connected,
+              send: () => false,
+              on: () => undefined,
+              off: () => undefined,
+            }),
+          );
 
-      // A service installed before T3CODE_LAN existed.
-      expect(yield* resolveHost({ connected: true })).toEqual({
-        host: "0.0.0.0",
-        privateNetworkOnly: true,
-      });
-      // `service.env` reaches the server as its environment.
-      expect(yield* resolveHost({ connected: true, env: { T3CODE_HOST: "127.0.0.1" } })).toEqual({
-        host: "127.0.0.1",
-        privateNetworkOnly: undefined,
-      });
-      expect(yield* resolveHost({ connected: true, env: { T3CODE_LAN: "false" } })).toEqual({
-        host: undefined,
-        privateNetworkOnly: undefined,
-      });
-      expect(yield* resolveHost({ connected: false, env: { T3CODE_LAN: "true" } })).toEqual({
-        host: "0.0.0.0",
-        privateNetworkOnly: true,
-      });
-      // Without the launcher's IPC channel the context was inherited, e.g. by
-      // `t3 serve` started from an agent inside the service.
-      expect(yield* resolveHost({ connected: false })).toEqual({
-        host: undefined,
-        privateNetworkOnly: undefined,
-      });
-    }),
+        // A service installed before VIBECODINGER_LAN existed.
+        expect(yield* resolveHost({ connected: true })).toEqual({
+          host: "0.0.0.0",
+          privateNetworkOnly: true,
+        });
+        // `service.env` reaches the server as its environment.
+        expect(
+          yield* resolveHost({ connected: true, env: { VIBECODINGER_HOST: "127.0.0.1" } }),
+        ).toEqual({
+          host: "127.0.0.1",
+          privateNetworkOnly: undefined,
+        });
+        expect(yield* resolveHost({ connected: true, env: { VIBECODINGER_LAN: "false" } })).toEqual(
+          {
+            host: undefined,
+            privateNetworkOnly: undefined,
+          },
+        );
+        expect(yield* resolveHost({ connected: false, env: { VIBECODINGER_LAN: "true" } })).toEqual(
+          {
+            host: "0.0.0.0",
+            privateNetworkOnly: true,
+          },
+        );
+        // Without the launcher's IPC channel the context was inherited, e.g. by
+        // `vibecodinger serve` started from an agent inside the service.
+        expect(yield* resolveHost({ connected: false })).toEqual({
+          host: undefined,
+          privateNetworkOnly: undefined,
+        });
+      }),
   );
 });

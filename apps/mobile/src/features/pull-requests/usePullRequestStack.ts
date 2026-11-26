@@ -1,6 +1,6 @@
-import { threadPullRequestLinkMode } from "@t3tools/client-runtime/thread-pull-request-compatibility";
-import type { PullRequestDetail } from "@t3tools/contracts";
-import { sourceControlClients } from "@t3tools/client-runtime/source-control-clients";
+import { threadPullRequestLinkMode } from "@vibecodinger/client-runtime/thread-pull-request-compatibility";
+import type { PullRequestDetail } from "@vibecodinger/contracts";
+import { sourceControlClients } from "@vibecodinger/client-runtime/source-control-clients";
 import { useAtomValue } from "@effect/atom-react";
 import { Atom } from "effect/reactivity";
 import { useMemo } from "react";

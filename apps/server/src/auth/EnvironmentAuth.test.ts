@@ -4,7 +4,7 @@ import {
   authScopeResponse,
   AuthAdministrativeClientScopes,
   connectDeviceVerificationCode,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import { expect, it } from "@effect/vitest";
 import * as DateTime from "effect/DateTime";
 import * as Effect from "effect/Effect";
@@ -36,7 +36,11 @@ const layerServerConfig = (overrides?: Partial<ServerConfig.ServerConfig["Servic
         port: TEST_SERVER_PORT,
       } satisfies ServerConfig.ServerConfig["Service"];
     }),
-  ).pipe(Layer.provide(ServerConfig.layerTest(process.cwd(), { prefix: "t3-auth-server-test-" })));
+  ).pipe(
+    Layer.provide(
+      ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-auth-server-test-" }),
+    ),
+  );
 
 const layerEnvironmentAuth = (overrides?: Partial<ServerConfig.ServerConfig["Service"]>) =>
   EnvironmentAuth.layer.pipe(
@@ -106,7 +110,7 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodePlatformCrypto.layer))(
         >[0];
 
         const authenticated = yield* serverAuth.authenticateHttpRequest(request);
-        expect(devExchange.cookieName).toMatch(/^t3_dev_session_/);
+        expect(devExchange.cookieName).toMatch(/^vibecodinger_dev_session_/);
         expect(devExchange.expireNormalCookie).toBe(true);
         expect(devExchange.response).toMatchObject(
           authScopeResponse(AuthAdministrativeClientScopes),
@@ -289,7 +293,7 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodePlatformCrypto.layer))(
         const sessions = yield* SessionStore.SessionStore;
         const bearer = yield* serverAuth.issueSession();
         const verified = yield* serverAuth.authenticateHttpRequest({
-          cookies: { [sessions.legacyCookieName ?? "t3_session"]: "stale" },
+          cookies: { [sessions.legacyCookieName ?? "vibecodinger_session"]: "stale" },
           headers: { authorization: `Bearer ${bearer.token}` },
         } as never);
 
@@ -536,7 +540,7 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodePlatformCrypto.layer))(
         const day = 24 * 60 * 60 * 1000;
         const issue = (peerLink: boolean) =>
           serverAuth.issueMcpClientSession({
-            label: peerLink ? "T3 Code · A" : "ChatGPT",
+            label: peerLink ? "VibeCodinger · A" : "ChatGPT",
             access: "auto",
             peerLink,
             client: requestMetadata,
@@ -757,7 +761,7 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodePlatformCrypto.layer))(
         const paired = yield* serverAuth.exchangeBootstrapCredentialForAccessToken(
           pairing.credential,
           undefined,
-          { ...requestMetadata, label: "T3 Code Desktop" },
+          { ...requestMetadata, label: "VibeCodinger Desktop" },
         );
         const first = yield* serverAuth.exchangeBootstrapCredentialForAccessToken(
           "desktop-bootstrap-token",
@@ -984,7 +988,7 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodePlatformCrypto.layer))(
           origin: "https://box.tail1234.ts.net",
           "x-forwarded-host": "box.tail1234.ts.net",
         });
-        yield* upgrade({ origin: "t3code://app" });
+        yield* upgrade({ origin: "vibecodinger://app" });
         yield* upgrade({ origin: "http://localhost:5733" });
         yield* upgrade({});
 

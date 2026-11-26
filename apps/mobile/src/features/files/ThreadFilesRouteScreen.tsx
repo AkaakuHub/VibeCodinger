@@ -1,6 +1,6 @@
-import { formatFilePathForClipboard } from "@t3tools/client-runtime/media-actions";
-import { resolvePathLinkTarget } from "@t3tools/shared/fileLinks";
-import { resolveFilesystemReadAccess } from "@t3tools/client-runtime/state/filesystem";
+import { formatFilePathForClipboard } from "@vibecodinger/client-runtime/media-actions";
+import { resolvePathLinkTarget } from "@vibecodinger/shared/fileLinks";
+import { resolveFilesystemReadAccess } from "@vibecodinger/client-runtime/state/filesystem";
 import { environmentSession } from "../../state/session";
 import {
   StackActions,
@@ -12,17 +12,17 @@ import { useGT, useMessages } from "gt-react-native";
 import { type ComponentProps, type ReactNode, useId, useState } from "react";
 import { Platform, View } from "react-native";
 import Svg, { Defs, LinearGradient, Rect, Stop } from "react-native-svg";
-import { EnvironmentId, type ProjectReadFileResult, ThreadId } from "@t3tools/contracts";
-import { videoMimeType } from "@t3tools/shared/video";
+import { EnvironmentId, type ProjectReadFileResult, ThreadId } from "@vibecodinger/contracts";
+import { videoMimeType } from "@vibecodinger/shared/video";
 import {
   isWorkspaceBrowserPreviewPath,
   isWorkspaceImagePreviewPath,
   mediaMimeTypeFromExtension,
-} from "@t3tools/shared/filePreview";
-import { mediaFileReference } from "@t3tools/client-runtime/media-reference";
+} from "@vibecodinger/shared/filePreview";
+import { mediaFileReference } from "@vibecodinger/client-runtime/media-reference";
 
 import { ScreenContent } from "../../components/ui/ScreenContent";
-import { filePreviewDelimiter, parseDelimitedPreview } from "@t3tools/shared/delimitedPreview";
+import { filePreviewDelimiter, parseDelimitedPreview } from "@vibecodinger/shared/delimitedPreview";
 import { DelimitedFilePreview } from "./DelimitedFilePreview";
 import { AudioFilePreview } from "./AudioFilePreview";
 import { EmptyState } from "../../components/ui/EmptyState";

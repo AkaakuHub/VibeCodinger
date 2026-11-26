@@ -1,6 +1,6 @@
 import * as NodeAssert from "node:assert/strict";
 
-import { EnvironmentId, ServerConfig, ServerNpmReleaseError } from "@t3tools/contracts";
+import { EnvironmentId, ServerConfig, ServerNpmReleaseError } from "@vibecodinger/contracts";
 import { expect, it } from "@effect/vitest";
 import * as Cause from "effect/Cause";
 import { AsyncResult, Atom, AtomRegistry } from "effect/reactivity";
@@ -54,8 +54,6 @@ const configFor = (environmentId: EnvironmentId | null, supported = true) =>
     observability: {
       logsDirectoryPath: "/test/logs",
       localTracingEnabled: false,
-      otlpTracesEnabled: false,
-      otlpMetricsEnabled: false,
     },
     settings: {},
   });

@@ -1,12 +1,11 @@
 import { useAtomValue } from "@effect/atom-react";
-import { createEnvironmentSessionAtoms } from "@t3tools/client-runtime/state/session";
+import { createEnvironmentSessionAtoms } from "@vibecodinger/client-runtime/state/session";
 import {
   type AuthEnvironmentScope,
   type AuthSessionState,
-  AuthRelayConfigureScope,
   type EnvironmentId,
   sessionGrantsScope,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import * as Option from "effect/Option";
 import { AsyncResult, Atom } from "effect/reactivity";
 
@@ -33,20 +32,6 @@ export function useEnvironmentScope(
       : environmentSession.sessionStateAtom(environmentId),
     (result) => sessionHasScope(result, scope),
   );
-}
-
-export function useEnvironmentCanConfigureRelay(environmentId: EnvironmentId | null): boolean {
-  return useAtomValue(
-    environmentId === null
-      ? EMPTY_SESSION_STATE_ATOM
-      : environmentSession.sessionStateAtom(environmentId),
-    (result) => sessionHasScope(result, AuthRelayConfigureScope),
-  );
-}
-
-export function readEnvironmentCanConfigureRelay(environmentId: EnvironmentId): boolean {
-  const result = appAtomRegistry.get(environmentSession.sessionStateAtom(environmentId));
-  return sessionHasScope(result, AuthRelayConfigureScope);
 }
 
 export function sessionHasScope(

@@ -7,7 +7,7 @@ describe("appLinkUrl", () => {
     expect(appLinkUrl("obsidian://open?vault=vault&file=Note")).toBe(
       "obsidian://open?vault=vault&file=Note",
     );
-    expect(appLinkUrl("t3-thread://v2/env/thread")).toBe("t3-thread://v2/env/thread");
+    expect(appLinkUrl("vc-thread://v2/env/thread")).toBe("vc-thread://v2/env/thread");
     expect(appLinkUrl("mailto:a@example.com")).toBe("mailto:a@example.com");
   });
 

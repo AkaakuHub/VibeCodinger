@@ -5,13 +5,13 @@ import type {
   ProjectScript,
   ResolvedKeybindingsConfig,
   ThreadId,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 
-import { scopeProjectRef } from "@t3tools/client-runtime/environment";
-import { isScratchProject } from "@t3tools/client-runtime/state/projects";
+import { scopeProjectRef } from "@vibecodinger/client-runtime/environment";
+import { isScratchProject } from "@vibecodinger/client-runtime/state/projects";
 
 import type { ComposerThreadTarget, DraftId } from "../../composerDraftStore";
-import { useT3ProjectFileScripts } from "../../hooks/useT3ProjectFileScripts";
+import { useVibeCodingerProjectFileScripts } from "../../hooks/useVibeCodingerProjectFileScripts";
 import { type EnvMode, type EnvironmentOption } from "../BranchToolbar.logic";
 import { BranchToolbar } from "../BranchToolbar";
 import GitActionsControl from "../GitActionsControl";
@@ -101,7 +101,7 @@ export function ThreadDetailsPanel(props: ThreadDetailsPanelProps) {
   const visible = useClientSettings(resolveThreadDetailsVisibility);
   const gt = useGT();
   const [menuPosition, setMenuPosition] = useState<{ x: number; y: number } | null>(null);
-  const fileScripts = useT3ProjectFileScripts(
+  const fileScripts = useVibeCodingerProjectFileScripts(
     props.environmentId,
     props.activeProjectScripts && visible.scripts ? props.gitCwd : null,
   );

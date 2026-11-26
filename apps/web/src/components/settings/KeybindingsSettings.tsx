@@ -1,4 +1,4 @@
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
+import { thrownErrorMessage } from "@vibecodinger/client-runtime/errors";
 import { m as resolveMessage } from "~/i18n/messages";
 import { useEnvironmentScope } from "../../state/session";
 import { useEnvironmentsWithScope, readEnvironmentScope } from "../../state/session";
@@ -32,15 +32,15 @@ import {
   type KeybindingWhenNode,
   type ServerRemoveKeybindingInput,
   type ServerUpsertKeybindingInput,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import {
   mergeWithDefaultKeybindings,
   parseKeybindingWhenExpression,
-} from "@t3tools/shared/keybindings";
+} from "@vibecodinger/shared/keybindings";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
+} from "@vibecodinger/client-runtime/state/runtime";
 
 import { isElectron } from "../../env";
 import { useOpenInPreferredEditor } from "../../editorPreferences";
@@ -286,8 +286,8 @@ function UnknownWhenVariableWarning({
   return (
     <WarningTooltipIcon label={label} focusable={focusable} className="size-4.5">
       <T>
-        T3 Code does not recognize this condition yet. It can still be saved, but it may not match
-        unless the runtime provides it.
+        VibeCodinger does not recognize this condition yet. It can still be saved, but it may not
+        match unless the runtime provides it.
       </T>
     </WarningTooltipIcon>
   );

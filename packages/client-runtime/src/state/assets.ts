@@ -6,13 +6,13 @@ import {
   EnvironmentId,
   type ProjectCloneSnapshot,
   WS_METHODS,
-} from "@t3tools/contracts";
-import { mediaMimeTypeFromExtension } from "@t3tools/shared/mediaPreview";
-import { isWindowsAbsolutePath } from "@t3tools/shared/path";
+} from "@vibecodinger/contracts";
+import { mediaMimeTypeFromExtension } from "@vibecodinger/shared/mediaPreview";
+import { isWindowsAbsolutePath } from "@vibecodinger/shared/path";
 import {
   getProjectFaviconResourceKey,
   isProjectFaviconFallbackUrl,
-} from "@t3tools/shared/projectFavicon";
+} from "@vibecodinger/shared/projectFavicon";
 import * as Cause from "effect/Cause";
 import * as Effect from "effect/Effect";
 import * as Option from "effect/Option";

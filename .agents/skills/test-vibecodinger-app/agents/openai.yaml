@@ -1,0 +1,4 @@
+interface:
+  display_name: "VibeCodinger App Testing"
+  short_description: "Test web and desktop in VibeCodinger's Browser panel"
+  default_prompt: "Use $test-vibecodinger-app to verify the affected web or desktop flow through VibeCodinger's Browser panel."

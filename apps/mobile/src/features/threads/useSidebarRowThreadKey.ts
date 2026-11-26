@@ -1,6 +1,6 @@
 import { useAtomValue } from "@effect/atom-react";
-import { parseScopedThreadKey } from "@t3tools/client-runtime/environment";
-import { resolveListedAncestorThreadRef } from "@t3tools/client-runtime/state/threads";
+import { parseScopedThreadKey } from "@vibecodinger/client-runtime/environment";
+import { resolveListedAncestorThreadRef } from "@vibecodinger/client-runtime/state/threads";
 import { Atom } from "effect/reactivity";
 
 import { scopedThreadKey } from "../../lib/scopedEntities";

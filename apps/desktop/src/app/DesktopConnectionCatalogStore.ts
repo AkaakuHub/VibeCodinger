@@ -5,13 +5,13 @@ import {
   RelayConnectionTarget,
   SshConnectionProfile,
   SshConnectionTarget,
-} from "@t3tools/client-runtime/connection";
+} from "@vibecodinger/client-runtime/connection";
 import {
   ConnectionCatalogDocument as RuntimeConnectionCatalogDocument,
   type ConnectionCatalogDocument as RuntimeConnectionCatalogDocumentType,
-} from "@t3tools/client-runtime/platform";
-import type { PersistedSavedEnvironmentRecord } from "@t3tools/contracts";
-import { fromLenientJson } from "@t3tools/shared/schemaJson";
+} from "@vibecodinger/client-runtime/platform";
+import type { PersistedSavedEnvironmentRecord } from "@vibecodinger/contracts";
+import { fromLenientJson } from "@vibecodinger/shared/schemaJson";
 import * as Context from "effect/Context";
 import * as SecureRandom from "effect/crypto/SecureRandom";
 import * as Effect from "effect/Effect";
@@ -169,7 +169,7 @@ export class DesktopConnectionCatalogStore extends Context.Service<
       DesktopConnectionCatalogStoreWriteError | DesktopConnectionCatalogStoreProtectionError
     >;
   }
->()("@t3tools/desktop/app/DesktopConnectionCatalogStore") {}
+>()("@vibecodinger/desktop/app/DesktopConnectionCatalogStore") {}
 
 function decodeSecretBytes(
   catalogPath: string,

@@ -1,5 +1,5 @@
 // @effect-diagnostics nodeBuiltinImport:off - Exercises the packaging filesystem and readelf.
-import * as HostProcess from "@t3tools/shared/HostProcess";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
 import * as NodeFSP from "node:fs/promises";
 import * as NodeOS from "node:os";
 import * as NodePath from "node:path";
@@ -106,7 +106,7 @@ describe.skipIf(HostProcess.Platform.defaultValue() !== "linux")("packaged ELF s
   it.each([62, 183])(
     "checks executable, addon and extensionless ELF requirements for machine %s",
     async (machine) => {
-      const root = await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "t3-glibc-"));
+      const root = await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "vibecodinger-glibc-"));
       try {
         const app = NodePath.join(root, "app");
         const native = NodePath.join(app, "resources/app.asar.unpacked/node_modules/addon");

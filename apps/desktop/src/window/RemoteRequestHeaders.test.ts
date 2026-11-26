@@ -6,23 +6,21 @@ import {
 } from "./RemoteRequestHeaders.ts";
 
 const packagedPolicy: MainWindowRequestHeaderPolicy = {
-  desktopOrigin: "t3code://app",
+  desktopOrigin: "vibecodinger://app",
   mainWebContentsId: 42,
-  clerkFrontendApiHostname: "clerk.t3.codes",
   isDevelopment: false,
 };
 
 const devPolicy: MainWindowRequestHeaderPolicy = {
-  desktopOrigin: "t3code-dev://app",
+  desktopOrigin: "vibecodinger-dev://app",
   mainWebContentsId: 42,
-  clerkFrontendApiHostname: "clerk.t3.codes",
   devServerOrigin: "http://devbox.internal:5733",
   isDevelopment: true,
 };
 
 describe("RemoteRequestHeaders", () => {
   it.each([
-    "https://remote.example.com/.well-known/t3/environment",
+    "https://remote.example.com/.well-known/vibecodinger/environment",
     "http://127.0.0.1:8080/api/auth/bootstrap",
     "ws://127.0.0.1:8080/ws?ticket=abc",
     "wss://remote.example.com/ws?ticket=abc",
@@ -32,7 +30,7 @@ describe("RemoteRequestHeaders", () => {
       webContentsId: 42,
       frame: { parent: null },
       requestHeaders: {
-        Origin: "t3code://app",
+        Origin: "vibecodinger://app",
         "Sec-Fetch-Site": "cross-site",
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Dest": "empty",
@@ -54,7 +52,7 @@ describe("RemoteRequestHeaders", () => {
       webContentsId: 42,
       frame: null,
       requestHeaders: {
-        origin: "t3code://app",
+        origin: "vibecodinger://app",
         "Sec-Fetch-Site": "cross-site",
         Upgrade: "websocket",
       },
@@ -63,21 +61,6 @@ describe("RemoteRequestHeaders", () => {
     assert.deepEqual(headers, {
       Upgrade: "websocket",
     });
-  });
-
-  it("preserves headers for Clerk frontend API requests", () => {
-    for (const url of ["https://clerk.t3.codes/v1/client", "https://CLERK.T3.CODES./v1/client"]) {
-      const headers = stripDesktopOriginHeaders(packagedPolicy, {
-        url,
-        webContentsId: 42,
-        frame: { parent: null },
-        requestHeaders: {
-          Origin: "t3code://app",
-          "Sec-Fetch-Site": "cross-site",
-        },
-      });
-      assert.isUndefined(headers);
-    }
   });
 
   it("preserves headers for dev loopback and exact devServerOrigin, while stripping other ports and remote hosts", () => {
@@ -96,7 +79,7 @@ describe("RemoteRequestHeaders", () => {
           webContentsId: 42,
           frame: { parent: null },
           requestHeaders: {
-            Origin: "t3code-dev://app",
+            Origin: "vibecodinger-dev://app",
             "Sec-Fetch-Site": "cross-site",
           },
         }),
@@ -113,7 +96,7 @@ describe("RemoteRequestHeaders", () => {
           webContentsId: 42,
           frame: { parent: null },
           requestHeaders: {
-            Origin: "t3code-dev://app",
+            Origin: "vibecodinger-dev://app",
             "Sec-Fetch-Site": "cross-site",
             "Content-Type": "application/json",
           },
@@ -142,7 +125,7 @@ describe("RemoteRequestHeaders", () => {
         webContentsId: 42,
         frame: { parent: {} },
         requestHeaders: {
-          Origin: "t3code://app",
+          Origin: "vibecodinger://app",
           "Sec-Fetch-Site": "cross-site",
         },
       }),
@@ -154,7 +137,7 @@ describe("RemoteRequestHeaders", () => {
         webContentsId: 99,
         frame: { parent: null },
         requestHeaders: {
-          Origin: "t3code://app",
+          Origin: "vibecodinger://app",
           "Sec-Fetch-Site": "cross-site",
         },
       }),
@@ -166,7 +149,7 @@ describe("RemoteRequestHeaders", () => {
         webContentsId: undefined,
         frame: null,
         requestHeaders: {
-          Origin: "t3code://app",
+          Origin: "vibecodinger://app",
           "Sec-Fetch-Site": "cross-site",
         },
       }),

@@ -3,8 +3,8 @@ import {
   isPrivateNetworkHost,
   isSharedAddressSpaceHost,
   isTailnetHost,
-} from "@t3tools/shared/hostClassification";
-import type { DesktopSshEnvironmentTarget } from "@t3tools/contracts";
+} from "@vibecodinger/shared/hostClassification";
+import type { DesktopSshEnvironmentTarget } from "@vibecodinger/contracts";
 import * as Option from "effect/Option";
 
 import {
@@ -41,6 +41,15 @@ export function connectionRouteId(target: ConnectionTarget): string {
 
 export function connectionRoutes(entry: ConnectionCatalogEntry): ReadonlyArray<ConnectionRoute> {
   return [{ target: entry.target, profile: entry.profile }, ...(entry.alternateRoutes ?? [])];
+}
+
+function routeIdentityKey(route: ConnectionRoute): string | undefined {
+  const profile = Option.getOrUndefined(route.profile);
+  return profile?._tag === "BearerConnectionProfile" ? profile.e2eeServerIdentityKey : undefined;
+}
+
+function savedIdentityKey(routes: ReadonlyArray<ConnectionRoute>): string | undefined {
+  return routes.map(routeIdentityKey).find((key) => key !== undefined);
 }
 
 export function entryWithRoutes(
@@ -188,13 +197,13 @@ function routeAddressKey(route: ConnectionRoute): string | null {
   }
 }
 
-const T3_CONNECT_NAME = "T3 Connect";
+const VIBECODINGER_CONNECT_NAME = "T3 Connect";
 
 /** The route's label in English. Display sites use `connectionRouteLabelText`. */
 export function connectionRouteLabel(route: ConnectionRoute): string {
   switch (connectionRouteKind(route)) {
     case "relay":
-      return T3_CONNECT_NAME;
+      return VIBECODINGER_CONNECT_NAME;
     case "loopback":
       return msg("This device");
     case "lan":
@@ -263,6 +272,7 @@ export function mergeLearnedRoutes(input: {
   const { entry } = input;
   const active = input.activeRoute.target;
   const saved = connectionRoutes(entry);
+  if (savedIdentityKey(saved) !== undefined) return null;
   if (active._tag !== "RelayConnectionTarget" && active._tag !== "BearerConnectionTarget") {
     return null;
   }
@@ -400,10 +410,14 @@ export function sendsTokenInClear(
   );
 }
 
-/** Routes a connect may use: none sends a paired token over plain HTTP it wasn't paired over. */
 export function usableRoutes(entry: ConnectionCatalogEntry): ReadonlyArray<ConnectionRoute> {
   const routes = connectionRoutes(entry);
-  return routes.filter((route) => !sendsTokenInClear(routes, route));
+  const identity = savedIdentityKey(routes);
+  return routes.filter((route) =>
+    identity === undefined
+      ? !sendsTokenInClear(routes, route)
+      : routeIdentityKey(route) === identity && routeHttpBaseUrl(route)?.startsWith("https:"),
+  );
 }
 
 export interface ReportedEndpoint {

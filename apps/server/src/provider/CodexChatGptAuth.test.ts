@@ -9,7 +9,7 @@ import * as NodeCrypto from "node:crypto";
 import * as NodePlatformCrypto from "@effect/platform-node/NodeCrypto";
 import * as NodeServices from "@effect/platform-node/NodeServices";
 import { assert, it } from "@effect/vitest";
-import { EnvironmentId, ProviderInstanceId } from "@t3tools/contracts";
+import { EnvironmentId, ProviderInstanceId } from "@vibecodinger/contracts";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as Option from "effect/Option";
@@ -22,7 +22,6 @@ import { FetchHttpClient, HttpClient, HttpClientResponse } from "effect/http";
 import * as ServerSecretStore from "../auth/ServerSecretStore.ts";
 import * as ServerEnvironment from "../environment/ServerEnvironment.ts";
 import * as ProviderCredentialStore from "./ProviderCredentialStore.ts";
-import * as AnalyticsService from "../telemetry/AnalyticsService.ts";
 import { makeCodexChatGptAuth } from "./CodexChatGptAuth.ts";
 
 const assertSameCallback = (actual: string | null, expected: string | null) => {
@@ -37,7 +36,6 @@ const instanceId = ProviderInstanceId.make("managed-codex-test");
 const makeHarnessFor = Effect.fnUntraced(function* (
   instanceId: ProviderInstanceId,
   bytes: Map<string, Uint8Array> = new Map(),
-  failAnalytics = false,
 ) {
   const environmentId = environmentIds.get(bytes) ?? EnvironmentId.make(NodeCrypto.randomUUID());
   environmentIds.set(bytes, environmentId);
@@ -224,25 +222,11 @@ const makeHarnessFor = Effect.fnUntraced(function* (
   const address = server.address();
   if (!address || typeof address === "string") throw new Error("mock address");
   origin = `http://127.0.0.1:${address.port}`;
-  const analyticsEvents: {
-    event: string;
-    properties: Readonly<Record<string, unknown>> | undefined;
-  }[] = [];
-  const analytics = AnalyticsService.AnalyticsService.of({
-    record: (event, properties) =>
-      failAnalytics
-        ? Effect.die("analytics unavailable")
-        : Effect.sync(() => {
-            analyticsEvents.push({ event, properties });
-            return true;
-          }),
-  });
   const auth = yield* makeCodexChatGptAuth({
     instanceId,
     discoveryUrl: `${origin}/discovery`,
     resource: `${origin}/v1`,
   }).pipe(
-    Effect.provideService(AnalyticsService.AnalyticsService, analytics),
     Effect.provideService(ServerSecretStore.ServerSecretStore, secrets),
     Effect.provideService(ServerEnvironment.ServerEnvironmentIdentity, environment),
   );
@@ -298,7 +282,6 @@ const makeHarnessFor = Effect.fnUntraced(function* (
     rotateSigningKey: () => {
       signingKey = signingKeyFor("rotated");
     },
-    analyticsEvents,
     secrets,
     environmentId,
     bytes,
@@ -313,7 +296,7 @@ const makeHarnessFor = Effect.fnUntraced(function* (
         },
         "owner",
         { discoveryUrl: `${origin}/discovery`, resource: `${origin}/v1` },
-      ).pipe(Stream.provideService(AnalyticsService.AnalyticsService, analytics)),
+      ),
     finishCallback: (state: { authorizationUrl: string | null }) =>
       Effect.promise(() => fetch(prepareCallback(state))),
     destination: Effect.gen(function* () {
@@ -335,7 +318,6 @@ const makeHarnessFor = Effect.fnUntraced(function* (
         discoveryUrl: `${origin}/discovery`,
         resource: `${origin}/v1`,
       }).pipe(
-        Effect.provideService(AnalyticsService.AnalyticsService, analytics),
         Effect.provideService(ServerSecretStore.ServerSecretStore, destinationStore),
         Effect.provideService(ServerEnvironment.ServerEnvironmentIdentity, environment),
       );
@@ -600,7 +582,7 @@ it.effect(
           "state",
         ]);
         assert.strictEqual(first.searchParams.get("client_id"), "dynamic_agent_client");
-        assert.strictEqual(first.searchParams.get("agent_name_hint"), "T3 Code");
+        assert.strictEqual(first.searchParams.get("agent_name_hint"), "vibecodinger");
         assert.strictEqual(first.searchParams.get("response_type"), "code");
         assert.strictEqual(
           first.searchParams.get("scope"),
@@ -1705,17 +1687,6 @@ it.effect(
     ),
 );
 
-it.effect("telemetry failures do not fail a verified ChatGPT sign-in", () =>
-  provision(
-    Effect.gen(function* () {
-      const h = yield* makeHarnessFor(instanceId, new Map(), true);
-      yield* h.signIn;
-      const state = yield* h.phase("succeeded");
-      assert.strictEqual(state.phase, "succeeded");
-      assert.isTrue(Option.isSome(yield* h.auth.read));
-    }),
-  ),
-);
 it.effect("a running session renews its bound profile but refuses a replacement sign-in", () =>
   provision(
     Effect.gen(function* () {
@@ -1858,7 +1829,7 @@ const provideBroker = <A, E, R>(effect: Effect.Effect<A, E, R>) =>
   effect.pipe(
     Effect.scoped,
     Effect.provide(
-      ServerConfig.layerTest(process.cwd(), { prefix: "t3-renewal-test-" }).pipe(
+      ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-renewal-test-" }).pipe(
         Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodePlatformCrypto.layer)),
       ),
     ),

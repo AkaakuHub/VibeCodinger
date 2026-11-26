@@ -1,9 +1,5 @@
-import type { DpopFailureReason } from "@t3tools/contracts";
-import {
-  T3CHAT_PLAN_TUNNEL_LIMITS,
-  type RelayEnvironmentStatusResponse,
-  type RelayProtectedError,
-} from "@t3tools/contracts/relay";
+import type { DpopFailureReason } from "@vibecodinger/contracts";
+import { VC_PLAN_TUNNEL_LIMITS, type RelayProtectedError } from "@vibecodinger/contracts/relay";
 import { mFallback, msg } from "gt-i18n";
 import type { MFunctionType } from "gt-i18n/types";
 
@@ -102,14 +98,14 @@ export function relayProtectedErrorText(error: RelayProtectedError): MarkedText 
             }),
           ];
     case "RelayEnvironmentLinkLimitExceededError":
-      return error.maxTunnels < T3CHAT_PLAN_TUNNEL_LIMITS.premier
+      return error.maxTunnels < VC_PLAN_TUNNEL_LIMITS.premier
         ? [
             msg(
               "Relay refused the link: this account already has its maximum of {maxTunnels} managed tunnels. Unlink an environment, or link a paid T3 Chat account in your T3 Connect account settings on web or desktop. Pro raises the default limit to {pro} and Premier to {premier}.",
               {
                 maxTunnels: error.maxTunnels,
-                pro: T3CHAT_PLAN_TUNNEL_LIMITS.pro,
-                premier: T3CHAT_PLAN_TUNNEL_LIMITS.premier,
+                pro: VC_PLAN_TUNNEL_LIMITS.pro,
+                premier: VC_PLAN_TUNNEL_LIMITS.premier,
               },
             ),
           ]
@@ -141,7 +137,7 @@ export function relayProtectedErrorMessage(
 
 // The relay cuts off a request it cannot finish in time with a 504 that no
 // endpoint declares, so the client sees only the status.
-export const RELAY_GATEWAY_TIMEOUT_MESSAGE = msg(
+const RELAY_GATEWAY_TIMEOUT_MESSAGE = msg(
   "Relay timed out before it finished the request (HTTP 504). Try again in a few minutes. If it keeps failing, copy the trace ID when you report it.",
 );
 
@@ -154,31 +150,4 @@ export function relayRequestFailureText(error: {
   if (error.status !== undefined)
     return [msg("Relay returned an unexpected HTTP {status}.", { status: error.status })];
   return null;
-}
-
-export function relayRequestFailureDetail(
-  error: {
-    readonly relayError?: RelayProtectedError | undefined;
-    readonly status?: number | undefined;
-  },
-  resolve: MFunctionType = mFallback,
-): string | null {
-  const text = relayRequestFailureText(error);
-  return text === null ? null : resolveMarkedText(text, resolve);
-}
-
-export function relayOfflineReasonMessage(
-  status: Pick<RelayEnvironmentStatusResponse, "offlineReason">,
-  resolve: MFunctionType = mFallback,
-): string | null {
-  switch (status.offlineReason) {
-    case "tunnel_released":
-      return resolve(
-        msg(
-          "Offline for a while, so its T3 Connect tunnel was removed. Start T3 Code on that computer and update it to the latest version to reconnect.",
-        ),
-      );
-    case undefined:
-      return null;
-  }
 }

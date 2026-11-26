@@ -12,14 +12,14 @@ import {
   UsageLimitSourceConfig,
   isSecretReference,
   secretSettingsFields,
-} from "@t3tools/contracts";
-import { acpRegistryClient } from "@t3tools/provider-acp-registry/client";
-import { cursorClient } from "@t3tools/provider-cursor/client";
-import { grokClient } from "@t3tools/provider-grok/client";
-import { kiroClient } from "@t3tools/provider-kiro/client";
-import { museClient } from "@t3tools/provider-muse/client";
-import { openCodeClient } from "@t3tools/provider-opencode/client";
-import { piClient } from "@t3tools/provider-pi/client";
+} from "@vibecodinger/contracts";
+import { acpRegistryClient } from "@vibecodinger/provider-acp-registry/client";
+import { cursorClient } from "@vibecodinger/provider-cursor/client";
+import { grokClient } from "@vibecodinger/provider-grok/client";
+import { kiroClient } from "@vibecodinger/provider-kiro/client";
+import { museClient } from "@vibecodinger/provider-muse/client";
+import { openCodeClient } from "@vibecodinger/provider-opencode/client";
+import { piClient } from "@vibecodinger/provider-pi/client";
 import {
   readSecretFieldValues,
   SOURCE_CONTROL_HOST_SECRET_FIELDS,

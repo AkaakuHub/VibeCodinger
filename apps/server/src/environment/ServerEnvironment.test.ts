@@ -1,6 +1,6 @@
 import * as NodeCrypto from "@effect/platform-node/NodeCrypto";
 import * as NodeServices from "@effect/platform-node/NodeServices";
-import { ORCHESTRATION_PROTOCOL_VERSION } from "@t3tools/contracts";
+import { ORCHESTRATION_PROTOCOL_VERSION } from "@vibecodinger/contracts";
 import { expect, it } from "@effect/vitest";
 import * as SecureRandom from "effect/crypto/SecureRandom";
 import * as Deferred from "effect/Deferred";
@@ -9,16 +9,9 @@ import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";
 import * as Layer from "effect/Layer";
 
-import { DEFAULT_SIGNAL_EXPORT } from "@t3tools/shared/observability";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import * as OtelEnvironment from "@t3tools/shared/otelEnvironment";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
 
 import * as ServerSecretStore from "../auth/ServerSecretStore.ts";
-import {
-  PUBLISH_AGENT_ACTIVITY_SECRET,
-  RELAY_ENVIRONMENT_CREDENTIAL_SECRET,
-  RELAY_URL_SECRET,
-} from "../cloud/config.ts";
 import * as ServerConfig from "../config.ts";
 import * as ServerEnvironment from "./ServerEnvironment.ts";
 
@@ -50,13 +43,7 @@ const makeServerConfig = Effect.fn(function* (baseDir: string) {
     traceBatchWindowMs: 200,
     traceMaxBytes: 10 * 1024 * 1024,
     traceMaxFiles: 10,
-    otlpTracesUrl: undefined,
-    otlpMetricsUrl: undefined,
-    otlpLogsUrl: undefined,
-    otlpTracesExport: DEFAULT_SIGNAL_EXPORT,
-    otlpMetricsExport: DEFAULT_SIGNAL_EXPORT,
-    otlpLogsExport: DEFAULT_SIGNAL_EXPORT,
-    otelEnvironment: OtelEnvironment.none,
+
     cwd: process.cwd(),
     baseDir,
     mode: "web",
@@ -82,15 +69,15 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("ServerEnvironmen
       const platform = yield* HostProcess.Platform;
       const baseDir = yield* fs.realPath(yield* fs.makeTempDirectoryScoped());
       const prefix = `${baseDir}/node`;
-      const entry = `${prefix}/lib/node_modules/t3/dist/bin.mjs`;
-      yield* fs.makeDirectory(`${prefix}/lib/node_modules/t3/dist`, { recursive: true });
+      const entry = `${prefix}/lib/node_modules/vibecodinger/dist/bin.mjs`;
+      yield* fs.makeDirectory(`${prefix}/lib/node_modules/vibecodinger/dist`, { recursive: true });
       yield* fs.makeDirectory(`${prefix}/bin`, { recursive: true });
       yield* fs.writeFileString(entry, "");
       yield* fs.writeFileString(
-        `${prefix}/lib/node_modules/t3/package.json`,
-        '{"name":"t3","version":"0.0.45","bin":{"t3":"./dist/bin.mjs"}}',
+        `${prefix}/lib/node_modules/vibecodinger/package.json`,
+        '{"name":"vibecodinger","version":"0.0.45","bin":{"vibecodinger":"./dist/bin.mjs"}}',
       );
-      yield* fs.symlink(entry, `${prefix}/bin/t3`);
+      yield* fs.symlink(entry, `${prefix}/bin/vibecodinger`);
       const config = yield* makeServerConfig(baseDir);
       yield* fs.makeDirectory(config.stateDir, { recursive: true });
       for (const mode of ["web", "desktop"] as const) {
@@ -172,7 +159,7 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("ServerEnvironmen
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const baseDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-server-environment-override-test-",
+        prefix: "vibecodinger-server-environment-override-test-",
       });
       const descriptor = yield* Effect.gen(function* () {
         const serverEnvironment = yield* ServerEnvironment.ServerEnvironment;
@@ -184,8 +171,8 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("ServerEnvironmen
               ConfigProvider.layer(
                 ConfigProvider.fromEnv({
                   env: {
-                    T3CODE_ENVIRONMENT_LABEL: " MacBook ",
-                    T3CODE_ENVIRONMENT_MACHINE_KIND: "laptop",
+                    VIBECODINGER_ENVIRONMENT_LABEL: " MacBook ",
+                    VIBECODINGER_ENVIRONMENT_MACHINE_KIND: "laptop",
                   },
                 }),
               ),
@@ -207,7 +194,7 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("ServerEnvironmen
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const baseDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-server-environment-speech-test-",
+        prefix: "vibecodinger-server-environment-speech-test-",
       });
       const descriptor = yield* Effect.gen(function* () {
         const serverEnvironment = yield* ServerEnvironment.ServerEnvironment;
@@ -230,7 +217,7 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("ServerEnvironmen
       const fileSystem = yield* FileSystem.FileSystem;
       const random = yield* SecureRandom.SecureRandom;
       const baseDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-server-environment-concurrent-test-",
+        prefix: "vibecodinger-server-environment-concurrent-test-",
       });
       const serverConfig = yield* makeServerConfig(baseDir);
       yield* fileSystem.makeDirectory(serverConfig.stateDir, { recursive: true });
@@ -296,7 +283,7 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("ServerEnvironmen
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const baseDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-server-environment-test-",
+        prefix: "vibecodinger-server-environment-test-",
       });
 
       const first = yield* Effect.gen(function* () {
@@ -327,41 +314,27 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("ServerEnvironmen
     }),
   );
 
-  it.effect("reports agent activity publishing from the current secret state", () =>
+  it.effect("keeps agent activity publishing disabled with a stored relay configuration", () =>
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const baseDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-server-environment-publish-test-",
+        prefix: "vibecodinger-server-environment-publish-test-",
       });
-      const layerTest = Layer.mergeAll(
-        ServerEnvironment.layer.pipe(Layer.provide(ServerSecretStore.layer)),
-        ServerSecretStore.layer,
-      ).pipe(Layer.provide(ServerConfig.layerTest(process.cwd(), baseDir)));
+      const layerTest = Layer.mergeAll(ServerEnvironment.layer, ServerSecretStore.layer).pipe(
+        Layer.provide(ServerConfig.layerTest(process.cwd(), baseDir)),
+      );
 
       yield* Effect.gen(function* () {
         const secrets = yield* ServerSecretStore.ServerSecretStore;
         const serverEnvironment = yield* ServerEnvironment.ServerEnvironment;
         const encode = (value: string) => new TextEncoder().encode(value);
 
-        const unlinked = yield* serverEnvironment.getDescriptor;
-        expect(unlinked.capabilities.agentActivityPublishing).toBe(false);
+        yield* secrets.set("cloud-publish-agent-activity", encode("true"));
+        yield* secrets.set("cloud-relay-environment-credential", encode("credential"));
+        yield* secrets.set("cloud-relay-url", encode("https://relay.example"));
 
-        yield* secrets.set(PUBLISH_AGENT_ACTIVITY_SECRET, encode("true"));
-        const withoutLink = yield* serverEnvironment.getDescriptor;
-        expect(withoutLink.capabilities.agentActivityPublishing).toBe(false);
-
-        yield* secrets.set(RELAY_URL_SECRET, encode(""));
-        yield* secrets.set(RELAY_ENVIRONMENT_CREDENTIAL_SECRET, encode("credential"));
-        const emptyUrl = yield* serverEnvironment.getDescriptor;
-        expect(emptyUrl.capabilities.agentActivityPublishing).toBe(false);
-
-        yield* secrets.set(RELAY_URL_SECRET, encode("https://relay.example"));
-        const linked = yield* serverEnvironment.getDescriptor;
-        expect(linked.capabilities.agentActivityPublishing).toBe(true);
-
-        yield* secrets.set(PUBLISH_AGENT_ACTIVITY_SECRET, encode("false"));
-        const disabled = yield* serverEnvironment.getDescriptor;
-        expect(disabled.capabilities.agentActivityPublishing).toBe(false);
+        const descriptor = yield* serverEnvironment.getDescriptor;
+        expect(descriptor.capabilities.agentActivityPublishing).toBe(false);
       }).pipe(Effect.provide(layerTest));
     }),
   );

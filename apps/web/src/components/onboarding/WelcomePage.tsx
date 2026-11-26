@@ -1,4 +1,3 @@
-import { useAuth } from "@clerk/react";
 import { useAtomValue } from "@effect/atom-react";
 import type {
   AgentSessionProjectCandidate,
@@ -8,25 +7,24 @@ import type {
   ScopedProjectRef,
   ServerConfig,
   ServerProvider,
-} from "@t3tools/contracts";
-import { scopeProjectRef, scopeThreadRef } from "@t3tools/client-runtime/environment";
-import { resolveProviderInstanceDisplayName as agentName } from "@t3tools/client-runtime/state/provider-instance-display";
+} from "@vibecodinger/contracts";
+import { scopeProjectRef, scopeThreadRef } from "@vibecodinger/client-runtime/environment";
+import { resolveProviderInstanceDisplayName as agentName } from "@vibecodinger/client-runtime/state/provider-instance-display";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
+} from "@vibecodinger/client-runtime/state/runtime";
 import {
   AgentSessionSource,
+  AuthAccessWriteScope,
   AuthProvidersManageScope,
-  AuthRelayReadScope,
-  AuthRelayWriteScope,
   AuthTerminalOperateScope,
   CommandId,
   AuthOrchestrationOperateScope,
   isManagedDriverAllowed,
   ProviderDriverKind,
   ThreadId,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import { Link, useBlocker } from "@tanstack/react-router";
 import * as Schema from "effect/Schema";
 import {
@@ -45,12 +43,7 @@ import { MOBILE_APP_URL } from "../../branding";
 import { isElectron } from "../../env";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { usePersistEnvironmentProviderInstanceMutation } from "../../hooks/useSettings";
-import { useCloudLinkState } from "../../cloud/cloudLinkState";
-import { hasCloudPublicConfig } from "../../cloud/publicConfig";
-import { PRIVACY_POLICY_URL } from "../../legalLinks";
 import { workspaceAreaProps } from "../../lib/workspaceFocus";
-import { retryClerkLoad, useClerkLoadFailed } from "../clerk/clerkLoadFailure";
-import { useT3ConnectAuthPrompt } from "../clerk/useT3ConnectAuthPrompt";
 import { completeOnboarding } from "../../onboarding/firstRun";
 import {
   groupOnboardingProjects,
@@ -85,7 +78,7 @@ import { newProjectId, randomUUID } from "../../lib/utils";
 import { agentSessionImport } from "../../state/agentSessions";
 import { readProjects, useProjects, waitForProject } from "../../state/entities";
 import { useEnvironments, usePrimaryEnvironmentId } from "../../state/environments";
-import { managedTelemetryOffMessage, useManagedPolicy } from "../../state/managedPolicy";
+import { useManagedPolicy } from "../../state/managedPolicy";
 import { useProjectScans } from "../../onboarding/useProjectScans";
 import { projectEnvironment } from "../../state/projects";
 import { serverEnvironment } from "../../state/server";
@@ -139,15 +132,11 @@ export function WelcomePage({
     environments.find((environment) => environment.environmentId === environmentId)?.label ??
     gt("this computer");
   const agentReady = useWelcomeAgents(environmentId).readyCount > 0;
-  // The phone and `t3` on PATH belong to the primary computer, so only it offers them.
   const isPrimary = usePrimaryEnvironmentId() === environmentId;
-  // The same access Settings → Sharing & access checks.
-  const canReadRelay = useEnvironmentScope(environmentId, AuthRelayReadScope);
-  const canWriteRelay = useEnvironmentScope(environmentId, AuthRelayWriteScope);
+  const canPair = useEnvironmentScope(environmentId, AuthAccessWriteScope);
   const showPhone = welcomeOffersPhone({
     isPrimary,
-    cloud: hasCloudPublicConfig(),
-    canShare: canReadRelay && canWriteRelay,
+    canPair,
     policy: useManagedPolicy(environmentId),
   });
   const scans = useProjectScans([environmentId]);
@@ -280,7 +269,7 @@ export function WelcomePage({
         <div className="min-h-0 flex-1 overflow-y-auto scrollbar-gutter-both">
           <div className="mx-auto flex min-h-full w-full max-w-3xl flex-col px-6 pt-12 pb-8 sm:pt-20">
             <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-              <T>Welcome to T3 Code</T>
+              <T>Welcome to VibeCodinger</T>
             </h1>
             <p className="mt-1.5 text-sm text-muted-foreground">
               <T>
@@ -335,50 +324,10 @@ export function WelcomePage({
                 </Button>
               </div>
             </div>
-            <TelemetryNotice environmentId={environmentId} />
           </div>
         </div>
       </div>
     </SidebarInset>
-  );
-}
-
-function TelemetryNotice({ environmentId }: { readonly environmentId: EnvironmentId }) {
-  const messages = useMessages();
-  const telemetryOff = managedTelemetryOffMessage(useManagedPolicy(environmentId), messages);
-  return (
-    <p className="mt-auto pt-12 text-2xs leading-relaxed text-muted-foreground/70">
-      {telemetryOff === undefined ? (
-        <T>
-          T3 Code collects anonymous usage data to improve the app. To opt out, see the{" "}
-          <a
-            className="underline decoration-current/40 underline-offset-2 hover:text-muted-foreground"
-            href={PRIVACY_POLICY_URL}
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            privacy policy
-          </a>
-          .
-        </T>
-      ) : (
-        <>
-          {telemetryOff}{" "}
-          <T>
-            See the{" "}
-            <a
-              className="underline decoration-current/40 underline-offset-2 hover:text-muted-foreground"
-              href={PRIVACY_POLICY_URL}
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              privacy policy
-            </a>
-            .
-          </T>
-        </>
-      )}
-    </p>
   );
 }
 
@@ -468,7 +417,7 @@ function AgentsSection({
   const [codexSetupId, setCodexSetupId] = useState<ProviderInstanceId | null>(null);
   const [cliTerminalFor, setCliTerminalFor] = useState<ProviderInstanceId | null>(null);
 
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- asks the environment to refresh its provider list when the environment changes
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- asks the environment to refresh its provider list when the environment changes
   useEffect(() => {
     void refreshProviders({ environmentId, input: {} });
   }, [environmentId, refreshProviders]);
@@ -989,7 +938,7 @@ function PhoneSection({ environmentId }: { readonly environmentId: EnvironmentId
             <SmartphoneIcon className="size-4" />
           </RowIcon>
           <span className="min-w-0 flex-1 text-sm font-medium text-foreground">
-            <T>Use T3 Code on your phone</T>
+            <T>Use VibeCodinger on your phone</T>
           </span>
           <CollapsibleTrigger render={<Button variant="ghost-muted" size="xs" />}>
             {open ? gt("Hide") : gt("Set up")}
@@ -998,130 +947,35 @@ function PhoneSection({ environmentId }: { readonly environmentId: EnvironmentId
         </div>
         <CollapsiblePanel>
           <div className="flex items-center gap-8 pt-2 pb-3 pl-8">
-            <ol className="min-w-0 flex-1 space-y-5">
-              <PhoneStep step={1}>
-                <p className="text-sm text-foreground">
-                  <T>Scan with your phone to get the app.</T>
-                </p>
-              </PhoneStep>
-              <PhoneStep step={2}>
-                <PhoneConnectLink environmentId={environmentId} />
-              </PhoneStep>
-            </ol>
-            {/* One code for both stores: the link opens the store that matches the phone. */}
+            <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+              <Button
+                variant="outline"
+                size="xs"
+                render={<a href={MOBILE_APP_URL} target="_blank" rel="noreferrer noopener" />}
+              >
+                <T>Get the app</T>
+              </Button>
+              <Button
+                variant="outline"
+                size="xs"
+                render={<Link to="/settings/access" search={{ machine: environmentId }} />}
+              >
+                <T>Pair a device</T>
+              </Button>
+            </div>
             <div className="shrink-0 rounded-lg bg-white p-1.5">
               <QRCodeSvg
                 value={MOBILE_APP_URL}
                 size={124}
                 level="M"
                 marginSize={2}
-                title={gt("T3 Code app for iPhone and Android")}
+                title={gt("VibeCodinger releases")}
               />
             </div>
           </div>
         </CollapsiblePanel>
       </Collapsible>
     </WelcomeSection>
-  );
-}
-
-function PhoneStep({ step, children }: { readonly step: number; readonly children: ReactNode }) {
-  return (
-    <li className="flex gap-3">
-      <span className="w-3 shrink-0 text-sm text-muted-foreground tabular-nums">{step}</span>
-      <div className="flex min-w-0 flex-col items-start gap-2">{children}</div>
-    </li>
-  );
-}
-
-function PhoneConnectLink({ environmentId }: { readonly environmentId: EnvironmentId }) {
-  const { isLoaded, isSignedIn, userId } = useAuth({ treatPendingAsSignedOut: false });
-  const gt = useGT();
-  const loadFailed = useClerkLoadFailed();
-  const { openAuthPrompt } = useT3ConnectAuthPrompt();
-  const linkState = useCloudLinkState(environmentId);
-  const refreshLinkState = useEffectEvent(linkState.refresh);
-  // The server rechecks the tunnel every 30 s; read its latest result while this panel is open.
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- 30 s interval that refreshes the cloud link reachability while mounted
-  useEffect(() => {
-    const interval = window.setInterval(() => refreshLinkState(), 30_000);
-    return () => window.clearInterval(interval);
-  }, []);
-  const link = linkState.data;
-  // The phone reaches this computer through its tunnel; older servers leave that flag out.
-  const shared =
-    link !== null &&
-    link.linked &&
-    link.linkRevoked !== true &&
-    link.cloudUserId === userId &&
-    link.managedTunnelActive !== false;
-  // The server checks the tunnel on its own; until it has, the result is unknown.
-  const reachability = shared ? link.reachability?.status : undefined;
-  const settingsLink = (label: string) => (
-    <Button variant="outline" size="xs" render={<Link to="/settings/access" />}>
-      {label}
-    </Button>
-  );
-  if (isSignedIn && link === null && linkState.isPending) {
-    return (
-      <p className="text-sm text-muted-foreground">
-        <T>Checking T3 Connect…</T>
-      </p>
-    );
-  }
-  if (isSignedIn && linkState.error !== null) {
-    return (
-      <>
-        <p className="text-sm text-foreground">
-          <T>Could not check T3 Connect.</T>
-        </p>
-        {settingsLink(gt("Check T3 Connect"))}
-      </>
-    );
-  }
-  if (isSignedIn && reachability === "reachable") {
-    return (
-      <p className="flex gap-1.5 text-sm text-foreground">
-        <CheckIcon className="mt-0.5 size-4 shrink-0 text-success-foreground" />
-        <T>Your phone can reach this computer. Sign in to the app with the same account.</T>
-      </p>
-    );
-  }
-  if (isSignedIn && shared && reachability === undefined) {
-    return (
-      <p className="text-sm text-foreground">
-        <T>T3 Connect is on for this computer. Sign in to the app with the same account.</T>
-      </p>
-    );
-  }
-  if (isSignedIn) {
-    // Signing in alone does not share this computer, for example after "Not now".
-    return (
-      <>
-        <p className="text-sm text-foreground">
-          {shared
-            ? gt("T3 Connect is on, but the app cannot reach this computer.")
-            : gt("Signed in. Share this computer so the app can reach it.")}
-        </p>
-        {settingsLink(shared ? gt("Check T3 Connect") : gt("Set up T3 Connect"))}
-      </>
-    );
-  }
-  return (
-    <>
-      <p className="text-sm text-foreground">
-        <T>Sign in to T3 Connect here, then in the app with the same account.</T>
-      </p>
-      {loadFailed ? (
-        <Button variant="outline" size="xs" onClick={retryClerkLoad}>
-          <T>Retry sign-in</T>
-        </Button>
-      ) : (
-        <Button variant="outline" size="xs" disabled={!isLoaded} onClick={openAuthPrompt}>
-          <T>Sign in to T3 Connect</T>
-        </Button>
-      )}
-    </>
   );
 }
 
@@ -1323,7 +1177,7 @@ function AgentInstallTerminal({
   const commandStartedRef = useRef(false);
   const handleCommandFinished = useEffectEvent(onCommandFinished);
 
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- the shell stays open after an install or sign-in, so its command exiting is the only signal to check the agent again
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- the shell stays open after an install or sign-in, so its command exiting is the only signal to check the agent again
   useEffect(() => {
     if (commandRunning) {
       commandStartedRef.current = true;
@@ -1335,7 +1189,7 @@ function AgentInstallTerminal({
 
   // StrictMode can finish a cancelled open after replacement setup; it must not close or pre-type into that
   // session.
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- opens the setup PTY, types the command into it, and closes it on cleanup
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- opens the setup PTY, types the command into it, and closes it on cleanup
   useEffect(() => {
     const generation = setupGenerationRef.current + 1;
     setupGenerationRef.current = generation;
@@ -1510,7 +1364,7 @@ function useProjectImport({
   );
   const importGenerationRef = useRef(0);
 
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- bumps the import generation on mount and unmount so in-flight imports drop stale results
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- bumps the import generation on mount and unmount so in-flight imports drop stale results
   useEffect(() => {
     importGenerationRef.current += 1;
     return () => {
@@ -1527,7 +1381,7 @@ function useProjectImport({
       })),
     ),
   );
-  // Projects already in T3 Code stay in the list, but reopening the page does not import their
+  // Projects already in VibeCodinger stay in the list, but reopening the page does not import their
   // history again unless the user picks them. The scan can be 30 s old, so the live list decides.
   const projects = useProjects();
   const isNewProject = isNewOnboardingProject(projects);

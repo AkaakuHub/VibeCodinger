@@ -220,11 +220,6 @@ import {
   IssueUpdateInput,
   ThreadIssueKey,
 } from "./issue.ts";
-import {
-  GuestShareCreateError,
-  GuestShareCreateInput,
-  GuestShareCreateResult,
-} from "./guestShare.ts";
 import { PullRequestReviewGuideResult } from "./pullRequestReviewGuide.ts";
 import {
   PullRequestActionInput,
@@ -269,11 +264,6 @@ import {
   PullRequestUnavailableError,
   PullRequestUpdateInput,
 } from "./pullRequest.ts";
-import {
-  RelayClientInstallFailedError,
-  RelayClientInstallProgressEventSchema,
-  RelayClientStatusSchema,
-} from "./relayClient.ts";
 import {
   ORCHESTRATION_V2_WS_METHODS,
   OrchestrationGetWorkflowScriptError,
@@ -368,11 +358,9 @@ import {
 import {
   ServerConfigStreamEvent,
   DesktopUpdateCommitInput,
-  OtlpEndpointCheckInput,
   ServerPrepareTriageError,
   ServerPrepareTriageInput,
   ServerPrepareTriageResult,
-  OtlpEndpointCheckResult,
   ServerConfig,
   ServerProviderUpdateError,
   ServerProviderUpdateInput,
@@ -625,7 +613,6 @@ export const WS_METHODS = {
   serverGetProcessResourceHistory: "server.getProcessResourceHistory",
   serverGetResourceTelemetryHistory: "server.getResourceTelemetryHistory",
   serverRetryResourceTelemetry: "server.retryResourceTelemetry",
-  serverCheckOtlpEndpoint: "server.checkOtlpEndpoint",
   serverListTextGeneratorModels: "server.listTextGeneratorModels",
   serverPrepareTriage: "server.prepareTriage",
   serverSignalProcess: "server.signalProcess",
@@ -651,12 +638,8 @@ export const WS_METHODS = {
   scheduledTasksRotateWebhookToken: "scheduledTasks.rotateWebhookToken",
   secretsAnswerRequest: "secrets.answerRequest",
   agentFeedbackAnswerRequest: "agentFeedback.answerRequest",
-  guestShareCreate: "guestShare.create",
   scheduledTasksListWebhookDeliveries: "scheduledTasks.listWebhookDeliveries",
   scheduledTasksGetWebhookDelivery: "scheduledTasks.getWebhookDelivery",
-
-  cloudGetRelayClientStatus: "cloud.getRelayClientStatus",
-  cloudInstallRelayClient: "cloud.installRelayClient",
 
   pullRequestsList: "pullRequests.list",
   pullRequestsListStats: "pullRequests.listStats",
@@ -1153,12 +1136,6 @@ const WsServerRetryResourceTelemetryRpc = Rpc.make(WS_METHODS.serverRetryResourc
   error: EnvironmentAuthorizationError,
 });
 
-const WsServerCheckOtlpEndpointRpc = Rpc.make(WS_METHODS.serverCheckOtlpEndpoint, {
-  payload: OtlpEndpointCheckInput,
-  success: OtlpEndpointCheckResult,
-  error: EnvironmentAuthorizationError,
-});
-
 const WsServerListTextGeneratorModelsRpc = Rpc.make(WS_METHODS.serverListTextGeneratorModels, {
   payload: ListTextGeneratorModelsInput,
   success: ListTextGeneratorModelsResult,
@@ -1187,19 +1164,6 @@ const WsServerSignalProcessRpc = Rpc.make(WS_METHODS.serverSignalProcess, {
   payload: ServerSignalProcessInput,
   success: ServerSignalProcessResult,
   error: EnvironmentAuthorizationError,
-});
-
-const WsCloudGetRelayClientStatusRpc = Rpc.make(WS_METHODS.cloudGetRelayClientStatus, {
-  payload: Schema.Struct({}),
-  success: RelayClientStatusSchema,
-  error: EnvironmentAuthorizationError,
-});
-
-const WsCloudInstallRelayClientRpc = Rpc.make(WS_METHODS.cloudInstallRelayClient, {
-  payload: Schema.Struct({}),
-  success: RelayClientInstallProgressEventSchema,
-  error: Schema.Union([RelayClientInstallFailedError, EnvironmentAuthorizationError]),
-  stream: true,
 });
 
 const WsServerReportClientActivityRpc = Rpc.make(WS_METHODS.serverReportClientActivity, {
@@ -2162,6 +2126,15 @@ const WsOrchestrationV2GetThreadTitlesRpc = Rpc.make(ORCHESTRATION_V2_WS_METHODS
   error: Schema.Union([OrchestrationV2GetShellSnapshotError, EnvironmentAuthorizationError]),
 });
 
+const WsOrchestrationV2GetRunAnswerPreviewRpc = Rpc.make(
+  ORCHESTRATION_V2_WS_METHODS.getRunAnswerPreview,
+  {
+    payload: OrchestrationV2RpcSchemas.getRunAnswerPreview.input,
+    success: OrchestrationV2RpcSchemas.getRunAnswerPreview.output,
+    error: Schema.Union([OrchestrationV2GetShellSnapshotError, EnvironmentAuthorizationError]),
+  },
+);
+
 const WsOrchestrationV2GetThreadLinkMetadataRpc = Rpc.make(
   ORCHESTRATION_V2_WS_METHODS.getThreadLinkMetadata,
   {
@@ -2405,12 +2378,6 @@ const WsScheduledTasksRotateWebhookTokenRpc = Rpc.make(
   },
 );
 
-const WsGuestShareCreateRpc = Rpc.make(WS_METHODS.guestShareCreate, {
-  payload: GuestShareCreateInput,
-  success: GuestShareCreateResult,
-  error: Schema.Union([GuestShareCreateError, EnvironmentAuthorizationError]),
-});
-
 const WsSecretsAnswerRequestRpc = Rpc.make(WS_METHODS.secretsAnswerRequest, {
   payload: SecretRequestAnswerInput,
   error: Schema.Union([SecretRequestError, EnvironmentAuthorizationError]),
@@ -2473,7 +2440,6 @@ export const WsRpcGroup = RpcGroup.make(
   WsIssueTrackersListRpc,
   WsIssueTrackersConnectRpc,
   WsIssueTrackersBindProjectRpc,
-  WsGuestShareCreateRpc,
   WsServerProbeRpc,
   WsServerGetConfigRpc,
   WsServerRefreshProvidersRpc,
@@ -2534,7 +2500,6 @@ export const WsRpcGroup = RpcGroup.make(
   WsServerGetProcessResourceHistoryRpc,
   WsServerGetResourceTelemetryHistoryRpc,
   WsServerRetryResourceTelemetryRpc,
-  WsServerCheckOtlpEndpointRpc,
   WsServerListTextGeneratorModelsRpc,
   WsServerPrepareTriageRpc,
   WsServerGetUsageSummaryRpc,
@@ -2560,8 +2525,6 @@ export const WsRpcGroup = RpcGroup.make(
   WsScheduledTasksListWebhookDeliveriesRpc,
   WsScheduledTasksGetWebhookDeliveryRpc,
   WsServerReportClientActivityRpc,
-  WsCloudGetRelayClientStatusRpc,
-  WsCloudInstallRelayClientRpc,
   WsPullRequestsListRpc,
   WsPullRequestsListStatsRpc,
   WsPullRequestsFilterOptionsRpc,
@@ -2707,6 +2670,7 @@ export const WsRpcGroup = RpcGroup.make(
   WsOrchestrationV2GetArchivedShellSnapshotRpc,
   WsOrchestrationV2GetThreadFamilyRpc,
   WsOrchestrationV2GetThreadTitlesRpc,
+  WsOrchestrationV2GetRunAnswerPreviewRpc,
   WsOrchestrationV2GetThreadLinkMetadataRpc,
   WsOrchestrationV2GetWorktreeThreadIdsRpc,
   WsOrchestrationV2GetOlderSettledThreadsRpc,

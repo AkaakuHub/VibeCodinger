@@ -1,0 +1,4 @@
+interface:
+  display_name: "Test VibeCodinger Mobile"
+  short_description: "Test iOS and Android in VibeCodinger's Device panel"
+  default_prompt: "Use $test-vibecodinger-mobile to verify the affected native mobile flow through VibeCodinger's Device panel and AgentDevice."

@@ -6,13 +6,13 @@ import * as Layer from "effect/Layer";
 import * as Path from "effect/Path";
 import { ChildProcessSpawner } from "effect/process";
 
-import { VcsProcessExitError } from "@t3tools/contracts";
+import { VcsProcessExitError } from "@vibecodinger/contracts";
 
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import type * as SourceControlHost from "@t3tools/source-control-core/server/SourceControlHost";
-import * as TestSourceControlHost from "@t3tools/source-control-testing/TestSourceControlHost";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
+import type * as SourceControlHost from "@vibecodinger/source-control-core/server/SourceControlHost";
+import * as TestSourceControlHost from "@vibecodinger/source-control-testing/TestSourceControlHost";
 import * as GitLabCli from "./GitLabCli.ts";
-import { userFacingSourceControlDetail } from "@t3tools/source-control-core/server/SourceControlProvider";
+import { userFacingSourceControlDetail } from "@vibecodinger/source-control-core/server/SourceControlProvider";
 
 const mockedRun = vi.fn<SourceControlHost.SourceControlHost["Service"]["process"]["run"]>();
 const layer = it.layer(
@@ -111,8 +111,10 @@ layer("GitLabCli.layer", (it) => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const bodyDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-gitlab-mr-body-" });
-      const bodyFile = path.join(bodyDir, "t3code-pr-body.md");
+      const bodyDir = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-gitlab-mr-body-",
+      });
+      const bodyFile = path.join(bodyDir, "vibecodinger-pr-body.md");
       yield* fileSystem.writeFileString(bodyFile, "## Summary\n\nFixes the thing.\n");
       mockedRun.mockReturnValueOnce(Effect.succeed(processOutput("{}")));
 
@@ -136,7 +138,9 @@ layer("GitLabCli.layer", (it) => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const bodyDir = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-gitlab-mr-body-" });
+      const bodyDir = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-gitlab-mr-body-",
+      });
       const glab = yield* GitLabCli.GitLabCli;
       const error = yield* glab
         .createMergeRequest({
@@ -266,7 +270,9 @@ layer("GitLabCli.layer", (it) => {
   it.effect("creates same-project MRs without a repository lookup, drafts by title prefix", () =>
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
-      const bodyFile = yield* fileSystem.makeTempFileScoped({ prefix: "t3-gitlab-mr-body-" });
+      const bodyFile = yield* fileSystem.makeTempFileScoped({
+        prefix: "vibecodinger-gitlab-mr-body-",
+      });
       mockedRun.mockReturnValueOnce(Effect.succeed(processOutput("{}")));
       const glab = yield* GitLabCli.GitLabCli;
       yield* glab.createMergeRequest({

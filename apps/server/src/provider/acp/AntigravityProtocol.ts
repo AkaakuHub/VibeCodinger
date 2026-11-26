@@ -2,9 +2,9 @@ import type {
   ProviderApprovalOption,
   ProviderUserInputAnswers,
   UserInputQuestion,
-} from "@t3tools/contracts";
-import { isWorkspaceImagePreviewPath } from "@t3tools/shared/filePreview";
-import { resolveT3McpToolId } from "@t3tools/shared/t3McpToolPresentation";
+} from "@vibecodinger/contracts";
+import { isWorkspaceImagePreviewPath } from "@vibecodinger/shared/filePreview";
+import { resolveVibeCodingerMcpToolId } from "@vibecodinger/shared/vibeCodingerMcpToolPresentation";
 import * as Option from "effect/Option";
 import * as Predicate from "effect/Predicate";
 import * as Schema from "effect/Schema";
@@ -14,7 +14,7 @@ import * as AcpWireSchema from "effect-acp/schema-v1";
 import {
   extractMcpToolCallIdentity,
   type AcpToolCallState,
-} from "@t3tools/provider-acp/server/runtimeModel";
+} from "@vibecodinger/provider-acp/server/runtimeModel";
 
 import {
   ANTIGRAVITY_EDIT_DIFF_OMITTED,
@@ -400,7 +400,7 @@ function stripAntigravityToolSummary(value: unknown): unknown {
  * arguments it received, so the summary is dropped before the shared adapter matches them.
  * Untitled updates cannot be identified and are stripped too; titled non-T3 calls keep it.
  */
-function withoutT3McpToolSummary(
+function withoutVibeCodingerMcpToolSummary(
   update: Extract<
     EffectAcpSchema.SessionNotification["update"],
     { readonly sessionUpdate: "tool_call" | "tool_call_update" }
@@ -420,7 +420,7 @@ function withoutT3McpToolSummary(
     });
     if (
       identity === undefined ||
-      resolveT3McpToolId(`${identity.server}.${identity.tool}`) === null
+      resolveVibeCodingerMcpToolId(`${identity.server}.${identity.tool}`) === null
     ) {
       return rawInput;
     }
@@ -449,7 +449,7 @@ export function normalizeAntigravitySessionUpdate(
       ...update,
       ...(typeof update.title === "string" ? { title: boundText(update.title) } : {}),
       ...(update.rawInput !== undefined
-        ? { rawInput: sanitizeAntigravityToolPayload(withoutT3McpToolSummary(update)) }
+        ? { rawInput: sanitizeAntigravityToolPayload(withoutVibeCodingerMcpToolSummary(update)) }
         : {}),
       ...(update.rawOutput !== undefined
         ? { rawOutput: sanitizeAntigravityToolPayload(update.rawOutput) }

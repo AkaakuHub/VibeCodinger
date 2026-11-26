@@ -7,12 +7,10 @@ import type {
   DesktopPreviewRecordingInputEvent,
   DesktopPreviewTabState,
   DesktopSnapShotEvent,
-} from "@t3tools/contracts";
-import { exposeClerkBridge } from "@clerk/electron/preload";
+} from "@vibecodinger/contracts";
 import { contextBridge, ipcRenderer, webFrame, webUtils } from "electron";
 
 import * as IpcChannels from "./ipc/channels.ts";
-import { mergeLegacyLocalStorage } from "./legacyLocalStorageMerge.ts";
 
 const SNAP_SHOT_EVENT_TYPES = new Set([
   "requested",
@@ -31,19 +29,7 @@ function isSnapShotEvent(value: unknown): value is DesktopSnapShotEvent {
   );
 }
 
-exposeClerkBridge({ passkeys: true });
-
-// Runs before any app script reads localStorage. See DesktopLegacyLocalStorage.
-try {
-  const legacyItems: unknown = ipcRenderer.sendSync(IpcChannels.TAKE_LEGACY_LOCAL_STORAGE_CHANNEL);
-  if (typeof legacyItems === "object" && legacyItems !== null) {
-    if (mergeLegacyLocalStorage(window.localStorage, legacyItems as Record<string, string>)) {
-      void ipcRenderer.invoke(IpcChannels.COMPLETE_LEGACY_LOCAL_STORAGE_CHANNEL);
-    }
-  }
-} catch {}
-
-// oxlint-disable-next-line t3code/no-global-process-runtime -- Electron exposes the client platform in its sandboxed preload process.
+// oxlint-disable-next-line vibecodinger/no-global-process-runtime -- Electron exposes the client platform in its sandboxed preload process.
 const clientPlatform = process.platform;
 
 if (clientPlatform === "darwin") {
@@ -110,10 +96,6 @@ contextBridge.exposeInMainWorld("desktopBridge", {
       return null;
     }
     return result as ReturnType<DesktopBridge["getAppBranding"]>;
-  },
-  getRelayTelemetryEnabled: () => {
-    const enabled = ipcRenderer.sendSync(IpcChannels.GET_RELAY_TELEMETRY_ENABLED_CHANNEL);
-    return enabled === null ? null : enabled === true;
   },
   getPathForFile: (file: File) => webUtils.getPathForFile(file),
   getClientPlatform: () => clientPlatform,

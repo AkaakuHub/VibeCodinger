@@ -1,4 +1,4 @@
-import { SecretProviderId, SourceControlProviderKind } from "@t3tools/contracts";
+import { SecretProviderId, SourceControlProviderKind } from "@vibecodinger/contracts";
 import { assert, it, vi } from "@effect/vitest";
 import * as NodeServices from "@effect/platform-node/NodeServices";
 import * as ConfigProvider from "effect/ConfigProvider";
@@ -16,12 +16,12 @@ import * as Schema from "effect/Schema";
 import * as TestClock from "effect/testing/TestClock";
 import { HttpClient, HttpClientError, HttpClientRequest, HttpClientResponse } from "effect/http";
 
-import * as SourceControlRateLimit from "@t3tools/source-control-core/server/SourceControlRateLimit";
-import type * as SourceControlHost from "@t3tools/source-control-core/server/SourceControlHost";
-import * as TestSourceControlHost from "@t3tools/source-control-testing/TestSourceControlHost";
+import * as SourceControlRateLimit from "@vibecodinger/source-control-core/server/SourceControlRateLimit";
+import type * as SourceControlHost from "@vibecodinger/source-control-core/server/SourceControlHost";
+import * as TestSourceControlHost from "@vibecodinger/source-control-testing/TestSourceControlHost";
 
 import * as BitbucketApi from "./BitbucketApi.ts";
-import { userFacingSourceControlDetail } from "@t3tools/source-control-core/server/SourceControlProvider";
+import { userFacingSourceControlDetail } from "@vibecodinger/source-control-core/server/SourceControlProvider";
 
 type HostGit = SourceControlHost.SourceControlHost["Service"]["git"];
 
@@ -150,9 +150,9 @@ function makeLayer(input: {
       ConfigProvider.layer(
         ConfigProvider.fromEnv({
           env: input.env ?? {
-            T3CODE_BITBUCKET_API_BASE_URL: "https://api.test.local/2.0",
-            T3CODE_BITBUCKET_EMAIL: "user@example.com",
-            T3CODE_BITBUCKET_API_TOKEN: "token",
+            VIBECODINGER_BITBUCKET_API_BASE_URL: "https://api.test.local/2.0",
+            VIBECODINGER_BITBUCKET_EMAIL: "user@example.com",
+            VIBECODINGER_BITBUCKET_API_TOKEN: "token",
           },
         }),
       ),
@@ -511,8 +511,8 @@ it.effect("sends a self-hosted Bitbucket remote nowhere unless an API base url i
       remoteUrl,
     };
     const cloudEnv = {
-      T3CODE_BITBUCKET_EMAIL: "user@example.com",
-      T3CODE_BITBUCKET_API_TOKEN: "t",
+      VIBECODINGER_BITBUCKET_EMAIL: "user@example.com",
+      VIBECODINGER_BITBUCKET_API_TOKEN: "t",
     };
     const response = (request: HttpClientRequest.HttpClientRequest) =>
       Response.json(request.url.endsWith("/branching-model") ? {} : repositoryJson);
@@ -766,7 +766,7 @@ it.effect("never puts a saved token that is unsafe for an HTTP header on the wir
 it.effect("reports saved credentials as configured when Bitbucket cannot confirm them", () => {
   const { execute, layer } = makeLayer({
     response: () => new Response(null, { status: 401 }),
-    env: { T3CODE_BITBUCKET_API_BASE_URL: "https://api.test.local/2.0" },
+    env: { VIBECODINGER_BITBUCKET_API_BASE_URL: "https://api.test.local/2.0" },
   });
 
   return Effect.gen(function* () {
@@ -879,17 +879,17 @@ it.effect("checks out fork pull requests through an ensured fork remote", () => 
       cwd: "/repo",
       remoteName: "octocat",
       remoteBranch: "main",
-      localBranch: "t3code/pr-42/main",
+      localBranch: "vibecodinger/pr-42/main",
     });
     assert.deepStrictEqual(git.setBranchUpstream.mock.calls[0]?.[0], {
       cwd: "/repo",
-      branch: "t3code/pr-42/main",
+      branch: "vibecodinger/pr-42/main",
       remoteName: "octocat",
       remoteBranch: "main",
     });
     assert.deepStrictEqual(git.switchRef.mock.calls[0]?.[0], {
       cwd: "/repo",
-      refName: "t3code/pr-42/main",
+      refName: "vibecodinger/pr-42/main",
     });
   }).pipe(Effect.provide(layer));
 });

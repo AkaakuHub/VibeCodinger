@@ -1,16 +1,20 @@
 /**
  * Records an fx ACP replay transcript through the real orchestrator and FxAdapterV2.
- * Run from apps/server with fx on PATH (or T3_FX_BIN), signed in under HOME:
+ * Run from apps/server with fx on PATH (or VIBECODINGER_FX_BIN), signed in under HOME:
  *   node scripts/record-fx-acp-replay-fixture.ts --scenario simple
  * fx 0.0.14+ saves each recorded mode as the default in ~/.fx/settings.json; restore it after.
  */
 import * as NodeCrypto from "@effect/platform-node/NodeCrypto";
 import * as NodeServices from "@effect/platform-node/NodeServices";
-import { ProviderInstanceId, type ProviderReplayEntry } from "@t3tools/contracts";
-import { FxSettings } from "@t3tools/provider-fx/settings";
-import { FX_DRIVER_KIND, makeFxAcpRuntime, makeFxAdapterV2 } from "@t3tools/provider-fx/testing";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { resolveSelfInvocation } from "@t3tools/shared/nodeRuntime";
+import { ProviderInstanceId, type ProviderReplayEntry } from "@vibecodinger/contracts";
+import { FxSettings } from "@vibecodinger/provider-fx/settings";
+import {
+  FX_DRIVER_KIND,
+  makeFxAcpRuntime,
+  makeFxAdapterV2,
+} from "@vibecodinger/provider-fx/testing";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
+import { resolveSelfInvocation } from "@vibecodinger/shared/nodeRuntime";
 import * as Clock from "effect/Clock";
 import * as Console from "effect/Console";
 import * as Config from "effect/Config";
@@ -22,12 +26,12 @@ import * as Path from "effect/Path";
 import * as Schema from "effect/Schema";
 import type * as EffectAcpProtocol from "effect-acp/protocol";
 
-import { ACP_PROTOCOL } from "@t3tools/provider-acp/server/adapter";
-import * as IdAllocator from "@t3tools/provider-core/server/IdAllocator";
-import type * as ProviderAdapter from "@t3tools/provider-core/server/ProviderAdapter";
-import { buildRuntimeInstructions } from "@t3tools/provider-core/server/runtimeInstructions";
-import * as TestProviderHost from "@t3tools/provider-testing/TestProviderHost";
-import { checkpointWorkspace } from "@t3tools/provider-testing/replayWorkspace";
+import { ACP_PROTOCOL } from "@vibecodinger/provider-acp/server/adapter";
+import * as IdAllocator from "@vibecodinger/provider-core/server/IdAllocator";
+import type * as ProviderAdapter from "@vibecodinger/provider-core/server/ProviderAdapter";
+import { buildRuntimeInstructions } from "@vibecodinger/provider-core/server/runtimeInstructions";
+import * as TestProviderHost from "@vibecodinger/provider-testing/TestProviderHost";
+import { checkpointWorkspace } from "@vibecodinger/provider-testing/replayWorkspace";
 import * as ProviderAdapterRegistry from "../src/orchestration-v2/ProviderAdapterRegistry.ts";
 import { provideDeterministicTestRuntime } from "../src/orchestration-v2/testkit/DeterministicRuntime.ts";
 import { ORCHESTRATOR_REPLAY_FIXTURES } from "../src/orchestration-v2/testkit/fixtures/index.ts";
@@ -41,7 +45,8 @@ const encodeJson = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
 const decodeJson = Schema.decodeUnknownSync(Schema.fromJsonString(Schema.Unknown));
 const HOME_PLACEHOLDER = "/home/fx-replay";
 const FX_INSTANCE_ID = ProviderInstanceId.make("fx");
-const T3_INSTRUCTIONS_BODY = /<t3_code_instructions>\n[\s\S]*?\n<\/t3_code_instructions>/u;
+const VIBECODINGER_INSTRUCTIONS_BODY =
+  /<vibe_codinger_instructions>\n[\s\S]*?\n<\/vibe_codinger_instructions>/u;
 const EMAIL = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/giu;
 const TOKEN = /\b(?:sk-|gho_|ghp_|xai-|vercel_)[A-Za-z0-9_-]{8,}\b/gu;
 
@@ -132,7 +137,7 @@ function wireToEntries(wire: ReadonlyArray<WireMessage>): {
   readonly droppedFrames: number;
 } {
   const entries: Array<ProviderReplayEntry> = [];
-  const t3Requests = new Map<string, string>();
+  const vcRequests = new Map<string, string>();
   const agentRequests = new Map<string, string>();
   let droppedFrames = 0;
   for (const { direction, message } of wire) {
@@ -140,7 +145,7 @@ function wireToEntries(wire: ReadonlyArray<WireMessage>): {
     if (typeof message.method === "string") {
       const isRequest = message.id !== undefined && message.id !== null;
       if (isRequest) {
-        (direction === "outgoing" ? t3Requests : agentRequests).set(
+        (direction === "outgoing" ? vcRequests : agentRequests).set(
           String(message.id),
           message.method,
         );
@@ -157,7 +162,7 @@ function wireToEntries(wire: ReadonlyArray<WireMessage>): {
       });
       continue;
     }
-    const pending = direction === "outgoing" ? agentRequests : t3Requests;
+    const pending = direction === "outgoing" ? agentRequests : vcRequests;
     const method = pending.get(String(message.id));
     if (method === undefined) {
       droppedFrames += 1;
@@ -213,8 +218,8 @@ function normalizeOutboundFrame(frame: Record<string, unknown>, runtimeInstructi
               ? {
                   ...part,
                   text: part.text.replace(
-                    T3_INSTRUCTIONS_BODY,
-                    "<t3_code_instructions>\n<any>\n</t3_code_instructions>",
+                    VIBECODINGER_INSTRUCTIONS_BODY,
+                    "<vibe_codinger_instructions>\n<any>\n</vibe_codinger_instructions>",
                   ),
                 }
               : part,
@@ -326,7 +331,10 @@ function normalizeEntries(input: {
 const DEFAULT_FX_SETTINGS = Schema.decodeSync(FxSettings)({});
 
 const RecorderEnv = Config.all({
-  T3_FX_BIN: Config.String("T3_FX_BIN").pipe(Config.option, Config.map(Option.getOrUndefined)),
+  VIBECODINGER_FX_BIN: Config.String("VIBECODINGER_FX_BIN").pipe(
+    Config.option,
+    Config.map(Option.getOrUndefined),
+  ),
   HOME: Config.String("HOME").pipe(Config.option, Config.map(Option.getOrUndefined)),
   USER: Config.String("USER").pipe(Config.option, Config.map(Option.getOrUndefined)),
   AI_GATEWAY_API_KEY: Config.String("AI_GATEWAY_API_KEY").pipe(
@@ -374,7 +382,7 @@ const recordScenario = Effect.fn("recordFxScenario")(function* (fixtureName: str
   };
 
   const tee = makeWireTee();
-  const settings = { ...DEFAULT_FX_SETTINGS, binaryPath: recorderEnv.T3_FX_BIN ?? "fx" };
+  const settings = { ...DEFAULT_FX_SETTINGS, binaryPath: recorderEnv.VIBECODINGER_FX_BIN ?? "fx" };
   const layerRegistry = ProviderAdapterRegistry.layerFromAdaptersEffect(
     Effect.gen(function* () {
       const environment = yield* HostProcess.Environment;

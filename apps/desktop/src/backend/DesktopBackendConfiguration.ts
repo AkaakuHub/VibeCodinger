@@ -1,13 +1,12 @@
 import * as NodeOS from "node:os";
 
-import { parsePersistedServerObservabilitySettings } from "@t3tools/shared/serverSettings";
-import { currentDesktopBootstrapToken } from "@t3tools/shared/desktopBootstrapToken";
+import { currentDesktopBootstrapToken } from "@vibecodinger/shared/desktopBootstrapToken";
 import {
   DESKTOP_READINESS_CHALLENGE_PARAM,
   DESKTOP_READINESS_PROOF_PATH,
   isValidDesktopReadinessProof,
-} from "@t3tools/shared/desktopReadinessProof";
-import * as HostProcess from "@t3tools/shared/HostProcess";
+} from "@vibecodinger/shared/desktopReadinessProof";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
 import * as Clock from "effect/Clock";
 import * as Context from "effect/Context";
 import * as SecureRandom from "effect/crypto/SecureRandom";
@@ -19,7 +18,6 @@ import * as Layer from "effect/Layer";
 import * as Option from "effect/Option";
 import * as PlatformError from "effect/PlatformError";
 import * as Ref from "effect/Ref";
-import * as Schema from "effect/Schema";
 import * as SynchronizedRef from "effect/SynchronizedRef";
 
 import serverPackageJson from "../../../server/package.json" with { type: "json" };
@@ -33,18 +31,6 @@ import * as DesktopShellEnvironment from "../shell/DesktopShellEnvironment.ts";
 import * as DesktopAppSettings from "../settings/DesktopAppSettings.ts";
 import * as DesktopWslEnvironment from "../wsl/DesktopWslEnvironment.ts";
 import * as DesktopWslServerTree from "../wsl/DesktopWslServerTree.ts";
-
-export class DesktopBackendObservabilitySettingsReadError extends Schema.TaggedError<DesktopBackendObservabilitySettingsReadError>()(
-  "DesktopBackendObservabilitySettingsReadError",
-  {
-    settingsPath: Schema.String,
-    cause: Schema.Defect(),
-  },
-) {
-  override get message(): string {
-    return `Failed to read persisted backend observability settings at ${this.settingsPath}.`;
-  }
-}
 
 export class DesktopBackendConfiguration extends Context.Service<
   DesktopBackendConfiguration,
@@ -63,63 +49,25 @@ export class DesktopBackendConfiguration extends Context.Service<
     readonly resolvePrimaryLabel: Effect.Effect<string>;
     readonly currentBootstrapToken: Effect.Effect<string, PlatformError.PlatformError>;
   }
->()("@t3tools/desktop/backend/DesktopBackendConfiguration") {}
-
-interface BackendObservabilitySettings {
-  readonly otlpTracesUrl: Option.Option<string>;
-  readonly otlpMetricsUrl: Option.Option<string>;
-  readonly otlpLogsUrl: Option.Option<string>;
-}
-
-const emptyBackendObservabilitySettings: BackendObservabilitySettings = {
-  otlpTracesUrl: Option.none(),
-  otlpMetricsUrl: Option.none(),
-  otlpLogsUrl: Option.none(),
-};
+>()("@vibecodinger/desktop/backend/DesktopBackendConfiguration") {}
 
 const DESKTOP_BACKEND_ENV_NAMES = [
-  "T3CODE_PORT",
-  "T3CODE_MODE",
-  "T3CODE_NO_BROWSER",
-  "T3CODE_HOST",
-  "T3CODE_DESKTOP_WS_URL",
-  "T3CODE_DESKTOP_LAN_HOST",
-  "T3CODE_DESKTOP_HTTPS_ENDPOINTS",
-  "T3CODE_TAILSCALE_SERVE",
-  "T3CODE_TAILSCALE_SERVE_PORT",
+  "VIBECODINGER_PORT",
+  "VIBECODINGER_MODE",
+  "VIBECODINGER_NO_BROWSER",
+  "VIBECODINGER_HOST",
+  "VIBECODINGER_DESKTOP_WS_URL",
+  "VIBECODINGER_DESKTOP_LAN_HOST",
+  "VIBECODINGER_DESKTOP_HTTPS_ENDPOINTS",
+  "VIBECODINGER_TAILSCALE_SERVE",
+  "VIBECODINGER_TAILSCALE_SERVE_PORT",
 ] as const;
 
 // Windows forwards these variables into WSL only through WSLENV.
 const WSL_FORWARDED_ENV_NAMES = [
   "OPENAI_API_KEY",
   "ANTHROPIC_API_KEY",
-  "T3CODE_TELEMETRY_ENABLED",
-  "T3CODE_FEATURE_FLAGS",
-  // Otherwise the WSL server keeps exporting to endpoints from the bootstrap.
-  "T3CODE_OTEL_SDK_DISABLED",
-  "OTEL_SDK_DISABLED",
-  "T3CODE_OTLP_HEADERS",
-  "T3CODE_OTLP_PROTOCOL",
-  // Untranslated T3 URLs must override bootstrap endpoints inside WSL, as they do on Windows.
-  "T3CODE_OTLP_TRACES_URL",
-  "T3CODE_OTLP_METRICS_URL",
-  "T3CODE_OTLP_LOGS_URL",
-  "OTEL_EXPORTER_OTLP_ENDPOINT",
-  "OTEL_EXPORTER_OTLP_TRACES_ENDPOINT",
-  "OTEL_EXPORTER_OTLP_METRICS_ENDPOINT",
-  "OTEL_EXPORTER_OTLP_LOGS_ENDPOINT",
-  "OTEL_EXPORTER_OTLP_HEADERS",
-  "OTEL_EXPORTER_OTLP_TRACES_HEADERS",
-  "OTEL_EXPORTER_OTLP_METRICS_HEADERS",
-  "OTEL_EXPORTER_OTLP_LOGS_HEADERS",
-  "OTEL_EXPORTER_OTLP_PROTOCOL",
-  "OTEL_EXPORTER_OTLP_TRACES_PROTOCOL",
-  "OTEL_EXPORTER_OTLP_METRICS_PROTOCOL",
-  "OTEL_EXPORTER_OTLP_LOGS_PROTOCOL",
-  "OTEL_TRACES_EXPORTER",
-  "OTEL_METRICS_EXPORTER",
-  "OTEL_LOGS_EXPORTER",
-  "OTEL_RESOURCE_ATTRIBUTES",
+  "VIBECODINGER_FEATURE_FLAGS",
 ] as const;
 
 const WSL_SERVER_SYSTEM_PATH = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin";
@@ -157,21 +105,10 @@ const mergeWslEnv = (
   return parts.length > 0 ? parts.join(":") : undefined;
 };
 
-const logBackendObservabilitySettingsReadFailure = (
-  settingsPath: string,
-  cause: PlatformError.PlatformError,
-) => {
-  const error = new DesktopBackendObservabilitySettingsReadError({ settingsPath, cause });
-  return Effect.logWarning(error).pipe(
-    Effect.annotateLogs({
-      component: "desktop-backend-configuration",
-      error,
-    }),
-  );
-};
-
 function resourceMonitorBinaryName(platform: NodeJS.Platform): string {
-  return platform === "win32" ? "t3-resource-monitor.exe" : "t3-resource-monitor";
+  return platform === "win32"
+    ? "vibecodinger-resource-monitor.exe"
+    : "vibecodinger-resource-monitor";
 }
 
 const resolveResourceMonitorPath = Effect.fn(
@@ -208,51 +145,14 @@ const resolveResourceMonitorPath = Effect.fn(
   return Option.none<string>();
 });
 
-const readPersistedBackendObservabilitySettings = Effect.gen(function* () {
-  const fileSystem = yield* FileSystem.FileSystem;
-  const environment = yield* DesktopEnvironment.DesktopEnvironment;
-  const raw = yield* fileSystem.readFileString(environment.serverSettingsPath).pipe(
-    Effect.asSome,
-    Effect.catchTags({
-      PlatformError: (cause) =>
-        cause.reason._tag === "NotFound"
-          ? Effect.succeedNone
-          : logBackendObservabilitySettingsReadFailure(environment.serverSettingsPath, cause).pipe(
-              Effect.as(Option.none()),
-            ),
-    }),
-  );
-  if (Option.isNone(raw)) {
-    return emptyBackendObservabilitySettings;
-  }
-
-  const parsed = parsePersistedServerObservabilitySettings(raw.value);
-  return {
-    otlpTracesUrl: Option.fromNullishOr(parsed.otlpTracesUrl),
-    otlpMetricsUrl: Option.fromNullishOr(parsed.otlpMetricsUrl),
-    otlpLogsUrl: Option.fromNullishOr(parsed.otlpLogsUrl),
-  };
-});
-
-const readBackendObservabilitySettings = Effect.gen(function* () {
-  const environment = yield* DesktopEnvironment.DesktopEnvironment;
-  const persisted = yield* readPersistedBackendObservabilitySettings;
-  return {
-    otlpTracesUrl: Option.orElse(environment.otlpTracesUrl, () => persisted.otlpTracesUrl),
-    otlpMetricsUrl: Option.orElse(environment.otlpMetricsUrl, () => persisted.otlpMetricsUrl),
-    otlpLogsUrl: Option.orElse(environment.otlpLogsUrl, () => persisted.otlpLogsUrl),
-  } satisfies BackendObservabilitySettings;
-});
-
 interface SharedBootstrapInput {
   readonly bootstrapToken: string;
   readonly bootstrapSecret: string;
-  readonly observabilitySettings: BackendObservabilitySettings;
   readonly hostScope: string;
 }
 
 // Matches the server's DESKTOP_HOST_SCOPE_ENV.
-const DESKTOP_HOST_SCOPE_ENV = "T3CODE_DESKTOP_HOST_SCOPE";
+const DESKTOP_HOST_SCOPE_ENV = "VIBECODINGER_DESKTOP_HOST_SCOPE";
 const HOST_SCOPE_FILE_NAME = "desktop-host-scope";
 const HOST_SCOPE_PATTERN = /^[0-9a-f]{32}$/;
 
@@ -298,7 +198,7 @@ interface WslPreflightSuccess {
   readonly windowsEntryPath: string;
   readonly runtime: WslPreflightRuntime;
   readonly resolvedPath: string;
-  readonly t3Home: string | null;
+  readonly appDataHome: string | null;
   readonly runtimeId?: string;
 }
 
@@ -428,13 +328,13 @@ const runWslPreflight = Effect.fn("desktop.backendConfiguration.wslPreflight")(f
 
   if (input.runtimeArchive !== null) {
     // Staged runtimes bundle Node and node-pty; provider PATH discovery must not require them.
-    // Probe first: the runtime cache lives under the login shell's T3CODE_HOME.
+    // Probe first: the runtime cache lives under the login shell's VIBECODINGER_HOME.
     const stagedProbe = yield* wslEnv.probeRuntime(runningDistro);
     if (stagedProbe.ok) {
       const runtime = yield* wslEnv.prepareRuntime(
         runningDistro,
         input.runtimeArchive,
-        stagedProbe.t3Home,
+        stagedProbe.appDataHome,
       );
       if (runtime.ok) {
         yield* wslServerTree.cleanupLegacy;
@@ -442,9 +342,9 @@ const runWslPreflight = Effect.fn("desktop.backendConfiguration.wslPreflight")(f
           _tag: "Ready",
           runningDistro,
           windowsEntryPath: environment.backendEntryPath,
-          runtime: { kind: "executable", entryPath: `${runtime.linuxAppRoot}/t3` },
+          runtime: { kind: "executable", entryPath: `${runtime.linuxAppRoot}/vibecodinger` },
           resolvedPath: stagedProbe.resolvedPath,
-          t3Home: stagedProbe.t3Home,
+          appDataHome: stagedProbe.appDataHome,
           runtimeId: input.runtimeArchive.runtimeId,
         } as const;
       }
@@ -491,7 +391,7 @@ const runWslPreflight = Effect.fn("desktop.backendConfiguration.wslPreflight")(f
       linuxEntryPath: `${mounted.linuxAppRoot}/apps/server/dist/bin.mjs`,
     },
     resolvedPath: nodePtyResult.resolvedPath,
-    t3Home: nodePtyResult.t3Home,
+    appDataHome: nodePtyResult.appDataHome,
   } as const;
 });
 
@@ -507,21 +407,6 @@ const isLocalHostIpv4 = (ip: string): boolean => {
   }
   return false;
 };
-
-const buildObservabilityFragment = (observabilitySettings: BackendObservabilitySettings) => ({
-  ...Option.match(observabilitySettings.otlpTracesUrl, {
-    onNone: () => ({}),
-    onSome: (otlpTracesUrl) => ({ otlpTracesUrl }),
-  }),
-  ...Option.match(observabilitySettings.otlpMetricsUrl, {
-    onNone: () => ({}),
-    onSome: (otlpMetricsUrl) => ({ otlpMetricsUrl }),
-  }),
-  ...Option.match(observabilitySettings.otlpLogsUrl, {
-    onNone: () => ({}),
-    onSome: (otlpLogsUrl) => ({ otlpLogsUrl }),
-  }),
-});
 
 const resolvePrimaryStartConfig = Effect.fn("desktop.backendConfiguration.resolvePrimary")(
   function* (
@@ -544,7 +429,7 @@ const resolvePrimaryStartConfig = Effect.fn("desktop.backendConfiguration.resolv
       mode: "desktop" as const,
       noBrowser: true,
       port: backendExposure.port,
-      t3Home: environment.baseDir,
+      appDataHome: environment.baseDir,
       host: backendExposure.bindHost,
       desktopBootstrapToken: input.bootstrapToken,
       desktopBootstrapSecret: input.bootstrapSecret,
@@ -560,7 +445,6 @@ const resolvePrimaryStartConfig = Effect.fn("desktop.backendConfiguration.resolv
         onNone: () => ({}),
         onSome: (resourceMonitorPath) => ({ resourceMonitorPath }),
       }),
-      ...buildObservabilityFragment(input.observabilitySettings),
     };
 
     return {
@@ -577,8 +461,8 @@ const resolvePrimaryStartConfig = Effect.fn("desktop.backendConfiguration.resolv
       env: {
         ...backendChildEnvPatch(),
         ELECTRON_RUN_AS_NODE: "1",
-        T3CODE_DESKTOP_SHELL_DISCOVERY_PENDING: "1",
-        T3CODE_CLI_PATH: Option.getOrUndefined(input.cliPath),
+        VIBECODINGER_DESKTOP_SHELL_DISCOVERY_PENDING: "1",
+        VIBECODINGER_CLI_PATH: Option.getOrUndefined(input.cliPath),
         [DESKTOP_HOST_SCOPE_ENV]: input.hostScope,
       },
       extendEnv: true,
@@ -622,7 +506,7 @@ const resolveWslStartConfig = Effect.fn("desktop.backendConfiguration.resolveWsl
     mode: "desktop" as const,
     noBrowser: true,
     port: input.port,
-    // Omit t3Home to keep the Linux backend from sharing the primary's Windows SQLite file.
+    // Omit appDataHome to keep the Linux backend from sharing the primary's Windows SQLite file.
     host: wslBindHost,
     desktopBootstrapToken: input.bootstrapToken,
     desktopBootstrapSecret: input.bootstrapSecret,
@@ -630,7 +514,6 @@ const resolveWslStartConfig = Effect.fn("desktop.backendConfiguration.resolveWsl
     // PortSchema rejects 0 even when Tailscale Serve is disabled.
     tailscaleServeEnabled: false,
     tailscaleServePort: 443,
-    ...buildObservabilityFragment(input.observabilitySettings),
   };
 
   const archivePath = environment.path.join(environment.resourcesPath, WSL_RUNTIME_ARCHIVE_NAME);
@@ -693,12 +576,12 @@ const resolveWslStartConfig = Effect.fn("desktop.backendConfiguration.resolveWsl
     }
   }
 
-  const parentEnvWithoutT3Home: Record<string, string | undefined> = {};
+  const parentEnvWithoutAppDataHome: Record<string, string | undefined> = {};
   for (const [key, value] of Object.entries(env)) {
-    if (key === "T3CODE_HOME") continue;
-    parentEnvWithoutT3Home[key] = value;
+    if (key === "VIBECODINGER_HOME") continue;
+    parentEnvWithoutAppDataHome[key] = value;
   }
-  const wslEnv = mergeWslEnv(parentEnvWithoutT3Home.WSLENV, forwardedEnvNames);
+  const wslEnv = mergeWslEnv(parentEnvWithoutAppDataHome.WSLENV, forwardedEnvNames);
 
   const baseConfig = {
     executablePath: "wsl.exe",
@@ -706,12 +589,12 @@ const resolveWslStartConfig = Effect.fn("desktop.backendConfiguration.resolveWsl
       preflight._tag === "Ready" ? preflight.windowsEntryPath : environment.backendEntryPath,
     cwd: environment.backendCwd,
     env: {
-      ...parentEnvWithoutT3Home,
+      ...parentEnvWithoutAppDataHome,
       ...backendChildEnvPatch(),
       ...forwardedEnv,
       ...(wslEnv !== undefined ? { WSLENV: wslEnv } : {}),
     },
-    // env already excludes T3CODE_HOME; merging the host env would restore it.
+    // env already excludes VIBECODINGER_HOME; merging the host env would restore it.
     extendEnv: false,
     bootstrap,
     bootstrapDelivery: "stdin" as const,
@@ -763,7 +646,7 @@ const resolveWslStartConfig = Effect.fn("desktop.backendConfiguration.resolveWsl
       "--exec",
       "env",
       `PATH=${launchPath}`,
-      ...(preflight.t3Home === null ? [] : [`T3CODE_HOME=${preflight.t3Home}`]),
+      ...(preflight.appDataHome === null ? [] : [`VIBECODINGER_HOME=${preflight.appDataHome}`]),
       ...command,
       "--bootstrap-fd",
       "0",
@@ -772,7 +655,7 @@ const resolveWslStartConfig = Effect.fn("desktop.backendConfiguration.resolveWsl
     preflightFailure: Option.none(),
     ...(preflight.runtimeId === undefined
       ? {}
-      : { wslRuntimeId: preflight.runtimeId, wslT3Home: preflight.t3Home }),
+      : { wslRuntimeId: preflight.runtimeId, wslAppDataHome: preflight.appDataHome }),
   } satisfies DesktopBackendManager.DesktopBackendStartConfig;
 });
 
@@ -832,14 +715,9 @@ export const make = Effect.gen(function* () {
       bootstrapSecret,
       yield* Clock.currentTimeMillis,
     ).pipe(Effect.provideService(Mac.Mac, mac));
-    const observabilitySettings = yield* readBackendObservabilitySettings.pipe(
-      Effect.provideService(FileSystem.FileSystem, fileSystem),
-      Effect.provideService(DesktopEnvironment.DesktopEnvironment, environment),
-    );
     return {
       bootstrapToken,
       bootstrapSecret,
-      observabilitySettings,
       hostScope: yield* hostScope,
     } satisfies SharedBootstrapInput;
   });

@@ -21,8 +21,6 @@ import {
   AuthOrchestrationOperateScope,
   AuthOrchestrationReadScope,
   AuthPreviewOperateScope,
-  AuthRelayReadScope,
-  AuthRelayWriteScope,
   AuthTerminalOperateScope,
   ORCHESTRATION_V2_WS_METHODS,
   type OrchestrationV2Command,
@@ -33,7 +31,7 @@ import {
   RpcScopeAuthorization,
   WS_METHODS,
   WsRpcGroup,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import * as Effect from "effect/Effect";
 import * as Schema from "effect/Schema";
 import * as Layer from "effect/Layer";
@@ -57,6 +55,7 @@ export const RPC_REQUIRED_SCOPES = {
   [ORCHESTRATION_V2_WS_METHODS.getArchivedShellSnapshot]: AuthOrchestrationReadScope,
   [ORCHESTRATION_V2_WS_METHODS.getThreadFamily]: AuthOrchestrationReadScope,
   [ORCHESTRATION_V2_WS_METHODS.getThreadTitles]: AuthOrchestrationReadScope,
+  [ORCHESTRATION_V2_WS_METHODS.getRunAnswerPreview]: AuthOrchestrationReadScope,
   [ORCHESTRATION_V2_WS_METHODS.getThreadLinkMetadata]: AuthOrchestrationReadScope,
   [ORCHESTRATION_V2_WS_METHODS.getWorktreeThreadIds]: AuthOrchestrationReadScope,
   [ORCHESTRATION_V2_WS_METHODS.getOlderSettledThreads]: AuthOrchestrationReadScope,
@@ -139,8 +138,6 @@ export const RPC_REQUIRED_SCOPES = {
   // Delivery logs hold request bodies, so they need the same scope as the URL.
   [WS_METHODS.scheduledTasksListWebhookDeliveries]: AuthOrchestrationOperateScope,
   [WS_METHODS.scheduledTasksGetWebhookDelivery]: AuthOrchestrationOperateScope,
-  [WS_METHODS.cloudGetRelayClientStatus]: AuthRelayReadScope,
-  [WS_METHODS.cloudInstallRelayClient]: AuthRelayWriteScope,
   [WS_METHODS.pullRequestsList]: AuthOrchestrationReadScope,
   [WS_METHODS.pullRequestsListStats]: AuthOrchestrationReadScope,
   [WS_METHODS.pullRequestsFilterOptions]: AuthOrchestrationReadScope,

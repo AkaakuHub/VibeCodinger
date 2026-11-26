@@ -1,4 +1,4 @@
-import type { RelayAgentActivityAggregateState } from "@t3tools/contracts/relay";
+import type { RelayAgentActivityAggregateState } from "@vibecodinger/contracts/relay";
 import { msg } from "gt-react-native";
 
 import { m, type MessageResolver } from "../i18n/messages";
@@ -73,7 +73,7 @@ export function agentActivityWidgetTimeline(
   if (source.kind !== "snapshot" || !source.aggregate) {
     const props: AgentActivityProps = {
       text: agentActivityText(0, resolve),
-      title: "T3 Code",
+      title: "VibeCodinger",
       subtitle:
         source.kind === "signed-out"
           ? resolve(msg("Sign in to {product} to see agents", { product: "T3 Connect" }))

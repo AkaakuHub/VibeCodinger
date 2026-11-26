@@ -1,22 +1,25 @@
-import { errorDisplayMessage } from "@t3tools/client-runtime/errors";
+import { errorDisplayMessage } from "@vibecodinger/client-runtime/errors";
 import * as Dialog from "./ui/Dialog";
-import { ComposerContextId } from "@t3tools/contracts";
+import { ComposerContextId } from "@vibecodinger/contracts";
 import { useAtomValue } from "@effect/atom-react";
 import { AsyncResult } from "effect/reactivity";
-import { settlePromise, squashAtomCommandFailure } from "@t3tools/client-runtime/state/runtime";
+import {
+  settlePromise,
+  squashAtomCommandFailure,
+} from "@vibecodinger/client-runtime/state/runtime";
 import { T, useGT } from "gt-react-native";
 import { useEffect, useState } from "react";
-import type { EnvironmentId } from "@t3tools/contracts";
-import { encodeComposerContextFragment } from "@t3tools/shared/composerContextClipboard";
-import { collectComposerContextReferences } from "@t3tools/shared/composerContextReferences";
+import type { EnvironmentId } from "@vibecodinger/contracts";
+import { encodeComposerContextFragment } from "@vibecodinger/shared/composerContextClipboard";
+import { collectComposerContextReferences } from "@vibecodinger/shared/composerContextReferences";
 import {
   collectAssistantCitations,
   serializeAssistantCitation,
   withAssistantCitationComment,
-} from "@t3tools/shared/assistantCitations";
+} from "@vibecodinger/shared/assistantCitations";
 import { AssistantCitationSheet } from "./AssistantCitationSheet";
-import { ComposerEditor as NativeComposerEditor } from "../native/T3ComposerEditor";
-import type { ComposerEditorProps as NativeComposerEditorProps } from "../native/T3ComposerEditor";
+import { ComposerEditor as NativeComposerEditor } from "../native/VibeCodingerComposerEditor";
+import type { ComposerEditorProps as NativeComposerEditorProps } from "../native/VibeCodingerComposerEditor";
 import {
   appendComposerDraftAttachments,
   composerContextImportsAtom,
@@ -77,7 +80,7 @@ export function ComposerEditor({
     ? preferencesResult.value.composerEnterBehavior
     : undefined;
   const contextHistory = createComposerDraftContextHistory();
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- releases the attachment file leases held for native text undo when the history is replaced or unmounts
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- releases the attachment file leases held for native text undo when the history is replaced or unmounts
   useEffect(() => () => contextHistory.dispose(), [contextHistory]);
   const changeText = (text: string) => {
     const restored = contextHistory.restore(
@@ -355,4 +358,4 @@ export type {
   ComposerEditorHandle,
   ComposerEditorSelection,
   ComposerTextPaste,
-} from "../native/T3ComposerEditor";
+} from "../native/VibeCodingerComposerEditor";

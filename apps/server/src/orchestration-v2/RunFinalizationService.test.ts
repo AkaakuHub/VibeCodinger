@@ -9,7 +9,7 @@ import {
   type OrchestrationV2ThreadShell,
   type Project,
   type RepositoryIdentity,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
 import * as Fiber from "effect/Fiber";
@@ -51,7 +51,7 @@ const finalizationLayer = (
     ordinalWithinScope: 1,
     appRunOrdinal: null,
     status: "ready" as const,
-    ref: CheckpointRef.make(`refs/t3/test/${repositoryScopeId}`),
+    ref: CheckpointRef.make(`refs/vibecodinger/test/${repositoryScopeId}`),
   });
   return RunFinalization.layer.pipe(
     Layer.provide(
@@ -388,7 +388,7 @@ it.effect("resolves the identity of a project whose remote was added during the 
     const fileSystem = yield* FileSystem.FileSystem;
     const processRunner = yield* ProcessRunner.ProcessRunner;
     const workspaceRoot = yield* fileSystem.makeTempDirectoryScoped({
-      prefix: "t3-run-finalization-identity-test-",
+      prefix: "vibecodinger-run-finalization-identity-test-",
     });
     const git = (args: ReadonlyArray<string>) =>
       processRunner.run({ command: "git", args: ["-C", workspaceRoot, ...args] });

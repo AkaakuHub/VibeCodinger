@@ -1,11 +1,14 @@
 import { useAtomValue } from "@effect/atom-react";
-import { errorDisplayMessage } from "@t3tools/client-runtime/errors";
+import { errorDisplayMessage } from "@vibecodinger/client-runtime/errors";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
-import type { EnvironmentId } from "@t3tools/contracts";
-import { proposedPlanTitle, stripDisplayedPlanMarkdown } from "@t3tools/shared/proposedPlanText";
+} from "@vibecodinger/client-runtime/state/runtime";
+import type { EnvironmentId } from "@vibecodinger/contracts";
+import {
+  proposedPlanTitle,
+  stripDisplayedPlanMarkdown,
+} from "@vibecodinger/shared/proposedPlanText";
 import { useGT } from "gt-react-native";
 import { m } from "../../i18n/messages";
 import { useRef, useState, type ReactNode } from "react";
@@ -60,7 +63,7 @@ export function ProposedPlanCard(props: {
   return (
     <View className="mb-3 gap-3 rounded-[20px] border border-border bg-card-alt p-4">
       <View className="flex-row items-center gap-2">
-        <Text accessibilityRole="header" className="flex-1 font-t3-bold text-base text-foreground">
+        <Text accessibilityRole="header" className="flex-1 font-vc-bold text-base text-foreground">
           {proposedPlanTitle(props.markdown) ?? gt("Proposed plan")}
         </Text>
         <CopyTextButton accessibilityLabel={gt("Copy plan")} text={contents} />

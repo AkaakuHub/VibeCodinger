@@ -2,7 +2,7 @@ import {
   EnvironmentId,
   ORCHESTRATION_PROTOCOL_VERSION,
   type DesktopSshEnvironmentTarget,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import { describe, expect, it } from "@effect/vitest";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
@@ -14,6 +14,7 @@ import * as ClientCapabilities from "../platform/capabilities.ts";
 import * as RemoteEnvironmentAuthorization from "../authorization/service.ts";
 import {
   BearerConnectionCredential,
+  BearerConnectionProfile,
   type ConnectionCatalogEntry,
   SshConnectionProfile,
   type ConnectionCredential,
@@ -21,8 +22,10 @@ import {
 } from "./catalog.ts";
 import * as ConnectionCredentialStore from "./credentialStore.ts";
 import {
+  BearerConnectionTarget,
   ConnectionTransientError,
   PrimaryConnectionTarget,
+  RelayConnectionTarget,
   SshConnectionTarget,
   type ConnectionTarget,
 } from "./model.ts";
@@ -185,7 +188,42 @@ describe("ConnectionResolver", () => {
       const error = yield* Effect.flip(broker.prepare(catalogEntry(target)));
 
       expect(error).toMatchObject({ reason: "unsupported" });
-      expect(error.message).toContain("Update T3 Code on Compatible environment");
+      expect(error.message).toContain("Update VibeCodinger on Compatible environment");
+    }),
+  );
+
+  it.effect("rejects retired routes before requesting authorization", () =>
+    Effect.gen(function* () {
+      const layerBroker = yield* makeDependencies({
+        authorizeDpop: () => Effect.die("Retired routes must never request authorization"),
+      });
+      const broker = yield* ConnectionResolver.ConnectionResolver.pipe(Effect.provide(layerBroker));
+      const relay = new RelayConnectionTarget({
+        environmentId: ENVIRONMENT_ID,
+        label: "Old relay",
+      });
+      const learned = new BearerConnectionTarget({
+        environmentId: ENVIRONMENT_ID,
+        label: "Old learned route",
+        connectionId: "retired",
+      });
+      const profile = new BearerConnectionProfile({
+        ...ENDPOINT,
+        environmentId: learned.environmentId,
+        connectionId: learned.connectionId,
+        label: learned.label,
+        authorization: "t3-connect",
+        learned: true,
+      });
+
+      expect(yield* Effect.flip(broker.prepare(catalogEntry(relay)))).toMatchObject({
+        reason: "configuration",
+      });
+      expect(
+        yield* Effect.flip(broker.prepareForUpdate(catalogEntry(learned, Option.some(profile)))),
+      ).toMatchObject({
+        reason: "configuration",
+      });
     }),
   );
 

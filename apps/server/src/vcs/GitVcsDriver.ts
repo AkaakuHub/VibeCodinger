@@ -39,10 +39,10 @@ import {
   type VcsStatusInput,
   type VcsStatusResult,
   type WorktreeSubmodules,
-} from "@t3tools/contracts";
-import { isMissingExecutable } from "@t3tools/source-control-core/server/discovery";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { quoteGitPatchPath } from "@t3tools/shared/gitPatchPath";
+} from "@vibecodinger/contracts";
+import { isMissingExecutable } from "@vibecodinger/source-control-core/server/discovery";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
+import { quoteGitPatchPath } from "@vibecodinger/shared/gitPatchPath";
 import {
   makeGitVcsDriverCore,
   PATCH_RENDER_PREFIX_ARGS,
@@ -154,7 +154,7 @@ export interface CreateWorktreeProgress {
   }) => Effect.Effect<void, never>;
   readonly onSubmodulesStarted?: () => Effect.Effect<void, never>;
   readonly onSubmodulesDisabled?: (input: {
-    source: "settings" | "t3.json";
+    source: "settings" | "vibecodinger.json";
   }) => Effect.Effect<void, never>;
   readonly onSubmoduleLine?: (line: string) => Effect.Effect<void, never>;
   readonly onSubmodulesFinished?: (input: {
@@ -165,7 +165,7 @@ export interface CreateWorktreeProgress {
 
 export interface CreateWorktreeOptions {
   readonly progress?: CreateWorktreeProgress;
-  /** Null or omitted defers to the checkout's t3.json. */
+  /** Null or omitted defers to the checkout's vibecodinger.json. */
   readonly submodules?: WorktreeSubmodules | null;
   readonly worktreesDirectory?: string;
   /** Clone the checkout from the macOS worktree checkout cache. */
@@ -347,12 +347,12 @@ export interface GitRemoteStatusOptions {
  * slow status fetch land. Its status read waits for a running fetch instead of using the last
  * fetched references after five seconds. The fetch keeps its own safety limit.
  */
-export const AwaitStatusFetch = Context.Reference<boolean>("t3/vcs/AwaitStatusFetch", {
+export const AwaitStatusFetch = Context.Reference<boolean>("vibecodinger/vcs/AwaitStatusFetch", {
   defaultValue: () => false,
 });
 
 /** Set by background discovery so its Git commands run in their own small lane, not the user's. */
-export const BackgroundGitWork = Context.Reference<boolean>("t3/vcs/BackgroundGitWork", {
+export const BackgroundGitWork = Context.Reference<boolean>("vibecodinger/vcs/BackgroundGitWork", {
   defaultValue: () => false,
 });
 
@@ -509,7 +509,7 @@ export class GitVcsDriver extends Context.Service<
     readonly invalidateRefs: (cwd: string) => Effect.Effect<void>;
     readonly listLocalBranchNames: (cwd: string) => Effect.Effect<string[], GitCommandError>;
   }
->()("t3/vcs/GitVcsDriver") {}
+>()("vibecodinger/vcs/GitVcsDriver") {}
 
 const WORKSPACE_FILES_MAX_OUTPUT_BYTES = 16 * 1024 * 1024;
 const FLAGGED_INDEX_ENTRIES_MAX_BYTES = 1024 * 1024;
@@ -1145,10 +1145,10 @@ export const makeVcsDriverShape = Effect.fn("makeGitVcsDriverShape")(function* (
     (excludePaths ?? []).map((relativePath) => `:(exclude,literal)${relativePath}`);
 
   const checkpointIdentity: NodeJS.ProcessEnv = {
-    GIT_AUTHOR_NAME: "T3 Code",
-    GIT_AUTHOR_EMAIL: "t3code@users.noreply.github.com",
-    GIT_COMMITTER_NAME: "T3 Code",
-    GIT_COMMITTER_EMAIL: "t3code@users.noreply.github.com",
+    GIT_AUTHOR_NAME: "VibeCodinger",
+    GIT_AUTHOR_EMAIL: "vibecodinger@localhost",
+    GIT_COMMITTER_NAME: "VibeCodinger",
+    GIT_COMMITTER_EMAIL: "vibecodinger@localhost",
   };
 
   // Index files known to hold no assume-unchanged or skip-worktree entry, by their stat. Setting
@@ -1230,7 +1230,7 @@ export const makeVcsDriverShape = Effect.fn("makeGitVcsDriverShape")(function* (
           : undefined;
       const startedAt = yield* Clock.currentTimeMillis;
       const indexId = yield* random.uuidV4();
-      const tempIndexPath = path.join(gitCommonDir, `t3-checkpoint-index-${indexId}`);
+      const tempIndexPath = path.join(gitCommonDir, `vibecodinger-checkpoint-index-${indexId}`);
       const hostEnv = yield* HostProcess.Environment;
       // VcsProcess clears inherited object selectors, so every other command uses this store.
       const sharedObjects = path.join(gitCommonDir, "objects");
@@ -1238,7 +1238,10 @@ export const makeVcsDriverShape = Effect.fn("makeGitVcsDriverShape")(function* (
       // Isolate bulk-checkin packs so cleanup cannot remove another Git writer's objects.
       const privateObjects = yield* Effect.acquireRelease(
         fileSystem
-          .makeTempDirectory({ directory: sharedObjects, prefix: "tmp_objdir-t3-checkpoint-" })
+          .makeTempDirectory({
+            directory: sharedObjects,
+            prefix: "tmp_objdir-vibecodinger-checkpoint-",
+          })
           .pipe(
             Effect.mapError(
               (cause) =>
@@ -1333,10 +1336,10 @@ export const makeVcsDriverShape = Effect.fn("makeGitVcsDriverShape")(function* (
         GIT_ALTERNATE_OBJECT_DIRECTORIES: quotedObjects.startsWith('"')
           ? quotedObjects
           : `"${quotedObjects}"`,
-        GIT_AUTHOR_NAME: "T3 Code",
-        GIT_AUTHOR_EMAIL: "t3code@users.noreply.github.com",
-        GIT_COMMITTER_NAME: "T3 Code",
-        GIT_COMMITTER_EMAIL: "t3code@users.noreply.github.com",
+        GIT_AUTHOR_NAME: "VibeCodinger",
+        GIT_AUTHOR_EMAIL: "vibecodinger@localhost",
+        GIT_COMMITTER_NAME: "VibeCodinger",
+        GIT_COMMITTER_EMAIL: "vibecodinger@localhost",
         // Any command on the scratch index can run the clean filter, not just add.
         ...VcsProcess.gitConfigEnv(hostEnv, "lfs.storage", privateLfs, hostPlatform),
       };

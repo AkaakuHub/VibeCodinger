@@ -6,7 +6,7 @@ import {
   type NavigationAction,
   type NavigationState,
 } from "@react-navigation/native";
-import { runAtomCommand } from "@t3tools/client-runtime/state/runtime";
+import { runAtomCommand } from "@vibecodinger/client-runtime/state/runtime";
 import { AsyncResult } from "effect/reactivity";
 import { requireOptionalNativeModule } from "expo";
 
@@ -232,7 +232,7 @@ export function installShowcaseCapture(
         const outcome =
           activity === null
             ? "fixture threads not loaded"
-            : await stageShowcaseAgentActivity(activity, now);
+            : await stageShowcaseAgentActivity(activity);
         if (outcome === true) return true;
         if (outcome !== lastOutcome) {
           console.warn(`[showcase] agent activity not staged: ${outcome}`);

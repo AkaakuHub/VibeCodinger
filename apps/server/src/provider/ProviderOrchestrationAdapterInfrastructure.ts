@@ -6,12 +6,12 @@ import * as SqlClient from "effect/sql/SqlClient";
 import * as ClaudeAdapterV2 from "../orchestration-v2/Adapters/ClaudeAdapterV2.ts";
 import * as CodexAdapterV2 from "../orchestration-v2/Adapters/CodexAdapterV2.ts";
 import * as ProviderProcesses from "../process/providerProcesses.ts";
-import type * as CursorAgentSdk from "@t3tools/provider-cursor/server/CursorAgentSdk";
-import * as CursorAgentSdkProcessRunner from "@t3tools/provider-cursor/server/CursorAgentSdkProcessRunner";
-import * as CursorSdk from "@t3tools/provider-cursor/server/CursorSdk";
-import * as IdAllocator from "@t3tools/provider-core/server/IdAllocator";
-import * as ProviderContinuationRequests from "@t3tools/provider-core/server/ProviderContinuationRequests";
-import * as HostProcess from "@t3tools/shared/HostProcess";
+import type * as CursorAgentSdk from "@vibecodinger/provider-cursor/server/CursorAgentSdk";
+import * as CursorAgentSdkProcessRunner from "@vibecodinger/provider-cursor/server/CursorAgentSdkProcessRunner";
+import * as CursorSdk from "@vibecodinger/provider-cursor/server/CursorSdk";
+import * as IdAllocator from "@vibecodinger/provider-core/server/IdAllocator";
+import * as ProviderContinuationRequests from "@vibecodinger/provider-core/server/ProviderContinuationRequests";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
 
 export type ProviderOrchestrationAdapterInfrastructure =
   | ClaudeAdapterV2.ClaudeAgentSdkQueryRunner

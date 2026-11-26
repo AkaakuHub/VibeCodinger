@@ -9,7 +9,7 @@ import {
   type OrchestrationV2ServerCommand,
   type ThreadGuestMessage,
   type ThreadGuestShare,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import * as DateTime from "effect/DateTime";
 import * as Result from "effect/Result";
 
@@ -26,7 +26,7 @@ export type GuestShareCommand = Extract<
 >;
 
 /** Failures a guest may be told about. Any other dispatch failure reaches them as "rejected". */
-export const GUEST_FAILURE = {
+const GUEST_FAILURE = {
   inactive: "This guest link is no longer active.",
   used: "This guest link was already used.",
   busy: "Wait for the owner to answer your earlier messages.",

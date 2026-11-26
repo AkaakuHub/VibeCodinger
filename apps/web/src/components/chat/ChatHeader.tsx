@@ -3,14 +3,14 @@ import {
   type EnvironmentId,
   type ScopedThreadRef,
   type ThreadId,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import { contextMenuSourceOf } from "~/contextMenuSource";
-import { scopeThreadRef } from "@t3tools/client-runtime/environment";
-import type { EnvironmentProject } from "@t3tools/client-runtime/state/shell";
+import { scopeThreadRef } from "@vibecodinger/client-runtime/environment";
+import type { EnvironmentProject } from "@vibecodinger/client-runtime/state/shell";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
+} from "@vibecodinger/client-runtime/state/runtime";
 import { T, useGT, Var } from "gt-react";
 import { ChevronDownIcon } from "lucide-react";
 import {
@@ -29,8 +29,6 @@ import { toastManager } from "../ui/toast";
 import { useThreadActionMenu } from "~/hooks/useThreadActionMenu";
 import { readLocalApi } from "~/localApi";
 import { threadEnvironment } from "../../state/threads";
-import { canShareWithGuestAtom } from "./guestShareAvailability";
-import { useAtomValue } from "@effect/atom-react";
 import { useOrchestrationCommand } from "../../state/use-orchestration-command";
 import { readEnvironmentScope, useEnvironmentScope } from "../../state/session";
 import { ProjectFavicon } from "../ProjectFavicon";
@@ -44,7 +42,6 @@ import { observeResize } from "~/lib/observeResize";
 import { cn } from "~/lib/utils";
 import { textDirection } from "~/textDirection";
 import { useClientSettings } from "../../hooks/useSettings";
-import { GuestShareIndicator } from "./GuestShareControls";
 
 interface ChatHeaderProps {
   activeThreadEnvironmentId: EnvironmentId;
@@ -96,7 +93,6 @@ export const ChatHeader = memo(function ChatHeader({
     activeThreadEnvironmentId,
     AuthOrchestrationOperateScope,
   );
-  const canShareWithGuest = useAtomValue(canShareWithGuestAtom(activeThreadEnvironmentId));
   const updateThreadMetadata = useOrchestrationCommand(threadEnvironment.updateMetadata, {
     reportFailure: false,
   });
@@ -120,7 +116,7 @@ export const ChatHeader = memo(function ChatHeader({
       ? renaming.title
       : null;
   const isRenamingTitle = renamingTitle !== null;
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- measures the breadcrumb list DOM via ResizeObserver, a frame and font loads to collapse the parent title
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- measures the breadcrumb list DOM via ResizeObserver, a frame and font loads to collapse the parent title
   useEffect(() => {
     const list = breadcrumbContainerRef.current?.querySelector("ol");
     if (!list || !parentThreadLink) return;
@@ -205,7 +201,6 @@ export const ChatHeader = memo(function ChatHeader({
     projectCwd: activeProjectCwd,
     onStartRename: startRename,
     onFind: onFindInThread,
-    canShareWithGuest,
   });
   const openMenuFromTitle = (event: ReactMouseEvent<HTMLButtonElement>) => {
     if (isTrailingDoubleClick(event.detail)) return;
@@ -413,7 +408,6 @@ export const ChatHeader = memo(function ChatHeader({
           ) : null}
         </WorkspaceBreadcrumbItem>
       </WorkspaceBreadcrumb>
-      {isServerThread ? <GuestShareIndicator threadRef={activeThreadRef} /> : null}
     </div>
   );
 });

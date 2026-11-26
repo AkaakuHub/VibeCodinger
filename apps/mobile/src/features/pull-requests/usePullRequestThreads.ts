@@ -1,9 +1,12 @@
-import { errorDisplayMessage } from "@t3tools/client-runtime/errors";
+import { errorDisplayMessage } from "@vibecodinger/client-runtime/errors";
 import { useAtomValue } from "@effect/atom-react";
-import { visibleLinkedThreads } from "@t3tools/client-runtime/state/threads";
+import { visibleLinkedThreads } from "@vibecodinger/client-runtime/state/threads";
 import { AsyncResult } from "effect/reactivity";
 import { useGT } from "gt-react-native";
-import { settlePromise, squashAtomCommandFailure } from "@t3tools/client-runtime/state/runtime";
+import {
+  settlePromise,
+  squashAtomCommandFailure,
+} from "@vibecodinger/client-runtime/state/runtime";
 import * as Dialog from "../../components/ui/Dialog";
 import {
   StackActions,
@@ -11,18 +14,18 @@ import {
   useNavigationState,
   useRoute,
 } from "@react-navigation/native";
-import { threadPullRequestLinkMode } from "@t3tools/client-runtime/thread-pull-request-compatibility";
+import { threadPullRequestLinkMode } from "@vibecodinger/client-runtime/thread-pull-request-compatibility";
 import {
   AuthOrchestrationOperateScope,
   AuthSourceControlWriteScope,
   ThreadId,
   type PullRequestDetail,
   type PullRequestLinkedThreadsResult,
-} from "@t3tools/contracts";
-import { formatComposerContextReference } from "@t3tools/shared/composerContextReferences";
-import { sourceControlClients } from "@t3tools/client-runtime/source-control-clients";
+} from "@vibecodinger/contracts";
+import { formatComposerContextReference } from "@vibecodinger/shared/composerContextReferences";
+import { sourceControlClients } from "@vibecodinger/client-runtime/source-control-clients";
 import { changeRequestTermKind } from "../../lib/changeRequestTerm";
-import { normalizeThreadPullRequestKey } from "@t3tools/client-runtime/thread-pull-requests";
+import { normalizeThreadPullRequestKey } from "@vibecodinger/client-runtime/thread-pull-requests";
 import { useRef, useState } from "react";
 import { pullRequestComposerContext } from "../../lib/composerContext";
 import { scopedThreadKey } from "../../lib/scopedEntities";

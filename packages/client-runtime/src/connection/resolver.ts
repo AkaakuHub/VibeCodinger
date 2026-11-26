@@ -3,8 +3,7 @@ import { translatableDetail } from "../errors/translatable.ts";
 import type {
   AuthClientPresentationMetadata,
   ExecutionEnvironmentDescriptor,
-} from "@t3tools/contracts";
-import { withRelayClientTracing } from "@t3tools/shared/relayTracing";
+} from "@vibecodinger/contracts";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
@@ -37,7 +36,6 @@ import type {
   ConnectionTarget,
   PreparedConnection,
   PrimaryConnectionTarget,
-  RelayConnectionTarget,
   SshConnectionTarget,
 } from "./model.ts";
 import { ConnectionBlockedError, type ConnectionAttemptError } from "./model.ts";
@@ -48,6 +46,11 @@ import {
 } from "./compatibility.ts";
 import { credentialConnectionId } from "./routes.ts";
 import { fetchRemoteEnvironmentDescriptor } from "../environment/descriptor.ts";
+
+const retiredRoute = new ConnectionBlockedError({
+  reason: "configuration",
+  ...translatableDetail(msg("This environment needs to be paired directly.")),
+});
 
 export class ConnectionResolver extends Context.Service<
   ConnectionResolver,
@@ -67,7 +70,7 @@ export class ConnectionResolver extends Context.Service<
       ConnectionAttemptError
     >;
   }
->()("@t3tools/client-runtime/connection/resolver/ConnectionResolver") {}
+>()("@vibecodinger/client-runtime/connection/resolver/ConnectionResolver") {}
 
 const isBearerProfile = Schema.is(BearerConnectionProfile);
 const isSshProfile = Schema.is(SshConnectionProfile);
@@ -88,6 +91,7 @@ function primarySocketUrl(
 const makePrimaryBroker = Effect.fn("clientRuntime.connection.broker.makePrimary")(function* () {
   const auth = yield* ClientCapabilities.PrimaryEnvironmentAuth;
   const presentation = yield* ClientCapabilities.ClientPresentation;
+  const httpClient = yield* HttpClient.HttpClient;
   const remote = yield* RemoteEnvironmentAuthorization.RemoteEnvironmentAuthorization;
 
   return Effect.fn("clientRuntime.connection.broker.primary")(function* (
@@ -95,12 +99,26 @@ const makePrimaryBroker = Effect.fn("clientRuntime.connection.broker.makePrimary
   ) {
     const bearerToken = yield* auth.bearerToken;
     if (Option.isNone(bearerToken)) {
+      const descriptor =
+        new URL(target.httpBaseUrl).protocol === "https:"
+          ? yield* fetchRemoteEnvironmentDescriptor({ httpBaseUrl: target.httpBaseUrl }).pipe(
+              Effect.mapError(mapRemoteEnvironmentError),
+              Effect.provideService(HttpClient.HttpClient, httpClient),
+            )
+          : undefined;
+      if (descriptor && descriptor.environmentId !== target.environmentId) {
+        return yield* environmentMismatchError({
+          expected: target.environmentId,
+          actual: descriptor.environmentId,
+        });
+      }
       return {
         environmentId: target.environmentId,
         label: target.label,
         httpBaseUrl: target.httpBaseUrl,
         socketUrl: primarySocketUrl(target, presentation.metadata),
         httpAuthorization: null,
+        ...(descriptor === undefined ? {} : { descriptor }),
         target,
       } satisfies PreparedConnection;
     }
@@ -147,11 +165,18 @@ const makeBearerBroker = Effect.fn("clientRuntime.connection.broker.makeBearer")
       });
     }
     if (profile.authorization === "t3-connect") {
-      const authorized = yield* remote.authorizeDpop({
-        expectedEnvironmentId: target.environmentId,
-        directEndpoint: { httpBaseUrl: profile.httpBaseUrl, wsBaseUrl: profile.wsBaseUrl },
+      return yield* retiredRoute;
+    }
+    const pin = profile.e2eeServerIdentityKey;
+    if (
+      pin !== undefined &&
+      (new URL(profile.httpBaseUrl).protocol !== "https:" ||
+        new URL(profile.wsBaseUrl).protocol !== "wss:")
+    ) {
+      return yield* new ConnectionBlockedError({
+        reason: "configuration",
+        ...translatableDetail(msg("This environment requires HTTPS.")),
       });
-      return { ...authorized, target } satisfies PreparedConnection;
     }
     const credential = yield* credentials.get(credentialConnectionId(target.connectionId)).pipe(
       Effect.flatMap(
@@ -168,37 +193,22 @@ const makeBearerBroker = Effect.fn("clientRuntime.connection.broker.makeBearer")
             connectionId: credentialConnectionId(target.connectionId),
             httpBaseUrl: profile.httpBaseUrl,
             wsBaseUrl: profile.wsBaseUrl,
+            ...(pin === undefined ? {} : { expectedE2eeIdentityKey: pin }),
           })
         : yield* remote.authorizeBearer({
             expectedEnvironmentId: target.environmentId,
             httpBaseUrl: profile.httpBaseUrl,
             wsBaseUrl: profile.wsBaseUrl,
+            ...(pin === undefined ? {} : { expectedE2eeIdentityKey: pin }),
             bearerToken: credential.token,
             connectionMethod: "direct",
           });
     return {
       ...authorized,
+      ...(pin === undefined ? {} : { e2eeServerIdentityKey: pin }),
       target,
     } satisfies PreparedConnection;
   });
-});
-
-const makeRelayBroker = Effect.fn("clientRuntime.connection.broker.makeRelay")(function* () {
-  const remote = yield* RemoteEnvironmentAuthorization.RemoteEnvironmentAuthorization;
-
-  return Effect.fnUntraced(
-    function* (target: RelayConnectionTarget) {
-      const authorized = yield* remote.authorizeDpop({
-        expectedEnvironmentId: target.environmentId,
-      });
-      return {
-        ...authorized,
-        target,
-      } satisfies PreparedConnection;
-    },
-    Effect.withSpan("clientRuntime.connection.broker.relay"),
-    withRelayClientTracing,
-  );
 });
 
 const makeSshBroker = Effect.fn("clientRuntime.connection.broker.makeSsh")(function* () {
@@ -277,7 +287,6 @@ const makeSshBroker = Effect.fn("clientRuntime.connection.broker.makeSsh")(funct
 export const make = Effect.gen(function* () {
   const primary = yield* makePrimaryBroker();
   const bearer = yield* makeBearerBroker();
-  const relay = yield* makeRelayBroker();
   const ssh = yield* makeSshBroker();
   const httpClient = yield* HttpClient.HttpClient;
 
@@ -298,7 +307,7 @@ export const make = Effect.gen(function* () {
         case "BearerConnectionTarget":
           return bearer({ ...entry, target });
         case "RelayConnectionTarget":
-          return relay(target);
+          return retiredRoute;
         case "SshConnectionTarget":
           return ssh({ ...entry, target });
       }

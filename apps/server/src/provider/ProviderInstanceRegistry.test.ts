@@ -19,11 +19,11 @@ import {
   SecretProviderId,
   SettingsSecretValue,
   type SecretReference,
-} from "@t3tools/contracts";
-import * as ProviderLatestVersions from "@t3tools/provider-core/server/ProviderLatestVersions";
-import { OpenCodeSettings } from "@t3tools/provider-opencode/settings";
-import * as McpProviderSessions from "@t3tools/provider-core/server/McpProviderSessions";
-import * as HostProcess from "@t3tools/shared/HostProcess";
+} from "@vibecodinger/contracts";
+import * as ProviderLatestVersions from "@vibecodinger/provider-core/server/ProviderLatestVersions";
+import { OpenCodeSettings } from "@vibecodinger/provider-opencode/settings";
+import * as McpProviderSessions from "@vibecodinger/provider-core/server/McpProviderSessions";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
 import * as DateTime from "effect/DateTime";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
@@ -45,7 +45,7 @@ import { ClaudeDriver, type ClaudeDriverEnv } from "./Drivers/ClaudeDriver.ts";
 import { CodexDriver, type CodexDriverEnv } from "./Drivers/CodexDriver.ts";
 import * as ModelManifest from "./ModelManifest.ts";
 import * as ResetCreditCoordinator from "./resetCreditCoordinator.ts";
-import * as ProviderEventLoggers from "@t3tools/provider-core/server/ProviderEventLoggers";
+import * as ProviderEventLoggers from "@vibecodinger/provider-core/server/ProviderEventLoggers";
 import { makeProviderInstanceRegistry } from "./ProviderInstanceRegistry.ts";
 import { ProviderDriverError } from "./Errors.ts";
 import * as ProviderInstallationGate from "./ProviderInstallationGate.ts";
@@ -53,8 +53,11 @@ import * as ProviderOrchestrationAdapterInfrastructure from "./ProviderOrchestra
 import * as PortScanner from "../preview/PortScanner.ts";
 import * as ProviderHostLive from "./ProviderHostLive.ts";
 import * as SqlitePersistence from "../persistence/Sqlite.ts";
-import * as SecretResolver from "@t3tools/secret-provider-core/server/SecretResolver";
-import type { AnyProviderDriver, ProviderInstance } from "@t3tools/provider-core/server/driver";
+import * as SecretResolver from "@vibecodinger/secret-provider-core/server/SecretResolver";
+import type {
+  AnyProviderDriver,
+  ProviderInstance,
+} from "@vibecodinger/provider-core/server/driver";
 
 vi.mock("@anthropic-ai/claude-agent-sdk", { spy: true });
 
@@ -125,7 +128,7 @@ const makeTildeProviderFixtures = Effect.fn(
   const homePath = yield* HostProcess.HomeDirectory;
   const fixtureDir = yield* fileSystem.makeTempDirectoryScoped({
     directory: homePath,
-    prefix: ".t3-provider-path-test-",
+    prefix: ".vibecodinger-provider-path-test-",
   });
   yield* fileSystem.writeFileString(
     path.join(fixtureDir, "package.json"),
@@ -438,7 +441,7 @@ describe("ProviderInstanceRegistry — multi-instance codex slice", () => {
           enabled: true,
           environment: [
             {
-              name: "T3_CODEX_COLLAB_SCRIPT",
+              name: "VIBECODINGER_CODEX_COLLAB_SCRIPT",
               value: fixtures.codexScriptPath,
               sensitive: false,
             },
@@ -492,7 +495,9 @@ describe("ProviderInstanceRegistry — multi-instance codex slice", () => {
             driver: ProviderDriverKind.make("claudeAgent"),
             enabled: true,
             // Packaged desktop starts in $HOME, where some claude wrappers refuse to run.
-            environment: [{ name: "T3_CLAUDE_REQUIRED_CWD", value: stateDir, sensitive: false }],
+            environment: [
+              { name: "VIBECODINGER_CLAUDE_REQUIRED_CWD", value: stateDir, sensitive: false },
+            ],
             config: makeClaudeConfig({
               enabled: true,
               binaryPath: fixtures.claudeBinaryPath,
@@ -525,7 +530,7 @@ describe("ProviderInstanceRegistry — multi-instance codex slice", () => {
             enabled: true,
             environment: [
               {
-                name: "T3_CLAUDE_SETTINGS_SOURCES",
+                name: "VIBECODINGER_CLAUDE_SETTINGS_SOURCES",
                 // The merged `effective` settings read as exempting Opus 5; the flag tier's
                 // top-level cap still applies to it.
                 value: JSON.stringify([
@@ -572,7 +577,9 @@ describe("ProviderInstanceRegistry — multi-instance codex slice", () => {
           [claudeId]: {
             driver: ProviderDriverKind.make("claudeAgent"),
             enabled: true,
-            environment: [{ name: "T3_CLAUDE_SETTINGS_UNSUPPORTED", value: "1", sensitive: false }],
+            environment: [
+              { name: "VIBECODINGER_CLAUDE_SETTINGS_UNSUPPORTED", value: "1", sensitive: false },
+            ],
             config: makeClaudeConfig({
               enabled: true,
               binaryPath: fixtures.claudeBinaryPath,
@@ -776,9 +783,15 @@ describe("ProviderInstanceRegistry — multi-instance codex slice", () => {
             driver: ProviderDriverKind.make("claudeAgent"),
             enabled: true,
             environment: [
-              { name: "T3_CLAUDE_RESET_MARKER", value: marker, sensitive: false },
+              { name: "VIBECODINGER_CLAUDE_RESET_MARKER", value: marker, sensitive: false },
               ...(claim.usageFailsAfterClaim
-                ? [{ name: "T3_CLAUDE_USAGE_FAILS_AFTER_CLAIM", value: "1", sensitive: false }]
+                ? [
+                    {
+                      name: "VIBECODINGER_CLAUDE_USAGE_FAILS_AFTER_CLAIM",
+                      value: "1",
+                      sensitive: false,
+                    },
+                  ]
                 : []),
             ],
             config: makeClaudeConfig({
@@ -841,15 +854,15 @@ describe("ProviderInstanceRegistry — multi-instance codex slice", () => {
           driver: ProviderDriverKind.make("claudeAgent"),
           enabled: true,
           environment: [
-            { name: "T3_CLAUDE_PROBE_LOG", value: probeLog, sensitive: false },
+            { name: "VIBECODINGER_CLAUDE_PROBE_LOG", value: probeLog, sensitive: false },
             ...(state === "ready"
               ? []
               : [
                   {
                     name:
                       state === "signed-out"
-                        ? "T3_CLAUDE_LOGIN_MARKER"
-                        : "T3_CLAUDE_USAGE_FAILS_UNTIL",
+                        ? "VIBECODINGER_CLAUDE_LOGIN_MARKER"
+                        : "VIBECODINGER_CLAUDE_USAGE_FAILS_UNTIL",
                     value: recovered,
                     sensitive: false,
                   },

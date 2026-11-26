@@ -19,8 +19,8 @@ import * as Layer from "effect/Layer";
 
 import * as Electron from "electron";
 
-import * as NetService from "@t3tools/shared/Net";
-import * as HostProcess from "@t3tools/shared/HostProcess";
+import * as NetService from "@vibecodinger/shared/Net";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
 
 import * as DesktopIpc from "./ipc/DesktopIpc.ts";
 import * as ElectronApp from "./electron/ElectronApp.ts";
@@ -38,7 +38,7 @@ import * as DesktopAppActivation from "./app/DesktopAppActivation.ts";
 import * as DesktopWebLinks from "./app/DesktopWebLinks.ts";
 import * as DesktopAppIdentity from "./app/DesktopAppIdentity.ts";
 import * as DesktopConnectionCatalogStore from "./app/DesktopConnectionCatalogStore.ts";
-import * as DesktopClerk from "./app/DesktopClerk.ts";
+import * as DesktopLaunchLinks from "./app/DesktopLaunchLinks.ts";
 import * as DesktopCliCommand from "./app/DesktopCliCommand.ts";
 import * as DesktopApplicationMenu from "./window/DesktopApplicationMenu.ts";
 import * as DesktopAssets from "./app/DesktopAssets.ts";
@@ -64,7 +64,6 @@ import * as DesktopShellEnvironment from "./shell/DesktopShellEnvironment.ts";
 import * as DesktopSshEnvironment from "./ssh/DesktopSshEnvironment.ts";
 import * as DesktopSshPasswordPrompts from "./ssh/DesktopSshPasswordPrompts.ts";
 import * as DesktopState from "./app/DesktopState.ts";
-import * as DesktopLegacyLocalStorage from "./app/DesktopLegacyLocalStorage.ts";
 import * as DesktopTelemetryPublisher from "./telemetry/DesktopTelemetryPublisher.ts";
 import * as DesktopRendererHistory from "./telemetry/DesktopRendererHistory.ts";
 import * as DesktopUpdatePolicy from "./updates/DesktopUpdatePolicy.ts";
@@ -149,7 +148,6 @@ const layerDesktopFoundation = Layer.mergeAll(
   DesktopManagedPolicy.layer,
   DesktopState.layer,
   DesktopShutdown.layer,
-  DesktopLegacyLocalStorage.layer,
   DesktopAppSettings.layer,
   DesktopClientSettings.layer,
   DesktopConnectionCatalogStore.layer.pipe(Layer.provideMerge(DesktopSavedEnvironments.layer)),
@@ -232,8 +230,8 @@ const layerDesktopApplication = Layer.mergeAll(
   Layer.provideMerge(layerDesktopLocalEnvironmentAuth),
 );
 
-// Clerk resolves userData before Electron is ready, so it gets the synchronous FileSystem.
-const layerDesktopClerk = DesktopClerk.layer.pipe(
+// Set the user data path and clear stale caches before Electron is ready.
+const layerDesktopLaunchLinks = DesktopLaunchLinks.layer.pipe(
   Layer.provide(DesktopPreReadyFileSystem.layer),
   Layer.provideMerge(ElectronShell.layer),
   Layer.provideMerge(layerDesktopEnvironment),
@@ -248,10 +246,11 @@ const layerDesktopApplicationRuntime = layerDesktopApplication.pipe(
   Layer.provideMerge(layerElectron),
 );
 
-// Pre-ready setup and Clerk must not yield before Clerk registers its scheme.
-const layerDesktopRuntime = layerDesktopClerk.pipe(
-  Layer.flatMap((clerkContext) =>
-    layerDesktopApplicationRuntime.pipe(Layer.provideMerge(Layer.succeedContext(clerkContext))),
+const layerDesktopRuntime = layerDesktopLaunchLinks.pipe(
+  Layer.flatMap((launchLinksContext) =>
+    layerDesktopApplicationRuntime.pipe(
+      Layer.provideMerge(Layer.succeedContext(launchLinksContext)),
+    ),
   ),
   Layer.provideMerge(DesktopPreReadyPlatform.layer),
 );

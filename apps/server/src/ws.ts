@@ -1,8 +1,8 @@
-import { GitCommandError, OrchestrationDispatchCommandError } from "@t3tools/contracts";
+import { GitCommandError, OrchestrationDispatchCommandError } from "@vibecodinger/contracts";
 // @effect-diagnostics-next-line nodeBuiltinImport:off -- A synchronous digest inside the pure provider mapping.
 import * as NodeCrypto from "node:crypto";
-import * as FeatureFlags from "@t3tools/shared/FeatureFlags";
-import * as HostProcess from "@t3tools/shared/HostProcess";
+import * as FeatureFlags from "@vibecodinger/shared/FeatureFlags";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
 import * as Context from "effect/Context";
 import * as NodeHttpServerRequest from "@effect/platform-node/NodeHttpServerRequest";
 import * as SecureRandom from "effect/crypto/SecureRandom";
@@ -82,8 +82,6 @@ import {
   ProjectMutationError,
   ProviderUploadFeedbackError,
   ProviderSetupError,
-  RelayClientInstallFailedError,
-  type RelayClientInstallProgressEvent,
   type ServerConfig as ClientServerConfig,
   type ServerConfigStreamEvent,
   type ServerLifecycleStreamEvent,
@@ -103,7 +101,7 @@ import {
   type PullRequestRef,
   WS_METHODS,
   WsRpcGroup,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import {
   HttpRouter,
   HttpServerRequest,
@@ -132,7 +130,6 @@ import * as Workflows from "./workflows/Workflows.ts";
 import * as WorkflowRuntime from "./workflows/WorkflowRuntime.ts";
 import * as SecretRequests from "./secrets/SecretRequests.ts";
 import * as FeedbackStore from "./feedback/FeedbackStore.ts";
-import * as GuestShareService from "./guest/GuestShareService.ts";
 import {
   bufferShellLiveStream,
   coalesceShellApplicationEvents,
@@ -175,7 +172,7 @@ import {
   projectThreadProjectionForWire,
   threadStreamEventItem,
 } from "./orchestration-v2/WireProjection.ts";
-import { dedupeSnapshotBodies } from "@t3tools/shared/orchestrationV2DedupedBodies";
+import { dedupeSnapshotBodies } from "@vibecodinger/shared/orchestrationV2DedupedBodies";
 import * as ProjectStore from "./orchestration-v2/ProjectStore.ts";
 import * as ThreadSearch from "./orchestration-v2/ThreadSearch.ts";
 import * as OrchestrationEventStore from "./persistence/OrchestrationEventStore.ts";
@@ -184,8 +181,8 @@ import * as ProviderRegistry from "./provider/ProviderRegistry.ts";
 import * as SecretCheck from "./secrets/SecretCheck.ts";
 import * as AcpRegistrySessions from "./provider/AcpRegistrySessions.ts";
 import * as ProviderInstanceRegistry from "./provider/ProviderInstanceRegistry.ts";
-import * as AcpRegistrySupport from "@t3tools/provider-acp-registry/server/AcpRegistrySupport";
-import * as AcpRegistryRuntimeCoordinator from "@t3tools/provider-acp-registry/server/AcpRegistryRuntimeCoordinator";
+import * as AcpRegistrySupport from "@vibecodinger/provider-acp-registry/server/AcpRegistrySupport";
+import * as AcpRegistryRuntimeCoordinator from "@vibecodinger/provider-acp-registry/server/AcpRegistryRuntimeCoordinator";
 import * as ProviderMaintenanceRunner from "./provider/providerMaintenanceRunner.ts";
 import * as ProviderAuthService from "./provider/ProviderAuthService.ts";
 import * as ProviderInstallation from "./provider/providerInstallation.ts";
@@ -193,7 +190,7 @@ import * as ServerSelfUpdate from "./cloud/selfUpdate.ts";
 import * as NpmRelease from "./cloud/npmRelease.ts";
 import * as ServerLifecycleEvents from "./serverLifecycleEvents.ts";
 import * as ServerRuntimeStartup from "./serverRuntimeStartup.ts";
-import * as SecretResolver from "@t3tools/secret-provider-core/server/SecretResolver";
+import * as SecretResolver from "@vibecodinger/secret-provider-core/server/SecretResolver";
 import * as ManagedProviders from "./policy/managedProviders.ts";
 import * as ServerSettings from "./serverSettings.ts";
 import { invalidateSettingsSecrets } from "./sourceControl/sourceControlHostSecrets.ts";
@@ -266,7 +263,6 @@ import { pullRequestSyncKey } from "./pullRequest/pullRequestSyncKey.ts";
 import * as SqlClient from "effect/sql/SqlClient";
 import * as PullRequestSyncReactor from "./orchestration-v2/PullRequestSyncReactor.ts";
 import * as SourceControlDiscovery from "./sourceControl/SourceControlDiscovery.ts";
-import * as OtlpEndpointCheck from "./observability/OtlpEndpointCheck.ts";
 import * as TextGenerators from "./textGeneration/TextGenerators.ts";
 import * as SourceControlRepositoryService from "./sourceControl/SourceControlRepositoryService.ts";
 import * as SourceControlSignIn from "./sourceControl/SourceControlSignIn.ts";
@@ -278,17 +274,23 @@ import * as VcsProjectConfig from "./vcs/VcsProjectConfig.ts";
 import * as PairingGrantStore from "./auth/PairingGrantStore.ts";
 import * as SessionStore from "./auth/SessionStore.ts";
 import { failEnvironmentAuthInvalid, failEnvironmentInternal } from "./auth/http.ts";
-import * as SourceControlRateLimit from "@t3tools/source-control-core/server/SourceControlRateLimit";
-import { isNetworkPath } from "@t3tools/shared/path";
-import * as RelayClient from "@t3tools/shared/relayClient";
+import * as SourceControlRateLimit from "@vibecodinger/source-control-core/server/SourceControlRateLimit";
+import {
+  layerE2eeCrypto,
+  SOCKET_E2EE_QUERY_PARAM,
+  wrapServerSocketWithE2ee,
+} from "@vibecodinger/shared/socketE2ee";
+import * as ServerE2eeIdentity from "./auth/ServerE2eeIdentity.ts";
+import { isDirectTlsRequest } from "./transportTls.ts";
+import { isNetworkPath } from "@vibecodinger/shared/path";
 import {
   SOCKET_FRAME_PARTS_QUERY_PARAM,
   splitLargeSocketFrames,
-} from "@t3tools/shared/socketFrameParts";
+} from "@vibecodinger/shared/socketFrameParts";
 import {
   sameUsageLimitCommandCoverage,
   withUsageLimitsCommands,
-} from "@t3tools/shared/usageLimits";
+} from "@vibecodinger/shared/usageLimits";
 import * as AgentSessionScanner from "./project/AgentSessionScanner.ts";
 import * as AgentSessionImporter from "./project/AgentSessionImporter.ts";
 import * as UsageLimitSources from "./usage/UsageLimitSources.ts";
@@ -1405,7 +1407,6 @@ export const layerWsRpc = (
         new WorkflowRequestError({ message: error.message });
       const secretRequests = yield* SecretRequests.SecretRequests;
       const feedbackStore = yield* FeedbackStore.FeedbackStore;
-      const guestShares = yield* GuestShareService.GuestShareService;
       const pullRequests = yield* PullRequestService.PullRequestService;
       const issues = yield* IssueService.IssueService;
       const threadIssues = yield* ThreadIssueService.ThreadIssueService;
@@ -1508,7 +1509,6 @@ export const layerWsRpc = (
       const serverAuth = yield* EnvironmentAuth.EnvironmentAuth;
       const sourceControlDiscovery = yield* SourceControlDiscovery.SourceControlDiscovery;
       const secretCheck = yield* SecretCheck.SecretCheck;
-      const otlpEndpointCheck = yield* OtlpEndpointCheck.OtlpEndpointCheck;
       const textGenerators = yield* TextGenerators.TextGenerators;
       const sourceControlRepositories =
         yield* SourceControlRepositoryService.SourceControlRepositoryService;
@@ -1523,7 +1523,6 @@ export const layerWsRpc = (
       const hostResources = yield* HostResources.HostResources;
       const processResourceMonitor = yield* ProcessResourceMonitor.ProcessResourceMonitor;
       const resourceTelemetry = yield* ResourceTelemetry.ResourceTelemetry;
-      const relayClient = yield* RelayClient.RelayClient;
       // Webhook URLs start agents; expose them only to operate-scoped sessions while keeping tasks readable.
       const withVisibleWebhookUrls = (result: ScheduledTaskListResult): ScheduledTaskListResult =>
         currentSession.scopes.includes(AuthOrchestrationOperateScope)
@@ -1639,7 +1638,8 @@ export const layerWsRpc = (
             if (importedThread !== null) {
               return yield* new AcpRegistryOperationError({
                 reason: "session_delete_failed",
-                message: "Delete the imported T3 thread before deleting its native ACP session.",
+                message:
+                  "Delete the imported VibeCodinger thread before deleting its native ACP session.",
               });
             }
             yield* manager.deleteSession({
@@ -1808,30 +1808,6 @@ export const layerWsRpc = (
           observability: {
             logsDirectoryPath: config.logsDir,
             localTracingEnabled: true,
-            ...(config.otlpTracesUrl !== undefined
-              ? {
-                  otlpTracesUrl: config.otlpTracesUrl,
-                  otlpTracesSource: config.otlpTracesSource,
-                  otlpTracesVariable: config.otlpTracesVariable,
-                }
-              : {}),
-            otlpTracesEnabled: config.otlpTracesUrl !== undefined,
-            ...(config.otlpMetricsUrl !== undefined
-              ? {
-                  otlpMetricsUrl: config.otlpMetricsUrl,
-                  otlpMetricsSource: config.otlpMetricsSource,
-                  otlpMetricsVariable: config.otlpMetricsVariable,
-                }
-              : {}),
-            otlpMetricsEnabled: config.otlpMetricsUrl !== undefined,
-            ...(config.otlpLogsUrl !== undefined
-              ? {
-                  otlpLogsUrl: config.otlpLogsUrl,
-                  otlpLogsSource: config.otlpLogsSource,
-                  otlpLogsVariable: config.otlpLogsVariable,
-                }
-              : {}),
-            otlpLogsEnabled: config.otlpLogsUrl !== undefined,
           },
           settings,
           ...(serverSettings.managedPolicy === undefined
@@ -2054,6 +2030,16 @@ export const layerWsRpc = (
           getOrchestrationV2ArchivedShellSnapshot,
         [ORCHESTRATION_V2_WS_METHODS.getThreadFamily]: (input) =>
           readOmittableShellRows({ familyOf: input.threadId }, "Failed to load the thread family"),
+        [ORCHESTRATION_V2_WS_METHODS.getRunAnswerPreview]: (input) =>
+          threadManagement.getRunAnswerPreview(input).pipe(
+            Effect.mapError(
+              (cause) =>
+                new OrchestrationV2GetShellSnapshotError({
+                  message: "Failed to load the run answer",
+                  cause,
+                }),
+            ),
+          ),
         [ORCHESTRATION_V2_WS_METHODS.getThreadLinkMetadata]: (input) =>
           threadManagement.getThreadLinkMetadata(input.threadIds).pipe(
             Effect.mapError(
@@ -2301,10 +2287,6 @@ export const layerWsRpc = (
         [WS_METHODS.scheduledTasksRotateWebhookToken]: (input) =>
           Effect.annotateCurrentSpan({ "scheduled_task.id": input.id }).pipe(
             Effect.andThen(scheduledTasks.rotateWebhookToken(input)),
-          ),
-        [WS_METHODS.guestShareCreate]: (input) =>
-          Effect.annotateCurrentSpan({ "orchestration_v2.thread_id": input.threadId }).pipe(
-            Effect.andThen(guestShares.create(input)),
           ),
         [WS_METHODS.secretsAnswerRequest]: (input) =>
           Effect.annotateCurrentSpan({ "orchestration_v2.thread_id": input.threadId }).pipe(
@@ -2720,7 +2702,6 @@ export const layerWsRpc = (
         [WS_METHODS.serverGetUsageSummary]: (input) => usage.readSummary(input),
         [WS_METHODS.serverRefreshUsageRates]: (_input) => usage.refreshRates,
         [WS_METHODS.serverRetryResourceTelemetry]: (_input) => resourceTelemetry.retry,
-        [WS_METHODS.serverCheckOtlpEndpoint]: (input) => otlpEndpointCheck.check(input),
         [WS_METHODS.serverListTextGeneratorModels]: (input) => textGenerators.listModels(input),
         [WS_METHODS.serverPrepareTriage]: (input) => triage.prepare(input),
         [WS_METHODS.serverSignalProcess]: (input) => processDiagnostics.signal(input),
@@ -2737,32 +2718,6 @@ export const layerWsRpc = (
                 input,
               ),
             ),
-          ),
-        [WS_METHODS.cloudGetRelayClientStatus]: (_input) => relayClient.resolve,
-        [WS_METHODS.cloudInstallRelayClient]: (_input) =>
-          Stream.callback<RelayClientInstallProgressEvent, RelayClientInstallFailedError>((queue) =>
-            relayClient
-              .installWithProgress((event) => Queue.offer(queue, event).pipe(Effect.asVoid))
-              .pipe(
-                Effect.flatMap((status) =>
-                  Queue.offer(queue, {
-                    type: "complete",
-                    status,
-                  }),
-                ),
-                Effect.catchTags({
-                  RelayClientInstallError: (error) =>
-                    Queue.fail(
-                      queue,
-                      new RelayClientInstallFailedError({
-                        reason: error.reason,
-                        message: error.message,
-                      }),
-                    ),
-                }),
-                Effect.andThen(Queue.end(queue)),
-                Effect.forkScoped,
-              ),
           ),
         [WS_METHODS.pullRequestsList]: (input) => pullRequests.list(input),
         [WS_METHODS.pullRequestsListStats]: (input) => pullRequests.listStats(input),
@@ -3662,6 +3617,13 @@ export const layer = Layer.unwrap(
             { status: 426 },
           );
         }
+        const encrypted = isDirectTlsRequest(request);
+        if (encrypted !== (url.value.searchParams.get(SOCKET_E2EE_QUERY_PARAM) === "1")) {
+          return HttpServerResponse.jsonUnsafe(
+            { code: "encrypted_transport_required" },
+            { status: 403 },
+          );
+        }
         const serverAuth = yield* EnvironmentAuth.EnvironmentAuth;
         const sessions = yield* SessionStore.SessionStore;
         const session = yield* serverAuth.authenticateWebSocketUpgrade(request, "rpc").pipe(
@@ -3676,7 +3638,7 @@ export const layer = Layer.unwrap(
           ),
         );
         // Desktop bootstrap sessions connect to their own backend, including same-machine WSL.
-        if (session.subject === "desktop-bootstrap") {
+        if (encrypted || session.subject === "desktop-bootstrap") {
           delete NodeHttpServerRequest.toIncomingMessage(request).headers[
             "sec-websocket-extensions"
           ];
@@ -3716,7 +3678,6 @@ export const layer = Layer.unwrap(
               Layer.provide(
                 Layer.succeed(IssueTrackerConnections.IssueTrackerConnections, issueTrackers),
               ),
-              Layer.provide(OtlpEndpointCheck.layer),
               Layer.provide(
                 Layer.succeed(
                   PullRequestReviewGuideService.PullRequestReviewGuideService,
@@ -3744,6 +3705,16 @@ export const layer = Layer.unwrap(
           ),
         );
         const splitFrames = url.value.searchParams.has(SOCKET_FRAME_PARTS_QUERY_PARAM);
+        const upgrade = encrypted
+          ? Effect.gen(function* () {
+              const environmentId = yield* (yield* ServerEnvironment.ServerEnvironment)
+                .getEnvironmentId;
+              const identity = yield* ServerE2eeIdentity.ServerE2eeIdentity;
+              const { seed } = yield* identity.keypair.pipe(Effect.orDie);
+              const socket = yield* request.upgrade;
+              return yield* wrapServerSocketWithE2ee(socket, { environmentId, identitySeed: seed });
+            })
+          : request.upgrade;
         const framedRpcWebSocketHttpEffect = rpcWebSocketHttpEffect.pipe(
           Effect.provideService(
             HttpServerRequest.HttpServerRequest,
@@ -3751,7 +3722,7 @@ export const layer = Layer.unwrap(
             // wrapped through the request it reads.
             Object.create(request, {
               upgrade: {
-                value: Effect.map(request.upgrade, (socket) =>
+                value: Effect.map(upgrade, (socket) =>
                   withSocketHeartbeat(splitFrames ? splitLargeSocketFrames(socket) : socket),
                 ),
               },
@@ -3781,4 +3752,4 @@ export const layer = Layer.unwrap(
       ),
     );
   }),
-).pipe(Layer.provide(NpmRelease.layer));
+).pipe(Layer.provide(NpmRelease.layer), Layer.provide(layerE2eeCrypto));

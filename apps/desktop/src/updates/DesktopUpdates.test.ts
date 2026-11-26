@@ -1,7 +1,10 @@
 import * as NodeModule from "node:module";
 
 import { assert, describe, it } from "@effect/vitest";
-import { DESKTOP_UPDATE_RESTART_MARKER_FILE, DesktopUpdateStateSchema } from "@t3tools/contracts";
+import {
+  DESKTOP_UPDATE_RESTART_MARKER_FILE,
+  DesktopUpdateStateSchema,
+} from "@vibecodinger/contracts";
 import { computeReleaseNotes } from "electron-updater/out/providers/GitHubProvider.js";
 import * as Cause from "effect/Cause";
 import * as Deferred from "effect/Deferred";
@@ -42,8 +45,8 @@ const semver = requireFromUpdater("semver") as { parse: (version: string) => Run
 
 const releaseTitle = (version: string) =>
   version.includes("-nightly.")
-    ? `T3 Code Nightly ${version} (0123456789ab)`
-    : `T3 Code v${version}`;
+    ? `VibeCodinger Nightly ${version} (0123456789ab)`
+    : `VibeCodinger v${version}`;
 
 const releaseFeed = (...versions: ReadonlyArray<string>) =>
   parseXml(
@@ -117,8 +120,9 @@ describe("DesktopUpdates", () => {
   );
 
   it.effect("keeps the disabled reason available after configuration and channel changes", () => {
-    const harness = makeHarness({ env: { T3CODE_DISABLE_AUTO_UPDATE: "true" } });
-    const reason = "Automatic updates are disabled by the T3CODE_DISABLE_AUTO_UPDATE setting.";
+    const harness = makeHarness({ env: { VIBECODINGER_DISABLE_AUTO_UPDATE: "true" } });
+    const reason =
+      "Automatic updates are disabled by the VIBECODINGER_DISABLE_AUTO_UPDATE setting.";
 
     return Effect.scoped(
       Effect.gen(function* () {
@@ -1404,7 +1408,7 @@ describe("describeUpdateErrorCause", () => {
 });
 
 describe("DesktopUpdates under a managed policy", () => {
-  const message = "Example Corp manages T3 Code updates.";
+  const message = "Example Corp manages VibeCodinger updates.";
   const managed = (
     policy: Partial<DesktopUpdatePolicy.UpdatePolicy>,
   ): DesktopUpdatePolicy.UpdatePolicy => ({
@@ -1436,7 +1440,7 @@ describe("DesktopUpdates under a managed policy", () => {
   it.effect("updates from the administrator's feed", () => {
     const harness = makeHarness({
       // Any user can set the mock flag; it must not redirect a managed feed.
-      env: { T3CODE_DESKTOP_MOCK_UPDATES: "true" },
+      env: { VIBECODINGER_DESKTOP_MOCK_UPDATES: "true" },
       policy: managed({ feedUrl: "https://updates.example.com/t3code" }),
     });
 
@@ -1491,7 +1495,7 @@ describe("DesktopUpdates under a managed policy", () => {
   it.effect("does not report the channel as the only block when updates are off anyway", () => {
     const harness = makeHarness({
       appVersion: "1.2.3-nightly.20261028.1",
-      env: { T3CODE_DISABLE_AUTO_UPDATE: "true" },
+      env: { VIBECODINGER_DISABLE_AUTO_UPDATE: "true" },
       policy: managed({ allowNightly: false, feedUrl: "https://updates.example.com/t3code" }),
     });
 

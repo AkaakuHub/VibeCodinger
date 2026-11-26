@@ -1,5 +1,5 @@
-import type { ProviderDriverKind } from "@t3tools/contracts";
-import { resolveModelShortName } from "@t3tools/client-runtime/provider-clients";
+import type { ProviderDriverKind } from "@vibecodinger/contracts";
+import { resolveModelShortName } from "@vibecodinger/client-runtime/provider-clients";
 
 export type ModelEsque = {
   slug: string;

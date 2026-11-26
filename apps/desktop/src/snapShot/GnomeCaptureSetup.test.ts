@@ -12,7 +12,9 @@ let dataHome: string;
 const bundle = NodePath.resolve(import.meta.dirname, "../../gnome-extension");
 const installedPath = () => NodePath.join(dataHome, "gnome-shell/extensions", GNOME_CAPTURE_UUID);
 beforeEach(async () => {
-  dataHome = await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "t3-gnome-setup-test-"));
+  dataHome = await NodeFSP.mkdtemp(
+    NodePath.join(NodeOS.tmpdir(), "vibecodinger-gnome-setup-test-"),
+  );
 });
 afterEach(async () => {
   await NodeFSP.rm(dataHome, { recursive: true, force: true });
@@ -72,7 +74,7 @@ it("preserves the replaced extension as a recoverable backup", async () => {
   await installGnomeCaptureBundle({ bundle, dataHome });
   await NodeFSP.writeFile(NodePath.join(installedPath(), "custom.txt"), "local change");
   await installGnomeCaptureBundle({ bundle, dataHome });
-  const backups = NodePath.join(dataHome, "t3code/extension-backups");
+  const backups = NodePath.join(dataHome, "vibecodinger/extension-backups");
   const [backup] = await NodeFSP.readdir(backups);
   expect(
     await NodeFSP.readFile(

@@ -29,7 +29,7 @@ revocation and ceilings hold, not what a full-scope session can do once issued.
 | Full-scope client (desktop, paired browser or phone, `t3 auth session issue`, T3 Connect device) | Pairing, token exchange, Connect mint                                    | Everything the server's OS user can do. This is the default grant.                                                                                                                         |
 | Narrow client                                                                                    | Pairing link with explicit scopes                                        | Only the RPCs and routes its scopes allow. Can never widen its own grant.                                                                                                                  |
 | MCP client (outside agent, subject `mcp-client`)                                                 | OAuth on `/mcp`                                                          | Only `/mcp`, within a read-only grant or a runtime-mode ceiling. Every other route rejects it.                                                                                             |
-| Linked environment (peer link)                                                                   | OAuth client `t3code-peer-link`                                          | Work it starts carries an immutable `linkOrigin` and never exceeds the access it was paired with.                                                                                          |
+| Linked environment (peer link)                                                                   | OAuth client `vibecodinger-peer-link`                                    | Work it starts carries an immutable `linkOrigin` and never exceeds the access it was paired with.                                                                                          |
 | Agent run by T3                                                                                  | Thread's runtime mode and thread credential                              | Within its runtime mode, managed policy, and the MCP access declared per tool.                                                                                                             |
 | Guest link                                                                                       | HMAC token for one share                                                 | Read one thread and propose messages. Never a session; no RPC, WebSocket, or MCP path accepts it.                                                                                          |
 | Signed asset URL                                                                                 | Minted with `filesystem:read`                                            | One file, by device and inode identity, until it expires.                                                                                                                                  |
@@ -47,7 +47,7 @@ revocation and ceilings hold, not what a full-scope session can do once issued.
    `mcp-client` session reaching a non-`/mcp` route; a read-only MCP grant
    calling a write tool.
 3. **Mode or policy escalation.** An agent, MCP client, or peer link acting
-   above its runtime-mode ceiling, `linkOrigin`, `T3-Mode-Limit`, or managed
+   above its runtime-mode ceiling, `linkOrigin`, `VC-Mode-Limit`, or managed
    policy.
 4. **Guest escape.** A guest token reading another thread, acting beyond
    proposing messages, or surviving a closed or replaced share.
@@ -100,7 +100,7 @@ revocation and ceilings hold, not what a full-scope session can do once issued.
   that mode is in scope (see 3).
 - A compromised relay signing key can mint for linked environments. That is
   the stated trust assumption; device approval is the mitigation.
-- `T3CODE_DEV_AUTH_TOKEN` and dev startup URLs are administrative by design and
+- `VIBECODINGER_DEV_AUTH_TOKEN` and dev startup URLs are administrative by design and
   ignored outside development servers.
 - A webhook URL is a credential for one task. Unless the task requires a
   signature, whoever holds the URL can start that task's run, and the request's
@@ -132,7 +132,6 @@ revocation and ceilings hold, not what a full-scope session can do once issued.
 - Guest links: [`guest/GuestShareService.ts`](apps/server/src/guest/GuestShareService.ts)
 - Files and assets: [`workspace/WorkspaceFileSystem.ts`](apps/server/src/workspace/WorkspaceFileSystem.ts), [`assets/AssetAccess.ts`](apps/server/src/assets/AssetAccess.ts)
 - Managed policy: [`apps/server/src/policy`](apps/server/src/policy)
-- T3 Connect: [`cloud/CloudLink.ts`](apps/server/src/cloud/CloudLink.ts), [`EnvironmentConnector.ts`](infra/relay/src/environments/EnvironmentConnector.ts)
 - Desktop preview isolation: [`preview/WebviewPreferences.ts`](apps/desktop/src/preview/WebviewPreferences.ts)
 
 ## How to audit and triage

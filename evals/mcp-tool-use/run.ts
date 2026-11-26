@@ -21,7 +21,7 @@ import {
   PreviewAutomationError,
   PreviewAutomationUnavailableError,
   ProviderInstanceId,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import * as Cause from "effect/Cause";
 import * as Context from "effect/Context";
 import * as Config from "effect/Config";
@@ -41,18 +41,18 @@ import { FetchHttpClient, HttpClient, HttpClientRequest } from "effect/http";
 import { taskPrompt } from "../../apps/server/src/mcp/delegatedTaskModes.ts";
 import * as McpInvocationContext from "../../apps/server/src/mcp/McpInvocationContext.ts";
 import { advertisedJsonSchema } from "../../apps/server/src/mcp/advertisedJsonSchema.ts";
-import * as Contracts from "@t3tools/contracts";
+import * as Contracts from "@vibecodinger/contracts";
 import {
   EnvironmentId,
   ORCHESTRATOR_MCP_RUNNING_TASK_NEXT,
   PullRequestState,
   ThreadId,
-} from "@t3tools/contracts";
-import { projectComposerContextForProvider } from "@t3tools/shared/composerContextReferences";
-import { THEME_GUIDE } from "@t3tools/shared/themeCss";
-import { formatThreadLink } from "@t3tools/shared/threadLinks";
+} from "@vibecodinger/contracts";
+import { projectComposerContextForProvider } from "@vibecodinger/shared/composerContextReferences";
+import { THEME_GUIDE } from "@vibecodinger/shared/themeCss";
+import { formatThreadLink } from "@vibecodinger/shared/threadLinks";
 import { buildCodexAdditionalContext } from "../../apps/server/src/provider/CodexDeveloperInstructions.ts";
-import { PULL_REQUEST_LINKING_INSTRUCTIONS } from "@t3tools/provider-core/server/runtimeInstructions";
+import { PULL_REQUEST_LINKING_INSTRUCTIONS } from "@vibecodinger/provider-core/server/runtimeInstructions";
 import { makeSideChatContext } from "../../apps/server/src/orchestration-v2/ContextHandoffService.ts";
 import { withInlineContext } from "../../apps/server/src/orchestration-v2/ContextHandoffDelivery.ts";
 import { AttachmentToolkit } from "../../apps/server/src/mcp/toolkits/attachment/tools.ts";
@@ -131,7 +131,7 @@ type PricedModel = keyof typeof PRICES;
 const PROXY_SHELL_MODELS = ["gpt-6-luna", "gpt-6.1-terra"] as const;
 type ShellModel = PricedModel | (typeof PROXY_SHELL_MODELS)[number];
 const isPricedModel = (model: ShellModel): model is PricedModel => model in PRICES;
-const T3_PREFIX = "mcp__t3-code__";
+const VIBECODINGER_PREFIX = "mcp__vibe-codinger__";
 const RUNTIME_MARKER = "<runtime_info>";
 const TOOL_LOADED = "Tool loaded.";
 
@@ -186,7 +186,7 @@ const PriorToolCall = Schema.Struct({
   tool: Schema.String,
   input: Schema.Unknown,
   /**
-   * For a device tool or t3_background_wait, `"default"` runs the call on the world's devices or
+   * For a device tool or vc_background_wait, `"default"` runs the call on the world's devices or
    * background tasks for T3's result.
    */
   result: Schema.Unknown,
@@ -239,7 +239,7 @@ const McpToolUseExpect = Schema.Struct({
   /** First calls of these tools happen in this order. */
   order: Schema.optional(Schema.Array(Schema.String)),
   /**
-   * One `args`-style value per new top-level thread the agent asks for, by `t3_thread_launch` or a
+   * One `args`-style value per new top-level thread the agent asks for, by `vc_thread_launch` or a
    * `create_threads` entry. Each matches a different thread's request; no other thread is asked for.
    */
   newThreads: Schema.optional(Schema.Array(Schema.Unknown)),
@@ -322,7 +322,7 @@ const McpToolUseWorld = Schema.StructWithRest(
     deviceOwners: Schema.optional(Schema.Record(Schema.String, Schema.String)),
     /**
      * Task IDs of the background commands and Monitors still running on the agent's Claude
-     * session. With them, T3's own t3_background_wait handler answers from this world.
+     * session. With them, T3's own vc_background_wait handler answers from this world.
      */
     backgroundTasks: Schema.optional(Schema.Array(Schema.String)),
     /** The world's `prs`, bottom first, form one native stack with this number. */
@@ -462,7 +462,8 @@ const toolResult = (id: string, content: unknown): Block => ({
 });
 const texts = (content: typeof Content.Type) =>
   typeof content === "string" ? [content] : content.flatMap((block) => block.text ?? []);
-const isT3Name = (name: string) => name.startsWith(T3_PREFIX) || name.startsWith("mcp__t3_code__");
+const isT3Name = (name: string) =>
+  name.startsWith(VIBECODINGER_PREFIX) || name.startsWith("mcp__vibe_codinger__");
 const hasTool = (tools: ReadonlyArray<ApiTool>, name: string) =>
   tools.some((tool) => tool.name === name);
 
@@ -481,11 +482,11 @@ const CODEX_NAMES: Readonly<Record<string, string>> = {
 export const normalizeToolName = (name: string) => {
   const bare = name.slice(name.lastIndexOf(".") + 1);
   return isT3Name(bare)
-    ? bare.slice(T3_PREFIX.length)
+    ? bare.slice(VIBECODINGER_PREFIX.length)
     : (CODEX_NAMES[bare] ?? bare.slice(bare.lastIndexOf("_") + 1));
 };
 export const normalizeToolInput = (name: string, input: unknown) => {
-  const decode = t3InputDecoders.get(normalizeToolName(name));
+  const decode = vcInputDecoders.get(normalizeToolName(name));
   if (decode !== undefined) return Option.getOrElse(decode(input), () => input);
   return normalizeToolName(name) === "Bash" && isRecord(input)
     ? { ...input, command: input.command ?? input.cmd }
@@ -496,7 +497,7 @@ export const normalizeToolInput = (name: string, input: unknown) => {
 
 // McpHttpServer advertises each tool's JSON schema, and Claude Code passes the MCP name,
 // description, and schema through unchanged.
-const t3SourceTools: ReadonlyArray<Tool.Any> = [
+const vcSourceTools: ReadonlyArray<Tool.Any> = [
   OrchestratorToolkit,
   ThreadToolkit,
   AttachmentToolkit,
@@ -514,16 +515,16 @@ const t3SourceTools: ReadonlyArray<Tool.Any> = [
   MessageToolkit,
 ].flatMap((toolkit): ReadonlyArray<Tool.Any> => Object.values(toolkit.tools));
 // McpHttpServer decodes arguments with each tool's JSON codec, which drops undeclared keys.
-const t3InputDecoders = new Map(
-  t3SourceTools.map((tool) => [
+const vcInputDecoders = new Map(
+  vcSourceTools.map((tool) => [
     tool.name,
     Schema.decodeUnknownOption(
       Schema.toCodecJson(tool.parametersSchema as Schema.Codec<unknown, unknown>),
     ),
   ]),
 );
-const t3Tools: ReadonlyArray<ApiTool> = t3SourceTools.map((tool) => ({
-  name: `${T3_PREFIX}${tool.name}`,
+const vcTools: ReadonlyArray<ApiTool> = vcSourceTools.map((tool) => ({
+  name: `${VIBECODINGER_PREFIX}${tool.name}`,
   description: Tool.getDescription(tool) ?? "",
   input_schema: advertisedJsonSchema(tool),
 }));
@@ -537,25 +538,25 @@ const decodePreviewError = Schema.decodeUnknownOption(PreviewAutomationError);
 const previewFailure = (mock: unknown) => Option.getOrUndefined(decodePreviewError(mock));
 const enabledWhen = (predicate: () => boolean) =>
   new Set(
-    t3SourceTools
+    vcSourceTools
       .filter(
         (tool) => Context.getOrUndefined(tool.annotations, McpSchema.EnabledWhen) === predicate,
       )
-      .map((tool) => `${T3_PREFIX}${tool.name}`),
+      .map((tool) => `${VIBECODINGER_PREFIX}${tool.name}`),
   );
 // Claude Code loads a tool whose `_meta` sets anthropic/alwaysLoad up front instead of deferring it.
 const alwaysLoaded = new Set(
-  t3SourceTools
+  vcSourceTools
     .filter((tool) => {
       const meta = Context.getOrUndefined(tool.annotations, Tool.Meta);
       return meta !== undefined && meta["anthropic/alwaysLoad"] === true;
     })
-    .map((tool) => `${T3_PREFIX}${tool.name}`),
+    .map((tool) => `${VIBECODINGER_PREFIX}${tool.name}`),
 );
 // Refs whose request_secret takes `value` save a secret the user already pasted, with no card.
-export const savesPastedSecrets = t3Tools.some(
+export const savesPastedSecrets = vcTools.some(
   (tool) =>
-    tool.name === `${T3_PREFIX}request_secret` &&
+    tool.name === `${VIBECODINGER_PREFIX}request_secret` &&
     isRecord(tool.input_schema) &&
     isRecord(tool.input_schema.properties) &&
     "value" in tool.input_schema.properties,
@@ -579,7 +580,7 @@ export const ARMS = ["tools", "raw"] as const;
 export type Arm = (typeof ARMS)[number];
 const forgeToolNames = new Set(
   [PullRequestsToolkit, IssuesToolkit].flatMap((toolkit) =>
-    Object.values(toolkit.tools).map((tool: Tool.Any) => `${T3_PREFIX}${tool.name}`),
+    Object.values(toolkit.tools).map((tool: Tool.Any) => `${VIBECODINGER_PREFIX}${tool.name}`),
   ),
 );
 /** T3's text for an arm: `raw` drops the PR linking block that names T3's PR tools. */
@@ -592,7 +593,7 @@ const visibleT3Tools = (options: {
   readonly agentFeedback?: Contracts.AgentFeedbackMode;
   readonly arm?: Arm;
 }) =>
-  t3Tools.filter(
+  vcTools.filter(
     (tool) =>
       !(options.arm === "raw" && forgeToolNames.has(tool.name)) &&
       (options.links === true || !hiddenWhileLinksOff.has(tool.name)) &&
@@ -621,7 +622,7 @@ const claudeQueryOptions = (
     nativeThreadId: "mcp-tool-use-eval",
     resume: false,
     cwd: null,
-    mcpServers: { "t3-code": { type: "http", url: "http://127.0.0.1/mcp" } },
+    mcpServers: { "vibe-codinger": { type: "http", url: "http://127.0.0.1/mcp" } },
     agentFeedback,
     deviceToolsAvailable: device,
     browserToolsAvailable: browser,
@@ -630,7 +631,7 @@ const claudeQueryOptions = (
 };
 
 /** Text T3 appends to Claude Code's system prompt. Delegated children get the same text. */
-export const t3SystemAppend = (
+export const vcSystemAppend = (
   model: Model,
   device = true,
   browser = true,
@@ -647,7 +648,7 @@ export const t3SystemAppend = (
  * The context T3's SubagentStart hooks give a native subagent, which gets none of the append.
  * Empty when T3 registers no such hook.
  */
-export const t3SubagentContext = async (model: Model, device = true, browser = true) => {
+export const vcSubagentContext = async (model: Model, device = true, browser = true) => {
   const hooks = (claudeQueryOptions(model, device, browser).hooks?.SubagentStart ?? []).flatMap(
     (m) => m.hooks,
   );
@@ -677,14 +678,14 @@ export const t3SubagentContext = async (model: Model, device = true, browser = t
  * descriptions and schemas (loaded on demand here, sent up front by harnesses without
  * deferred tools). Tokens are estimated at 4 characters each.
  */
-const t3ContextReport = (model: Model) => {
+const vcContextReport = (model: Model) => {
   const size = (chars: number) => `${chars} chars (~${Math.round(chars / 4)} tokens)`;
-  const descriptions = t3Tools.reduce((sum, tool) => sum + valueText(tool.description).length, 0);
-  const schemas = JSON.stringify(t3Tools).length;
+  const descriptions = vcTools.reduce((sum, tool) => sum + valueText(tool.description).length, 0);
+  const schemas = JSON.stringify(vcTools).length;
   return [
-    `- T3 context: system text ${size((isCodex(model) ? JSON.stringify(buildCodexAdditionalContext({ model }, { browser: true, device: true })) : t3SystemAppend(model)).length)}`,
+    `- T3 context: system text ${size((isCodex(model) ? JSON.stringify(buildCodexAdditionalContext({ model }, { browser: true, device: true })) : vcSystemAppend(model)).length)}`,
     `tool descriptions ${size(descriptions)}`,
-    `full tool schemas ${size(schemas)} across ${t3Tools.length} tools.`,
+    `full tool schemas ${size(schemas)} across ${vcTools.length} tools.`,
   ].join(", ");
 };
 
@@ -731,7 +732,7 @@ export const buildBase = (
     readonly arm?: Arm;
   },
 ) => {
-  const t3 = visibleT3Tools(options);
+  const vcTools = visibleT3Tools(options);
   const firstAssistant = template.messages.findIndex((message) => message.role === "assistant");
   const head = template.messages.slice(0, firstAssistant === -1 ? undefined : firstAssistant);
   const systemTexts = [
@@ -747,7 +748,7 @@ export const buildBase = (
   const nativeDeferred = deferredList.split("\n").filter((name) => name && !isT3Name(name));
   const names = [
     ...nativeDeferred,
-    ...t3.filter((tool) => !alwaysLoaded.has(tool.name)).map((tool) => tool.name),
+    ...vcTools.filter((tool) => !alwaysLoaded.has(tool.name)).map((tool) => tool.name),
   ]
     .toSorted()
     .join("\n");
@@ -755,7 +756,7 @@ export const buildBase = (
   const append = options.nativeSubagent
     ? ""
     : forArm(
-        t3SystemAppend(model, options.deviceAccess, options.browserAccess, options.agentFeedback),
+        vcSystemAppend(model, options.deviceAccess, options.browserAccess, options.agentFeedback),
         options.arm,
       );
   const modelLine = `You are powered by the model named ${MODELS[model]}. The exact model ID is ${model}.`;
@@ -799,11 +800,11 @@ export const buildBase = (
     },
     nativeTools: [
       ...template.tools.filter((tool) => !isT3Name(tool.name)),
-      ...t3.filter((tool) => alwaysLoaded.has(tool.name)),
+      ...vcTools.filter((tool) => alwaysLoaded.has(tool.name)),
     ],
     /** Tools ToolSearch loads: T3 tools from source, and native tools the template only names. */
-    t3,
-    deferred: [...t3, ...nativeDeferred.map((name) => ({ name, ...nativeSchema(name) }))],
+    vcTools,
+    deferred: [...vcTools, ...nativeDeferred.map((name) => ({ name, ...nativeSchema(name) }))],
   };
 };
 
@@ -832,13 +833,13 @@ const buildCodexBase = (
     readonly arm?: Arm;
   },
 ): Base => {
-  const t3 = visibleT3Tools(options);
+  const vcTools = visibleT3Tools(options);
   const contentText = (item: Block) =>
     Array.isArray(item.content)
       ? item.content.map((block: Block) => valueText(block.text)).join("\n")
       : valueText(item.content);
   const joined = template.input.map(contentText).join("\n");
-  if (!joined.includes("<t3_code_runtime>"))
+  if (!joined.includes("<vibe_codinger_runtime>"))
     throw new Error("Codex template needs full T3 context.");
   const cwd = /<cwd>(.*?)<\/cwd>/.exec(joined)?.[1] ?? "/home/user/app";
   const home = /^\/(?:home|Users)\/[^/]+/.exec(cwd)?.[0];
@@ -852,7 +853,7 @@ const buildCodexBase = (
   // The captured <collaboration_mode> message stays: Codex supplies its own mode text natively.
   const input = template.input.flatMap((item) => {
     const content = contentText(item);
-    if (content.includes("<t3_code_")) return [];
+    if (content.includes("<vibe_codinger_")) return [];
     if (item.role === "user") {
       const env = /<environment_context>[\s\S]*?<\/environment_context>/.exec(content)?.[0];
       return env ? [message(clean(options.keepUserInstructions ? content : env), "user")] : [];
@@ -898,8 +899,8 @@ const buildCodexBase = (
       date: /<current_date>(.*?)<\/current_date>/.exec(joined)?.[1],
     },
     nativeTools,
-    t3,
-    deferred: [...t3],
+    vcTools,
+    deferred: [...vcTools],
     codex: { ...template, input, reasoning: { ...template.reasoning, effort } },
   };
 };
@@ -919,7 +920,7 @@ const codexCall = (name: string, input: unknown) => {
           : `python3 -c ${JSON.stringify(`from pathlib import Path; p=Path(${JSON.stringify(file)}); p.write_text(p.read_text().replace(${JSON.stringify(args.old_string)}, ${JSON.stringify(args.new_string)}))`)}`;
     return `text(await tools.exec_command(${JSON.stringify({ cmd: command })}));`;
   }
-  return `text(await tools.${name.replace("mcp__t3-code__", "mcp__t3_code__")}(${JSON.stringify(input)}));`;
+  return `text(await tools.${name.replace("mcp__vibe-codinger__", "mcp__vibe_codinger__")}(${JSON.stringify(input)}));`;
 };
 const codexMessages = (messages: ReadonlyArray<ApiMessage>): Array<Block> =>
   messages.flatMap((message) =>
@@ -1026,7 +1027,7 @@ type Sample = {
   readonly priorResults: Map<unknown, string>;
   /** Prior calls whose T3 result is an error, so the agent sees it as one. */
   readonly priorErrors: Set<unknown>;
-  /** T3's t3_background_wait, once `withBackgroundWait` builds it for `world.backgroundTasks`. */
+  /** T3's vc_background_wait, once `withBackgroundWait` builds it for `world.backgroundTasks`. */
   backgroundWait?: BackgroundWait;
   /** Calls so far per mocked tool, for mocks that answer in sequence. */
   readonly mockCalls: Map<string, number>;
@@ -1119,7 +1120,7 @@ export const withDevices = Effect.fn("evaluateMcpToolUse.withDevices")(function*
 });
 
 /**
- * Builds T3's t3_background_wait for a world with background tasks, and answers prior waits whose
+ * Builds T3's vc_background_wait for a world with background tasks, and answers prior waits whose
  * result is "default" with T3's result.
  */
 export const withBackgroundWait = Effect.fn("evaluateMcpToolUse.withBackgroundWait")(function* (
@@ -1130,7 +1131,7 @@ export const withBackgroundWait = Effect.fn("evaluateMcpToolUse.withBackgroundWa
   const backgroundWait = yield* makeBackgroundWait(running);
   sample.backgroundWait = backgroundWait;
   for (const call of (sample.testCase.setup.priorTurns ?? []).flatMap((t) => t.toolCalls ?? [])) {
-    if (call.result !== "default" || call.tool !== "t3_background_wait") continue;
+    if (call.result !== "default" || call.tool !== "vc_background_wait") continue;
     const result = yield* backgroundWait(call.input);
     sample.priorResults.set(call, result.text);
     if (result.isError) sample.priorErrors.add(call);
@@ -1226,7 +1227,7 @@ export const buildMessages = (sample: Sample) => {
       if (tool === undefined) throw new Error(`${testCase.id}: unknown prior tool ${call.tool}.`);
       const builder = isDeviceTool(call.tool)
         ? "withDevices"
-        : call.tool === "t3_background_wait"
+        : call.tool === "vc_background_wait"
           ? "withBackgroundWait"
           : undefined;
       if (call.result === "default" && builder && !sample.priorResults.has(call)) {
@@ -1413,7 +1414,7 @@ const selectedWorldChecks = (sample: Sample, input: Readonly<Record<string, unkn
 };
 
 /** A believable T3 result for a tool the case does not mock. */
-export const t3Default = (
+export const vcDefault = (
   sample: Sample,
   name: string,
   input: Readonly<Record<string, unknown>>,
@@ -1432,7 +1433,7 @@ export const t3Default = (
     };
   };
   switch (name) {
-    case "t3_thread_launch":
+    case "vc_thread_launch":
       return newThread(input, input.message);
     case "create_threads":
       return {
@@ -1702,7 +1703,7 @@ export const t3Default = (
         .slice(0, 32);
       const home =
         /^\/(?:home|Users)\/[^/]+/.exec(sample.base.environment.cwd)?.[0] ?? "/home/user";
-      const fileFor = (key: string) => `${home}/.t3/userdata/secrets/files/${key}`;
+      const fileFor = (key: string) => `${home}/.vibecodinger/userdata/secrets/files/${key}`;
       // A card with `fields` saves one file per field name.
       if (Array.isArray(input.fields) && !pastedSecret(name, input)) {
         const names = input.fields.flatMap((field) =>
@@ -1776,7 +1777,7 @@ export const t3Default = (
         nextCursor: end < matching.length ? String(end) : null,
       };
     }
-    case "t3_thread_read": {
+    case "vc_thread_read": {
       const threadId = valueText(input.threadId);
       const launched = sample.threads.get(threadId);
       if (launched !== undefined) {
@@ -1829,7 +1830,7 @@ const unsavedSecretNote = (Contracts as Record<string, unknown>).SECRET_REQUEST_
 const withProductFields = (name: string, value: unknown, child: boolean): unknown => {
   if (!isRecord(value)) return value;
   // The guide is the checkout's text, so a case's mock cannot go stale.
-  if (name === "t3_theme_read") return { ...value, guide: THEME_GUIDE };
+  if (name === "vc_theme_read") return { ...value, guide: THEME_GUIDE };
   const linked = (thread: unknown, idKey = "threadId") => {
     if (!isRecord(thread) || thread.link !== undefined) return thread;
     const id = thread[idKey] ?? thread.id;
@@ -1856,16 +1857,16 @@ const withProductFields = (name: string, value: unknown, child: boolean): unknow
       const running = task.status === "running" && task.next === undefined;
       return running ? { ...task, next: ORCHESTRATOR_MCP_RUNNING_TASK_NEXT } : task;
     }
-    case "t3_thread_read":
+    case "vc_thread_read":
       return { ...value, thread: linked(value.thread) };
-    case "t3_thread_launch":
-    case "t3_thread_send":
+    case "vc_thread_launch":
+    case "vc_thread_send":
     case "run_scheduled_task_now":
       return linked(value);
-    case "t3_thread_list":
+    case "vc_thread_list":
     case "create_threads":
       return listed("threads");
-    case "t3_thread_search":
+    case "vc_thread_search":
       return listed("matches");
     case "link_pull_request":
     case "link_pull_requests":
@@ -2298,7 +2299,7 @@ export const answerToolCall = Effect.fn("evaluateMcpToolUse.answerToolCall")(fun
     const result = yield* sample.devices.call(name, input, failure);
     return result.isError ? failed(result.text) : toolResult(call.id, result.text);
   }
-  if (sample.backgroundWait && isT3Name(call.name) && name === "t3_background_wait" && fromWorld) {
+  if (sample.backgroundWait && isT3Name(call.name) && name === "vc_background_wait" && fromWorld) {
     const result = yield* sample.backgroundWait(input);
     return result.isError ? failed(result.text) : toolResult(call.id, result.text);
   }
@@ -2308,7 +2309,7 @@ export const answerToolCall = Effect.fn("evaluateMcpToolUse.answerToolCall")(fun
     const refused = productRefusal(sample, name, input);
     if (refused !== undefined) return failed(refused);
   }
-  if (isT3Name(call.name) && name === "t3_feedback" && (mock === undefined || mock === "default")) {
+  if (isT3Name(call.name) && name === "vc_feedback" && (mock === undefined || mock === "default")) {
     const decoded = decodeFeedbackInput(input);
     if (Result.isFailure(decoded)) return failed(decoded.failure.message);
     const report = decoded.success;
@@ -2317,7 +2318,7 @@ export const answerToolCall = Effect.fn("evaluateMcpToolUse.answerToolCall")(fun
       return failed(new FeedbackNotRequestedError({ source: "mcp" }).message);
     const subject = resolveFeedbackSubject(
       report.subject,
-      t3SourceTools.map((tool) => tool.name),
+      vcSourceTools.map((tool) => tool.name),
     );
     if (subject === undefined) return failed(FEEDBACK_SUBJECT_MESSAGE);
     // T3 shows a requested report to the user in a card and answers at once.
@@ -2373,7 +2374,7 @@ export const answerToolCall = Effect.fn("evaluateMcpToolUse.answerToolCall")(fun
         return failed(`No check is named ${valueText(input.check)}. Checks: ${names}.`);
       }
     }
-    const value = t3Default(sample, name, input);
+    const value = vcDefault(sample, name, input);
     if (name === "request_secret") savedSecretFile(sample, input, value);
     recordForgeChange(sample, name, input, value);
     return toolResult(
@@ -2451,7 +2452,7 @@ const matchesEach = (
 const newThreadRequests = (calls: ReadonlyArray<Call>) =>
   calls.flatMap((call): ReadonlyArray<{ request: unknown; brief: unknown }> => {
     if (call.failed === true || !isRecord(call.input)) return [];
-    if (call.tool === "t3_thread_launch")
+    if (call.tool === "vc_thread_launch")
       return [{ request: call.input, brief: call.input.message }];
     if (call.tool !== "create_threads" || !Array.isArray(call.input.threads)) return [];
     return call.input.threads.map((request: unknown) => ({
@@ -2740,8 +2741,8 @@ export const executeCodex = async (
 };
 
 const codexCatalog = (base: Base) => [
-  ...base.t3.map((tool) => ({
-    name: tool.name.replace("mcp__t3-code__", "mcp__t3_code__"),
+  ...base.vcTools.map((tool) => ({
+    name: tool.name.replace("mcp__vibe-codinger__", "mcp__vibe_codinger__"),
     description: `${valueText(tool.description)}\nInput JSON schema: ${JSON.stringify(tool.input_schema)}`,
   })),
   ...[
@@ -3216,7 +3217,7 @@ const main = Effect.gen(function* () {
   });
   const flags = yield* decodeFlags({ template: "", ...values });
   if (flags.context) {
-    process.stdout.write(`${t3ContextReport(flags.model)}\n`);
+    process.stdout.write(`${vcContextReport(flags.model)}\n`);
     return;
   }
   if (flags["stop-on-regression"] && flags.baseline === undefined) {
@@ -3249,7 +3250,9 @@ const main = Effect.gen(function* () {
   // The raw arm has no PR or issue tools, so a case whose prior turns call one cannot be replayed.
   const replaysForgeTool = (testCase: McpToolUseCase) =>
     (testCase.setup.priorTurns ?? []).some((turn) =>
-      (turn.toolCalls ?? []).some((call) => forgeToolNames.has(`${T3_PREFIX}${call.tool}`)),
+      (turn.toolCalls ?? []).some((call) =>
+        forgeToolNames.has(`${VIBECODINGER_PREFIX}${call.tool}`),
+      ),
     );
   const unreplayable =
     flags.arm === "raw" ? selectedCases.filter(replaysForgeTool).map(({ id }) => id) : [];
@@ -3336,7 +3339,7 @@ const main = Effect.gen(function* () {
             });
             return role === "native-subagent"
               ? Effect.promise(() =>
-                  t3SubagentContext(flags.model, deviceAccess, browserAccess),
+                  vcSubagentContext(flags.model, deviceAccess, browserAccess),
                 ).pipe(Effect.map((subagentContext): Base => ({ ...built, subagentContext })))
               : Effect.succeed(built);
           }),
@@ -3515,7 +3518,7 @@ const main = Effect.gen(function* () {
   const summary = summarize(
     rows,
     {
-      header: [header, t3ContextReport(flags.model), ...stopped].join("\n"),
+      header: [header, vcContextReport(flags.model), ...stopped].join("\n"),
       shellModel: config.shellModel,
       model: config.model,
     },

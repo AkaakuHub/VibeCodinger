@@ -1,6 +1,6 @@
-import type { EnvironmentConnectionPhase } from "@t3tools/client-runtime/connection";
-import type { EnvironmentShellStatus } from "@t3tools/client-runtime/state/shell";
-import type { EnvironmentThreadStatus } from "@t3tools/client-runtime/state/threads";
+import type { EnvironmentConnectionPhase } from "@vibecodinger/client-runtime/connection";
+import type { EnvironmentShellStatus } from "@vibecodinger/client-runtime/state/shell";
+import type { EnvironmentThreadStatus } from "@vibecodinger/client-runtime/state/threads";
 import * as Option from "effect/Option";
 
 export function threadRouteIsHydrating(input: {

@@ -16,7 +16,7 @@ import pdfjsPkg from "pdfjs-dist/package.json" with { type: "json" };
 import {
   DEV_PROXIED_ORIGIN_PRESERVING_PREFIXES,
   DEV_PROXIED_PATH_PREFIXES,
-} from "@t3tools/shared/devProxy";
+} from "@vibecodinger/shared/devProxy";
 
 import { loadRepoEnv } from "../../scripts/lib/public-config";
 import { resolveTaggedSourceVersion } from "../../scripts/lib/tagged-source-version";
@@ -29,25 +29,23 @@ const repoEnv = loadRepoEnv();
 Object.assign(process.env, repoEnv);
 
 // Signal single-origin dev explicitly; loadRepoEnv can restore deleted URL keys from .env.
-const isSingleOriginDev = process.env.T3CODE_SINGLE_ORIGIN_DEV === "1";
+const isSingleOriginDev = process.env.VIBECODINGER_SINGLE_ORIGIN_DEV === "1";
 
 const port = Number(process.env.PORT ?? 5733);
 const explicitHost = process.env.HOST?.trim();
 const host = explicitHost || "localhost";
 const configuredWsUrl = isSingleOriginDev ? undefined : process.env.VITE_WS_URL?.trim();
 const configuredHttpUrl = isSingleOriginDev ? undefined : process.env.VITE_HTTP_URL?.trim();
-const configuredRelayUrl = "";
 const configuredClerkPublishableKey = "";
 const configuredClerkJwtTemplate = "";
 const configuredClerkCliOAuthClientId = "";
-const configuredRelayTracingUrl = "";
-const configuredRelayTracingDataset = "";
-const configuredRelayTracingToken = "";
 const configuredHostedAppChannel = process.env.VITE_HOSTED_APP_CHANNEL?.trim() || "";
 const configuredReleaseChannel =
-  process.env.T3CODE_BUILT_DEV === "1" ? "dev" : process.env.VITE_RELEASE_CHANNEL?.trim() || "";
+  process.env.VIBECODINGER_BUILT_DEV === "1"
+    ? "dev"
+    : process.env.VITE_RELEASE_CHANNEL?.trim() || "";
 const configuredDesktopUpdateRepository =
-  process.env.T3CODE_DESKTOP_UPDATE_REPOSITORY?.trim() ||
+  process.env.VIBECODINGER_DESKTOP_UPDATE_REPOSITORY?.trim() ||
   process.env.GITHUB_REPOSITORY?.trim() ||
   "";
 const configuredHostedAppUrl = (() => {
@@ -63,13 +61,13 @@ const configuredHostedAppUrl = (() => {
   }
   return undefined;
 })();
-const sourcemapEnv = process.env.T3CODE_WEB_SOURCEMAP?.trim().toLowerCase();
+const sourcemapEnv = process.env.VIBECODINGER_WEB_SOURCEMAP?.trim().toLowerCase();
 
 // `vp run dev --share --built` rebuilds on every change. The license manifest
 // is about 2 s of each build, and nothing in that mode reads it.
-const builtDev = process.env.T3CODE_BUILT_DEV === "1";
+const builtDev = process.env.VIBECODINGER_BUILT_DEV === "1";
 
-const bundledDevEnv = process.env.T3CODE_BUNDLED_DEV?.trim().toLowerCase();
+const bundledDevEnv = process.env.VIBECODINGER_BUNDLED_DEV?.trim().toLowerCase();
 const bundledDev = bundledDevEnv === "1" || bundledDevEnv === "true";
 
 // Bundled dev and `build --watch` pass Rolldown `exclude` but not Vite's default `ignored`, so
@@ -176,8 +174,8 @@ const renderScenariosProject = {
       commands: {
         ...browserTestProject.test.browser.commands,
         writeRenderReport: async (_context, scenario: string, json: string) => {
-          const directory = process.env.T3CODE_RENDER_REPORT_DIR;
-          if (!directory) throw new Error("T3CODE_RENDER_REPORT_DIR is not set");
+          const directory = process.env.VIBECODINGER_RENDER_REPORT_DIR;
+          if (!directory) throw new Error("VIBECODINGER_RENDER_REPORT_DIR is not set");
           await NodeFSP.writeFile(`${directory}/${scenario}.json`, json);
         },
       },
@@ -215,12 +213,12 @@ function resolveDevProxyTarget(
   }
 }
 
-const devProxyTarget = resolveDevProxyTarget(process.env.T3CODE_PORT, configuredWsUrl);
+const devProxyTarget = resolveDevProxyTarget(process.env.VIBECODINGER_PORT, configuredWsUrl);
 
 // Brotli quality 5 encodes in hundreds of ms; default quality 11 would replace transfer stalls with encode stalls.
 function devCompressionPlugin(): Plugin {
   return {
-    name: "t3code:dev-compression",
+    name: "vibecodinger:dev-compression",
     apply: "serve",
     configureServer(server) {
       server.middlewares.use(
@@ -236,7 +234,7 @@ function devCompressionPlugin(): Plugin {
 // which blanks the app at boot. Fail the build instead of shipping it.
 function chunkCycleGuardPlugin(): Plugin {
   return {
-    name: "t3code:chunk-cycle-guard",
+    name: "vibecodinger:chunk-cycle-guard",
     apply: "build",
     generateBundle(_options, bundle) {
       const done = new Set<string>();
@@ -260,7 +258,7 @@ function chunkCycleGuardPlugin(): Plugin {
 // a copy of every changed chunk from every rebuild. Fixed names overwrite the previous copy.
 function bundledDevStableNamesPlugin(): Plugin {
   return {
-    name: "t3code:bundled-dev-stable-names",
+    name: "vibecodinger:bundled-dev-stable-names",
     apply: "serve",
     outputOptions: (options) => ({
       ...options,
@@ -276,7 +274,7 @@ function bundledDevStableNamesPlugin(): Plugin {
 function bootstrapTitlePlugin(): Plugin {
   let development = false;
   return {
-    name: "t3code:bootstrap-title",
+    name: "vibecodinger:bootstrap-title",
     configResolved(config) {
       // The same flag Vite exposes to the app as import.meta.env.DEV.
       development = !config.isProduction;
@@ -286,14 +284,14 @@ function bootstrapTitlePlugin(): Plugin {
         hostedAppChannel: configuredHostedAppChannel,
         development,
       });
-      const title = formatAppDisplayName({ baseName: "T3 Code", stageLabel });
+      const title = formatAppDisplayName({ baseName: "VibeCodinger", stageLabel });
       return html.replace(/<title>[^<]*<\/title>/, `<title>${title}</title>`);
     },
   };
 }
 
 // Allow Tailnet hosts for sharing; Tailscale-controlled DNS prevents attacker rebinding.
-const configuredAllowedHosts = (process.env.T3CODE_DEV_ALLOWED_HOSTS ?? "")
+const configuredAllowedHosts = (process.env.VIBECODINGER_DEV_ALLOWED_HOSTS ?? "")
   .split(",")
   .map((entry) => entry.trim())
   .filter((entry) => entry.length > 0);
@@ -341,8 +339,6 @@ export default defineConfig(({ command }) => {
     ],
     optimizeDeps: {
       include: [
-        "@clerk/clerk-js",
-        "@clerk/react/internal",
         "@pierre/diffs",
         "@pierre/diffs/edit",
         "@pierre/diffs/react",
@@ -356,20 +352,14 @@ export default defineConfig(({ command }) => {
       "import.meta.env.VITE_WS_URL": JSON.stringify(configuredWsUrl ?? ""),
       // Override .env URLs with empty values in single-origin dev so clients use window.location.origin.
       "import.meta.env.VITE_HTTP_URL": JSON.stringify(configuredHttpUrl ?? ""),
-      "import.meta.env.VITE_T3CODE_RELAY_URL": JSON.stringify(configuredRelayUrl),
       "import.meta.env.VITE_CLERK_PUBLISHABLE_KEY": JSON.stringify(configuredClerkPublishableKey),
       "import.meta.env.VITE_CLERK_JWT_TEMPLATE": JSON.stringify(configuredClerkJwtTemplate),
       "import.meta.env.VITE_CLERK_CLI_OAUTH_CLIENT_ID": JSON.stringify(
         configuredClerkCliOAuthClientId,
       ),
-      "import.meta.env.VITE_RELAY_OTLP_TRACES_URL": JSON.stringify(configuredRelayTracingUrl),
-      "import.meta.env.VITE_RELAY_OTLP_TRACES_DATASET": JSON.stringify(
-        configuredRelayTracingDataset,
-      ),
-      "import.meta.env.VITE_RELAY_OTLP_TRACES_TOKEN": JSON.stringify(configuredRelayTracingToken),
       "import.meta.env.VITE_HOSTED_APP_URL": JSON.stringify(configuredHostedAppUrl ?? ""),
       "import.meta.env.VITE_HOSTED_APP_CHANNEL": JSON.stringify(configuredHostedAppChannel),
-      "import.meta.env.T3CODE_DESKTOP_UPDATE_REPOSITORY": JSON.stringify(
+      "import.meta.env.VIBECODINGER_DESKTOP_UPDATE_REPOSITORY": JSON.stringify(
         configuredDesktopUpdateRepository,
       ),
       "import.meta.env.VITE_RELEASE_CHANNEL": JSON.stringify(configuredReleaseChannel),

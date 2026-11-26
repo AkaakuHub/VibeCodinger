@@ -3,19 +3,22 @@ import {
   linkBackBlockLabel,
   linkBatchFailureLabel,
   linkWithMintedCode,
-} from "@t3tools/client-runtime/link-batch";
-import { ANOTHER_ADDRESS, linkRequestFailureMessage } from "@t3tools/client-runtime/link-request";
+} from "@vibecodinger/client-runtime/link-batch";
+import {
+  ANOTHER_ADDRESS,
+  linkRequestFailureMessage,
+} from "@vibecodinger/client-runtime/link-request";
 import {
   AuthAccessWriteScope,
   type AuthMcpClientAccess,
   type EnvironmentId,
   type PeerLinkSummary,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
-import { peerLinkHealth, type PeerLinkHealth } from "@t3tools/client-runtime/state/peerLinks";
+} from "@vibecodinger/client-runtime/state/runtime";
+import { peerLinkHealth, type PeerLinkHealth } from "@vibecodinger/client-runtime/state/peerLinks";
 import * as DateTime from "effect/DateTime";
 import * as Option from "effect/Option";
 import * as Result from "effect/Result";
@@ -125,7 +128,7 @@ export function LinkedEnvironmentsSettings({
         <SettingsRow
           title={gt("No linked environments")}
           description={gt(
-            "Link another machine running T3 Code, such as a VPS, so agents here can launch and drive threads there.",
+            "Link another machine running VibeCodinger, such as a VPS, so agents here can launch and drive threads there.",
           )}
         />
       ) : (
@@ -686,7 +689,7 @@ export function useForgetPeerLink(environmentId: EnvironmentId, link: PeerLinkSu
           type: "warning",
           title: gt("{label} did not answer", { label: link.label }),
           description: gt(
-            "Revoke \"T3 Code · …\" in {label}''s Sharing & access to end the session there too.",
+            "Revoke \"VibeCodinger · …\" in {label}''s Sharing & access to end the session there too.",
             { label: link.label },
           ),
         });

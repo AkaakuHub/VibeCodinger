@@ -6,10 +6,9 @@ import {
   type ClientConnectionMethod,
   EnvironmentId,
   type ExecutionEnvironmentDescriptor,
-} from "@t3tools/contracts";
-import { RelayEnvironmentConnectScope } from "@t3tools/contracts/relay";
-import * as KeyedLock from "@t3tools/shared/KeyedLock";
-import { withRelayClientTracing } from "@t3tools/shared/relayTracing";
+} from "@vibecodinger/contracts";
+import { RelayEnvironmentConnectScope } from "@vibecodinger/contracts/relay";
+import * as KeyedLock from "@vibecodinger/shared/KeyedLock";
 import {
   exchangeRemoteDpopAccessToken,
   type RemoteEnvironmentAuthError,
@@ -78,6 +77,7 @@ export class RemoteEnvironmentAuthorization extends Context.Service<
       readonly wsBaseUrl: string;
       readonly bearerToken: string;
       readonly connectionMethod: ClientConnectionMethod;
+      readonly expectedE2eeIdentityKey?: string;
     }) => Effect.Effect<AuthorizedRemoteEnvironment, ConnectionAttemptError>;
     readonly authorizeDpop: (input: {
       readonly expectedEnvironmentId: EnvironmentId;
@@ -94,6 +94,7 @@ export class RemoteEnvironmentAuthorization extends Context.Service<
       readonly connectionId: string;
       readonly httpBaseUrl: string;
       readonly wsBaseUrl: string;
+      readonly expectedE2eeIdentityKey?: string;
     }) => Effect.Effect<AuthorizedRemoteEnvironment, ConnectionAttemptError>;
     readonly authorizeDirectDpopHttp: (
       connection: DirectDpopConnection,
@@ -125,7 +126,7 @@ export class RemoteEnvironmentAuthorization extends Context.Service<
       readonly directConnection?: DirectDpopConnection;
     }) => Effect.Effect<void, ConnectionAttemptError>;
   }
->()("@t3tools/client-runtime/authorization/service/RemoteEnvironmentAuthorization") {}
+>()("@vibecodinger/client-runtime/authorization/service/RemoteEnvironmentAuthorization") {}
 
 const CACHED_ENDPOINT_SOCKET_TIMEOUT_MS = 3_000;
 const DPOP_AUTHORIZATION_TIMEOUT_MS = 30_000;
@@ -216,6 +217,7 @@ export const make = Effect.gen(function* () {
       readonly expectedEnvironmentId: EnvironmentId;
       readonly httpBaseUrl: string;
       readonly connectionMethod: ClientConnectionMethod;
+      readonly expectedE2eeIdentityKey?: string;
     }) {
       const checked = checkedDescriptors.get(input.httpBaseUrl);
       checkedDescriptors.delete(input.httpBaseUrl);
@@ -238,6 +240,15 @@ export const make = Effect.gen(function* () {
         return yield* environmentMismatchError({
           expected: input.expectedEnvironmentId,
           actual: descriptor.environmentId,
+        });
+      }
+      if (
+        input.expectedE2eeIdentityKey !== undefined &&
+        input.expectedE2eeIdentityKey !== descriptor.e2eeServerIdentityKey
+      ) {
+        return yield* new ConnectionBlockedError({
+          reason: "configuration",
+          ...translatableDetail(msg("The saved encryption identity does not match the server.")),
         });
       }
       return descriptor;
@@ -621,8 +632,7 @@ export const make = Effect.gen(function* () {
       input: Parameters<RemoteEnvironmentAuthorization["Service"]["authorizeDirectDpop"]>[0],
     ) {
       const descriptor = yield* verifyDirectEndpoint({
-        expectedEnvironmentId: input.expectedEnvironmentId,
-        httpBaseUrl: input.httpBaseUrl,
+        ...input,
         connectionMethod: "direct",
       });
       const connection = { connectionId: input.connectionId, httpBaseUrl: input.httpBaseUrl };
@@ -773,12 +783,10 @@ export const make = Effect.gen(function* () {
         return directHttpAuthorization(connection, credential);
       },
     ),
-    // The relay tracer must wrap span creation, not just the token request.
     authorizeDpopHttp: Effect.fnUntraced(function* (input) {
       return yield* getDpopToken(input).pipe(
         Effect.map(({ token }) => httpAuthorization(token)),
         Effect.withSpan("environment.authorization.http"),
-        withRelayClientTracing,
       );
     }),
     // Untraced: a span here would stay open for the socket's lifetime. Each renewal has its own.
@@ -803,7 +811,6 @@ export const make = Effect.gen(function* () {
             : directDpopToken(direct).pipe(Effect.map((credential) => credential.expiresAtEpochMs))
         ).pipe(
           Effect.withSpan("environment.authorization.renewSocket"),
-          withRelayClientTracing,
           // A relay blip retries until expiry; a blocked credential ends the loop.
           Effect.catchTags({ ConnectionTransientError: () => Effect.succeed(expiresAtEpochMs) }),
         );

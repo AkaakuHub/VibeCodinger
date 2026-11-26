@@ -3,8 +3,8 @@ import {
   ORCHESTRATION_PROTOCOL_VERSION,
   PROVIDER_SEND_TURN_MAX_FILE_BYTES,
   type ExecutionEnvironmentDescriptor,
-} from "@t3tools/contracts";
-import * as HostProcess from "@t3tools/shared/HostProcess";
+} from "@vibecodinger/contracts";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
 import * as Context from "effect/Context";
 import * as SecureRandom from "effect/crypto/SecureRandom";
 import * as Effect from "effect/Effect";
@@ -14,9 +14,7 @@ import * as Path from "effect/Path";
 import * as Schema from "effect/Schema";
 
 import packageJson from "../../package.json" with { type: "json" };
-import * as ServerSecretStore from "../auth/ServerSecretStore.ts";
 import { resolveServerInstallation } from "../cli/invocation.ts";
-import { readAgentActivityPublishingActive } from "../cloud/config.ts";
 import { resolveServerSelfUpdateCapability } from "../cloud/selfUpdate.ts";
 import { resolveServiceLauncherMode } from "../cloud/serviceLauncherClient.ts";
 import * as ServerConfig from "../config.ts";
@@ -48,14 +46,14 @@ export class ServerEnvironment extends Context.Service<
     readonly getEnvironmentId: Effect.Effect<EnvironmentId>;
     readonly getDescriptor: Effect.Effect<ExecutionEnvironmentDescriptor>;
   }
->()("t3/environment/ServerEnvironment") {}
+>()("vibecodinger/environment/ServerEnvironment") {}
 
 export class ServerEnvironmentIdentity extends Context.Service<
   ServerEnvironmentIdentity,
   {
     readonly getEnvironmentId: Effect.Effect<EnvironmentId>;
   }
->()("t3/environment/ServerEnvironment/ServerEnvironmentIdentity") {}
+>()("vibecodinger/environment/ServerEnvironment/ServerEnvironmentIdentity") {}
 
 function platformOs(platform: NodeJS.Platform): ExecutionEnvironmentDescriptor["platform"]["os"] {
   switch (platform) {
@@ -186,7 +184,6 @@ const makeIdentity = Effect.gen(function* () {
 export const make = Effect.gen(function* () {
   const path = yield* Path.Path;
   const serverConfig = yield* ServerConfig.ServerConfig;
-  const secrets = yield* ServerSecretStore.ServerSecretStore;
   const identity = yield* ServerEnvironmentIdentity;
   const hostPlatform = yield* HostProcess.Platform;
   const hostArchitecture = yield* HostProcess.Architecture;
@@ -241,7 +238,6 @@ export const make = Effect.gen(function* () {
       storageCleanup: true,
       storageCleanupRun: true,
       databaseStorage: true,
-      otlpEndpointCheck: true,
       secretSourceCheck: true,
       projectWorktreeCleanup: true,
       settledWorktreeCleanup: true,
@@ -307,18 +303,13 @@ export const make = Effect.gen(function* () {
       shellThreadFamilies: true,
       shellOlderSettled: true,
       agentFeedback: true,
+      agentActivityPublishing: false,
     },
   };
 
   return ServerEnvironment.of({
     getEnvironmentId: Effect.succeed(environmentId),
-    // Publishing opt-in and relay links change at runtime; read the capability per request.
-    getDescriptor: readAgentActivityPublishingActive(secrets).pipe(
-      Effect.map((agentActivityPublishing) => ({
-        ...descriptor,
-        capabilities: { ...descriptor.capabilities, agentActivityPublishing },
-      })),
-    ),
+    getDescriptor: Effect.succeed(descriptor),
   });
 });
 

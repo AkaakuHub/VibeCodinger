@@ -30,10 +30,13 @@ import type {
   ProjectSearchContentsInput,
   ProjectSearchContentsResult,
   ProjectSearchEntriesResult,
-} from "@t3tools/contracts";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { PROJECT_FAVICON_EXTENSIONS, isProjectFaviconPath } from "@t3tools/shared/projectFavicon";
-import { scoreSubsequenceMatch } from "@t3tools/shared/searchRanking";
+} from "@vibecodinger/contracts";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
+import {
+  PROJECT_FAVICON_EXTENSIONS,
+  isProjectFaviconPath,
+} from "@vibecodinger/shared/projectFavicon";
+import { scoreSubsequenceMatch } from "@vibecodinger/shared/searchRanking";
 
 import * as VcsProcess from "../vcs/VcsProcess.ts";
 import { type IgnoreDecision, type IgnoreFile, parseIgnoreFile } from "./IgnorePatterns.ts";
@@ -151,7 +154,7 @@ export class WorkspaceSearchIndex extends Context.Service<
     >;
     readonly refresh: () => Effect.Effect<void, WorkspaceSearchIndexRefreshFailed>;
   }
->()("t3/workspace/WorkspaceSearchIndex") {}
+>()("vibecodinger/workspace/WorkspaceSearchIndex") {}
 
 // Only the host separator becomes `/`: on POSIX `\` is a file name character.
 function toPosixPath(input: string, hostIsWindows: boolean): string {
@@ -1432,7 +1435,7 @@ export const layer = (key: string) => {
 };
 
 export class WorkspaceSearchIndexMap extends LayerMap.Service<WorkspaceSearchIndexMap>()(
-  "t3/workspace/WorkspaceSearchIndexMap",
+  "vibecodinger/workspace/WorkspaceSearchIndexMap",
   {
     lookup: layer,
     idleTimeToLive: WORKSPACE_INDEX_IDLE_TTL,

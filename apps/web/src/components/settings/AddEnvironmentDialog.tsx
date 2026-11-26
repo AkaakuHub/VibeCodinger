@@ -1,4 +1,4 @@
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
+import { thrownErrorMessage } from "@vibecodinger/client-runtime/errors";
 import { m } from "~/i18n/messages";
 import { pipe } from "effect/Function";
 import { ChevronsLeftRightEllipsisIcon, PlusIcon, TerminalIcon } from "lucide-react";
@@ -8,15 +8,15 @@ import { T, useGT, useMessages, Var } from "gt-react";
 import {
   type DesktopDiscoveredSshHost,
   type DesktopSshEnvironmentTarget,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import {
   RelayConnectionRegistration,
   RelayConnectionTarget,
-} from "@t3tools/client-runtime/connection";
+} from "@vibecodinger/client-runtime/connection";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
+} from "@vibecodinger/client-runtime/state/runtime";
 import * as Option from "effect/Option";
 
 import { cn } from "../../lib/utils";
@@ -143,7 +143,7 @@ export function AddEnvironmentDialog({
   // The discovery atom is kept alive across dialog opens, so re-read SSH config
   // each time the SSH tab is shown; stale hosts stay visible while it refreshes.
   const refreshDesktopSshHosts = desktopSshHosts.refresh;
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- rereads desktop SSH config through the bridge each time the SSH tab is shown
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- rereads desktop SSH config through the bridge each time the SSH tab is shown
   useEffect(() => {
     if (isSshDiscoveryActive) refreshDesktopSshHosts();
   }, [isSshDiscoveryActive, refreshDesktopSshHosts]);
@@ -702,7 +702,7 @@ export function AddEnvironmentDialog({
                 )
               : prefill
                 ? gt(
-                    "Create a pairing code on {environment}, in its Settings → Sharing & access or with `t3 auth pairing create`, and enter it here.",
+                    "Create a pairing code on {environment}, in its Settings → Sharing & access or with `vibecodinger auth pairing create`, and enter it here.",
                     { environment: prefill.label },
                   )
                 : gt("Pair another environment to this client.")}

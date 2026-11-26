@@ -11,12 +11,12 @@ Object.assign(process.env, repoEnv);
 process.env.EXPO_NO_TYPESCRIPT_SETUP = "1";
 
 const APP_VARIANT = resolveAppVariant(repoEnv.APP_VARIANT);
-const isIosPersonalTeamBuild = repoEnv.T3CODE_IOS_PERSONAL_TEAM === "1";
+const isIosPersonalTeamBuild = repoEnv.VIBECODINGER_IOS_PERSONAL_TEAM === "1";
 const runtimeVersionPolicy =
   process.env.MOBILE_VERSION_POLICY ??
   (APP_VARIANT === "development" ? "appVersion" : "fingerprint");
 
-const personalTeamBundleIdentifier = repoEnv.T3CODE_IOS_PERSONAL_TEAM_BUNDLE_ID?.trim();
+const personalTeamBundleIdentifier = repoEnv.VIBECODINGER_IOS_PERSONAL_TEAM_BUNDLE_ID?.trim();
 const IOS_BUNDLE_IDENTIFIER_PATTERN = /^[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+$/;
 
 const fromRepoRoot = (relativePath: string) => `../../${relativePath}`;
@@ -28,7 +28,7 @@ if (
     !IOS_BUNDLE_IDENTIFIER_PATTERN.test(personalTeamBundleIdentifier))
 ) {
   throw new Error(
-    "T3CODE_IOS_PERSONAL_TEAM_BUNDLE_ID must be a reverse-DNS identifier such as com.example.t3code when T3CODE_IOS_PERSONAL_TEAM=1.",
+    "VIBECODINGER_IOS_PERSONAL_TEAM_BUNDLE_ID must be a reverse-DNS identifier such as net.akaaku.vibecodinger when VIBECODINGER_IOS_PERSONAL_TEAM=1.",
   );
 }
 
@@ -41,8 +41,6 @@ const DEVELOPMENT_ASSETS = {
   androidAdaptiveBackgroundImage: "./assets/android-icon-background-dev.png",
   androidSplashIcon: "./assets/android-splash-icon-dev.png",
   androidMonochromeIcon: "./assets/android-icon-mark.png",
-  androidNotificationIcon: "./assets/android-notification-icon.png",
-  androidNotificationColor: "#00639B",
 } as const;
 
 const PREVIEW_ASSETS = {
@@ -54,8 +52,6 @@ const PREVIEW_ASSETS = {
   androidAdaptiveBackgroundImage: "./assets/android-icon-background-nightly.png",
   androidSplashIcon: "./assets/android-splash-icon-nightly.png",
   androidMonochromeIcon: "./assets/android-icon-mark.png",
-  androidNotificationIcon: "./assets/android-notification-icon.png",
-  androidNotificationColor: "#7565C7",
 } as const;
 
 const RELEASE_ASSETS = {
@@ -67,33 +63,28 @@ const RELEASE_ASSETS = {
   androidAdaptiveBackgroundImage: undefined,
   androidSplashIcon: "./assets/android-splash-icon-prod.png",
   androidMonochromeIcon: "./assets/android-icon-mark.png",
-  androidNotificationIcon: "./assets/android-notification-icon.png",
-  androidNotificationColor: "#FFFFFF",
 } as const;
 
 const VARIANT_CONFIG = {
   development: {
-    appName: "T3 Code Dev",
-    scheme: "t3code-dev",
-    iosBundleIdentifier: "com.t3tools.t3code.dev",
-    androidPackage: "com.t3tools.t3code.dev",
-    relyingParty: "clerk.t3.codes",
+    appName: "VibeCodinger Dev",
+    scheme: "vibecodinger-dev",
+    iosBundleIdentifier: "net.akaaku.vibecodinger.dev",
+    androidPackage: "net.akaaku.vibecodinger.dev",
     assets: DEVELOPMENT_ASSETS,
   },
   preview: {
-    appName: "T3 Code Preview",
-    scheme: "t3code-preview",
-    iosBundleIdentifier: "com.t3tools.t3code.preview",
-    androidPackage: "com.t3tools.t3code.preview",
-    relyingParty: "clerk.t3.codes",
+    appName: "VibeCodinger Preview",
+    scheme: "vibecodinger-preview",
+    iosBundleIdentifier: "net.akaaku.vibecodinger.preview",
+    androidPackage: "net.akaaku.vibecodinger.preview",
     assets: PREVIEW_ASSETS,
   },
   production: {
-    appName: "T3 Code",
-    scheme: "t3code",
-    iosBundleIdentifier: "com.t3tools.t3code",
-    androidPackage: "com.t3tools.t3code",
-    relyingParty: "clerk.t3.codes",
+    appName: "VibeCodinger",
+    scheme: "vibecodinger",
+    iosBundleIdentifier: "net.akaaku.vibecodinger",
+    androidPackage: "net.akaaku.vibecodinger",
     assets: RELEASE_ASSETS,
   },
 } as const;
@@ -112,8 +103,6 @@ function resolveAppVariant(value: string | undefined): AppVariant {
 }
 
 const variant = VARIANT_CONFIG[APP_VARIANT];
-// Copied thread links open the app. app.t3.codes/.well-known lists every variant's identifiers.
-const HOSTED_APP_HOST = "app.t3.codes";
 const iosBundleIdentifier = isIosPersonalTeamBuild
   ? personalTeamBundleIdentifier!
   : variant.iosBundleIdentifier;
@@ -129,7 +118,7 @@ const widgetsPlugin: NonNullable<ExpoConfig["plugins"]>[number] = [
   {
     bundleIdentifier: `${iosBundleIdentifier}.widgets`,
     groupIdentifier: `group.${iosBundleIdentifier}`,
-    enablePushNotifications: true,
+    enablePushNotifications: false,
     // Frequent updates need the iOS entitlement to avoid early throttling.
     frequentUpdates: true,
     enableAndroid: true,
@@ -137,7 +126,7 @@ const widgetsPlugin: NonNullable<ExpoConfig["plugins"]>[number] = [
       {
         name: "SubscriptionUsage",
         displayName: "Subscription usage",
-        description: "Subscription quotas from your connected T3 Code environments.",
+        description: "Subscription quotas from your connected VibeCodinger environments.",
         ios: {
           configuration: {
             title: "Subscription usage",
@@ -187,7 +176,7 @@ const widgetsPlugin: NonNullable<ExpoConfig["plugins"]>[number] = [
       {
         name: "AgentActivity",
         displayName: "Agent Activity",
-        description: "Shows the current state of active T3 Code agents.",
+        description: "Shows the current state of active VibeCodinger agents.",
         android: null,
         ios: {
           supportedFamilies: ["systemSmall", "systemMedium", "accessoryRectangular"],
@@ -228,10 +217,10 @@ const sharingPlugin: NonNullable<ExpoConfig["plugins"]>[number] = [
 
 const config: ExpoConfig = {
   name: variant.appName,
-  slug: "t3-code",
+  slug: "vibecodinger",
   platforms: ["ios", "android"],
   scheme: variant.scheme,
-  version: repoEnv.T3CODE_MOBILE_VERSION ?? "2.3.0",
+  version: repoEnv.VIBECODINGER_MOBILE_VERSION ?? "2.3.0",
   runtimeVersion: {
     // Skip costly fingerprinting on dev launches; preview and production OTAs require matching native projects.
     policy: runtimeVersionPolicy,
@@ -239,26 +228,14 @@ const config: ExpoConfig = {
   orientation: "portrait",
   icon: variant.assets.appIcon,
   userInterfaceStyle: "automatic",
-  updates: {
-    enabled: false,
-    url: "https://u.expo.dev/d763fcb8-d37c-41ea-a773-b54a0ab4a454",
-    checkAutomatically: "ON_LOAD",
-    fallbackToCacheTimeout: 0,
-  },
+  updates: { enabled: false },
   ios: {
     icon: variant.assets.iosIcon,
     supportsTablet: true,
-    requireFullScreen: process.env.T3_SHOWCASE_CAPTURE_BUILD === "1",
+    requireFullScreen: process.env.VIBECODINGER_SHOWCASE_CAPTURE_BUILD === "1",
     bundleIdentifier: iosBundleIdentifier,
-    // Avoid Personal Team fallback: it cannot sign App Groups, Apple sign-in or push entitlements.
-    appleTeamId: "ARK85ZXQ4Z",
-    associatedDomains: [
-      `applinks:${variant.relyingParty}`,
-      `webcredentials:${variant.relyingParty}`,
-      `applinks:${HOSTED_APP_HOST}`,
-    ],
     entitlements: {
-      "keychain-access-groups": [`$(AppIdentifierPrefix)${variant.iosBundleIdentifier}`],
+      "keychain-access-groups": [`$(AppIdentifierPrefix)${iosBundleIdentifier}`],
     },
     infoPlist: {
       UISupportedInterfaceOrientations: [
@@ -270,15 +247,15 @@ const config: ExpoConfig = {
         NSAllowsArbitraryLoads: true,
       },
       NSLocalNetworkUsageDescription:
-        "Allow T3 Code to connect to T3 Code servers on your local network or tailnet.",
+        "Allow VibeCodinger to connect to servers on your local network or tailnet.",
       // Built with the iOS 27 SDK, only view controllers can hide or style the status bar.
       UIViewControllerBasedStatusBarAppearance: true,
-      NSPhotoLibraryAddUsageDescription: "Allow T3 Code to save images to your photo library.",
+      NSPhotoLibraryAddUsageDescription: "Allow VibeCodinger to save images to your photo library.",
       // System picture in picture needs background audio to start and survive outside the app.
       UIBackgroundModes: ["audio"],
       ITSAppUsesNonExemptEncryption: false,
       // Capture builds disable multitasking because iPadOS otherwise ignores orientation requests.
-      ...(process.env.T3_SHOWCASE_CAPTURE_BUILD === "1"
+      ...(process.env.VIBECODINGER_SHOWCASE_CAPTURE_BUILD === "1"
         ? {
             "UISupportedInterfaceOrientations~ipad": [
               "UIInterfaceOrientationPortrait",
@@ -293,9 +270,6 @@ const config: ExpoConfig = {
   android: {
     icon: variant.assets.appIcon,
     package: variant.androidPackage,
-    ...(repoEnv.T3CODE_ANDROID_GOOGLE_SERVICES_FILE
-      ? { googleServicesFile: repoEnv.T3CODE_ANDROID_GOOGLE_SERVICES_FILE }
-      : {}),
     adaptiveIcon: {
       backgroundColor: variant.assets.androidAdaptiveBackgroundColor,
       ...(variant.assets.androidAdaptiveBackgroundImage
@@ -308,14 +282,6 @@ const config: ExpoConfig = {
     predictiveBackGestureEnabled: true,
     // expo-sensors declares this for its pedometer, which the app does not use.
     blockedPermissions: ["android.permission.ACTIVITY_RECOGNITION"],
-    intentFilters: [
-      {
-        action: "VIEW",
-        autoVerify: true,
-        data: [{ scheme: "https", host: HOSTED_APP_HOST, pathPrefix: "/threads/" }],
-        category: ["BROWSABLE", "DEFAULT"],
-      },
-    ],
   },
   web: {
     favicon: variant.assets.appIcon,
@@ -356,16 +322,6 @@ const config: ExpoConfig = {
     ...(isIosPersonalTeamBuild
       ? [sharingPlugin]
       : ["./plugins/withShareExtensionDisplayName.cjs", sharingPlugin]),
-    [
-      "expo-notifications",
-      {
-        icon: variant.assets.androidNotificationIcon,
-        color: variant.assets.androidNotificationColor,
-        mode: APP_VARIANT === "development" ? "development" : "production",
-      },
-    ],
-    // Gate Clerk here: withoutIosPersonalTeamCapabilities runs too early to strip its entitlement.
-    ["@clerk/expo", { theme: "./clerk-theme.json", appleSignIn: !isIosPersonalTeamBuild }],
     "expo-web-browser",
     [
       "expo-quick-actions",
@@ -384,7 +340,7 @@ const config: ExpoConfig = {
     [
       "expo-audio",
       {
-        microphonePermission: "Allow T3 Code to use your microphone for voice input.",
+        microphonePermission: "Allow VibeCodinger to use your microphone for voice input.",
         recordAudioAndroid: true,
         enableBackgroundPlayback: false,
         enableBackgroundRecording: false,
@@ -393,7 +349,8 @@ const config: ExpoConfig = {
     [
       "expo-camera",
       {
-        cameraPermission: "Allow T3 Code to access your camera so you can scan pairing QR codes.",
+        cameraPermission:
+          "Allow VibeCodinger to access your camera so you can scan pairing QR codes.",
         microphonePermission: false,
         barcodeScannerEnabled: true,
         recordAudioAndroid: false,
@@ -404,7 +361,7 @@ const config: ExpoConfig = {
       {
         photosPermission: false,
         // `false` makes this plugin add RECORD_AUDIO to blockedPermissions, breaking Android dictation.
-        microphonePermission: "Allow T3 Code to use your microphone for voice input.",
+        microphonePermission: "Allow VibeCodinger to use your microphone for voice input.",
       },
     ],
     [
@@ -431,6 +388,7 @@ const config: ExpoConfig = {
       {
         android: {
           minSdkVersion: 24,
+          kotlinVersion: "2.4.20",
           // SDK 58 lacks Kotlin 2.3's runtime-inert annotation. R8 needs explicit InputMerger constructors for widgets.
           extraProguardRules: [
             "-dontwarn kotlin.MustUseReturnValues",
@@ -439,11 +397,6 @@ const config: ExpoConfig = {
         },
         ios: {
           deploymentTarget: "18.0",
-          // AppCheckCore 11.3+ includes Swift and needs module maps for these Objective-C dependencies.
-          extraPods: [
-            { name: "GoogleUtilities", modular_headers: true },
-            { name: "RecaptchaInterop", modular_headers: true },
-          ],
         },
       },
     ],
@@ -466,11 +419,7 @@ const config: ExpoConfig = {
   extra: {
     appVariant: APP_VARIANT,
     iosPersonalTeamBuild: isIosPersonalTeamBuild,
-    eas: {
-      projectId: "d763fcb8-d37c-41ea-a773-b54a0ab4a454",
-    },
   },
-  owner: "pingdotgg",
   experiments: {
     // Metro only runs babel-plugin-react-compiler when this is set; see src/reactCompilerCoverage.test.ts.
     reactCompiler: true,

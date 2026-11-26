@@ -5,6 +5,7 @@ import {
   MessageId,
   type OrchestrationV2Command,
   type OrchestrationV2Run,
+  type OrchestrationV2TurnItem,
   type OrchestrationV2ProviderThread,
   ProviderThreadId,
   ProviderDriverKind,
@@ -15,7 +16,8 @@ import {
   ProviderInstanceId,
   RunId,
   ThreadId,
-} from "@t3tools/contracts";
+  TurnItemId,
+} from "@vibecodinger/contracts";
 import * as Deferred from "effect/Deferred";
 import * as DateTime from "effect/DateTime";
 import * as Duration from "effect/Duration";
@@ -27,7 +29,7 @@ import * as Queue from "effect/Queue";
 import * as Stream from "effect/Stream";
 import * as TestClock from "effect/testing/TestClock";
 
-import { AgentScope } from "@t3tools/shared/AgentScope";
+import { AgentScope } from "@vibecodinger/shared/AgentScope";
 
 import * as ServerEnvironment from "../environment/ServerEnvironment.ts";
 import * as ServerSettings from "../serverSettings.ts";
@@ -35,7 +37,7 @@ import * as SqlitePersistence from "../persistence/Sqlite.ts";
 import * as CommandReceiptStore from "./CommandReceiptStore.ts";
 import * as Orchestrator from "./Orchestrator.ts";
 import * as ProviderSessionManager from "./ProviderSessionManager.ts";
-import * as ProviderAdapter from "@t3tools/provider-core/server/ProviderAdapter";
+import * as ProviderAdapter from "@vibecodinger/provider-core/server/ProviderAdapter";
 import * as ThreadManagementService from "./ThreadManagementService.ts";
 import * as ThreadCommandExecutor from "./ThreadCommandExecutor.ts";
 import * as LegacyV1ThreadImporter from "./legacy/LegacyV1ThreadImporter.ts";
@@ -1223,6 +1225,87 @@ it.effect("Force stop refuses once a newer run has started, before killing anyth
     }).pipe(Effect.provide(layerTest));
     expect(error.reason).toBe("superseded");
     expect(killed).toBe(false);
+  }),
+);
+
+it.effect("previews the completed run's answer without its commentary", () =>
+  Effect.gen(function* () {
+    const threadId = ThreadId.make("thread:answer-preview");
+    const runId = RunId.make("run:answer-preview");
+    const messageId = MessageId.make("message:answer-preview");
+    const time = DateTime.makeUnsafe(0);
+    const instanceId = ProviderInstanceId.make("codex");
+    const run: OrchestrationV2Run = {
+      id: runId,
+      threadId,
+      ordinal: 1,
+      providerInstanceId: instanceId,
+      modelSelection: { instanceId, model: "gpt-5-codex" },
+      providerThreadId: null,
+      userMessageId: MessageId.make("message:input"),
+      rootNodeId: null,
+      activeAttemptId: null,
+      status: "completed",
+      requestedAt: time,
+      startedAt: time,
+      completedAt: time,
+      checkpointId: null,
+      contextHandoffId: null,
+    };
+    const answer = {
+      id: TurnItemId.make("answer"),
+      type: "assistant_message",
+      threadId,
+      runId,
+      nodeId: null,
+      providerThreadId: null,
+      providerTurnId: null,
+      nativeItemRef: null,
+      parentItemId: null,
+      ordinal: 0,
+      status: "completed",
+      title: null,
+      startedAt: time,
+      completedAt: time,
+      updatedAt: time,
+      phase: "final_answer",
+      text: "修正しました。\n" + "🐈".repeat(250),
+      streaming: false,
+      messageId,
+    } satisfies OrchestrationV2TurnItem;
+    const turnItems: ReadonlyArray<OrchestrationV2TurnItem> = [
+      answer,
+      {
+        ...answer,
+        id: TurnItemId.make("commentary"),
+        ordinal: 1,
+        phase: "commentary",
+        text: "Checking the build",
+      },
+    ];
+    const layerTest = ThreadManagementService.layer.pipe(
+      Layer.provide(Layer.mock(ProviderSessionManager.ProviderSessionManagerV2)({})),
+      Layer.provide(
+        Layer.mock(Orchestrator.OrchestratorV2)({
+          getThreadRecords: (_, _fields, filter) => {
+            const runs: ReadonlyArray<OrchestrationV2Run> = filter?.runIds?.includes(runId)
+              ? [run]
+              : [];
+            return Effect.succeed({ runs, turnItems } as OrchestrationV2ThreadProjection);
+          },
+        }),
+      ),
+      Layer.provide(ServerSettings.layerTest()),
+      Layer.provide(layerReceiptsTest),
+    );
+    const threads = yield* ThreadManagementService.ThreadManagementService.pipe(
+      Effect.provide(layerTest),
+    );
+    const preview = yield* threads.getRunAnswerPreview({ threadId, runId });
+    expect(preview).toBe("修正しました。 " + "🐈".repeat(231) + "…");
+    expect(
+      yield* threads.getRunAnswerPreview({ threadId, runId: RunId.make("run:other") }),
+    ).toBeNull();
   }),
 );
 

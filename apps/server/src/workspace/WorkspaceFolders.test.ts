@@ -1,6 +1,6 @@
 import * as NodeServices from "@effect/platform-node/NodeServices";
 import { assert, it } from "@effect/vitest";
-import { ProjectId, type ProjectTrackedFolder } from "@t3tools/contracts";
+import { ProjectId, type ProjectTrackedFolder } from "@vibecodinger/contracts";
 import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";
 import * as Layer from "effect/Layer";
@@ -49,7 +49,7 @@ const layerFor = (project?: {
 const makeTempDir = Effect.gen(function* () {
   const fileSystem = yield* FileSystem.FileSystem;
   return yield* fileSystem.realPath(
-    yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3code-workspace-folders-" }),
+    yield* fileSystem.makeTempDirectoryScoped({ prefix: "vibecodinger-workspace-folders-" }),
   );
 });
 
@@ -178,7 +178,7 @@ it.layer(NodeServices.layer)("WorkspaceFolders", (it) => {
       // A link to a repository elsewhere is not inside the project.
       yield* fileSystem.symlink(outside, path.join(workspaceRoot, "linked"));
       yield* fileSystem.writeFileString(
-        path.join(workspaceRoot, "t3.json"),
+        path.join(workspaceRoot, "vibecodinger.json"),
         JSON.stringify({ ignoreRepositories: ["vendor/big"] }),
       );
       // The stored list is only trusted for what someone added.
@@ -208,41 +208,43 @@ it.layer(NodeServices.layer)("WorkspaceFolders", (it) => {
     }),
   );
 
-  it.effect("does not walk a project's folders when t3.json ignores the whole project", () =>
-    Effect.gen(function* () {
-      const fileSystem = yield* FileSystem.FileSystem;
-      const path = yield* Path.Path;
-      const workspaceRoot = yield* makeTempDir;
-      for (const folder of ["api/.git", "src/web/.git", "notes"]) {
-        yield* fileSystem.makeDirectory(path.join(workspaceRoot, folder), { recursive: true });
-      }
-      yield* fileSystem.writeFileString(
-        path.join(workspaceRoot, "t3.json"),
-        JSON.stringify({ ignoreRepositories: ["."] }),
-      );
-      const probed: Array<string> = [];
-      const counting = FileSystem.FileSystem.of({
-        ...fileSystem,
-        readDirectory: (target, options) => {
-          probed.push(target);
-          return fileSystem.readDirectory(target, options);
-        },
-        stat: (target) => {
-          probed.push(target);
-          return fileSystem.stat(target);
-        },
-      });
+  it.effect(
+    "does not walk a project's folders when vibecodinger.json ignores the whole project",
+    () =>
+      Effect.gen(function* () {
+        const fileSystem = yield* FileSystem.FileSystem;
+        const path = yield* Path.Path;
+        const workspaceRoot = yield* makeTempDir;
+        for (const folder of ["api/.git", "src/web/.git", "notes"]) {
+          yield* fileSystem.makeDirectory(path.join(workspaceRoot, folder), { recursive: true });
+        }
+        yield* fileSystem.writeFileString(
+          path.join(workspaceRoot, "vibecodinger.json"),
+          JSON.stringify({ ignoreRepositories: ["."] }),
+        );
+        const probed: Array<string> = [];
+        const counting = FileSystem.FileSystem.of({
+          ...fileSystem,
+          readDirectory: (target, options) => {
+            probed.push(target);
+            return fileSystem.readDirectory(target, options);
+          },
+          stat: (target) => {
+            probed.push(target);
+            return fileSystem.stat(target);
+          },
+        });
 
-      const found = yield* WorkspaceFolders.discoverFolders(workspaceRoot).pipe(
-        Effect.provideService(FileSystem.FileSystem, counting),
-      );
+        const found = yield* WorkspaceFolders.discoverFolders(workspaceRoot).pipe(
+          Effect.provideService(FileSystem.FileSystem, counting),
+        );
 
-      assert.deepEqual(found, []);
-      assert.deepEqual(
-        probed.filter((target) => target !== workspaceRoot),
-        [],
-      );
-    }),
+        assert.deepEqual(found, []);
+        assert.deepEqual(
+          probed.filter((target) => target !== workspaceRoot),
+          [],
+        );
+      }),
   );
 
   it.effect("keeps the folders someone added when a project holds more than fit", () =>

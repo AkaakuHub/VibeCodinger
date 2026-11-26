@@ -1,11 +1,14 @@
-import { runAtomCommand, squashAtomCommandFailure } from "@t3tools/client-runtime/state/runtime";
-import { errorDisplayMessage } from "@t3tools/client-runtime/errors";
+import {
+  runAtomCommand,
+  squashAtomCommandFailure,
+} from "@vibecodinger/client-runtime/state/runtime";
+import { errorDisplayMessage } from "@vibecodinger/client-runtime/errors";
 import {
   AuthOrchestrationOperateScope,
   type EnvironmentId,
   type ModelSelection,
   type ThreadId,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 
 import { scopedThreadKey } from "../lib/scopedEntities";
 import * as Dialog from "../components/ui/Dialog";

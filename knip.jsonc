@@ -23,7 +23,7 @@
     },
     "scripts": {
       // Knip loads its preprocessor through a CLI option; native verification and
-      // worktree setup (from t3.json) run directly. release-desktop.yml bundles the
+      // worktree setup (from vibecodinger.json) run directly. release-desktop.yml bundles the
       // Windows verify script with esbuild through a path knip does not trace,
       // electron-builder loads the macOS signer and the Linux afterPack hook by path, and mobile-e2e.ts runs
       // agent-device's CLI by path, and mobile-behavior.ts spawns its runner by path.
@@ -75,7 +75,7 @@
       // CLI archive and desktop sidecar stage them from this manifest.
       "ignoreDependencies": [
         "@effect/platform-node-shared",
-        "@t3tools/web",
+        "@vibecodinger/web",
         "@napi-rs/keyring",
         "ffi-rs",
         "transcribe-cpp",
@@ -130,34 +130,17 @@
       // Fonts are configured as asset paths; Expo autolinks the native packages.
       "ignoreDependencies": [
         "@expo-google-fonts/dm-sans",
-        "@t3tools/mobile-review-diff-native",
-        "@t3tools/mobile-terminal-native",
+        "@vibecodinger/mobile-review-diff-native",
+        "@vibecodinger/mobile-terminal-native",
       ],
     },
-    "apps/mobile/modules/t3-highlights": {
+    "apps/mobile/modules/vibecodinger-highlights": {
       // Nitrogen discovers HybridObject specifications by filename.
       "entry": ["src/*.nitro.ts!"],
     },
-    "apps/mobile/modules/t3-source-text": {
+    "apps/mobile/modules/vibecodinger-source-text": {
       // React Native codegen discovers component specifications by filename.
       "entry": ["src/*NativeComponent.ts!"],
-    },
-    "infra/task-cache": {
-      "ignore": ["vendor/**"],
-      // The bootstrap and Vite+ hook are loaded by shell/package configuration.
-      "entry": [
-        "alchemy.run.ts!",
-        "scripts/install.ts",
-        "scripts/install-ci.ts",
-        "src/runHook.ts",
-        "src/flush.ts",
-        "src/nativeRunHook.js",
-        "src/preload.mjs",
-      ],
-    },
-    "infra/relay": {
-      // Alchemy loads src/worker.ts as the Worker entry and reads its default export.
-      "entry": ["alchemy.run.ts!", "src/persistence/schema.ts!", "src/worker.ts!"],
     },
     "packages/*": {
       // These workspace packages are private to this monorepo.

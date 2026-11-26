@@ -2,9 +2,9 @@ import {
   scopedThreadKey,
   scopeProjectRef,
   scopeThreadRef,
-} from "@t3tools/client-runtime/environment";
-import type { ScopedThreadRef } from "@t3tools/contracts";
-import type { ClientSettings } from "@t3tools/contracts/settings";
+} from "@vibecodinger/client-runtime/environment";
+import type { ScopedThreadRef } from "@vibecodinger/contracts";
+import type { ClientSettings } from "@vibecodinger/contracts/settings";
 import { createBrowserHistory, createHashHistory } from "@tanstack/react-router";
 import * as Schema from "effect/Schema";
 
@@ -151,12 +151,8 @@ function windowTitleThreadStatus(
  * Screen readers read it on Alt+Tab, so it can lead with the thread and what it's doing.
  */
 function startDocumentTitle(router: AppRouter): void {
-  const readOnGuestPage = () => router.state.matches.some((match) => match.routeId === "/guest");
   let openThreadRef = readOpenThreadRef(router);
-  let onGuestPage = readOnGuestPage();
   const write = () => {
-    // GuestPage titles the tab after the shared thread.
-    if (onGuestPage) return;
     const thread =
       openThreadRef === null
         ? null
@@ -204,15 +200,10 @@ function startDocumentTitle(router: AppRouter): void {
   // The draft store changes on every keystroke; only a new open thread matters here.
   const updateOpenThread = () => {
     const next = readOpenThreadRef(router);
-    const nextOnGuestPage = readOnGuestPage();
-    if (
-      nextOnGuestPage === onGuestPage &&
-      (next && scopedThreadKey(next)) === (openThreadRef && scopedThreadKey(openThreadRef))
-    ) {
+    if ((next && scopedThreadKey(next)) === (openThreadRef && scopedThreadKey(openThreadRef))) {
       return;
     }
     openThreadRef = next;
-    onGuestPage = nextOnGuestPage;
     watchOpenThread();
     write();
   };

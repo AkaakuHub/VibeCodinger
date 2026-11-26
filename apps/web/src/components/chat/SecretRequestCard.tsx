@@ -13,19 +13,19 @@ import {
   type SecretRequestItem,
   type SecretRequestReply,
   type SecretRequestSource,
-} from "@t3tools/client-runtime/secret-request";
+} from "@vibecodinger/client-runtime/secret-request";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
+} from "@vibecodinger/client-runtime/state/runtime";
 import {
   AuthProvidersManageScope,
   type EnvironmentId,
   type OrchestrationV2ProjectedTurnItem,
   type SecretProviderId,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import { useAtomValue } from "@effect/atom-react";
-import { hasFeatureFlag } from "@t3tools/client-runtime/state/server";
+import { hasFeatureFlag } from "@vibecodinger/client-runtime/state/server";
 import { T, useGT, useMessages, Var } from "gt-react";
 import {
   CheckIcon,

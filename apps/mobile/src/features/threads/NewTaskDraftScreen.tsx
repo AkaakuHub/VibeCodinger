@@ -1,5 +1,5 @@
 import { T, useGT, useMessages, Var } from "gt-react-native";
-import { errorDisplayMessage } from "@t3tools/client-runtime/errors";
+import { errorDisplayMessage } from "@vibecodinger/client-runtime/errors";
 import { DraftEnvironmentControl } from "./DraftEnvironmentControl";
 import { NativeScrollEdgeEffectsContext } from "../../native/NativeScrollViewMarker";
 import { DraftThreadHeader } from "./DraftThreadHeader";
@@ -13,14 +13,17 @@ import { scopedProjectKey } from "../../lib/scopedEntities";
 import { connectionTone } from "../connection/connectionTone";
 import { runtimeConnectionErrorText } from "../connection/environmentStatusText";
 import { AppBar } from "../../components/ui/AppBar";
-import { ThreadId } from "@t3tools/contracts";
+import { ThreadId } from "@vibecodinger/contracts";
 
 import * as Dialog from "../../components/ui/Dialog";
 import { useAtomValue } from "@effect/atom-react";
 import * as Cause from "effect/Cause";
 import { AsyncResult } from "effect/reactivity";
-import { pickableProjectGroups } from "@t3tools/client-runtime/state/project-grouping";
-import { settlePromise, squashAtomCommandFailure } from "@t3tools/client-runtime/state/runtime";
+import { pickableProjectGroups } from "@vibecodinger/client-runtime/state/project-grouping";
+import {
+  settlePromise,
+  squashAtomCommandFailure,
+} from "@vibecodinger/client-runtime/state/runtime";
 import {
   CommonActions,
   StackActions,
@@ -39,7 +42,7 @@ import {
   DEFAULT_PROVIDER_INTERACTION_MODE,
   PROVIDER_SEND_TURN_MAX_ATTACHMENTS,
   resolveEnvironmentMachineKind,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 
 import { ComposerEditor, type ComposerEditorHandle } from "../../components/ComposerEditor";
 import { composerContextImportsAtom } from "../../state/use-composer-drafts";
@@ -55,7 +58,7 @@ import {
 
 import { SymbolView } from "../../components/ui/AppSymbol";
 import { AppText as Text } from "../../components/ui/AppText";
-import { threadContextsOutsideEnvironment } from "@t3tools/shared/composerContextReferences";
+import { threadContextsOutsideEnvironment } from "@vibecodinger/shared/composerContextReferences";
 
 import { makeTurnCommandMetadata } from "../../lib/commandMetadata";
 
@@ -386,7 +389,7 @@ export function NewTaskDraftScreen(props: {
     (hasImportedIncomingShare && !incomingShare) ||
     isIncomingShareUnavailable;
   const appliedInitialProjectKeyRef = useRef<string | null>(null);
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- ends the picker return once the project arrives, else replaces the route with the picker next frame
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- ends the picker return once the project arrives, else replaces the route with the picker next frame
   useEffect(() => {
     if (isReturningToProjectPicker && requestedInitialProjectAvailable) {
       // oxlint-disable-next-line react/set-state-in-effect -- Ends the return-to-picker flow once the requested project arrives from the catalog.
@@ -417,7 +420,7 @@ export function NewTaskDraftScreen(props: {
   const lastInitialProjectRefRef = useRef(props.initialProjectRef);
   const initialPickerRef = useRef<"open" | "dismissed" | null>(null);
 
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- applies the route or catalog project to the draft once projects load, or opens the picker in the navigator
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- applies the route or catalog project to the draft once projects load, or opens the picker in the navigator
   useEffect(() => {
     if (props.draftId) {
       return;
@@ -522,7 +525,7 @@ export function NewTaskDraftScreen(props: {
   ]);
 
   const { loadBranches } = flow;
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- requests the selected project's branch list from the server once per project
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- requests the selected project's branch list from the server once per project
   useEffect(() => {
     if (!selectedProject) {
       loadedBranchesProjectKeyRef.current = null;
@@ -581,7 +584,7 @@ export function NewTaskDraftScreen(props: {
     locked: isComposerInteractionLocked,
   });
 
-  async function handleStart(): Promise<import("@t3tools/contracts").MessageId | null> {
+  async function handleStart(): Promise<import("@vibecodinger/contracts").MessageId | null> {
     const selectedProject = flow.selectedProject;
     const draftKey = flow.draftKey;
     if (
@@ -776,7 +779,7 @@ export function NewTaskDraftScreen(props: {
   const headingLead = headingBreak < 0 ? "" : headingBefore.slice(headingBreak + 1);
   const hero = flow.isScratchDraft ? (
     <View className="items-center gap-2 px-6" testID="new-task-hero">
-      <Text className="text-center text-2xl font-t3-medium tracking-tight text-foreground">
+      <Text className="text-center text-2xl font-vc-medium tracking-tight text-foreground">
         <T>What should we work on?</T>
       </Text>
       <View className="flex-row flex-wrap items-center justify-center gap-x-1">
@@ -796,11 +799,11 @@ export function NewTaskDraftScreen(props: {
   ) : (
     <View className="items-center gap-6 px-6" testID="new-task-hero">
       <View className="w-full items-center gap-1.5">
-        <Text className="text-center text-2xl font-t3-medium tracking-tight text-foreground">
+        <Text className="text-center text-2xl font-vc-medium tracking-tight text-foreground">
           {headingFirstLine}
         </Text>
         <View className="max-w-full flex-row items-center justify-center">
-          <Text className="text-2xl font-t3-medium tracking-tight text-foreground">
+          <Text className="text-2xl font-vc-medium tracking-tight text-foreground">
             {headingLead}
           </Text>
           <Pressable
@@ -812,13 +815,13 @@ export function NewTaskDraftScreen(props: {
             className="min-w-0 max-w-[250px] border-b border-foreground-muted active:opacity-65"
           >
             <Text
-              className="text-2xl font-t3-medium tracking-tight text-foreground"
+              className="text-2xl font-vc-medium tracking-tight text-foreground"
               numberOfLines={1}
             >
               {selectedProjectLabel ?? selectedProject.title}
             </Text>
           </Pressable>
-          <Text className="text-2xl font-t3-medium tracking-tight text-foreground">
+          <Text className="text-2xl font-vc-medium tracking-tight text-foreground">
             {headingAfter}
           </Text>
         </View>

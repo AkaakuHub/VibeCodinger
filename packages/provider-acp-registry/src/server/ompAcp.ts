@@ -1,5 +1,8 @@
-import { type OrchestrationV2UserInputQuestion, TrimmedNonEmptyString } from "@t3tools/contracts";
-import type { AcpAdapterV2Flavor } from "@t3tools/provider-acp/server/adapter";
+import {
+  type OrchestrationV2UserInputQuestion,
+  TrimmedNonEmptyString,
+} from "@vibecodinger/contracts";
+import type { AcpAdapterV2Flavor } from "@vibecodinger/provider-acp/server/adapter";
 import * as Schema from "effect/Schema";
 
 const isForm = Schema.is(

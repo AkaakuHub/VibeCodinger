@@ -1,4 +1,4 @@
-import { TRIAGE_PROMPT_FILE_NAME } from "@t3tools/contracts";
+import { TRIAGE_PROMPT_FILE_NAME } from "@vibecodinger/contracts";
 
 const PLAYBOOK_LINK_START = `[${TRIAGE_PROMPT_FILE_NAME}](`;
 

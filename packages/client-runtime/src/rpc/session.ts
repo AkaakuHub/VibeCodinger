@@ -5,11 +5,18 @@ import {
   type ServerConfigStreamEvent,
   WsSubscribeServerConfigRpc,
   WS_METHODS,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import {
   joinSocketFrameParts,
   SOCKET_FRAME_PARTS_QUERY_PARAM,
-} from "@t3tools/shared/socketFrameParts";
+} from "@vibecodinger/shared/socketFrameParts";
+import {
+  decodeIdentityKey,
+  layerE2eeCrypto,
+  SOCKET_E2EE_QUERY_PARAM,
+  wrapClientSocketWithE2ee,
+} from "@vibecodinger/shared/socketE2ee";
+import { Aead, SecureRandom } from "effect/crypto";
 import * as Cause from "effect/Cause";
 import * as Clock from "effect/Clock";
 import * as Context from "effect/Context";
@@ -82,7 +89,7 @@ export class RpcSessionFactory extends Context.Service<
       connection: PreparedConnection,
     ) => Effect.Effect<RpcSession, ConnectionAttemptError, Scope.Scope>;
   }
->()("@t3tools/client-runtime/rpc/session/RpcSessionFactory") {}
+>()("@vibecodinger/client-runtime/rpc/session/RpcSessionFactory") {}
 
 type InitialConfigError = Effect.Error<
   ReturnType<WsRpcProtocolClient[typeof WS_METHODS.serverGetConfig]>
@@ -250,9 +257,40 @@ export const make = Effect.fn("RpcSessionFactory.make")(function* (
     };
     const socketUrl = new URL(connection.socketUrl);
     socketUrl.searchParams.set(SOCKET_FRAME_PARTS_QUERY_PARAM, "1");
+    const pin = connection.e2eeServerIdentityKey ?? connection.descriptor?.e2eeServerIdentityKey;
+    const identityKey = pin === undefined ? undefined : decodeIdentityKey(pin);
+    if (pin !== undefined) {
+      if (
+        identityKey === undefined ||
+        socketUrl.protocol !== "wss:" ||
+        new URL(connection.httpBaseUrl).protocol !== "https:"
+      ) {
+        return yield* new ConnectionBlockedError({
+          reason: "configuration",
+          ...translatableDetail(
+            msg("This environment requires HTTPS and a valid encryption identity."),
+          ),
+        });
+      }
+      socketUrl.searchParams.set(SOCKET_E2EE_QUERY_PARAM, "1");
+    }
+    const random = yield* Effect.serviceOption(SecureRandom.SecureRandom);
+    const cryptoLayer = Option.isSome(random)
+      ? Aead.layerWebCrypto.pipe(
+          Layer.provideMerge(Layer.succeed(SecureRandom.SecureRandom, random.value)),
+        )
+      : layerE2eeCrypto;
     const layerSocket = Layer.effect(
       Socket.Socket,
-      Effect.map(Effect.service(Socket.Socket), joinSocketFrameParts),
+      Effect.gen(function* () {
+        const socket = yield* Socket.Socket;
+        if (identityKey === undefined) return joinSocketFrameParts(socket);
+        const encrypted = yield* wrapClientSocketWithE2ee(socket, {
+          environmentId: connection.environmentId,
+          expectedServerIdentityKey: identityKey,
+        }).pipe(Effect.provide(cryptoLayer));
+        return joinSocketFrameParts(encrypted);
+      }),
     ).pipe(
       Layer.provide(
         Socket.layerWebSocket(socketUrl.toString(), {

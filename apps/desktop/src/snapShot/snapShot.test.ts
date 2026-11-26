@@ -1,6 +1,6 @@
 import { it as effectIt } from "@effect/vitest";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { parseKeybindingShortcut } from "@t3tools/shared/keybindings";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
+import { parseKeybindingShortcut } from "@vibecodinger/shared/keybindings";
 import * as Effect from "effect/Effect";
 import { describe, expect, it } from "vite-plus/test";
 
@@ -493,7 +493,7 @@ describe("isWaylandSession", () => {
           const { createServer } = await import("node:net");
           const { tmpdir } = await import("node:os");
           const { join } = await import("node:path");
-          const runtimeDirectory = await mkdtemp(join(tmpdir(), "t3-wayland-"));
+          const runtimeDirectory = await mkdtemp(join(tmpdir(), "vibecodinger-wayland-"));
           const socketPath = join(runtimeDirectory, "wayland-0");
           const server = createServer();
           try {

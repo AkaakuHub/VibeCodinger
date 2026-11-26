@@ -15,9 +15,9 @@ import {
   type RuntimeMode,
   type RuntimeRequestId,
   ThreadId,
-} from "@t3tools/contracts";
-import { resolveSelfInvocation } from "@t3tools/shared/nodeRuntime";
-import { htmlRenderFromToolItem } from "@t3tools/shared/toolOutput";
+} from "@vibecodinger/contracts";
+import { resolveSelfInvocation } from "@vibecodinger/shared/nodeRuntime";
+import { htmlRenderFromToolItem } from "@vibecodinger/shared/toolOutput";
 import * as Cause from "effect/Cause";
 import * as DateTime from "effect/DateTime";
 import * as Deferred from "effect/Deferred";
@@ -34,10 +34,10 @@ import * as TestClock from "effect/testing/TestClock";
 import * as ChildProcessSpawner from "effect/process/ChildProcessSpawner";
 import type * as EffectAcpSchema from "effect-acp/compat";
 
-import * as TestProviderHost from "@t3tools/provider-testing/TestProviderHost";
-import type * as AcpSessionRuntime from "@t3tools/provider-acp/server/AcpSessionRuntime";
-import * as IdAllocator from "@t3tools/provider-core/server/IdAllocator";
-import * as McpProviderSessions from "@t3tools/provider-core/server/McpProviderSessions";
+import * as TestProviderHost from "@vibecodinger/provider-testing/TestProviderHost";
+import type * as AcpSessionRuntime from "@vibecodinger/provider-acp/server/AcpSessionRuntime";
+import * as IdAllocator from "@vibecodinger/provider-core/server/IdAllocator";
+import * as McpProviderSessions from "@vibecodinger/provider-core/server/McpProviderSessions";
 import {
   ProviderAdapterTurnStartError,
   type ProviderAdapterV2Error,
@@ -45,7 +45,7 @@ import {
   type ProviderAdapterV2TurnInput,
   ProviderCompactionUnsupportedError,
   ProviderAdapterV2RuntimePolicy,
-} from "@t3tools/provider-core/server/ProviderAdapter";
+} from "@vibecodinger/provider-core/server/ProviderAdapter";
 import {
   decodeAcpReplayTranscript,
   makeAcpReplayCompletenessAssertion,
@@ -54,16 +54,16 @@ import {
 import {
   makeProviderReplayGate,
   type ProviderReplayGate,
-} from "@t3tools/provider-testing/replayGate";
-import { readProviderReplayTranscript } from "@t3tools/provider-testing/replayTranscript";
-import { KiroSettings } from "@t3tools/provider-kiro/settings";
+} from "@vibecodinger/provider-testing/replayGate";
+import { readProviderReplayTranscript } from "@vibecodinger/provider-testing/replayTranscript";
+import { KiroSettings } from "@vibecodinger/provider-kiro/settings";
 import {
   KIRO_PROVIDER,
   kiroApprovalOptions,
   kiroAutopilotValue,
   kiroPermissionDisposition,
   makeKiroAdapterV2,
-} from "@t3tools/provider-kiro/testing";
+} from "@vibecodinger/provider-kiro/testing";
 
 const testLayer = Layer.mergeAll(
   NodeServices.layer,
@@ -243,7 +243,7 @@ const configResult = (configOptions: ReadonlyArray<unknown>) =>
   answer("session/set_config_option", { configOptions });
 const reasoning = (value: string) => [{ id: "reasoningEffort", value }];
 
-/** Kiro's `session/new` result, recorded from 2.27.0 and trimmed to what T3 reads. */
+/** Kiro's `session/new` result, recorded from 2.27.0 and trimmed to what VibeCodinger reads. */
 const sessionSetup = (configOptions: ReadonlyArray<unknown>) => ({
   _meta: { schemaVersion: "1.0.0", id: SESSION_ID, agentMode: "vibe", source: "local" },
   sessionId: SESSION_ID,
@@ -320,7 +320,7 @@ const runKiroScript = Effect.fn("runKiroScript")(function* (input: {
       model: string,
       options?: ModelSelection["options"],
     ) => Effect.Effect<void, ProviderAdapterV2Error>;
-    /** Runs T3's compact action as turn `ordinal`. */
+    /** Runs VibeCodinger's compact action as turn `ordinal`. */
     readonly compact: (ordinal: number) => Effect.Effect<void, ProviderAdapterV2Error>;
     readonly interrupt: (
       providerTurnId: ProviderTurnId,
@@ -335,7 +335,7 @@ const runKiroScript = Effect.fn("runKiroScript")(function* (input: {
   const fileSystem = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
   const replayDir = yield* fileSystem.makeTempDirectoryScoped({
-    prefix: `t3-kiro-${input.scenario}-`,
+    prefix: `vibecodinger-kiro-${input.scenario}-`,
   });
   const statusPath = path.join(replayDir, "status.json");
   const transcript = yield* decodeAcpReplayTranscript(
@@ -1270,85 +1270,87 @@ describe("KiroAdapterV2 early Stop", () => {
 });
 
 describe("KiroAdapterV2 MCP tools", () => {
-  // Probed live on Kiro 2.33.1 against a stdio MCP server named t3-code, without
-  // the permission round trip. Kiro titles the call "@t3-code/html_render", names
+  // Probed live on Kiro 2.33.1 against a stdio MCP server named vibe-codinger, without
+  // the permission round trip. Kiro titles the call "@vibe-codinger/html_render", names
   // it in `tool_id`, and keeps only the result's text.
-  it.effect("shows T3's html_render as T3's tool with the page T3 published", () =>
-    Effect.gen(function* () {
-      const mcpSessions = yield* McpProviderSessions.McpProviderSessions;
-      const toolCallId = "tooluse_4N3LnlI9PRlphUtzdBQGDD";
-      const args = { html: "<p>hi</p>", title: "Probe", height: 120 };
-      const rawInput = { tool_id: "t3-code::html_render", arguments: args };
-      const kiroMeta = { kiro: { serverName: "t3-code", toolOrigin: "default" } };
-      const page = { attachmentId: "kiro-mcp-html-render-page", title: "Probe", height: 120 };
-      yield* runKiroScript({
-        scenario: "mcp-html-render",
-        frames: [
-          ...openSessionFrames({
-            initialize: KIRO_V3_INITIALIZE,
-            configOptions: [modeOption, autopilotOption("on")],
-          }),
-          turnPrompt,
-          update({
-            sessionUpdate: "tool_call",
-            toolCallId,
-            title: "@t3-code/html_render",
-            kind: "other",
-            status: "pending",
-            rawInput,
-            _meta: kiroMeta,
-          }),
-          update({
-            sessionUpdate: "tool_call_update",
-            toolCallId,
-            status: "in_progress",
-            rawInput,
-            _meta: kiroMeta,
-          }),
-          update({
-            sessionUpdate: "tool_call_update",
-            toolCallId,
-            status: "completed",
-            title: "@t3-code/html_render",
-            rawInput,
-            rawOutput: { response: "Rendered.", imageBase64Urls: [], message: "Rendered." },
-            content: [{ type: "content", content: { type: "text", text: "Rendered." } }],
-            _meta: kiroMeta,
-          }),
-          answer("session/prompt", { stopReason: "end_turn" }),
-          ...closeSession,
-        ],
-        drive: ({ events, startTurn }) =>
-          Effect.gen(function* () {
-            // T3's MCP server records the page when Kiro calls html_render.
-            yield* mcpSessions.recordHtmlRender(
-              ThreadId.make("thread-kiro-mcp-html-render"),
-              args,
-              page,
-            );
-            yield* startTurn;
-            const turn = yield* collectTurn(events);
-            const items = turn.flatMap((event) =>
-              event.type === "turn_item.updated" &&
-              event.turnItem.type === "dynamic_tool" &&
-              event.turnItem.nativeItemRef?.nativeId === toolCallId
-                ? [event.turnItem]
-                : [],
-            );
-            const completed = items.at(-1);
-            assert.deepEqual(
-              items.map((item) => item.toolName),
-              items.map(() => "t3-code.html_render"),
-            );
-            assert.equal(completed?.status, "completed");
-            assert.deepEqual(completed?.input, args);
-            assert.deepEqual(
-              completed === undefined ? undefined : htmlRenderFromToolItem(completed),
-              page,
-            );
-          }),
-      });
-    }).pipe(Effect.provide(testLayer)),
+  it.effect(
+    "shows VibeCodinger's html_render as VibeCodinger's tool with the page T3 published",
+    () =>
+      Effect.gen(function* () {
+        const mcpSessions = yield* McpProviderSessions.McpProviderSessions;
+        const toolCallId = "tooluse_4N3LnlI9PRlphUtzdBQGDD";
+        const args = { html: "<p>hi</p>", title: "Probe", height: 120 };
+        const rawInput = { tool_id: "vibe-codinger::html_render", arguments: args };
+        const kiroMeta = { kiro: { serverName: "vibe-codinger", toolOrigin: "default" } };
+        const page = { attachmentId: "kiro-mcp-html-render-page", title: "Probe", height: 120 };
+        yield* runKiroScript({
+          scenario: "mcp-html-render",
+          frames: [
+            ...openSessionFrames({
+              initialize: KIRO_V3_INITIALIZE,
+              configOptions: [modeOption, autopilotOption("on")],
+            }),
+            turnPrompt,
+            update({
+              sessionUpdate: "tool_call",
+              toolCallId,
+              title: "@vibe-codinger/html_render",
+              kind: "other",
+              status: "pending",
+              rawInput,
+              _meta: kiroMeta,
+            }),
+            update({
+              sessionUpdate: "tool_call_update",
+              toolCallId,
+              status: "in_progress",
+              rawInput,
+              _meta: kiroMeta,
+            }),
+            update({
+              sessionUpdate: "tool_call_update",
+              toolCallId,
+              status: "completed",
+              title: "@vibe-codinger/html_render",
+              rawInput,
+              rawOutput: { response: "Rendered.", imageBase64Urls: [], message: "Rendered." },
+              content: [{ type: "content", content: { type: "text", text: "Rendered." } }],
+              _meta: kiroMeta,
+            }),
+            answer("session/prompt", { stopReason: "end_turn" }),
+            ...closeSession,
+          ],
+          drive: ({ events, startTurn }) =>
+            Effect.gen(function* () {
+              // VibeCodinger's MCP server records the page when Kiro calls html_render.
+              yield* mcpSessions.recordHtmlRender(
+                ThreadId.make("thread-kiro-mcp-html-render"),
+                args,
+                page,
+              );
+              yield* startTurn;
+              const turn = yield* collectTurn(events);
+              const items = turn.flatMap((event) =>
+                event.type === "turn_item.updated" &&
+                event.turnItem.type === "dynamic_tool" &&
+                event.turnItem.nativeItemRef?.nativeId === toolCallId
+                  ? [event.turnItem]
+                  : [],
+              );
+              const completed = items.at(-1);
+              assert.deepEqual(
+                items.map((item) => item.toolName),
+                items.map(() => "vibe-codinger.html_render"),
+              );
+              assert.equal(completed?.status, "completed");
+              assert.deepEqual(completed?.input, args);
+              assert.deepEqual(
+                completed === undefined ? undefined : htmlRenderFromToolItem(completed),
+                page,
+              );
+            }),
+        });
+      }).pipe(Effect.provide(testLayer)),
   );
 });
 

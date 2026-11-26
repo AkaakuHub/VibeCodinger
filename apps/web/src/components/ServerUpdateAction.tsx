@@ -1,11 +1,11 @@
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
+import { thrownErrorMessage } from "@vibecodinger/client-runtime/errors";
 import { useAtomValue } from "@effect/atom-react";
 import {
   AuthEnvironmentMaintainScope,
   type AuthSessionState,
   sessionGrantsScope,
-} from "@t3tools/contracts";
-import { managedUpdatesDenial } from "@t3tools/client-runtime/contract-labels";
+} from "@vibecodinger/contracts";
+import { managedUpdatesDenial } from "@vibecodinger/client-runtime/contract-labels";
 import type { AsyncResult } from "effect/reactivity";
 import { environmentSession } from "~/state/session";
 import type {
@@ -13,17 +13,17 @@ import type {
   EnvironmentId,
   ServerInstallation,
   ServerSelfUpdateCapability,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import {
   serverUpdateFailureText,
   type ServerUpdateStage,
   type ServerUpdateState,
-} from "@t3tools/client-runtime/state/server";
+} from "@vibecodinger/client-runtime/state/server";
 import {
   isAtomCommandInterrupted,
   settlePromise,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
+} from "@vibecodinger/client-runtime/state/runtime";
 import { CircleArrowUpIcon } from "lucide-react";
 import { type ComponentProps, useRef, useState } from "react";
 import { msg, T, useGT, useMessages } from "gt-react";
@@ -39,7 +39,7 @@ import { useManagedPolicy } from "~/state/managedPolicy";
 import { environmentPresentations } from "~/state/presentation";
 import { ManagedControl } from "./ManagedPolicy";
 import { manualServerUpdateCommand } from "~/versionSkew";
-import { crossesReleaseTrack } from "@t3tools/shared/cliRelease";
+import { crossesReleaseTrack } from "@vibecodinger/shared/cliRelease";
 import { Button } from "./ui/button";
 import { toastManager } from "./ui/toast";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "./ui/tooltip";
@@ -222,7 +222,7 @@ export function ServerUpdatesAction({
         const confirmed =
           (await requestConfirmDialog(
             gt(
-              "Update the T3 Code desktop apps on {servers}? They will close and relaunch on those machines.",
+              "Update the VibeCodinger desktop apps on {servers}? They will close and relaunch on those machines.",
               { servers: desktopTargets.map((target) => target.serverLabel).join(", ") },
             ),
             { initialFocus: "confirm" },
@@ -307,7 +307,7 @@ export function ServerUpdateAction({
   const updatesDenial = managedUpdatesDenial(useManagedPolicy(environmentId), messages);
   const update = useServerUpdate();
   const updatesInstall =
-    installation?.kind === "npm-global" || installation?.kind === "t3-launcher";
+    installation?.kind === "npm-global" || installation?.kind === "vc-launcher";
   const { copyToClipboard } = useCopyToClipboard<{ command: string }>({
     target: updatesInstall
       ? {
@@ -355,7 +355,7 @@ export function ServerUpdateAction({
       const confirmed =
         (await requestConfirmDialog(
           gt(
-            "Update the T3 Code desktop app that runs the {serverLabel}? It will close and relaunch on that machine.",
+            "Update the VibeCodinger desktop app that runs the {serverLabel}? It will close and relaunch on that machine.",
             { serverLabel },
           ),
           { initialFocus: "confirm" },

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vite-plus/test";
-import { AuthFilesystemReadScope, AuthOrchestrationReadScope } from "@t3tools/contracts";
+import { AuthFilesystemReadScope, AuthOrchestrationReadScope } from "@vibecodinger/contracts";
 
 import {
   createBrowseNavigationCoordinator,
@@ -71,10 +71,10 @@ describe("filesystem read access", () => {
 
 describe("filesystem browse model", () => {
   it("derives the browse target and navigation state", () => {
-    expect(getFilesystemBrowsePath("~/projects/t3")).toEqual({
+    expect(getFilesystemBrowsePath("~/projects/vibecodinger")).toEqual({
       isBrowsing: true,
       directoryPath: "~/projects/",
-      filterQuery: "t3",
+      filterQuery: "vibecodinger",
       parentPath: "~/",
       canBrowseUp: true,
     });
@@ -177,10 +177,12 @@ describe("browse navigation", () => {
 });
 
 describe("browse entry filtering", () => {
-  const entries = ["my-t3code", "t3code", "cotton", "T3Code-old", ".t3", "docs"].map((name) => ({
-    name,
-    fullPath: `~/code/${name}`,
-  }));
+  const entries = ["my-t3code", "t3code", "cotton", "T3Code-old", ".vibecodinger", "docs"].map(
+    (name) => ({
+      name,
+      fullPath: `~/code/${name}`,
+    }),
+  );
   const names = (query: string) =>
     filterFilesystemBrowseEntries(entries, query).visibleEntries.map((entry) => entry.name);
 
@@ -207,8 +209,8 @@ describe("browse entry filtering", () => {
   });
 
   it("shows dot folders only when the query starts with a dot", () => {
-    expect(names("t3")).not.toContain(".t3");
-    expect(filterFilesystemBrowseEntries(entries, ".t3")).toEqual({
+    expect(names("t3")).not.toContain(".vibecodinger");
+    expect(filterFilesystemBrowseEntries(entries, ".vibecodinger")).toEqual({
       visibleEntries: [entries[4]],
       exactEntry: entries[4],
     });

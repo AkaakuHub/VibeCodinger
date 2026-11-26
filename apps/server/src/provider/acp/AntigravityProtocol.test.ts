@@ -19,8 +19,8 @@ import {
 import {
   mergeToolCallState,
   parseSessionUpdateEvent,
-} from "@t3tools/provider-acp/server/runtimeModel";
-import { acpToolCallDiffPatch } from "@t3tools/provider-acp/server/adapter";
+} from "@vibecodinger/provider-acp/server/runtimeModel";
+import { acpToolCallDiffPatch } from "@vibecodinger/provider-acp/server/adapter";
 
 const isSessionNotification = Schema.is(AcpWireSchema.SessionNotification);
 
@@ -734,14 +734,14 @@ describe("Antigravity served reads", () => {
   });
 
   it("drops agy's toolSummary from T3 MCP call arguments only", () => {
-    const t3Call = normalizeAntigravityToolCall(
+    const vcCall = normalizeAntigravityToolCall(
       parseToolUpdate(
         normalizeAntigravitySessionUpdate({
           sessionId: "session-1",
           update: {
             sessionUpdate: "tool_call",
             toolCallId: "call_t3_send",
-            title: "Run mcp_t3-code_send_to_user",
+            title: "Run mcp_vibe-codinger_send_to_user",
             kind: "other",
             status: "in_progress",
             rawInput: { message: "Hello", toolSummary: "Send greeting" },
@@ -749,7 +749,7 @@ describe("Antigravity served reads", () => {
         }),
       ).toolCall,
     );
-    expect(t3Call.data.rawInput).toEqual({ message: "Hello" });
+    expect(vcCall.data.rawInput).toEqual({ message: "Hello" });
 
     const foreignCall = normalizeAntigravityToolCall(
       parseToolUpdate({

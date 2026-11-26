@@ -1,4 +1,4 @@
-import { SourceControlProviderKind } from "@t3tools/contracts";
+import { SourceControlProviderKind } from "@vibecodinger/contracts";
 import * as NodeCrypto from "@effect/platform-node/NodeCrypto";
 import * as NodeServices from "@effect/platform-node/NodeServices";
 import * as KeyValueStore from "effect/persistence/KeyValueStore";
@@ -17,26 +17,26 @@ import type {
   ProjectId,
   PullRequestReviewCapabilities,
   PullRequestReviewerCapabilities,
-} from "@t3tools/contracts";
-import { DEFAULT_SERVER_SETTINGS } from "@t3tools/contracts/settings";
-import type { ServerSettings } from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
+import { DEFAULT_SERVER_SETTINGS } from "@vibecodinger/contracts/settings";
+import type { ServerSettings } from "@vibecodinger/contracts";
 import * as ServerSettingsService from "../serverSettings.ts";
-import { PullRequestOperationError } from "@t3tools/contracts";
+import { PullRequestOperationError } from "@vibecodinger/contracts";
 
 import * as ProjectService from "../project/ProjectService.ts";
 import * as SqlitePersistence from "../persistence/Sqlite.ts";
 import * as PullRequestFilesViewed from "../persistence/PullRequestFilesViewed.ts";
 import * as RepositoryIdentityResolver from "../project/RepositoryIdentityResolver.ts";
 import * as SourceControlProviderRegistry from "../sourceControl/SourceControlProviderRegistry.ts";
-import type { SourceControlProvider } from "@t3tools/source-control-core/server/SourceControlProvider";
-import { isSshRemoteUrl } from "@t3tools/shared/sourceControl";
-import * as SourceControlRateLimit from "@t3tools/source-control-core/server/SourceControlRateLimit";
-import { fakePullRequestProvider } from "@t3tools/source-control-testing/fakeSourceControlDriver";
+import type { SourceControlProvider } from "@vibecodinger/source-control-core/server/SourceControlProvider";
+import { isSshRemoteUrl } from "@vibecodinger/shared/sourceControl";
+import * as SourceControlRateLimit from "@vibecodinger/source-control-core/server/SourceControlRateLimit";
+import { fakePullRequestProvider } from "@vibecodinger/source-control-testing/fakeSourceControlDriver";
 import {
   PullRequestProviderError,
   type ProviderChangeRequest,
   type PullRequestProviderApi,
-} from "@t3tools/source-control-core/server/PullRequestProvider";
+} from "@vibecodinger/source-control-core/server/PullRequestProvider";
 import * as PullRequestProviderRegistry from "./PullRequestProviderRegistry.ts";
 import * as PullRequestService from "./PullRequestService.ts";
 import * as PullRequestReadCache from "./PullRequestReadCache.ts";
@@ -423,7 +423,7 @@ it.effect("lists GitHub Enterprise PRs for a stored unknown repository after hos
       result.entries.map(({ host, number }) => [host, number]),
       [["code.example.test", 42]],
     );
-    // Agents get the forge tools only where the host is one T3 reads.
+    // Agents get the forge tools only where the host is one VibeCodinger reads.
     assert.isTrue(yield* service.servesProject("p1" as ProjectId));
     assert.isFalse(yield* service.servesProject("p2" as ProjectId));
     // ...and those tools build PR URLs through the same refined forge.
@@ -2578,7 +2578,7 @@ it.effect.each([
       expect(error).toMatchObject({
         _tag: "PullRequestUnavailableError",
         reason: "repository-without-project",
-        message: `${repository} is not a project in T3 Code. Add it as a project to read its change requests.`,
+        message: `${repository} is not a project in VibeCodinger. Add it as a project to read its change requests.`,
       });
     }
   }),

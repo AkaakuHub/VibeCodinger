@@ -8,33 +8,37 @@ import {
   resolveSnoozePresets,
   snoozeWakeLabel,
   threadWokeAt,
-} from "@t3tools/client-runtime/state/thread-settled";
+} from "@vibecodinger/client-runtime/state/thread-settled";
 import {
   hasUnseenRunFailure,
   type SnoozePreset,
-} from "@t3tools/client-runtime/state/thread-settled";
-import type { EnvironmentThreadShell } from "@t3tools/client-runtime/state/shell";
-import { resolveThreadProviderStack } from "@t3tools/client-runtime/state/models";
+} from "@vibecodinger/client-runtime/state/thread-settled";
+import type { EnvironmentThreadShell } from "@vibecodinger/client-runtime/state/shell";
+import { resolveThreadProviderStack } from "@vibecodinger/client-runtime/state/models";
 import {
   threadSearchMatchKey,
   threadSearchSubject,
-} from "@t3tools/client-runtime/state/thread-search";
-import { foldSearchQuery, rankSearchItems, scoreThreadSearch } from "@t3tools/shared/paletteSearch";
+} from "@vibecodinger/client-runtime/state/thread-search";
+import {
+  foldSearchQuery,
+  rankSearchItems,
+  scoreThreadSearch,
+} from "@vibecodinger/shared/paletteSearch";
 import {
   createInboxReturnTracker,
   isThreadWorking,
   sortInboxThreadsByReturn,
   sortWorkingThreadsBySend,
-} from "@t3tools/client-runtime/state/thread-inbox";
+} from "@vibecodinger/client-runtime/state/thread-inbox";
 import {
   sortActiveThreadsByOrderKey,
   resolveSettledThreadTimestamp,
   resolveThreadActivityTimestamp,
   sortPinnedThreadsByOrderKey,
   sortSettledThreads,
-} from "@t3tools/client-runtime/state/thread-sort";
-import { isListedThreadLineage, type EnvironmentId, type ProjectId } from "@t3tools/contracts";
-import type { SnoozePresetSetting } from "@t3tools/contracts/settings";
+} from "@vibecodinger/client-runtime/state/thread-sort";
+import { isListedThreadLineage, type EnvironmentId, type ProjectId } from "@vibecodinger/contracts";
+import type { SnoozePresetSetting } from "@vibecodinger/contracts/settings";
 import type { MenuAction } from "@react-native-menu/menu";
 
 import type { ThreadListProvider } from "../../state/thread-list-environments";

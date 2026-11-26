@@ -5,11 +5,11 @@ import * as NodeModule from "node:module";
 import * as NodePath from "node:path";
 
 import { describe, expect, it, vi } from "@effect/vitest";
-import * as HostProcess from "@t3tools/shared/HostProcess";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
 import * as Effect from "effect/Effect";
 import * as Exit from "effect/Exit";
 
-import * as AcpSessionRuntime from "@t3tools/provider-acp/server/AcpSessionRuntime";
+import * as AcpSessionRuntime from "@vibecodinger/provider-acp/server/AcpSessionRuntime";
 
 const identity = (
   pid: number,
@@ -97,10 +97,10 @@ describe("terminatePosixOwnedProcessTree", () => {
       };
       const deadPid = 2_147_483_646;
       const liveForeignPid = 2_147_483_645;
-      const staleEmpty = writeSibling(`t3-acp-${deadPid}-aaaa`, "0");
-      const currentPidSibling = writeSibling(`t3-acp-${process.pid}-bbbb`, "0");
-      const liveForeignSibling = writeSibling(`t3-acp-${liveForeignPid}-cccc`, "0");
-      const stalePopulated = writeSibling(`t3-acp-${deadPid}-dddd`, "1");
+      const staleEmpty = writeSibling(`vibecodinger-acp-${deadPid}-aaaa`, "0");
+      const currentPidSibling = writeSibling(`vibecodinger-acp-${process.pid}-bbbb`, "0");
+      const liveForeignSibling = writeSibling(`vibecodinger-acp-${liveForeignPid}-cccc`, "0");
+      const stalePopulated = writeSibling(`vibecodinger-acp-${deadPid}-dddd`, "1");
       const unrelated = writeSibling("other-lease", "0");
       const isProcessAlive = (pid: number) => pid === process.pid || pid === liveForeignPid;
       try {
@@ -117,7 +117,7 @@ describe("terminatePosixOwnedProcessTree", () => {
         expect(NodeFS.existsSync(liveForeignSibling)).toBe(true);
         expect(NodeFS.existsSync(stalePopulated)).toBe(true);
         expect(NodeFS.existsSync(unrelated)).toBe(true);
-        writeSibling(`t3-acp-${deadPid}-eeee`, null);
+        writeSibling(`vibecodinger-acp-${deadPid}-eeee`, null);
         AcpSessionRuntime.sweepStaleLinuxCgroupSiblings(parent, {
           isProcessAlive,
           readPopulated: (path) => populatedByPath.get(path),
@@ -126,7 +126,9 @@ describe("terminatePosixOwnedProcessTree", () => {
             NodeFS.rmdirSync(path);
           },
         });
-        expect(NodeFS.existsSync(NodePath.join(parent, `t3-acp-${deadPid}-eeee`))).toBe(true);
+        expect(NodeFS.existsSync(NodePath.join(parent, `vibecodinger-acp-${deadPid}-eeee`))).toBe(
+          true,
+        );
         expect(NodeFS.existsSync(currentPidSibling)).toBe(true);
       } finally {
         NodeFS.rmSync(parent, { recursive: true, force: true });
@@ -142,7 +144,7 @@ describe("terminatePosixOwnedProcessTree", () => {
       const scratchRoot = NodePath.join(process.cwd(), "tmp");
       NodeFS.mkdirSync(scratchRoot, { recursive: true });
       const scratch = NodeFS.mkdtempSync(NodePath.join(scratchRoot, "acp-cgroup-wrapper-"));
-      const linkedNode = NodePath.join(scratch, "T3 Code AppImage 'quoted'");
+      const linkedNode = NodePath.join(scratch, "VibeCodinger AppImage 'quoted'");
       const bareGrok = NodePath.join(scratch, "grok");
       const relativeBin = NodePath.join(scratch, "relative-bin");
       const directoryBin = NodePath.join(scratch, "directory-bin");
@@ -183,7 +185,7 @@ describe("terminatePosixOwnedProcessTree", () => {
         "fs.writeFileSync(process.argv[1], JSON.stringify({",
         "  args: process.argv.slice(2),",
         "  electron: process.env.ELECTRON_RUN_AS_NODE,",
-        "  wrapper: process.env.T3_ACP_CGROUP_WRAPPER,",
+        "  wrapper: process.env.VIBECODINGER_ACP_CGROUP_WRAPPER,",
         "}));",
       ].join("\n");
       const wrapped = AcpSessionRuntime.wrapCommandForLinuxCgroup(lease, linkedNode, [
@@ -200,7 +202,7 @@ describe("terminatePosixOwnedProcessTree", () => {
           env: {
             ...process.env,
             ELECTRON_RUN_AS_NODE: "1",
-            T3_ACP_CGROUP_WRAPPER: "1",
+            VIBECODINGER_ACP_CGROUP_WRAPPER: "1",
           },
         });
         expect(result.status, result.stderr).toBe(0);
@@ -240,7 +242,7 @@ describe("terminatePosixOwnedProcessTree", () => {
     try {
       const wrapped = AcpSessionRuntime.wrapCommandForLinuxCgroup(lease, "/bin/sh", [
         "-c",
-        'printf "%s\\n" "$0" "$1" "$2" "$3" "${ELECTRON_RUN_AS_NODE-}" "${T3_ACP_CGROUP_WRAPPER-}" > "$4"',
+        'printf "%s\\n" "$0" "$1" "$2" "$3" "${ELECTRON_RUN_AS_NODE-}" "${VIBECODINGER_ACP_CGROUP_WRAPPER-}" > "$4"',
         "packaged-target",
         "space value",
         "single'quote",
@@ -252,7 +254,7 @@ describe("terminatePosixOwnedProcessTree", () => {
         env: {
           ...process.env,
           ELECTRON_RUN_AS_NODE: "1",
-          T3_ACP_CGROUP_WRAPPER: "1",
+          VIBECODINGER_ACP_CGROUP_WRAPPER: "1",
         },
       });
       expect(result.status, result.stderr).toBe(0);
@@ -318,8 +320,8 @@ describe("terminatePosixOwnedProcessTree", () => {
     const lease: AcpSessionRuntime.AcpLinuxCgroupLease = {
       contains: () => true,
       exists: () => true,
-      path: "/test/t3-acp-root",
-      relativePath: "/test/t3-acp-root",
+      path: "/test/vibecodinger-acp-root",
+      relativePath: "/test/vibecodinger-acp-root",
       kill: () => undefined,
       populated: () => true,
       remove: () => undefined,

@@ -447,7 +447,7 @@ export interface EnvironmentSessionPrincipalShape {
 export class EnvironmentAuthenticatedPrincipal extends Context.Service<
   EnvironmentAuthenticatedPrincipal,
   EnvironmentSessionPrincipalShape
->()("@t3tools/contracts/environmentHttp/EnvironmentAuthenticatedPrincipal") {}
+>()("@vibecodinger/contracts/environmentHttp/EnvironmentAuthenticatedPrincipal") {}
 
 export class EnvironmentAuthenticatedAuth extends HttpApiMiddleware.Service<
   EnvironmentAuthenticatedAuth,
@@ -504,54 +504,29 @@ export const EnvironmentConnectReachability = Schema.Union([
 ]);
 export type EnvironmentConnectReachability = typeof EnvironmentConnectReachability.Type;
 
-/** "Tunnel connected · 4 connections · QUIC" for a healthy check. */
-export function formatConnectReachable(
-  result: Extract<EnvironmentConnectReachability, { status: "reachable" }>,
-): string {
-  const count = result.readyConnections;
-  return [
-    "Tunnel connected",
-    ...(count === null ? [] : [`${count} connection${count === 1 ? "" : "s"}`]),
-    ...(result.protocol ? [result.protocol.toUpperCase()] : []),
-  ].join(" · ");
-}
-
 /**
  * Sections of docs/user/t3-connect-troubleshooting.md. Each is the GitHub anchor of a
  * heading there; the test fails when a heading is renamed without updating this list.
  */
-export const T3_CONNECT_TROUBLESHOOTING_SECTIONS = [
+const VIBECODINGER_CONNECT_TROUBLESHOOTING_SECTIONS = [
   "the-hosts-tunnel-is-offline",
   "port-7844-is-blocked-on-the-host",
-  "the-tunnel-works-but-t3-code-does-not-answer",
+  "the-tunnel-works-but-vibe-codinger-does-not-answer",
   "the-t3-connect-address-does-not-resolve-or-answer",
   "this-device-cant-reach-t3-connect",
   "sign-in-account-or-link-problems",
   "the-clock-is-off",
-  "the-host-runs-an-older-t3-code",
+  "the-host-runs-an-older-vibe-codinger",
   "t3-connect-returned-an-error",
 ] as const;
-export type T3ConnectTroubleshootingSection = (typeof T3_CONNECT_TROUBLESHOOTING_SECTIONS)[number];
+export type VibeCodingerConnectTroubleshootingSection =
+  (typeof VIBECODINGER_CONNECT_TROUBLESHOOTING_SECTIONS)[number];
 
 /** Clients, the CLI, and server logs link here as "More info". */
-export function t3ConnectTroubleshootingUrl(section: T3ConnectTroubleshootingSection): string {
+export function vcConnectTroubleshootingUrl(
+  section: VibeCodingerConnectTroubleshootingSection,
+): string {
   return `https://github.com/pingdotgg/t3code/blob/main/docs/user/t3-connect-troubleshooting.md#${section}`;
-}
-
-const REACHABILITY_SECTION = {
-  not_linked: "sign-in-account-or-link-problems",
-  connector_not_running: "the-hosts-tunnel-is-offline",
-  connector_not_ready: "the-hosts-tunnel-is-offline",
-  no_connector: "the-hosts-tunnel-is-offline",
-  edge_unreachable: "port-7844-is-blocked-on-the-host",
-  origin_unreachable: "the-tunnel-works-but-t3-code-does-not-answer",
-  unexpected_response: "the-tunnel-works-but-t3-code-does-not-answer",
-  dns_failed: "the-t3-connect-address-does-not-resolve-or-answer",
-  timeout: "the-t3-connect-address-does-not-resolve-or-answer",
-} satisfies Record<EnvironmentConnectReachabilityCause, T3ConnectTroubleshootingSection>;
-
-export function connectReachabilityHelpUrl(cause: EnvironmentConnectReachabilityCause): string {
-  return t3ConnectTroubleshootingUrl(REACHABILITY_SECTION[cause]);
 }
 
 export const EnvironmentCloudLinkStateResult = Schema.Struct({
@@ -594,7 +569,7 @@ export const AuthOtherClientSessionsRevokeResult = Schema.Struct({
 export type AuthOtherClientSessionsRevokeResult = typeof AuthOtherClientSessionsRevokeResult.Type;
 
 class EnvironmentMetadataHttpApi extends HttpApiGroup.make("metadata").add(
-  HttpApiEndpoint.get("descriptor", "/.well-known/t3/environment", {
+  HttpApiEndpoint.get("descriptor", "/.well-known/vibecodinger/environment", {
     success: ExecutionEnvironmentDescriptor,
   }),
 ) {}
@@ -1075,7 +1050,7 @@ class EnvironmentConnectHttpApi extends HttpApiGroup.make("connect")
     }),
   )
   .add(
-    HttpApiEndpoint.post("t3MintCredential", "/api/t3-connect/mint-credential", {
+    HttpApiEndpoint.post("vcMintCredential", "/api/t3-connect/mint-credential", {
       payload: RelayCloudMintCredentialRequest,
       success: RelayEnvironmentMintResponse,
       error: EnvironmentHttpCloudErrors,
@@ -1120,7 +1095,7 @@ class EnvironmentWebhooksHttpApi extends HttpApiGroup.make("webhooks")
   .add(HttpApiEndpoint.get("webhookGet", WEBHOOK_PATH, webhookEndpoint))
   .annotate(HttpApi.RedactedNames, { params: ["token"] }) {}
 
-export class EnvironmentHttpApi extends HttpApi.make("environment")
+export class EnvironmentServerHttpApi extends HttpApi.make("environment")
   .add(EnvironmentMetadataHttpApi)
   .add(EnvironmentAuthHttpApi)
   .add(EnvironmentMcpOAuthHttpApi)
@@ -1128,6 +1103,7 @@ export class EnvironmentHttpApi extends HttpApi.make("environment")
   .add(EnvironmentPullRequestsHttpApi)
   .add(EnvironmentProjectsHttpApi)
   .add(EnvironmentVoiceHttpApi)
-  .add(EnvironmentConnectHttpApi)
   .add(EnvironmentWebhooksHttpApi)
   .add(EnvironmentPeerLinkHttpApi) {}
+
+export class EnvironmentHttpApi extends EnvironmentServerHttpApi.add(EnvironmentConnectHttpApi) {}

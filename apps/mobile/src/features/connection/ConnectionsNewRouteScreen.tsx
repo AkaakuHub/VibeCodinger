@@ -1,9 +1,7 @@
-import { errorDisplayMessage } from "@t3tools/client-runtime/errors";
+import { errorDisplayMessage } from "@vibecodinger/client-runtime/errors";
 import { T, useGT } from "gt-react-native";
-import { ListRow } from "../../components/ui/ListRow";
 import * as Dialog from "../../components/ui/Dialog";
 import { ScreenScrollView as ScrollView } from "../../components/ui/ScreenScrollView";
-import { useAuth } from "@clerk/expo";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import * as Haptics from "expo-haptics";
 import {
@@ -12,7 +10,7 @@ import {
   useNavigation,
   type StaticScreenProps,
 } from "@react-navigation/native";
-import type { EnvironmentId } from "@t3tools/contracts";
+import type { EnvironmentId } from "@vibecodinger/contracts";
 import { useAtomValue } from "@effect/atom-react";
 import { useState } from "react";
 import { Linking, Pressable, StyleSheet, View } from "react-native";
@@ -27,11 +25,8 @@ import { FrostedCutout } from "../../components/ui/FrostedCutout";
 import { buildPairingUrl, extractPairingUrlFromQrPayload, parsePairingUrl } from "./pairing";
 import { useRemoteConnections } from "../../state/use-remote-environment-registry";
 import { SymbolView } from "../../components/ui/AppSymbol";
-import { hasCloudPublicConfig } from "../cloud/publicConfig";
-import { CloudEnvironmentRows } from "./CloudEnvironmentRows";
 import { autoConnectReport, devAutoConnectAttemptAtom } from "./devAutoConnect";
 import { linkedEnvironmentPrefillAtom } from "./linkedEnvironmentPrefill";
-import { splitEnvironmentSections } from "./environmentSections";
 import { leaveSettingsPage } from "../settings/settings-navigation";
 import { workspaceHasColumns } from "../layout/workspace/workspace-selection-store";
 import { m } from "../../i18n/messages";
@@ -238,7 +233,7 @@ function PairingForm({
           />
 
           <View collapsable={false} className="gap-2">
-            <Text className="px-4 text-sm font-t3-medium text-foreground-muted">
+            <Text className="px-4 text-sm font-vc-medium text-foreground-muted">
               <T>Or enter it</T>
             </Text>
             <View
@@ -277,7 +272,7 @@ function PairingForm({
               {pairingConnectionError ??
                 (linked
                   ? gt(
-                      "Create a pairing code on {environment}, in its Settings → Sharing & access or with `t3 auth pairing create`, and enter it here.",
+                      "Create a pairing code on {environment}, in its Settings → Sharing & access or with `vibecodinger auth pairing create`, and enter it here.",
                       { environment: linked.label },
                     )
                   : gt(
@@ -285,8 +280,6 @@ function PairingForm({
                     ))}
             </Text>
           </View>
-
-          {hasCloudPublicConfig() ? <T3ConnectSection /> : null}
         </View>
       </ScrollView>
     </SettingsScreen>
@@ -371,7 +364,7 @@ function PairingScanCard(props: {
                 weight="light"
               />
               <Text
-                className={cn("font-t3-medium text-sm", light ? "text-black/70" : "text-white/80")}
+                className={cn("font-vc-medium text-sm", light ? "text-black/70" : "text-white/80")}
               >
                 <T>Tap to scan</T>
               </Text>
@@ -380,46 +373,11 @@ function PairingScanCard(props: {
         </View>
         <Text className={cn("text-center text-sm", light ? "text-black/70" : "text-white/80")}>
           {gt("Scan the code from {command} or desktop Connections settings", {
-            command: "t3 pair",
+            command: "vibecodinger pair",
           })}
         </Text>
       </View>
     </Pressable>
-  );
-}
-
-function T3ConnectSection() {
-  const gt = useGT();
-  const { isLoaded, isSignedIn } = useAuth({ treatPendingAsSignedOut: false });
-  const navigation = useNavigation();
-  const { connectedEnvironments, onSetEnvironmentEnabled, onRemoveEnvironmentPress } =
-    useRemoteConnections();
-  const { connectedCloudEnvironments } = splitEnvironmentSections({
-    connectedEnvironments,
-    cloudEnvironments: null,
-  });
-
-  return (
-    <View collapsable={false} className="gap-2">
-      <Text className="px-4 text-sm font-t3-medium text-foreground-muted">
-        <T>Or use the managed relay</T>
-      </Text>
-      {isSignedIn ? (
-        <CloudEnvironmentRows
-          connectedCloudEnvironments={connectedCloudEnvironments}
-          onSetEnvironmentEnabled={onSetEnvironmentEnabled}
-          onRemoveEnvironment={onRemoveEnvironmentPress}
-          showHeader={false}
-        />
-      ) : (
-        <ListRow
-          label={gt("Sign in to {product}", { product: "T3 Connect" })}
-          description={gt("Reach your machines from anywhere, no network setup.")}
-          disabled={!isLoaded}
-          onPress={() => navigation.navigate("SettingsAuth")}
-        />
-      )}
-    </View>
   );
 }
 

@@ -3,8 +3,8 @@ import {
   EnvironmentId,
   ORCHESTRATION_PROTOCOL_VERSION,
   type ExecutionEnvironmentDescriptor,
-} from "@t3tools/contracts";
-import { type RelayEnvironmentConnectResponse } from "@t3tools/contracts/relay";
+} from "@vibecodinger/contracts";
+import { type RelayEnvironmentConnectResponse } from "@vibecodinger/contracts/relay";
 import { describe, expect, it } from "@effect/vitest";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
@@ -63,7 +63,10 @@ function recordedFetch(responses: ReadonlyArray<RecordedResponse>, descriptor?: 
   let responseIndex = 0;
   const fetchFn = ((input, init) => {
     calls.push([input, init ?? {}]);
-    if (descriptor !== undefined && String(input).endsWith("/.well-known/t3/environment")) {
+    if (
+      descriptor !== undefined &&
+      String(input).endsWith("/.well-known/vibecodinger/environment")
+    ) {
       return Promise.resolve(Response.json(descriptor));
     }
     const response = responses[responseIndex++];
@@ -188,13 +191,6 @@ const makeHarness = Effect.fn("TestRemoteAuthorization.makeHarness")(function* (
   const relay = ManagedRelay.ManagedRelayClient.of({
     relayUrl: "https://relay.example.test",
     listEnvironments: unexpected,
-    listDevices: unexpected,
-    createEnvironmentLinkChallenge: unexpected,
-    linkEnvironment: unexpected,
-    unlinkEnvironment: unexpected,
-    getT3ChatLink: unexpected,
-    createT3ChatLinkRequest: unexpected,
-    unlinkT3Chat: unexpected,
     getEnvironmentStatus: unexpected,
     connectEnvironment: (request) =>
       Effect.gen(function* () {
@@ -203,11 +199,6 @@ const makeHarness = Effect.fn("TestRemoteAuthorization.makeHarness")(function* (
         yield* input.beforeBootstrap ?? Effect.void;
         return input.bootstrap ?? BOOTSTRAP;
       }),
-    registerDevice: unexpected,
-    unregisterDevice: unexpected,
-    registerLiveActivity: unexpected,
-    getAgentActivitySnapshot: unexpected,
-    resetTokenCache: Effect.void,
   });
   const layer = RemoteEnvironmentAuthorization.layer.pipe(
     Layer.provideMerge(
@@ -228,7 +219,7 @@ const makeHarness = Effect.fn("TestRemoteAuthorization.makeHarness")(function* (
           ClientCapabilities.ClientPresentation,
           ClientCapabilities.ClientPresentation.of({
             metadata: {
-              label: "T3 Code Test",
+              label: "VibeCodinger Test",
               deviceType: "mobile",
               os: "test",
             },
@@ -327,7 +318,7 @@ describe("RemoteEnvironmentAuthorization", () => {
         success: { socketUrl: expect.stringContaining("wsTicket=cold-ticket") },
       });
       expect(harness.fetch.calls.map(([url]) => new URL(String(url)).pathname)).toEqual([
-        "/.well-known/t3/environment",
+        "/.well-known/vibecodinger/environment",
         "/api/auth/websocket-ticket/rpc",
       ]);
     }),
@@ -494,11 +485,11 @@ describe("RemoteEnvironmentAuthorization", () => {
       expect(harness.fetch.calls.map(([url]) => new URL(String(url)).pathname)).toEqual([
         "/api/auth/websocket-ticket/rpc",
         ...Array.from({ length: 4 }, () => [
-          "/.well-known/t3/environment",
+          "/.well-known/vibecodinger/environment",
           "/api/auth/websocket-ticket/rpc",
         ]).flat(),
         "/api/auth/websocket-ticket/rpc",
-        "/.well-known/t3/environment",
+        "/.well-known/vibecodinger/environment",
         "/api/auth/websocket-ticket/rpc",
       ]);
     }),
@@ -562,7 +553,9 @@ describe("RemoteEnvironmentAuthorization", () => {
       expect(first.socketUrl).toContain("wsTicket=first-ticket");
       expect(second.socketUrl).toContain("wsTicket=second-ticket");
       expect(
-        harness.fetch.calls.filter(([url]) => String(url).endsWith("/.well-known/t3/environment")),
+        harness.fetch.calls.filter(([url]) =>
+          String(url).endsWith("/.well-known/vibecodinger/environment"),
+        ),
       ).toHaveLength(2);
       expect(
         harness.fetch.calls.filter(([url]) =>
@@ -640,7 +633,7 @@ describe("RemoteEnvironmentAuthorization", () => {
       // The descriptor is read beside the ticket, so the connect needs no later read.
       expect(authorized.descriptor).toMatchObject({ environmentId: ENVIRONMENT_ID });
       expect(harness.fetch.calls.map(([url]) => String(url)).toSorted()).toEqual([
-        "https://environment.example.test/.well-known/t3/environment",
+        "https://environment.example.test/.well-known/vibecodinger/environment",
         "https://environment.example.test/api/auth/websocket-ticket/rpc",
       ]);
     }),
@@ -677,7 +670,7 @@ describe("RemoteEnvironmentAuthorization", () => {
       expect(authorized.socketUrl).toMatch(/^ws:\/\/192\.168\.1\.10:3773\/ws\?/);
       expect(yield* Ref.get(harness.bootstrapCalls)).toBe(0);
       expect(harness.fetch.calls.map(([url]) => String(url))).toEqual([
-        "http://192.168.1.10:3773/.well-known/t3/environment",
+        "http://192.168.1.10:3773/.well-known/vibecodinger/environment",
         "http://192.168.1.10:3773/api/auth/websocket-ticket/rpc",
       ]);
     }),
@@ -707,7 +700,7 @@ describe("RemoteEnvironmentAuthorization", () => {
 
       expect(error).toMatchObject({ _tag: "ConnectionBlockedError", reason: "configuration" });
       expect(harness.fetch.calls.map(([url]) => String(url))).toEqual([
-        "http://192.168.1.10:3773/.well-known/t3/environment",
+        "http://192.168.1.10:3773/.well-known/vibecodinger/environment",
       ]);
       expect((yield* Ref.get(harness.tokens)).get(ENVIRONMENT_ID)?.accessToken).toBe(
         "cached-access-token",
@@ -824,7 +817,7 @@ describe("RemoteEnvironmentAuthorization", () => {
         for (const [, init] of exchanges) {
           expect(Object.fromEntries(tokenFields(init))).toMatchObject({
             subject_token: BOOTSTRAP.credential,
-            client_label: "T3 Code Test",
+            client_label: "VibeCodinger Test",
             client_device_type: "mobile",
             client_os: "test",
           });

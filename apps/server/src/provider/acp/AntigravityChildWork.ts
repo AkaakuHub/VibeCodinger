@@ -7,7 +7,7 @@ import * as NodeURL from "node:url";
 import type {
   OrchestrationV2NativeChildStep,
   OrchestrationV2NativeChildWork,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import * as Effect from "effect/Effect";
 import * as Option from "effect/Option";
 import * as Predicate from "effect/Predicate";
@@ -38,7 +38,7 @@ const TOOL_INPUT_CAP = 1_000;
 const MAX_MESSAGE_FILES = 256;
 const MAX_DETACHED_CHILDREN = 64;
 
-/** T3's title for a batch whose launch text it never saw. */
+/** VibeCodinger's title for a batch whose launch text it never saw. */
 export const ANTIGRAVITY_SUBAGENT_BATCH_TITLE = "Antigravity subagent batch";
 
 interface AntigravityChildLaunch {

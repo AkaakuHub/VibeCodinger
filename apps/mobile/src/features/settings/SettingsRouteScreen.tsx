@@ -14,15 +14,13 @@ import { useSelectWorkspaceTab } from "../layout/workspace/useSelectWorkspaceTab
 import { useWorkspaceTabs } from "../layout/workspace/WorkspaceTabsContext";
 import { ScreenScrollView as ScrollView } from "../../components/ui/ScreenScrollView";
 import { EmptyState } from "../../components/ui/EmptyState";
-import { useAuth, useUser } from "@clerk/expo";
-import { useNavigation, useNavigationState } from "@react-navigation/native";
+import { useNavigationState } from "@react-navigation/native";
 import { use, type ComponentProps } from "react";
 import { Platform, View } from "react-native";
 import { useNativeColumnLayoutMetrics } from "../../native/native-layout-metrics";
-import { deriveProjectGroupLabel } from "@t3tools/client-runtime/state/project-grouping";
+import { deriveProjectGroupLabel } from "@vibecodinger/client-runtime/state/project-grouping";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { hasCloudPublicConfig } from "../cloud/publicConfig";
 import { useAdaptiveWorkspaceLayout } from "../layout/adaptive-workspace-context";
 import { useSavedRemoteConnections } from "../../state/use-remote-environment-registry";
 import { SettingsRow } from "./components/SettingsRow";
@@ -34,6 +32,7 @@ import { useSettingsEnvironmentFilter } from "./settings-environment-filter";
 import { filterSettingsSections } from "./settings-search";
 import { usePaneRole } from "../../components/ui/Pane";
 import { useGT, useMessages } from "gt-react-native";
+import { openCompletionNotificationSettings } from "../agent-awareness/completionNotifications";
 
 export function SettingsRouteScreen() {
   const list = useSettingsListPlacement();
@@ -64,10 +63,6 @@ function useSettingsListPlacement() {
       : (state.routes[list + 1]?.name ?? null);
   });
   return { sidebar, selected };
-}
-
-function SettingsListContent() {
-  return hasCloudPublicConfig() ? <ConfiguredSettingsRouteScreen /> : <LocalSettingsRouteScreen />;
 }
 
 export function SettingsListScreen(props: {
@@ -109,42 +104,7 @@ interface SettingsListSection {
   readonly rows: readonly SettingsListRow[];
 }
 
-function ConfiguredSettingsRouteScreen() {
-  const gt = useGT();
-  const navigation = useNavigation();
-  const { isLoaded, isSignedIn } = useAuth({ treatPendingAsSignedOut: false });
-  const { user } = useUser();
-  const { savedConnectionsById } = useSavedRemoteConnections();
-  const accountLabel = !isLoaded
-    ? gt("Checking")
-    : !isSignedIn
-      ? gt("Sign in")
-      : (user?.primaryEmailAddress?.emailAddress ?? gt("Signed in"));
-
-  return (
-    <SettingsList
-      connections={[
-        {
-          id: "account",
-          icon: "person.crop.circle",
-          label: gt("T3 Account"),
-          value: accountLabel,
-          disabled: !isLoaded,
-          onPress: () => navigation.navigate("SettingsAuth"),
-        },
-        environmentsRow(gt("Environments"), Object.keys(savedConnectionsById).length),
-        {
-          id: "SettingsNotifications",
-          icon: "bell.badge",
-          label: gt("Notifications"),
-          target: "SettingsNotifications",
-        },
-      ]}
-    />
-  );
-}
-
-function LocalSettingsRouteScreen() {
+function SettingsListContent() {
   const gt = useGT();
   const { savedConnectionsById } = useSavedRemoteConnections();
   return (
@@ -272,6 +232,12 @@ function useSettingsIndexSections(): SettingsListSection[] {
       rows: [
         serverPage("SettingsProviderAccounts", "person.crop.circle", gt("Providers")),
         serverPage("SettingsThreads", "text.bubble", gt("Threads")),
+        {
+          id: "CompletionNotifications",
+          icon: "bell.badge",
+          label: gt("Completion notifications"),
+          onPress: () => void openCompletionNotificationSettings().catch(console.error),
+        },
         page("SettingsScheduledTasks", "clock", gt("Scheduled tasks")),
       ],
     },

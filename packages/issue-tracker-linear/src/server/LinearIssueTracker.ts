@@ -18,13 +18,13 @@ import {
   type IssueTemplate,
   type IssueViewerPermissions,
   type StandaloneIssueTrackerDescriptor,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import {
   IssueTrackerError,
   type IssueInvolvementFilter,
   type StandaloneIssueTrackerApi,
   type TrackerIssueSummary,
-} from "@t3tools/source-control-core/server/IssueTracker";
+} from "@vibecodinger/source-control-core/server/IssueTracker";
 
 import { LINEAR_HOST, parseLinearIssueUrl } from "../shared/issueUrl.ts";
 import * as LinearApi from "./LinearApi.ts";

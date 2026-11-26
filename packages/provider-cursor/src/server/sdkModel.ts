@@ -3,8 +3,8 @@ import type {
   ModelParameterValue,
   SDKModel,
 } from "@cursor/sdk";
-import type { ModelSelection, ServerProviderModel } from "@t3tools/contracts";
-import { getProviderOptionCurrentValue } from "@t3tools/shared/model";
+import type { ModelSelection, ServerProviderModel } from "@vibecodinger/contracts";
+import { getProviderOptionCurrentValue } from "@vibecodinger/shared/model";
 
 const CURSOR_SDK_PARAMETER_TO_PROVIDER_OPTION: Readonly<Record<string, string>> = {
   context: "contextWindow",
@@ -59,7 +59,7 @@ export function cursorContextWindowTokens(
   return Number.isSafeInteger(tokens) && tokens > 0 ? tokens : undefined;
 }
 
-// The SDK infers Max Mode from a model list it never refreshes, so pass it from T3's fresher catalog.
+// The SDK infers Max Mode from a model list it never refreshes, so pass it from VibeCodinger's fresher catalog.
 function cursorSdkMaxMode(
   sdkModel: SDKModel | undefined,
   params: ReadonlyArray<ModelParameterValue>,

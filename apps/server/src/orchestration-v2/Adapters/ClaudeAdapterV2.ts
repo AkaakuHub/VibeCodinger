@@ -3,14 +3,14 @@ import {
   compactDynamicToolOutput,
   mcpToolResultOutput,
   toolOutputImages,
-} from "@t3tools/shared/toolOutput";
+} from "@vibecodinger/shared/toolOutput";
 import { makeProviderTextDeltaCoalescer } from "./ProviderTextDeltaCoalescer.ts";
 import { claudeTaskOutputRoot, tailClaudeTaskOutput } from "./ClaudeTaskOutputTail.ts";
 import {
   dynamicToolTitle,
   formatReadToolLabel,
   formatSearchToolLabel,
-} from "@t3tools/shared/toolActivity";
+} from "@vibecodinger/shared/toolActivity";
 import { field, text } from "../unknownField.ts";
 import { mergeWorkflowAgentMetadata, type WorkflowAgentMetadata } from "../workflowAgentAnswers.ts";
 import {
@@ -25,8 +25,8 @@ import {
   parseClaudeWorkflowRunHandles,
 } from "./claudeWorkflowProgress.ts";
 
-import { isWorkspaceImagePreviewPath } from "@t3tools/shared/filePreview";
-import { pastedUrl } from "@t3tools/shared/oauthCallback";
+import { isWorkspaceImagePreviewPath } from "@vibecodinger/shared/filePreview";
+import { pastedUrl } from "@vibecodinger/shared/oauthCallback";
 import {
   addClaudeLedgerUsage,
   claudeLedgerDelta,
@@ -73,26 +73,26 @@ import type {
 // @effect-diagnostics-next-line nodeBuiltinImport:off -- the SDK takes a Node ChildProcess for the CLI.
 import * as NodeChildProcess from "node:child_process";
 import * as NodeUtil from "node:util";
-import { parseCliArgs } from "@t3tools/shared/cliArgs";
-import { fromLenientJson } from "@t3tools/shared/schemaJson";
+import { parseCliArgs } from "@vibecodinger/shared/cliArgs";
+import { fromLenientJson } from "@vibecodinger/shared/schemaJson";
 import {
   claudeMcpToolName,
   claudeMcpToolNamePart,
   claudeMcpToolPrefix,
   MCP_APP_OUTPUT_KEY,
   mcpAppToolResourceUri,
-} from "@t3tools/shared/mcpApp";
-import { AgentScope } from "@t3tools/shared/AgentScope";
+} from "@vibecodinger/shared/mcpApp";
+import { AgentScope } from "@vibecodinger/shared/AgentScope";
 import * as ProviderProcesses from "../../process/providerProcesses.ts";
 import * as SpawnWorker from "../../process/SpawnWorker.ts";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { applyClaudePromptEffortPrefix } from "@t3tools/shared/model";
-import { compareSemverVersions } from "@t3tools/shared/semver";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
+import { applyClaudePromptEffortPrefix } from "@vibecodinger/shared/model";
+import { compareSemverVersions } from "@vibecodinger/shared/semver";
 import {
   CLAUDE_RESUME_COMPACTION_COMPACT_ANSWER,
   CLAUDE_RESUME_COMPACTION_NEVER_ANSWER,
   formatClaudeResumeCompactionQuestion,
-} from "@t3tools/shared/claudeCompaction";
+} from "@vibecodinger/shared/claudeCompaction";
 import {
   type AgentFeedbackMode,
   type ChatAttachment,
@@ -137,7 +137,7 @@ import {
   type ThreadId,
   resolveIdleCompaction,
   isDelegatedAppThread,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 
 import { FILE_HEADERS_ONLY, formatPatch, structuredPatch } from "diff";
 import * as Cause from "effect/Cause";
@@ -193,9 +193,9 @@ import * as ServerConfig from "../../config.ts";
 import * as PortScanner from "../../preview/PortScanner.ts";
 import * as ProcessRunner from "../../processRunner.ts";
 import * as ServerSettings from "../../serverSettings.ts";
-import { expandHomePath } from "@t3tools/provider-core/server/pathExpansion";
-import { spawnAndCollect } from "@t3tools/provider-core/server/snapshotProbe";
-import { signalProcessGroup } from "@t3tools/provider-core/server/processGroup";
+import { expandHomePath } from "@vibecodinger/provider-core/server/pathExpansion";
+import { spawnAndCollect } from "@vibecodinger/provider-core/server/snapshotProbe";
+import { signalProcessGroup } from "@vibecodinger/provider-core/server/processGroup";
 import {
   claudeLocalSettingsDirectory,
   claudeSignedOutMessage,
@@ -216,47 +216,47 @@ import {
   boundProviderEventForLogging,
   shouldPersistProviderEvent,
 } from "../../provider/EventNdjsonLogger.ts";
-import * as ProviderEventLoggers from "@t3tools/provider-core/server/ProviderEventLoggers";
+import * as ProviderEventLoggers from "@vibecodinger/provider-core/server/ProviderEventLoggers";
 import {
   claudeRateLimitEventToUpdate,
   type ClaudeScopedLimitNames,
 } from "../../provider/claudeUsageLimits.ts";
-import type { ManagedServerProvider } from "@t3tools/provider-core/server/snapshot";
+import type { ManagedServerProvider } from "@vibecodinger/provider-core/server/snapshot";
 import {
-  T3_CODE_DEVICE_TOOL_INSTRUCTIONS_WITH_TOOL_SEARCH,
-  T3_CODE_ORCHESTRATION_INSTRUCTIONS,
-} from "@t3tools/provider-core/server/orchestrationInstructions";
-import { buildRuntimeInstructions } from "@t3tools/provider-core/server/runtimeInstructions";
+  VIBECODINGER_DEVICE_TOOL_INSTRUCTIONS_WITH_TOOL_SEARCH,
+  VIBECODINGER_ORCHESTRATION_INSTRUCTIONS,
+} from "@vibecodinger/provider-core/server/orchestrationInstructions";
+import { buildRuntimeInstructions } from "@vibecodinger/provider-core/server/runtimeInstructions";
 import {
   mcpToolPresentation,
   normalizeMcpText,
-} from "@t3tools/provider-core/server/mcpToolPresentation";
-import * as McpProviderSession from "@t3tools/provider-core/server/mcpSession";
-import * as McpProviderSessions from "@t3tools/provider-core/server/McpProviderSessions";
-import * as IdAllocator from "@t3tools/provider-core/server/IdAllocator";
+} from "@vibecodinger/provider-core/server/mcpToolPresentation";
+import * as McpProviderSession from "@vibecodinger/provider-core/server/mcpSession";
+import * as McpProviderSessions from "@vibecodinger/provider-core/server/McpProviderSessions";
+import * as IdAllocator from "@vibecodinger/provider-core/server/IdAllocator";
 import {
   makeProviderFailure,
   makeProviderRetryTurnItem,
   PROVIDER_RETRY_BUDGET_MS,
   providerProcessExitGuidance,
-} from "@t3tools/provider-core/server/failure";
-import { turnScopedSelectionTransition } from "@t3tools/provider-core/server/selectionTransition";
-import { providerMessageTextWithAttachmentPaths } from "@t3tools/provider-core/server/attachmentPrompt";
-import * as ProviderAdapter from "@t3tools/provider-core/server/ProviderAdapter";
+} from "@vibecodinger/provider-core/server/failure";
+import { turnScopedSelectionTransition } from "@vibecodinger/provider-core/server/selectionTransition";
+import { providerMessageTextWithAttachmentPaths } from "@vibecodinger/provider-core/server/attachmentPrompt";
+import * as ProviderAdapter from "@vibecodinger/provider-core/server/ProviderAdapter";
 import {
   ProviderAdapterDriverCreateError,
   type ProviderAdapterDriverCreateInput,
-} from "@t3tools/provider-core/server/adapterDriver";
+} from "@vibecodinger/provider-core/server/adapterDriver";
 import {
   type BackgroundWorkReport,
   backgroundWorkNotification,
-} from "@t3tools/provider-core/server/notification";
-import * as ProviderContinuationRequests from "@t3tools/provider-core/server/ProviderContinuationRequests";
+} from "@vibecodinger/provider-core/server/notification";
+import * as ProviderContinuationRequests from "@vibecodinger/provider-core/server/ProviderContinuationRequests";
 import {
   makeSubagentChildThread,
   makeSubagentConversationArtifacts,
   subagentThreadTitle,
-} from "@t3tools/provider-core/server/subagentProjection";
+} from "@vibecodinger/provider-core/server/subagentProjection";
 
 export const CLAUDE_PROVIDER = ProviderDriverKind.make("claudeAgent");
 /** The query exited before the turn attached, so the prompt was never offered. */
@@ -440,7 +440,7 @@ export function spawnClaudeProcessGroup(
     [
       "-c",
       CLAUDE_GROUP_WATCH_SCRIPT,
-      "t3-claude",
+      "vc-claude",
       cwd.startsWith("/") ? cwd : `./${cwd}`,
       options.command,
       ...options.args,
@@ -958,7 +958,7 @@ export interface ClaudeAgentSdkQueryRunnerShape {
 export class ClaudeAgentSdkQueryRunner extends Context.Service<
   ClaudeAgentSdkQueryRunner,
   ClaudeAgentSdkQueryRunnerShape
->()("t3/orchestration-v2/Adapters/ClaudeAdapterV2/ClaudeAgentSdkQueryRunner") {}
+>()("vibecodinger/orchestration-v2/Adapters/ClaudeAdapterV2/ClaudeAgentSdkQueryRunner") {}
 
 export interface ClaudeAgentSdkSessionForkInput {
   readonly sessionId: string;
@@ -1152,7 +1152,7 @@ function claudeRulesMayCoverMcpTools(
 
 /**
  * Claude reports `annotations` as `readOnly`/`destructive`/`openWorld`; apps expect MCP's `*Hint` names.
- * Card calls skip Claude's permission check, so `readOnlyHint`, which skips T3's prompt, needs readable
+ * Card calls skip Claude's permission check, so `readOnlyHint`, which skips VibeCodinger's prompt, needs readable
  * rules (null when not) with no ask or deny rule that may cover the tool.
  */
 function claudeMcpToolForApps(
@@ -2405,7 +2405,7 @@ export function claudeQueryEnvironment(
 }
 
 // Claude Code's auto tool search sends every MCP schema in full while they fit under a share of the
-// context window, which T3's tools do on 1M models. auto:0 already means on and auto:100 off.
+// context window, which VibeCodinger's tools do on 1M models. auto:0 already means on and auto:100 off.
 export function claudeToolSearchOverride(value: string | undefined): "true" | undefined {
   if (value === undefined) return undefined;
   if (value === "auto") return "true";
@@ -2495,12 +2495,12 @@ function splitClaudeSleepTimerSteps(tail: string): string[] | undefined {
 }
 
 // Claude Code defers MCP tools behind ToolSearch, so the agent only finds
-// t3_background_wait when the system prompt says when to reach for it.
+// vc_background_wait when the system prompt says when to reach for it.
 const CLAUDE_BACKGROUND_WAIT_INSTRUCTIONS = `
 
 ### Background work you wait on
 
-To wait for a background command or Monitor you started (tests, a build), call \`t3_background_wait\` with its task ID before you end your turn. Do not mark work you leave running, or PRs. T3 MCP tools are deferred: load one with ToolSearch before you call it.
+To wait for a background command or Monitor you started (tests, a build), call \`vc_background_wait\` with its task ID before you end your turn. Do not mark work you leave running, or PRs. T3 MCP tools are deferred: load one with ToolSearch before you call it.
 `;
 
 // Claude 5.1+ returns text written before a tool call as a progress update, which the API
@@ -2516,7 +2516,7 @@ const subagentDeviceInstructions: HookCallback = () =>
   Promise.resolve({
     hookSpecificOutput: {
       hookEventName: "SubagentStart",
-      additionalContext: T3_CODE_DEVICE_TOOL_INSTRUCTIONS_WITH_TOOL_SEARCH,
+      additionalContext: VIBECODINGER_DEVICE_TOOL_INSTRUCTIONS_WITH_TOOL_SEARCH,
     },
   });
 
@@ -2703,11 +2703,11 @@ export function makeClaudeQueryOptions(input: {
         }) +
           (input.mcpServers === undefined
             ? ""
-            : T3_CODE_ORCHESTRATION_INSTRUCTIONS +
+            : VIBECODINGER_ORCHESTRATION_INSTRUCTIONS +
               CLAUDE_BACKGROUND_WAIT_INSTRUCTIONS +
               CLAUDE_SEND_TO_USER_INSTRUCTIONS +
               (deviceInstructions
-                ? `\n${T3_CODE_DEVICE_TOOL_INSTRUCTIONS_WITH_TOOL_SEARCH}\n`
+                ? `\n${VIBECODINGER_DEVICE_TOOL_INSTRUCTIONS_WITH_TOOL_SEARCH}\n`
                 : "")),
         ...launchAppendSystemPrompt,
       ].join("\n\n"),
@@ -2786,7 +2786,7 @@ const decodeClaudeLaunchArgSettings = Schema.decodeUnknownEffect(
  * Reads the --settings launch argument: a value starting with a brace is inline
  * JSON, anything else is a file path that expands a leading ~ and is otherwise
  * relative to the thread's cwd (the project or its worktree).
- * makeClaudeQueryOptions merges the result beneath T3's own settings.
+ * makeClaudeQueryOptions merges the result beneath VibeCodinger's own settings.
  */
 export const readClaudeLaunchArgSettings = Effect.fn("ClaudeAdapterV2.readLaunchArgSettings")(
   function* (input: {
@@ -2819,32 +2819,32 @@ export const readClaudeLaunchArgSettings = Effect.fn("ClaudeAdapterV2.readLaunch
   },
 );
 
-export const CLAUDE_T3_MCP_TOOL_WILDCARD = "mcp__t3-code__*";
+export const CLAUDE_VC_MCP_TOOL_WILDCARD = "mcp__vibe-codinger__*";
 
 // Keep in sync with OrchestratorToolkit Tool.Readonly annotations; ClaudeAdapterV2.test.ts checks this.
-export const CLAUDE_READ_ONLY_T3_MCP_ALLOWED_TOOLS: ReadonlyArray<string> = [
-  "mcp__t3-code__orchestrator_capabilities",
-  "mcp__t3-code__list_scheduled_tasks",
-  "mcp__t3-code__t3_background_wait",
-  "mcp__t3-code__t3_thread_list",
-  "mcp__t3-code__t3_thread_wait",
-  "mcp__t3-code__t3_worktree_status",
-  "mcp__t3-code__t3_worktree_list",
-  "mcp__t3-code__t3_project_list",
-  "mcp__t3-code__t3_project_read",
-  "mcp__t3-code__t3_thread_search",
-  "mcp__t3-code__t3_preview_list",
-  "mcp__t3-code__t3_environment_read",
-  "mcp__t3-code__t3_environment_links",
-  "mcp__t3-code__t3_theme_read",
-  "mcp__t3-code__html_preview",
-  "mcp__t3-code__html_render",
-  "mcp__t3-code__send_to_user",
-  "mcp__t3-code__t3_submit_output",
+export const CLAUDE_READ_ONLY_VC_MCP_ALLOWED_TOOLS: ReadonlyArray<string> = [
+  "mcp__vibe-codinger__orchestrator_capabilities",
+  "mcp__vibe-codinger__list_scheduled_tasks",
+  "mcp__vibe-codinger__vc_background_wait",
+  "mcp__vibe-codinger__vc_thread_list",
+  "mcp__vibe-codinger__vc_thread_wait",
+  "mcp__vibe-codinger__vc_worktree_status",
+  "mcp__vibe-codinger__vc_worktree_list",
+  "mcp__vibe-codinger__vc_project_list",
+  "mcp__vibe-codinger__vc_project_read",
+  "mcp__vibe-codinger__vc_thread_search",
+  "mcp__vibe-codinger__vc_preview_list",
+  "mcp__vibe-codinger__vc_environment_read",
+  "mcp__vibe-codinger__vc_environment_links",
+  "mcp__vibe-codinger__vc_theme_read",
+  "mcp__vibe-codinger__html_preview",
+  "mcp__vibe-codinger__html_render",
+  "mcp__vibe-codinger__send_to_user",
+  "mcp__vibe-codinger__vc_submit_output",
 ];
 
 // request_secret can wait an hour; exceed Claude's default 60 s timeout.
-export const CLAUDE_T3_MCP_TOOL_TIMEOUT_MS = 65 * 60 * 1_000;
+export const CLAUDE_VC_MCP_TOOL_TIMEOUT_MS = 65 * 60 * 1_000;
 
 // allowedTools pre-approves calls; tools controls availability. Pre-approve T3 tools for headless modes,
 // limited to annotated read-only tools in read-only sandboxes.
@@ -2862,18 +2862,18 @@ export function claudeMcpQueryOverrides(input: {
     return input.allowedTools === undefined ? {} : { allowedTools: input.allowedTools };
   }
   const mcpAllowedTools = input.readOnlySandbox
-    ? CLAUDE_READ_ONLY_T3_MCP_ALLOWED_TOOLS
-    : [CLAUDE_T3_MCP_TOOL_WILDCARD];
+    ? CLAUDE_READ_ONLY_VC_MCP_ALLOWED_TOOLS
+    : [CLAUDE_VC_MCP_TOOL_WILDCARD];
   return {
     allowedTools: Array.from(new Set([...(input.allowedTools ?? []), ...mcpAllowedTools])),
     mcpServers: {
-      "t3-code": {
+      "vibe-codinger": {
         type: "http",
         url: session.endpoint,
         headers: {
           Authorization: session.authorizationHeader,
         },
-        timeout: CLAUDE_T3_MCP_TOOL_TIMEOUT_MS,
+        timeout: CLAUDE_VC_MCP_TOOL_TIMEOUT_MS,
       },
     },
   };
@@ -4749,7 +4749,7 @@ export function permissionResultFromDecision(input: {
   readonly toolUseID: string;
   readonly suggestions?: Parameters<CanUseTool>[2]["suggestions"];
   readonly feedback?: string;
-  /** Under an administrator's ceiling, T3 Code's mode is the only one; Claude cannot switch it. */
+  /** Under an administrator's ceiling, VibeCodinger's mode is the only one; Claude cannot switch it. */
   readonly managedCeiling?: boolean;
 }): PermissionResult {
   if (input.decision === "accept" || input.decision === "acceptForSession") {
@@ -6395,7 +6395,7 @@ export const makeClaudeAdapterV2 = Effect.fn("makeClaudeAdapterV2")(function* (
         );
         const goalsByNativeThread = new Map<string, OrchestrationV2ProviderGoal | null>();
         // The title T3 last applied to each native session, so a turn renames it only when the
-        // thread title changed. A native `/rename` T3 never applied survives later turns.
+        // thread title changed. A native `/rename` VibeCodinger never applied survives later turns.
         const appliedSessionTitles = new Map<string, string>();
         const goalCheckedTurns = new Set<string>();
         // Background subagents can finish after root settlement; retain their registry for wake evidence and hydration.
@@ -9228,7 +9228,7 @@ export const makeClaudeAdapterV2 = Effect.fn("makeClaudeAdapterV2")(function* (
             const { liveQuery, toolCall } = input;
             if (
               !toolCall.toolName.startsWith("mcp__") ||
-              toolCall.toolName.startsWith("mcp__t3-code__") ||
+              toolCall.toolName.startsWith("mcp__vibe-codinger__") ||
               !claudeSupportsMcpApps(liveQuery.capabilities)
             ) {
               return undefined;
@@ -11345,7 +11345,7 @@ export const makeClaudeAdapterV2 = Effect.fn("makeClaudeAdapterV2")(function* (
               failure: makeProviderFailure({
                 class: "provider_error",
                 code: "claude_mod_ui_unsupported",
-                message: `The Claude Code mod "${focusedPlugin}" is waiting for input in its terminal pane, which T3 Code cannot show. Disable the mod for sessions run from T3 Code, or run the task in the Claude Code terminal.`,
+                message: `The Claude Code mod "${focusedPlugin}" is waiting for input in its terminal pane, which VibeCodinger cannot show. Disable the mod for sessions run from VibeCodinger, or run the task in the Claude Code terminal.`,
               }),
             });
             // Closing ends the CLI process and abandons the held tool call
@@ -14212,7 +14212,7 @@ export const makeClaudeAdapterV2 = Effect.fn("makeClaudeAdapterV2")(function* (
                 }
                 const nativeItemId = `bypass-policy-downgrade:${context.providerTurnId}`;
                 const notice =
-                  "T3 could not confirm Claude bypass permissions here, so Full access is running with approval checks.";
+                  "VibeCodinger could not confirm Claude bypass permissions here, so Full access is running with approval checks.";
                 yield* emitProviderEvent({
                   type: "turn_item.updated",
                   driver: CLAUDE_PROVIDER,

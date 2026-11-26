@@ -4,8 +4,8 @@ import {
   WS_METHODS,
   sessionGrantsScope,
   type SessionGrantInput,
-} from "@t3tools/contracts";
-import { scoreQueryMatch } from "@t3tools/shared/searchRanking";
+} from "@vibecodinger/contracts";
+import { scoreQueryMatch } from "@vibecodinger/shared/searchRanking";
 import { Atom } from "effect/reactivity";
 
 import { mFallback, msg } from "gt-i18n";

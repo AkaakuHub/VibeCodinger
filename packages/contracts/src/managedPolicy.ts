@@ -41,8 +41,8 @@ export const ManagedProviderLimits = Schema.Struct({
 export type ManagedProviderLimits = typeof ManagedProviderLimits.Type;
 
 /**
- * How T3 Code updates itself. `auto` is the default: it checks, and installs only when a user
- * asks. `off` never checks, for machines that get T3 Code through MDM.
+ * How VibeCodinger updates itself. `auto` is the default: it checks, and installs only when a user
+ * asks. `off` never checks, for machines that get VibeCodinger through MDM.
  */
 export const ManagedUpdatesMode = Schema.Literals(["auto", "off"]);
 export type ManagedUpdatesMode = typeof ManagedUpdatesMode.Type;
@@ -78,8 +78,6 @@ export const ManagedPolicyLimits = Schema.Struct({
   /** `false` turns T3 Connect off and unlinks this machine. */
   connect: Schema.optionalKey(Schema.Boolean),
   webhookTasks: Schema.optionalKey(Schema.Boolean),
-  /** Can only turn product analytics off, never force it on. */
-  telemetry: Schema.optionalKey(Schema.Boolean),
   browserCookieImport: Schema.optionalKey(Schema.Boolean),
   /** `false` turns the preview tunnel off: no client reaches this machine's loopback ports. */
   previewTunnel: Schema.optionalKey(Schema.Boolean),
@@ -95,7 +93,6 @@ export const ManagedPolicySummaryLimits = Schema.Struct({
   /** `false` also when `clients` leaves out `remote`, since Connect is remote access. */
   connect: Schema.optionalKey(Schema.Boolean),
   webhookTasks: Schema.optionalKey(Schema.Boolean),
-  telemetry: Schema.optionalKey(Schema.Boolean),
   browserCookieImport: Schema.optionalKey(Schema.Boolean),
   previewTunnel: Schema.optionalKey(Schema.Boolean),
   providers: Schema.optionalKey(
@@ -146,7 +143,7 @@ export type ManagedPolicySummary = typeof ManagedPolicySummary.Type;
 
 /** The message every surface shows when the policy stops an update. */
 export function managedUpdatesMessage(organization: string): string {
-  return `${organization} manages T3 Code updates.`;
+  return `${organization} manages VibeCodinger updates.`;
 }
 
 /** The message when the policy allows only stable releases. */

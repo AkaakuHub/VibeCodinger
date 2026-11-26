@@ -1,5 +1,5 @@
-import { errorDisplayMessage } from "@t3tools/client-runtime/errors";
-import { serverUpdateFailureText } from "@t3tools/client-runtime/state/server";
+import { errorDisplayMessage } from "@vibecodinger/client-runtime/errors";
+import { serverUpdateFailureText } from "@vibecodinger/client-runtime/state/server";
 import { T, useGT, useMessages, Var } from "gt-react-native";
 import * as Dialog from "../../components/ui/Dialog";
 import { useAtom, useAtomValue } from "@effect/atom-react";
@@ -9,10 +9,13 @@ import {
   AuthOrchestrationReadScope,
   type EnvironmentId,
   type ServerProvider,
-} from "@t3tools/contracts";
-import { settlePromise, squashAtomCommandFailure } from "@t3tools/client-runtime/state/runtime";
-import { managedUpdatesDenial } from "@t3tools/client-runtime/contract-labels";
-import { sessionPermissionsUnavailableMessage } from "@t3tools/shared/authScopeOptions";
+} from "@vibecodinger/contracts";
+import {
+  settlePromise,
+  squashAtomCommandFailure,
+} from "@vibecodinger/client-runtime/state/runtime";
+import { managedUpdatesDenial } from "@vibecodinger/client-runtime/contract-labels";
+import { sessionPermissionsUnavailableMessage } from "@vibecodinger/shared/authScopeOptions";
 import * as Cause from "effect/Cause";
 import * as Exit from "effect/Exit";
 import { AsyncResult } from "effect/reactivity";
@@ -137,11 +140,11 @@ function EnvironmentDetail({ environmentId }: { readonly environmentId: Environm
       capabilities.serverSelfUpdate === "desktop-managed"
         ? gt(
             "Install {product} {version}. The desktop app will close and relaunch. Running threads may be interrupted.",
-            { product: "T3 Code", version: targetVersion },
+            { product: "VibeCodinger", version: targetVersion },
           )
         : gt(
             "Install {product} {version}. The server will restart and reconnect. Running threads may be interrupted.",
-            { product: "T3 Code", version: targetVersion },
+            { product: "VibeCodinger", version: targetVersion },
           ),
       [
         { text: gt("Cancel"), style: "cancel" },
@@ -254,7 +257,7 @@ function EnvironmentDetail({ environmentId }: { readonly environmentId: Environm
             {notice ? <Text className="px-2 text-sm text-foreground-muted">{notice}</Text> : null}
             {config && !outdated ? (
               <>
-                <SettingsSection title="T3 Code">
+                <SettingsSection title="VibeCodinger">
                   <View className="gap-1 p-4">
                     <Text className="text-base text-foreground">
                       <T>
@@ -298,7 +301,7 @@ function EnvironmentDetail({ environmentId }: { readonly environmentId: Environm
                         {capabilities?.serverSelfUpdate === "desktop-managed"
                           ? gt("Update the desktop app on this machine.")
                           : gt("Update and restart {product} on this machine.", {
-                              product: "T3 Code",
+                              product: "VibeCodinger",
                             })}
                       </Text>
                     ) : null}
@@ -372,7 +375,7 @@ function EnvironmentDetail({ environmentId }: { readonly environmentId: Environm
                               iconUrl={provider.iconUrl}
                               size={18}
                             />
-                            <Text className="min-w-0 flex-1 text-base font-t3-medium text-foreground">
+                            <Text className="min-w-0 flex-1 text-base font-vc-medium text-foreground">
                               {provider.displayName ?? provider.driver}
                             </Text>
                           </View>

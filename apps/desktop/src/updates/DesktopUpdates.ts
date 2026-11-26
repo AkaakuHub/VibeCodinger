@@ -8,8 +8,8 @@ import {
   type DesktopUpdateChannel,
   type DesktopUpdateCheckResult,
   type DesktopUpdateState,
-} from "@t3tools/contracts";
-import { errorTag } from "@t3tools/shared/observability";
+} from "@vibecodinger/contracts";
+import { errorTag } from "@vibecodinger/shared/observability";
 import * as Cause from "effect/Cause";
 import * as Context from "effect/Context";
 import * as DateTime from "effect/DateTime";
@@ -43,8 +43,8 @@ import {
   normalizeDesktopUpdateReleaseNotes,
   releaseNotesOfOfferedVersion,
 } from "./releaseNotes.ts";
-import { desktopUpdateChannelOf } from "@t3tools/shared/cliRelease";
-import { compareSemverVersions } from "@t3tools/shared/semver";
+import { desktopUpdateChannelOf } from "@vibecodinger/shared/cliRelease";
+import { compareSemverVersions } from "@vibecodinger/shared/semver";
 import {
   createInitialDesktopUpdateState,
   reduceDesktopUpdateStateOnCheckFailure,
@@ -224,7 +224,7 @@ export class DesktopUpdates extends Context.Service<
       expectedVersion: string,
     ) => Effect.Effect<DesktopPreparedUpdateInstallResult>;
   }
->()("@t3tools/desktop/updates/DesktopUpdates") {}
+>()("@vibecodinger/desktop/updates/DesktopUpdates") {}
 
 const {
   logInfo: logUpdaterInfo,
@@ -362,7 +362,7 @@ function getAutoUpdateDisabledReason(args: {
     return "Automatic updates are only available in packaged production builds.";
   }
   if (args.disabledByEnv) {
-    return "Automatic updates are disabled by the T3CODE_DISABLE_AUTO_UPDATE setting.";
+    return "Automatic updates are disabled by the VIBECODINGER_DISABLE_AUTO_UPDATE setting.";
   }
   if (args.platform === "linux" && !args.appImage && !args.isDebPackage) {
     return "Automatic updates on Linux require the AppImage or the .deb package.";
@@ -1411,7 +1411,7 @@ export const make = Effect.gen(function* () {
       if (Option.isSome(channelBlockedReason(nextChannel))) {
         return yield* new DesktopUpdateChannelManagedError({
           channel: nextChannel,
-          policyMessage: policy.message ?? "Your administrator manages T3 Code updates.",
+          policyMessage: policy.message ?? "Your administrator manages VibeCodinger updates.",
         });
       }
       // A background check holds the updater only briefly, so wait it out instead of refusing.

@@ -39,11 +39,11 @@ With `origin` on the mirror, use `src` instead of `gh`. PRs into `main` still me
 ## Running dev servers
 
 - `vp run dev` (server + web), `vp run dev:desktop` (Electron), `vp run dev:server`, `vp run dev:web`. See [apps/mobile/README.md](../../apps/mobile/README.md) for mobile.
-- Pass flags directly after the task name (e.g. `vp run dev --home-dir /tmp/t3code-dev`, `--browser`).
-- **State and ports:** Linked worktrees default to `<worktree>/.t3/userdata` (outranking `T3CODE_HOME`) and seed on first start from a read-only snapshot of `~/.t3/userdata/statev2.sqlite` when it is at most 500 MiB (`--no-seed` or `T3CODE_DEV_SEED=0` skips; `vp run migrate-dev-db` refreshes manually). Plain clones and the main checkout default to `~/.t3/dev`. Never point a dev server at `~/.t3/userdata`. Read actual ports from `[dev-runner]` output (`T3CODE_PORT_OFFSET` / `T3CODE_DEV_INSTANCE` override).
+- Pass flags directly after the task name (e.g. `vp run dev --home-dir /tmp/vibecodinger-dev`, `--browser`).
+- **State and ports:** Linked worktrees default to `<worktree>/.vibecodinger/userdata` (outranking `VIBECODINGER_HOME`) and seed on first start from a read-only snapshot of `~/.vibecodinger/userdata/statev2.sqlite` when it is at most 500 MiB (`--no-seed` or `VIBECODINGER_DEV_SEED=0` skips; `vp run migrate-dev-db` refreshes manually). Plain clones and the main checkout default to `~/.vibecodinger/dev`. Never point a dev server at `~/.vibecodinger/userdata`. Read actual ports from `[dev-runner]` output (`VIBECODINGER_PORT_OFFSET` / `VIBECODINGER_DEV_INSTANCE` override).
 - **Resource monitor:** First start builds `native/resource-monitor` via Cargo when missing; without Rust, dev starts without process telemetry.
 - **Sharing:** `vp run dev --share` exposes the web port over Tailscale and prints a pairing URL. Add `--built` to serve `apps/web/dist` via `vp build --watch` (no HMR, faster over slow links). Never set `VITE_HTTP_URL` or `VITE_WS_URL` in dev—Vite proxies `/api` and `/ws` single-origin.
-- **Startup profiling:** `vp run profile:startup` captures the first 20 s of Node processes under `.t3/startup-profiles/<timestamp>`.
+- **Startup profiling:** `vp run profile:startup` captures the first 20 s of Node processes under `.vibecodinger/startup-profiles/<timestamp>`.
 
 ### Replay provider
 
@@ -51,11 +51,11 @@ With `origin` on the mirror, use `src` instead of `gh`. PRs into `main` still me
 
 ### Reusable dev credential
 
-Only use this on a hostname where you trust every service (browsers share cookies across ports on the same hostname). Generate one secret once and put it in the main checkout's gitignored `.env` (which `t3.json` links into worktrees):
+Only use this on a hostname where you trust every service (browsers share cookies across ports on the same hostname). Generate one secret once and put it in the main checkout's gitignored `.env` (which `vibecodinger.json` links into worktrees):
 
 ```sh
 openssl rand -hex 32
-# Add to .env: T3CODE_DEV_AUTH_TOKEN=<value>
+# Add to .env: VIBECODINGER_DEV_AUTH_TOKEN=<value>
 ```
 
 Restart `vp run dev --share` and open its printed pairing URL once per browser profile. Never commit or publish the token or startup URLs. Desktop and non-dev servers ignore it; see [environment auth](../internals/04_environment-auth.md#reusable-dev-credential).
@@ -66,6 +66,18 @@ Restart `vp run dev --share` and open its printed pairing URL once per browser p
 - Focused iteration: `vp test run <files>`, `vp lint <files>`, `vp run --filter <pkg> typecheck`, `vp run knip:check`, `vp run lint:mobile`.
 - `apps/web` uses real Chromium (`*.browser.test.{ts,tsx}`) for DOM/React tests (no jsdom) and Node for `*.test.ts`.
 - Typechecking uses `effect-tsgo tsrs --noEmit` (`@effect/tsgo`), not `typescript` (except `apps/marketing` for Astro). On Windows, open the workspace through WSL for VS Code's `.vscode/tsdk/tsgo`.
+
+## Upstream review PRs
+
+The fork checks upstream `main` daily and opens a PR for the pinned upstream
+commit. Changes that conflict open as drafts. The PR points out paths with
+telemetry-related changes and keeps the fork's workflow definitions. Review
+upstream workflow changes separately. The PR records the exact upstream
+commit in `.github/upstream-reviewed` for the next comparison.
+
+Set `UPSTREAM_REVIEW_TOKEN` to a dedicated GitHub credential scoped to this
+repository with Contents and Pull requests write access. The workflow creates
+the review branch and PR. Approval and merge stay with the maintainer.
 
 ## Desktop artifacts
 
@@ -111,4 +123,4 @@ Install Rust, Python 3, and Visual Studio Build Tools (**Desktop development wit
 rustup target add x86_64-pc-windows-msvc   # or aarch64-pc-windows-msvc
 ```
 
-WSL support also requires passing the Linux CLI archive via `--wsl-runtime`; see [release runbook](./03_release.md#windows-payload-topology-and-update-validation). For signing and macOS passkeys, see [release](./03_release.md) and [Connect setup](./02_connect-setup.md#desktop-passkeys).
+WSL support also requires passing the Linux CLI archive via `--wsl-runtime`; see [release runbook](./03_release.md#windows-payload-topology-and-update-validation). For signing, see the [release runbook](./03_release.md).

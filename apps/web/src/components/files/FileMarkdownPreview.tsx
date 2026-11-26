@@ -1,8 +1,8 @@
-import type { ScopedThreadRef } from "@t3tools/contracts";
+import type { ScopedThreadRef } from "@vibecodinger/contracts";
 
 import ChatMarkdown from "~/components/ChatMarkdown";
-import { resolvePathLinkTarget } from "@t3tools/shared/fileLinks";
-import { maskMarkdownFrontmatter } from "@t3tools/shared/markdownFrontmatter";
+import { resolvePathLinkTarget } from "@vibecodinger/shared/fileLinks";
+import { maskMarkdownFrontmatter } from "@vibecodinger/shared/markdownFrontmatter";
 
 export function FileMarkdownPreview(props: {
   readonly cwd: string;

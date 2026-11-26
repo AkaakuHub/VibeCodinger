@@ -3,6 +3,10 @@ name: Mobile Showcase Screenshots
 on:
   workflow_dispatch:
     inputs:
+      build_only:
+        description: Build an arm64 Android debug APK without running the showcase
+        type: boolean
+        default: false
       platform:
         description: Device platforms to capture
         required: true
@@ -24,11 +28,11 @@ on:
       theme:
         description: Palette to capture (all multiplies the run by six)
         required: true
-        default: t3-code
+        default: vibe-codinger
         type: choice
         options:
-          - t3-code
-          - t3-chat
+          - vibe-codinger
+          - vc-chat
           - grove
           - ocean
           - ember
@@ -44,7 +48,7 @@ env:
 jobs:
   ios:
     name: iPhone, iPhone Duo, and iPad 13
-    if: inputs.platform == 'all' || inputs.platform == 'ios'
+    if: ${{ !inputs.build_only && (inputs.platform == 'all' || inputs.platform == 'ios') }}
     runs-on: blacksmith-12vcpu-macos-27
     # Capturing every palette multiplies the device matrix by six, and only the
     # one native build is shared between them.
@@ -65,9 +69,9 @@ jobs:
           cache: true
           run-install: |
             args:
-              - --filter=@t3tools/mobile...
-              - --filter=@t3tools/scripts...
-              - --filter=t3...
+              - --filter=@vibecodinger/mobile...
+              - --filter=@vibecodinger/scripts...
+              - --filter=vibecodinger...
 
       - name: Expose pnpm
         run: |
@@ -90,6 +94,24 @@ jobs:
       - name: Install foldable simulator controls
         run: npm install --global agent-device@0.21.41
 
+      - name: Identify the simulator toolchain
+        id: xcode
+        run: |
+          set -euo pipefail
+          fingerprint=$( { xcodebuild -version; xcrun --sdk iphonesimulator --show-sdk-build-version; pod --version; } | shasum -a 256 | cut -d ' ' -f 1 )
+          echo "fingerprint=$fingerprint" >> "$GITHUB_OUTPUT"
+
+      - name: Cache iOS showcase dependencies and compilation results
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        env:
+          CACHE_PREFIX: ios-showcase-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.xcode.outputs.fingerprint }}-${{ hashFiles('pnpm-lock.yaml') }}-
+        with:
+          path: |
+            ~/Library/Caches/CocoaPods
+            apps/mobile/.showcase/ios-derived-data/CompilationCache.noindex
+          key: ${{ env.CACHE_PREFIX }}${{ hashFiles('apps/mobile/app.config.ts', 'apps/mobile/plugins/**', 'apps/mobile/modules/**/ios/**', 'apps/mobile/modules/**/*.podspec') }}
+          restore-keys: ${{ env.CACHE_PREFIX }}
+
       - name: Capture iOS showcase
         run: pnpm screenshots:mobile --platform ios --appearance "${{ inputs.appearance }}" --theme "${{ inputs.theme }}"
 
@@ -106,14 +128,19 @@ jobs:
           retention-days: 14
 
   android:
-    name: Android phone, 7-inch tablet, and 10-inch tablet
-    if: inputs.platform == 'all' || inputs.platform == 'android'
-    runs-on: blacksmith-16vcpu-ubuntu-2404
+    name: ${{ inputs.build_only && 'Android debug APK (arm64)' || 'Android phone, 7-inch tablet, and 10-inch tablet' }}
+    if: inputs.build_only || inputs.platform == 'all' || inputs.platform == 'android'
+    runs-on: ${{ inputs.build_only && 'ubuntu-24.04' || 'blacksmith-16vcpu-ubuntu-2404' }}
     # Capturing every palette multiplies the device matrix by six, and only the
     # one native build is shared between them.
     timeout-minutes: ${{ inputs.theme == 'all' && 300 || 60 }}
     env:
-      T3_SHOWCASE_ANDROID_ABI: x86_64
+      VIBECODINGER_SHOWCASE_ANDROID_ABI: ${{ inputs.build_only && 'arm64-v8a' || 'x86_64' }}
+      CMAKE_C_COMPILER_LAUNCHER: ccache
+      CMAKE_CXX_COMPILER_LAUNCHER: ccache
+      CCACHE_BASEDIR: ${{ github.workspace }}
+      CCACHE_COMPILERCHECK: content
+      CCACHE_MAXSIZE: 512M
     steps:
       - name: Checkout
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
@@ -130,9 +157,9 @@ jobs:
           cache: true
           run-install: |
             args:
-              - --filter=@t3tools/mobile...
-              - --filter=@t3tools/scripts...
-              - --filter=t3...
+              - --filter=@vibecodinger/mobile...
+              - --filter=@vibecodinger/scripts...
+              - --filter=vibecodinger...
 
       - name: Expose pnpm
         run: |
@@ -149,8 +176,54 @@ jobs:
 
       - name: Setup Gradle cache
         uses: gradle/actions/setup-gradle@0723195856401067f7a2779048b490ace7a47d7c # v5.0.2
+        with:
+          cache-read-only: false
+
+      - name: Set up ccache
+        id: ccache
+        run: |
+          echo "CCACHE_DIR=$RUNNER_TEMP/android-ccache" >> "$GITHUB_ENV"
+          if ! command -v ccache >/dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y ccache
+          fi
+
+      - name: Cache Android C and C++ compilation results
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        env:
+          CACHE_PREFIX: android-ccache-v1-${{ runner.os }}-${{ runner.arch }}-${{ env.VIBECODINGER_SHOWCASE_ANDROID_ABI }}-${{ hashFiles('pnpm-lock.yaml') }}-
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ${{ env.CACHE_PREFIX }}${{ hashFiles('apps/mobile/app.config.ts', 'apps/mobile/plugins/**', 'apps/mobile/modules/**/android/**', 'apps/mobile/modules/**/cpp/**') }}
+          restore-keys: ${{ env.CACHE_PREFIX }}
+
+      - name: Generate Android build project
+        if: inputs.build_only
+        working-directory: apps/mobile
+        env:
+          APP_VARIANT: production
+          EXPO_NO_TELEMETRY: "1"
+        run: pnpm exec expo prebuild --clean --platform android --no-install
+
+      - name: Build Android APK
+        if: inputs.build_only
+        working-directory: apps/mobile/android
+        env:
+          APP_VARIANT: production
+          EXPO_NO_TELEMETRY: "1"
+        run: ./gradlew app:assembleDebug --build-cache "-PreactNativeArchitectures=$VIBECODINGER_SHOWCASE_ANDROID_ABI"
+
+      - name: Upload Android APK
+        if: inputs.build_only
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: android-arm64-debug-apk
+          path: apps/mobile/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          compression-level: 0
 
       - name: Enable KVM
+        if: ${{ !inputs.build_only }}
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS="static_node=kvm"' \
             | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -158,6 +231,7 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       - name: Capture Android showcase
+        if: ${{ !inputs.build_only }}
         uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
         with:
           api-level: 36
@@ -170,11 +244,16 @@ jobs:
           disable-animations: false
           script: pnpm screenshots:mobile --platform android --appearance "${{ inputs.appearance }}" --theme "${{ inputs.theme }}"
 
+      - name: Report Android native cache statistics
+        if: ${{ !cancelled() && steps.ccache.outcome == 'success' }}
+        run: ccache --show-stats
+
       - name: Validate Google Play assets
+        if: ${{ !inputs.build_only }}
         run: pnpm screenshots:mobile --platform android --appearance "${{ inputs.appearance }}" --theme "${{ inputs.theme }}" --validate-only
 
       - name: Upload Android screenshots
-        if: always()
+        if: ${{ always() && !inputs.build_only }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: google-play-screenshots

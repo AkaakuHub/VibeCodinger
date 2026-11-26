@@ -1,8 +1,8 @@
 import { describe, expect, it } from "@effect/vitest";
 import * as NodeCrypto from "@effect/platform-node/NodeCrypto";
 import * as NodeServices from "@effect/platform-node/NodeServices";
-import { type EasDeviceHostConfig, SecretProviderId, ThreadId } from "@t3tools/contracts";
-import * as SecretResolver from "@t3tools/secret-provider-core/server/SecretResolver";
+import { type EasDeviceHostConfig, SecretProviderId, ThreadId } from "@vibecodinger/contracts";
+import * as SecretResolver from "@vibecodinger/secret-provider-core/server/SecretResolver";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
 import * as Fiber from "effect/Fiber";
@@ -13,7 +13,7 @@ import * as Path from "effect/Path";
 import * as Scope from "effect/Scope";
 import * as TestClock from "effect/testing/TestClock";
 import { HttpClient, HttpClientResponse } from "effect/http";
-import * as HostProcess from "@t3tools/shared/HostProcess";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
 
 import * as ServerConfig from "../config.ts";
 import * as ProcessRunner from "../processRunner.ts";
@@ -120,7 +120,7 @@ const fakeExpo = (
       expect(request.headers.authorization).toBe("Bearer expo-token");
       const operation = /(?:query|mutation) (\w+)/.exec(body.query)?.[1] ?? "unknown";
       calls.push({ operation, variables: body.variables });
-      if (operation === "T3CreateEasSimulatorSession") {
+      if (operation === "VibeCodingerCreateEasSimulatorSession") {
         createdName = body.variables.input?.name ?? "";
         if (options.createGate) {
           yield* Deferred.succeed(options.createGate.requested, undefined);
@@ -142,10 +142,10 @@ const fakeExpo = (
             }),
           );
       }
-      if (operation === "T3StopEasSimulatorSession" && options.failStop?.()) {
+      if (operation === "VibeCodingerStopEasSimulatorSession" && options.failStop?.()) {
         return HttpClientResponse.fromWeb(request, new Response("bad gateway", { status: 502 }));
       }
-      if (operation === "T3ActiveEasSimulatorSessions" && options.failList?.()) {
+      if (operation === "VibeCodingerActiveEasSimulatorSessions" && options.failList?.()) {
         return HttpClientResponse.fromWeb(request, new Response("bad gateway", { status: 502 }));
       }
       // The account's feature gate is off, as for an Expo admin whom the create still admits.
@@ -167,16 +167,16 @@ const fakeExpo = (
         );
       }
       const sessionGate =
-        operation === "T3EasSimulatorSession" ? options.sessionGate?.() : undefined;
+        operation === "VibeCodingerEasSimulatorSession" ? options.sessionGate?.() : undefined;
       if (sessionGate && !sessionGated) {
         sessionGated = true;
         yield* Deferred.succeed(sessionGate.requested, undefined);
         yield* Deferred.await(sessionGate.release);
       }
       const data =
-        operation === "T3CreateEasSimulatorSession"
+        operation === "VibeCodingerCreateEasSimulatorSession"
           ? { deviceRunSession: { createDeviceRunSession: { id: `session-${++created}` } } }
-          : operation === "T3ActiveEasSimulatorSessions"
+          : operation === "VibeCodingerActiveEasSimulatorSessions"
             ? {
                 app: {
                   byId: {
@@ -189,7 +189,7 @@ const fakeExpo = (
                           node: {
                             id: "someone-else",
                             status: "IN_PROGRESS",
-                            name: "T3 Code · Expo Simulators · 000000",
+                            name: "VibeCodinger · Expo Simulators · 000000",
                           },
                         },
                         ...(options.active ?? []).map((node) => ({ node })),
@@ -209,7 +209,7 @@ const fakeExpo = (
                   },
                 },
               }
-            : operation === "T3EasSimulatorSession"
+            : operation === "VibeCodingerEasSimulatorSession"
               ? {
                   deviceRunSessions: {
                     byId: {
@@ -234,7 +234,8 @@ const fakeExpo = (
     }),
   );
   const named = (operation: string) => calls.filter((call) => call.operation === operation);
-  const stopped = () => named("T3StopEasSimulatorSession").map((call) => call.variables.id);
+  const stopped = () =>
+    named("VibeCodingerStopEasSimulatorSession").map((call) => call.variables.id);
   const allowPreview = () => {
     previewFails = false;
   };
@@ -255,13 +256,13 @@ const makeSecretResolver = (values: Record<string, string> = {}) =>
 const layerWith = (secrets: Layer.Layer<SecretResolver.SecretResolver>) =>
   Layer.mergeAll(
     ProcessRunner.layer,
-    ServerConfig.layerTest(process.cwd(), { prefix: "t3-eas-host-" }),
+    ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-eas-host-" }),
     secrets,
   ).pipe(Layer.provideMerge(NodeServices.layer));
 
 const layer = Layer.mergeAll(
   ProcessRunner.layer,
-  ServerConfig.layerTest(process.cwd(), { prefix: "t3-eas-host-" }),
+  ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-eas-host-" }),
   makeSecretResolver(),
 ).pipe(Layer.provideMerge(NodeServices.layer));
 
@@ -289,13 +290,15 @@ describe("Expo Simulators host", () => {
       ]);
 
       expect(yield* ready.devices.boot(catalog[0]!)).toBe("session-1");
-      expect(expo.named("T3CreateEasSimulatorSession")[0]?.variables.input).toMatchObject({
-        appId: APP_ID,
-        platform: "IOS",
-        type: "AGENT_DEVICE",
-        maxRunTimeMinutes: 25,
-        maxIdleTimeMinutes: 5,
-      });
+      expect(expo.named("VibeCodingerCreateEasSimulatorSession")[0]?.variables.input).toMatchObject(
+        {
+          appId: APP_ID,
+          platform: "IOS",
+          type: "AGENT_DEVICE",
+          maxRunTimeMinutes: 25,
+          maxIdleTimeMinutes: 5,
+        },
+      );
       const listed = (yield* ready.devices.list).devices;
       expect(listed.find((device) => device.id === "session-1")?.booted).toBe(true);
       expect(yield* ready.devices.agentEndpoint!("session-1")).toEqual({
@@ -325,9 +328,9 @@ describe("Expo Simulators host", () => {
       ).toBeNull();
 
       yield* Scope.close(scope, Exit.void);
-      expect(expo.named("T3StopEasSimulatorSession").map((call) => call.variables.id)).toEqual([
-        "session-1",
-      ]);
+      expect(
+        expo.named("VibeCodingerStopEasSimulatorSession").map((call) => call.variables.id),
+      ).toEqual(["session-1"]);
     }).pipe(Effect.scoped, Effect.provide(layer)),
   );
 
@@ -356,7 +359,7 @@ describe("Expo Simulators host", () => {
       const [catalogDevice] = (yield* ready.devices.list).devices;
       const failure = yield* ready.devices.boot(catalogDevice!).pipe(Effect.flip);
       expect(failure.message).toContain('secret provider "homelab"');
-      expect(expo.named("T3CreateEasSimulatorSession")).toHaveLength(0);
+      expect(expo.named("VibeCodingerCreateEasSimulatorSession")).toHaveLength(0);
     }).pipe(Effect.scoped, Effect.provide(layer)),
   );
 
@@ -403,9 +406,11 @@ describe("Expo Simulators host", () => {
       const [ios, android] = (yield* ready.devices.list).devices;
       expect(yield* ready.devices.boot(ios!)).toBe("session-1");
       expect(yield* ready.devices.boot(android!)).toBe("session-2");
-      expect(expo.named("T3CreateEasSimulatorSession")[1]?.variables.input).toMatchObject({
-        platform: "ANDROID",
-      });
+      expect(expo.named("VibeCodingerCreateEasSimulatorSession")[1]?.variables.input).toMatchObject(
+        {
+          platform: "ANDROID",
+        },
+      );
       const running = (yield* ready.devices.list).devices.find(
         (device) => device.id === "session-2",
       );
@@ -450,7 +455,7 @@ describe("Expo Simulators host", () => {
       expect(refused.message).toBe(
         "Expo Simulators is unavailable: Expo Simulators is limited to 1 running session. Close one in the Device panel first.",
       );
-      expect(expo.named("T3CreateEasSimulatorSession")).toHaveLength(1);
+      expect(expo.named("VibeCodingerCreateEasSimulatorSession")).toHaveLength(1);
     }).pipe(Effect.scoped, Effect.provide(layer)),
   );
 
@@ -557,7 +562,7 @@ describe("Expo Simulators host", () => {
       const ready = yield* host.ensureReady(() => Effect.void);
       const [catalogDevice] = (yield* ready.devices.list).devices;
       expect(yield* ready.devices.boot(catalogDevice!)).toBe("session-1");
-      expect(expo.named("T3CreateEasSimulatorSession")).toHaveLength(1);
+      expect(expo.named("VibeCodingerCreateEasSimulatorSession")).toHaveLength(1);
     }).pipe(Effect.scoped, Effect.provide(layer)),
   );
 
@@ -591,7 +596,7 @@ describe("Expo Simulators host", () => {
       const [catalogDevice] = (yield* ready.devices.list).devices;
       const failure = yield* ready.devices.boot(catalogDevice!).pipe(Effect.flip);
       expect(failure.message).toContain("could not be read");
-      expect(expo.named("T3CreateEasSimulatorSession")).toHaveLength(0);
+      expect(expo.named("VibeCodingerCreateEasSimulatorSession")).toHaveLength(0);
     }).pipe(Effect.scoped, Effect.provide(layer)),
   );
 
@@ -646,14 +651,14 @@ describe("Expo Simulators host", () => {
       const [catalogDevice] = (yield* ready.devices.list).devices;
       const failure = yield* ready.devices.boot(catalogDevice!).pipe(Effect.flip);
       expect(failure.message).toContain("Choose one for this host in Settings");
-      expect(expo.named("T3CreateEasSimulatorSession")).toHaveLength(0);
+      expect(expo.named("VibeCodingerCreateEasSimulatorSession")).toHaveLength(0);
     }).pipe(Effect.scoped, Effect.provide(layer)),
   );
 
   it.effect("reports iOS unavailable on a server with no Expo credential", () =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
-      const home = yield* fs.makeTempDirectoryScoped({ prefix: "t3-expo-home-" });
+      const home = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-expo-home-" });
       const host = yield* makeHost(
         fakeExpo(),
         config({ accessToken: "" }),

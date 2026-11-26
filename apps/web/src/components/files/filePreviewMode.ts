@@ -1,6 +1,6 @@
-import type { AssetResource, ProjectReadFileError, ScopedThreadRef } from "@t3tools/contracts";
-import { mediaFileReference } from "@t3tools/client-runtime/media-reference";
-import { isHostPath, workspaceRelativeFilePath } from "@t3tools/shared/path";
+import type { AssetResource, ProjectReadFileError, ScopedThreadRef } from "@vibecodinger/contracts";
+import { mediaFileReference } from "@vibecodinger/client-runtime/media-reference";
+import { isHostPath, workspaceRelativeFilePath } from "@vibecodinger/shared/path";
 import { msg } from "gt-react";
 
 import { m, type MessageResolver } from "~/i18n/messages";

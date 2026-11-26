@@ -3,7 +3,7 @@ import {
   type PullRequestCapabilities,
   type PullRequestListState,
   type PullRequestViewerPermissions,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import {
   PullRequestProviderError,
   tailLogLines,
@@ -12,7 +12,7 @@ import {
   type ProviderCheckRerun,
   type ProviderRepositoryRef,
   type PullRequestProviderApi,
-} from "@t3tools/source-control-core/server/PullRequestProvider";
+} from "@vibecodinger/source-control-core/server/PullRequestProvider";
 import * as Cache from "effect/Cache";
 import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
@@ -271,7 +271,7 @@ export const make = Effect.gen(function* () {
           : ("unknown" as const),
     autoMergeEnabled: pull.autoMerge != null,
     ...(pull.autoMerge?.method === "merge" || pull.autoMerge?.method === "squash"
-      ? { autoMergeMethod: pull.autoMerge.method }
+      ? ({ autoMergeMethod: pull.autoMerge.method } as const)
       : {}),
   });
 
@@ -786,7 +786,7 @@ export const make = Effect.gen(function* () {
         default:
           return yield* failure(
             input.action,
-            `TanStack Source cannot ${input.action} from T3 Code.`,
+            `TanStack Source cannot ${input.action} from VibeCodinger.`,
           );
       }
     }),

@@ -9,8 +9,8 @@ import {
   ProviderSessionId,
   ThreadId,
   type AntigravitySettings,
-} from "@t3tools/contracts";
-import * as HostProcess from "@t3tools/shared/HostProcess";
+} from "@vibecodinger/contracts";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
 import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";
 import * as Layer from "effect/Layer";
@@ -28,12 +28,12 @@ import {
   ANTIGRAVITY_AUTH_STDOUT_PREFIX,
   resolveAntigravityInstanceDirectories,
 } from "../antigravityAuthSupport.ts";
-import * as ProviderEventLoggers from "@t3tools/provider-core/server/ProviderEventLoggers";
-import * as McpProviderSessions from "@t3tools/provider-core/server/McpProviderSessions";
+import * as ProviderEventLoggers from "@vibecodinger/provider-core/server/ProviderEventLoggers";
+import * as McpProviderSessions from "@vibecodinger/provider-core/server/McpProviderSessions";
 import * as ModelManifest from "../ModelManifest.ts";
-import * as IdAllocator from "@t3tools/provider-core/server/IdAllocator";
-import * as ProviderAdapter from "@t3tools/provider-core/server/ProviderAdapter";
-import { knownProviderFailureMessage } from "@t3tools/provider-core/server/failure";
+import * as IdAllocator from "@vibecodinger/provider-core/server/IdAllocator";
+import * as ProviderAdapter from "@vibecodinger/provider-core/server/ProviderAdapter";
+import { knownProviderFailureMessage } from "@vibecodinger/provider-core/server/failure";
 import { resolveProviderCompatibility } from "../providerCompatibility.ts";
 import { AntigravityDriver } from "./AntigravityDriver.ts";
 import * as ProviderHostLive from "../ProviderHostLive.ts";
@@ -74,7 +74,7 @@ const makeHarness = Effect.fn("makeAntigravityDriverHarness")(function* (
   const spawner = yield* ChildProcessSpawner.ChildProcessSpawner;
   const nodePath = yield* HostProcess.ExecutablePath;
   const baseEnv = yield* HostProcess.Environment;
-  const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-antigravity-driver-" });
+  const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-antigravity-driver-" });
   const instanceId = ProviderInstanceId.make("antigravity");
   const mockAgentPath = yield* path.fromFileUrl(
     new URL("../../../scripts/acp-mock-agent.ts", import.meta.url),
@@ -110,12 +110,12 @@ const makeHarness = Effect.fn("makeAntigravityDriverHarness")(function* (
         ...(options.newSessionErrorData === undefined
           ? []
           : [
-              `export T3_ACP_NEW_SESSION_ERROR_DATA=${shellQuote(JSON.stringify(options.newSessionErrorData))}`,
+              `export VIBECODINGER_ACP_NEW_SESSION_ERROR_DATA=${shellQuote(JSON.stringify(options.newSessionErrorData))}`,
             ]),
         ...(options.initialMode === undefined
           ? []
-          : [`export T3_ACP_INITIAL_MODE=${shellQuote(options.initialMode)}`]),
-        `export T3_ACP_AGENT_VERSION=${shellQuote(options.agentVersion ?? "1.5.12")}`,
+          : [`export VIBECODINGER_ACP_INITIAL_MODE=${shellQuote(options.initialMode)}`]),
+        `export VIBECODINGER_ACP_AGENT_VERSION=${shellQuote(options.agentVersion ?? "1.5.12")}`,
         `exec ${shellQuote(nodePath)} ${shellQuote(mockAgentPath)} "$@"`,
         "",
       ].join("\n"),
@@ -228,8 +228,8 @@ const makeHarness = Effect.fn("makeAntigravityDriverHarness")(function* (
     config: { ...AntigravityDriver.defaultConfig(), ...options.config },
     environment: [
       { name: "PATH", value: instancePath },
-      { name: "T3_ACP_ANTIGRAVITY", value: "1" },
-      { name: "T3_ACP_REQUEST_LOG_PATH", value: requestLog },
+      { name: "VIBECODINGER_ACP_ANTIGRAVITY", value: "1" },
+      { name: "VIBECODINGER_ACP_REQUEST_LOG_PATH", value: requestLog },
       { name: "GEMINI_API_KEY", value: "must-not-be-used" },
       { name: "google_api_key", value: "must-not-be-used" },
       { name: "GOOGLE_APPLICATION_CREDENTIALS", value: "/must-not-be-used.json" },
@@ -281,7 +281,7 @@ const makeHarness = Effect.fn("makeAntigravityDriverHarness")(function* (
 });
 
 const layerDeps = ServerConfig.layerTest(process.cwd(), {
-  prefix: "t3-antigravity-driver-config-",
+  prefix: "vibecodinger-antigravity-driver-config-",
 }).pipe(
   Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
   Layer.provideMerge(
@@ -348,6 +348,7 @@ it.layer(layerTest)("AntigravityDriver", (it) => {
             h.profileDirectory,
             "--app-data-dir",
             "antigravity-acp",
+            "--disable-telemetry",
           ]);
           expect(launch.profileDirectory).toBe(h.profileDirectory);
           expect(launch.forceFileStorage).toBeUndefined();
@@ -382,7 +383,7 @@ it.layer(layerTest)("AntigravityDriver", (it) => {
             modelSelection: { instanceId: h.instance.instanceId, model: "gemini-test-low" },
           })
           .pipe(Effect.ignore);
-        const workspace = yield* h.fs.makeTempDirectoryScoped({ prefix: "t3-ag-chat-" });
+        const workspace = yield* h.fs.makeTempDirectoryScoped({ prefix: "vibecodinger-ag-chat-" });
         const threadId = ThreadId.make("thread-antigravity-capabilities");
         const runtimePolicy = ProviderAdapter.ProviderAdapterV2RuntimePolicy.make({
           runtimeMode: "approval-required",
@@ -447,6 +448,7 @@ it.layer(layerTest)("AntigravityDriver", (it) => {
             h.profileDirectory,
             "--app-data-dir",
             "antigravity-acp",
+            "--disable-telemetry",
           ]);
           expect(
             (yield* h.readRequests)
@@ -463,16 +465,16 @@ it.layer(layerTest)("AntigravityDriver", (it) => {
   );
 
   it.effect.skipIf(windowsHost)(
-    "gives a thread session its own T3 thread and MCP fallback environment",
+    "gives a thread session its own VibeCodinger thread and MCP fallback environment",
     () =>
       Effect.gen(function* () {
         const h = yield* makeHarness({
           environment: [
-            { name: "T3CODE_THREAD_ID", value: "thread-antigravity-ambient" },
-            { name: "T3_ACP_MCP_ENDPOINT", value: "http://127.0.0.1:9/ambient" },
-            { name: "T3_ACP_MCP_AUTHORIZATION", value: "Bearer ambient-token" },
-            { name: "T3_ACP_MCP_NODE", value: "/ambient/node" },
-            { name: "T3_ACP_MCP_ENTRYPOINT", value: "/ambient/entrypoint.mjs" },
+            { name: "VIBECODINGER_THREAD_ID", value: "thread-antigravity-ambient" },
+            { name: "VIBECODINGER_ACP_MCP_ENDPOINT", value: "http://127.0.0.1:9/ambient" },
+            { name: "VIBECODINGER_ACP_MCP_AUTHORIZATION", value: "Bearer ambient-token" },
+            { name: "VIBECODINGER_ACP_MCP_NODE", value: "/ambient/node" },
+            { name: "VIBECODINGER_ACP_MCP_ENTRYPOINT", value: "/ambient/entrypoint.mjs" },
           ],
         });
         yield* h.refresh();
@@ -491,7 +493,9 @@ it.layer(layerTest)("AntigravityDriver", (it) => {
         const entrypoint = h.path.resolve(process.argv[1]!);
         yield* Effect.scoped(
           Effect.gen(function* () {
-            const workspace = yield* h.fs.makeTempDirectoryScoped({ prefix: "t3-ag-environment-" });
+            const workspace = yield* h.fs.makeTempDirectoryScoped({
+              prefix: "vibecodinger-ag-environment-",
+            });
             const runtimePolicy = ProviderAdapter.ProviderAdapterV2RuntimePolicy.make({
               runtimeMode: "approval-required",
               interactionMode: "default",
@@ -517,19 +521,19 @@ it.layer(layerTest)("AntigravityDriver", (it) => {
         );
         expect(agentLaunches).toHaveLength(2);
         expect(agentLaunches[1]?.environment).toMatchObject({
-          T3CODE_THREAD_ID: threadId,
-          T3_ACP_MCP_ENDPOINT: endpoint,
-          T3_ACP_MCP_AUTHORIZATION: "Bearer antigravity-thread-token",
-          T3_ACP_MCP_NODE: process.execPath,
-          T3_ACP_MCP_ENTRYPOINT: entrypoint,
+          VIBECODINGER_THREAD_ID: threadId,
+          VIBECODINGER_ACP_MCP_ENDPOINT: endpoint,
+          VIBECODINGER_ACP_MCP_AUTHORIZATION: "Bearer antigravity-thread-token",
+          VIBECODINGER_ACP_MCP_NODE: process.execPath,
+          VIBECODINGER_ACP_MCP_ENTRYPOINT: entrypoint,
         });
         // Model refresh and sign-in launches are not part of a thread.
         expect(agentLaunches[0]?.environment).toMatchObject({
-          T3CODE_THREAD_ID: "thread-antigravity-ambient",
-          T3_ACP_MCP_ENDPOINT: "http://127.0.0.1:9/ambient",
-          T3_ACP_MCP_AUTHORIZATION: "Bearer ambient-token",
-          T3_ACP_MCP_NODE: "/ambient/node",
-          T3_ACP_MCP_ENTRYPOINT: "/ambient/entrypoint.mjs",
+          VIBECODINGER_THREAD_ID: "thread-antigravity-ambient",
+          VIBECODINGER_ACP_MCP_ENDPOINT: "http://127.0.0.1:9/ambient",
+          VIBECODINGER_ACP_MCP_AUTHORIZATION: "Bearer ambient-token",
+          VIBECODINGER_ACP_MCP_NODE: "/ambient/node",
+          VIBECODINGER_ACP_MCP_ENTRYPOINT: "/ambient/entrypoint.mjs",
         });
         yield* h.assertClosed;
       }),
@@ -546,7 +550,9 @@ it.layer(layerTest)("AntigravityDriver", (it) => {
         const modelSelection = { instanceId: h.instance.instanceId, model: "gemini-test-low" };
         const error = yield* Effect.scoped(
           Effect.gen(function* () {
-            const workspace = yield* h.fs.makeTempDirectoryScoped({ prefix: "t3-ag-old-runtime-" });
+            const workspace = yield* h.fs.makeTempDirectoryScoped({
+              prefix: "vibecodinger-ag-old-runtime-",
+            });
             const runtimePolicy = ProviderAdapter.ProviderAdapterV2RuntimePolicy.make({
               runtimeMode: "approval-required",
               interactionMode: "default",
@@ -561,7 +567,7 @@ it.layer(layerTest)("AntigravityDriver", (it) => {
             yield* session.ensureThread({ threadId, modelSelection, runtimePolicy });
           }),
         ).pipe(Effect.flip);
-        const message = `Antigravity 1.4.5 does not work with this T3 Code release. Update the Antigravity executable at ${old.executablePath} to >=1.5.12 <2, then retry.`;
+        const message = `Antigravity 1.4.5 does not work with this VibeCodinger release. Update the Antigravity executable at ${old.executablePath} to >=1.5.12 <2, then retry.`;
         expect(knownProviderFailureMessage(error)).toBe(message);
         expect((yield* h.refresh().pipe(Effect.flip)).detail).toBe(message);
         const methods = (yield* h.readRequests).map((request) => request.method);

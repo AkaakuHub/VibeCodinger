@@ -1,3 +1,7 @@
+export const RELEASES_URL = "https://github.com/AkaakuHub/t3code/releases";
+
+export const TRIAGE_CLI_COMMAND = "vibecodinger triage";
+
 const NIGHTLY_SERVER_VERSION_PATTERN = /^[^-+]+-(?:nightly|preview)\.\d{8}\.\d+$/;
 
 export function formatAppDisplayName(input: {
@@ -13,7 +17,7 @@ export function formatAppDisplayName(input: {
 
 export function resolveHostedAppChannelLabel(channel: string | null | undefined): string | null {
   const normalized = channel?.trim().toLowerCase();
-  // oxlint-disable-next-line t3code/no-untranslated-copy -- release channel name, part of the product name
+  // oxlint-disable-next-line vibecodinger/no-untranslated-copy -- release channel name, part of the product name
   return normalized === "nightly" ? "Nightly" : normalized === "latest" ? "Latest" : null;
 }
 
@@ -23,7 +27,7 @@ export function resolveWebAppStageLabel(input: {
   readonly development: boolean;
 }): string {
   return (
-    // oxlint-disable-next-line t3code/no-untranslated-copy -- release channel name, part of the product name
+    // oxlint-disable-next-line vibecodinger/no-untranslated-copy -- release channel name, part of the product name
     resolveHostedAppChannelLabel(input.hostedAppChannel) ?? (input.development ? "Dev" : "Beta")
   );
 }
@@ -34,7 +38,7 @@ export function resolveServerBackedAppStageLabel(input: {
 }): string {
   return input.primaryServerVersion &&
     NIGHTLY_SERVER_VERSION_PATTERN.test(input.primaryServerVersion)
-    ? // oxlint-disable-next-line t3code/no-untranslated-copy -- release channel name, part of the product name
+    ? // oxlint-disable-next-line vibecodinger/no-untranslated-copy -- release channel name, part of the product name
       "Nightly"
     : input.fallbackStageLabel;
 }

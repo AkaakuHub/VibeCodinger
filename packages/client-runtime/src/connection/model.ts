@@ -1,5 +1,5 @@
-import { EnvironmentId, type ExecutionEnvironmentDescriptor } from "@t3tools/contracts";
-import { RelayEnvironmentEndpointFailure } from "@t3tools/contracts/relay";
+import { EnvironmentId, type ExecutionEnvironmentDescriptor } from "@vibecodinger/contracts";
+import { RelayEnvironmentEndpointFailure } from "@vibecodinger/contracts/relay";
 import * as Schema from "effect/Schema";
 
 import { MarkedText } from "../errors/translatable.ts";
@@ -78,7 +78,7 @@ export const ConnectionBlockedReason = Schema.Literals([
 ]);
 export type ConnectionBlockedReason = typeof ConnectionBlockedReason.Type;
 
-/** A part of the path to an environment: this device, T3 Connect, the host's tunnel, or T3 Code on the host. */
+/** A part of the path to an environment: this device, T3 Connect, the host's tunnel, or VibeCodinger on the host. */
 export const ConnectionHop = Schema.Literals(["device", "relay", "tunnel", "server"]);
 export type ConnectionHop = typeof ConnectionHop.Type;
 
@@ -97,7 +97,7 @@ export type ConnectionFailureCause = typeof ConnectionFailureCause.Type;
 /**
  * Where and why a failure happened, when the code that saw it knows. See
  * `presentConnectionDiagnosis`. `via` names the route when the hop alone does
- * not: T3 Code on the host can fail behind the tunnel or on a direct route.
+ * not: VibeCodinger on the host can fail behind the tunnel or on a direct route.
  */
 const ConnectionFailureFields = {
   hop: Schema.optionalKey(ConnectionHop),
@@ -172,6 +172,7 @@ export interface PreparedConnection {
   readonly target: ConnectionTarget;
   /** What the server said about itself while this connection was prepared. */
   readonly descriptor?: ExecutionEnvironmentDescriptor;
+  readonly e2eeServerIdentityKey?: string;
 }
 
 export type SupervisorConnectionPhase =

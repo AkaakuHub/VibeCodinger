@@ -5,10 +5,9 @@ import * as Option from "effect/Option";
 import {
   ORCHESTRATION_PROTOCOL_HEADER,
   ORCHESTRATION_PROTOCOL_VERSION_TEXT,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import * as Result from "effect/Result";
 import * as SubscriptionRef from "effect/SubscriptionRef";
-import { withRelayClientTracing } from "@t3tools/shared/relayTracing";
 import { FetchHttpClient, type HttpMethod } from "effect/http";
 
 import * as RemoteEnvironmentAuthorization from "../authorization/service.ts";
@@ -96,11 +95,6 @@ const buildEnvironmentAuthHeaders = Effect.fn("environmentHttpAuth.buildEnvironm
   },
 );
 
-/**
- * A DPoP request is T3 Connect work, so its span starts an exported trace that
- * the environment continues; its local caller's span would leave that trace
- * without a root.
- */
 export const executeAuthenticatedEnvironmentHttpRequest = <
   Group extends Parameters<typeof makeEnvironmentHttpApiGroupClient>[1],
   A,
@@ -108,13 +102,7 @@ export const executeAuthenticatedEnvironmentHttpRequest = <
   R,
 >(
   input: Parameters<typeof executeEnvironmentRequest<Group, A, E, R>>[0],
-) =>
-  input.prepared.httpAuthorization?._tag === "Dpop"
-    ? executeEnvironmentRequest(input).pipe(
-        Effect.withSpan(ENVIRONMENT_REQUEST_SPAN, { root: true }),
-        withRelayClientTracing,
-      )
-    : executeEnvironmentRequest(input).pipe(Effect.withSpan(ENVIRONMENT_REQUEST_SPAN));
+) => executeEnvironmentRequest(input).pipe(Effect.withSpan(ENVIRONMENT_REQUEST_SPAN));
 
 /** Sends the request with this client's own credentials on the supervised environment. */
 export const executeConnectedEnvironmentHttpRequest = Effect.fn(

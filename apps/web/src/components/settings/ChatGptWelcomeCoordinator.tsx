@@ -1,5 +1,5 @@
 import { useAtomValue } from "@effect/atom-react";
-import { usesChatGptSharing } from "@t3tools/shared/usageLimits";
+import { usesChatGptSharing } from "@vibecodinger/shared/usageLimits";
 import { T, Var } from "gt-react";
 import { useState } from "react";
 import { environmentPresentations } from "../../state/presentation";
@@ -70,8 +70,8 @@ export function ChatGptWelcomeCoordinator() {
           </DialogTitle>
           <DialogDescription>
             <T>
-              Eligible usage in T3 Code uses your ChatGPT plan. Manage your shared usage and any
-              credit settings in ChatGPT.
+              Eligible usage in VibeCodinger uses your ChatGPT plan. Manage your shared usage and
+              any credit settings in ChatGPT.
             </T>
           </DialogDescription>
           <p className="text-xs text-muted-foreground">

@@ -10,7 +10,7 @@ import * as Stream from "effect/Stream";
 import { HttpClient, HttpClientResponse } from "effect/http";
 import * as TestClock from "effect/testing/TestClock";
 import { ChildProcessSpawner } from "effect/process";
-import * as HostProcess from "@t3tools/shared/HostProcess";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
 
 import {
   ensureTailscaleServe,
@@ -124,7 +124,7 @@ describe("tailscale", () => {
     }),
   );
 
-  it.effect("does not treat another T3 server behind the Serve URL as this server", () =>
+  it.effect("does not treat another VibeCodinger server behind the Serve URL as this server", () =>
     Effect.gen(function* () {
       const answer = (environmentId: string) =>
         HttpClient.make((request) =>
@@ -133,7 +133,7 @@ describe("tailscale", () => {
               request,
               Response.json({
                 environmentId,
-                label: "T3 server",
+                label: "VibeCodinger server",
                 platform: { os: "linux", arch: "x64" },
                 serverVersion: "0.1.9",
                 capabilities: { repositoryIdentity: true },
@@ -163,7 +163,7 @@ describe("tailscale", () => {
       Web: {
         "box.tailnet.ts.net:443": {
           Handlers: {
-            "/t3": { Proxy: "http://127.0.0.1:3773" },
+            "/vibecodinger": { Proxy: "http://127.0.0.1:3773" },
             "/dashboard": { Proxy: "http://127.0.0.1:9000" },
           },
         },
@@ -207,7 +207,7 @@ describe("tailscale", () => {
     });
     assert.deepEqual(parseTailscaleServeRoutesTo(status, { host: "127.0.0.1", port: 3773 }), [
       { servePort: 7000 },
-      { servePort: 443, mount: "/t3", host: "box.tailnet.ts.net" },
+      { servePort: 443, mount: "/vibecodinger", host: "box.tailnet.ts.net" },
       // `localhost` and `[::]` can dial either loopback, so they might be another service's.
       ...(
         [
@@ -318,12 +318,10 @@ describe("tailscale", () => {
 
   it.effect("reads the HTTPS serve capability from the status capability map", () =>
     Effect.gen(function* () {
-      const enabled = yield* parseTailscaleStatus(
-        `{"Self":{"CapMap":{"https":null,"funnel":null}}}`,
-      );
+      const enabled = yield* parseTailscaleStatus(`{"Self":{"CapMap":{"https":null,"ssh":null}}}`);
       assert.equal(enabled.httpsServeEnabled, true);
 
-      const disabled = yield* parseTailscaleStatus(`{"Self":{"CapMap":{"funnel":null}}}`);
+      const disabled = yield* parseTailscaleStatus(`{"Self":{"CapMap":{"ssh":null}}}`);
       assert.equal(disabled.httpsServeEnabled, false);
     }),
   );

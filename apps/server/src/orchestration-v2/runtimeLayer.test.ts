@@ -1,8 +1,8 @@
-import { PullRequestProviderError } from "@t3tools/source-control-core/server/PullRequestProvider";
-import { PullRequestUnavailableError, SourceControlProviderKind } from "@t3tools/contracts";
+import { PullRequestProviderError } from "@vibecodinger/source-control-core/server/PullRequestProvider";
+import { PullRequestUnavailableError, SourceControlProviderKind } from "@vibecodinger/contracts";
 import { limitRecoveryCommand } from "./UsageLimitRecoveryWorker.ts";
-import { createOrchestrationV2TurnItemVisibility } from "@t3tools/shared/orchestrationV2Timeline";
-import * as McpProviderSessions from "@t3tools/provider-core/server/McpProviderSessions";
+import { createOrchestrationV2TurnItemVisibility } from "@vibecodinger/shared/orchestrationV2Timeline";
+import * as McpProviderSessions from "@vibecodinger/provider-core/server/McpProviderSessions";
 import * as SourceControlProviderRegistry from "../sourceControl/SourceControlProviderRegistry.ts";
 import * as NodeCrypto from "@effect/platform-node/NodeCrypto";
 import * as NodeServices from "@effect/platform-node/NodeServices";
@@ -40,7 +40,7 @@ import {
   RunId,
   ScheduledTaskId,
   ThreadId,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import * as Effect from "effect/Effect";
 import * as DateTime from "effect/DateTime";
 import * as Deferred from "effect/Deferred";
@@ -69,7 +69,7 @@ import * as ServerSettings from "../serverSettings.ts";
 import * as McpSessionRegistryTestkit from "../mcp/McpSessionRegistry.testkit.ts";
 import * as ModelManifest from "../provider/ModelManifest.ts";
 import * as ProviderInstanceRegistry from "../provider/ProviderInstanceRegistry.ts";
-import type { ProviderInstance } from "@t3tools/provider-core/server/driver";
+import type { ProviderInstance } from "@vibecodinger/provider-core/server/driver";
 import * as VcsDriverRegistry from "../vcs/VcsDriverRegistry.ts";
 import * as VcsProcess from "../vcs/VcsProcess.ts";
 import * as WorkspacePaths from "../workspace/WorkspacePaths.ts";
@@ -107,7 +107,7 @@ import * as ResourceCleanupService from "./ResourceCleanupService.ts";
 import * as ThreadLaunchService from "./ThreadLaunchService.ts";
 import * as ThreadCommandExecutor from "./ThreadCommandExecutor.ts";
 import * as DelegatedTaskQuestionReactor from "./DelegatedTaskQuestionReactor.ts";
-import type * as ProviderAdapter from "@t3tools/provider-core/server/ProviderAdapter";
+import type * as ProviderAdapter from "@vibecodinger/provider-core/server/ProviderAdapter";
 
 const layerPlatformTest = Layer.mergeAll(
   Layer.mock(ProjectSetupScriptRunner.ProjectSetupScriptRunner)({
@@ -120,7 +120,7 @@ const layerPlatformTest = Layer.mergeAll(
 );
 
 const layerServerConfig = ServerConfig.layerTest(process.cwd(), {
-  prefix: "t3-orchestration-v2-runtime-layer-",
+  prefix: "vibecodinger-orchestration-v2-runtime-layer-",
 });
 
 const modelSelection = {
@@ -1447,7 +1447,7 @@ it.layer(layerTest)("OrchestrationV2LayerLive", (it) => {
               parentCheckpointId: null,
               ordinalWithinScope: 0,
               appRunOrdinal: null,
-              ref: CheckpointRef.make(`refs/t3/${name}`),
+              ref: CheckpointRef.make(`refs/vibecodinger/${name}`),
               status: "ready",
               files: [],
               capturedAt: now,
@@ -1510,7 +1510,9 @@ it.layer(layerTest)("OrchestrationV2LayerLive", (it) => {
       const worker = yield* EffectWorker.OrchestrationEffectWorkerV2;
       const sessions = yield* ProviderSessionManager.ProviderSessionManagerV2;
       const fileSystem = yield* FileSystem.FileSystem;
-      const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-non-git-rewind-" });
+      const cwd = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-non-git-rewind-",
+      });
       const threadId = ThreadId.make("runtime-non-git-rewind");
       const rollbackThread = vi.fn(
         ({ providerThread }: ProviderAdapter.ProviderAdapterV2RollbackThreadInput) =>
@@ -1779,7 +1781,7 @@ it.layer(layerTest)("OrchestrationV2LayerLive", (it) => {
                 parentCheckpointId: null,
                 ordinalWithinScope: 0,
                 appRunOrdinal: null,
-                ref: CheckpointRef.make(`refs/t3/runtime-rollback-${status}`),
+                ref: CheckpointRef.make(`refs/vibecodinger/runtime-rollback-${status}`),
                 status,
                 files: [],
                 capturedAt: now,
@@ -3627,7 +3629,7 @@ const writeHtmlRenderRun = Effect.fn("test.writeHtmlRenderRun")(function* (input
           startedAt: now,
           completedAt: now,
           updatedAt: now,
-          toolName: "mcp__t3-code__html_render",
+          toolName: "mcp__vibe-codinger__html_render",
           input: {},
           output: [
             {
@@ -7909,7 +7911,7 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
           notification: {
             source: { kind: "system" as const },
             outcome: "updated" as const,
-            summary: "T3 Code restarted and resumed this turn",
+            summary: "VibeCodinger restarted and resumed this turn",
             detail: "Continue where you left off.",
           },
           attachments: [],
@@ -7930,7 +7932,7 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
           continuationItems.flatMap((item) =>
             item.type === "notification" ? [[item.summary, item.detail]] : [],
           ),
-          ["T3 Code restarted and resumed this turn", "Continue where you left off."],
+          ["VibeCodinger restarted and resumed this turn", "Continue where you left off."],
         );
         yield* orchestrator.dispatch({
           ...command,
@@ -8031,7 +8033,7 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
           commandId: CommandId.make(`restart-${status}-${kind}-continuation`),
           threadId,
           messageId: MessageId.make(`restart-${status}-${kind}-continuation`),
-          text: "Note: the T3 server restarted.",
+          text: "Note: the VibeCodinger server restarted.",
           attachments: [],
           modelSelection,
           dispatchMode: { type: "start_immediately" },
@@ -10415,7 +10417,7 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
           creationSource: "web",
         });
       }
-      // What t3_thread_send dispatches: no model of its own.
+      // What vc_thread_send dispatches: no model of its own.
       yield* orchestrator.dispatch({
         type: "message.dispatch",
         commandId: CommandId.make(`${threadId}:agent`),

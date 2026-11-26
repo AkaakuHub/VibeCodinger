@@ -25,7 +25,6 @@ import {
   routeEntry,
   routeHttpBaseUrl,
   routeKeepsItsHost,
-  sendsTokenInClear,
   usableRoutes,
 } from "./routes.ts";
 import * as RemoteEnvironmentAuthorization from "../authorization/service.ts";
@@ -78,7 +77,7 @@ export class ConnectionDriver extends Context.Service<
     /** Asks the host behind a live session to answer a fresh request on the session's own origin. */
     readonly checkHost: (prepared: PreparedConnection) => Effect.Effect<RouteCheck>;
   }
->()("@t3tools/client-runtime/connection/driver/ConnectionDriver") {}
+>()("@vibecodinger/client-runtime/connection/driver/ConnectionDriver") {}
 
 export const connectOverRoutes = Effect.fn("ConnectionDriver.connectOverRoutes")(function* <R>(
   entry: ConnectionCatalogEntry,
@@ -272,7 +271,9 @@ export const make = Effect.gen(function* () {
 
   const preflight = (entry: ConnectionCatalogEntry, route: ConnectionRoute) =>
     preflightRoute(
-      sendsTokenInClear(connectionRoutes(entry), route)
+      !usableRoutes(entry).some(
+        (candidate) => connectionRouteId(candidate.target) === connectionRouteId(route.target),
+      )
         ? Effect.succeed("silent" as const)
         : checkRoute(entry, route),
       resolver.prepare(routeEntry(entry, route)),

@@ -13,9 +13,9 @@ import {
   RunAttemptId,
   RunId,
   ThreadId,
-} from "@t3tools/contracts";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { resolveSelfInvocation } from "@t3tools/shared/nodeRuntime";
+} from "@vibecodinger/contracts";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
+import { resolveSelfInvocation } from "@vibecodinger/shared/nodeRuntime";
 import * as SecureRandom from "effect/crypto/SecureRandom";
 import * as DateTime from "effect/DateTime";
 import * as Effect from "effect/Effect";
@@ -25,11 +25,11 @@ import * as Path from "effect/Path";
 import * as Schema from "effect/Schema";
 import * as Stream from "effect/Stream";
 
-import * as AcpSessionRuntime from "@t3tools/provider-acp/server/AcpSessionRuntime";
-import * as IdAllocator from "@t3tools/provider-core/server/IdAllocator";
-import * as McpProviderSessions from "@t3tools/provider-core/server/McpProviderSessions";
-import * as ProviderAdapter from "@t3tools/provider-core/server/ProviderAdapter";
-import * as TestProviderHost from "@t3tools/provider-testing/TestProviderHost";
+import * as AcpSessionRuntime from "@vibecodinger/provider-acp/server/AcpSessionRuntime";
+import * as IdAllocator from "@vibecodinger/provider-core/server/IdAllocator";
+import * as McpProviderSessions from "@vibecodinger/provider-core/server/McpProviderSessions";
+import * as ProviderAdapter from "@vibecodinger/provider-core/server/ProviderAdapter";
+import * as TestProviderHost from "@vibecodinger/provider-testing/TestProviderHost";
 import { GrokSettings } from "../settings.ts";
 import { makeGrokAcpAdapterFlavor, makeGrokAdapterV2 } from "./adapter.ts";
 
@@ -90,7 +90,9 @@ const writesPerSelection = (
   Effect.gen(function* () {
     const fileSystem = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const directory = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-grok-effort-" });
+    const directory = yield* fileSystem.makeTempDirectoryScoped({
+      prefix: "vibecodinger-grok-effort-",
+    });
     const requestLogPath = path.join(directory, "requests.ndjson");
     yield* fileSystem.writeFileString(requestLogPath, "");
     const agentPath = yield* path.fromFileUrl(
@@ -111,7 +113,7 @@ const writesPerSelection = (
                 command: process.execPath,
                 args: [agentPath],
                 cwd: runtimeInput.cwd,
-                env: { ...agentEnvironment, T3_ACP_REQUEST_LOG_PATH: requestLogPath },
+                env: { ...agentEnvironment, VIBECODINGER_ACP_REQUEST_LOG_PATH: requestLogPath },
               },
               authMethodId: "cached_token",
             }),
@@ -219,27 +221,33 @@ describe("Grok reasoning effort", () => {
 
   it.live("protocol 1 carries the selected effort on session/set_model", () =>
     Effect.gen(function* () {
-      assert.deepEqual(yield* writesPerSelection(selections, { T3_GROK_MOCK_PROTOCOL: "1" }), [
-        ["set_model grok-4.6 effort=low"],
-        ["set_model grok-4.6 effort=high"],
-        [],
-        ["set_model grok-4.6 effort=high"],
-        ["set_model grok-4.6-fast"],
-        ["set_model grok-4.6 effort=low"],
-      ]);
+      assert.deepEqual(
+        yield* writesPerSelection(selections, { VIBECODINGER_GROK_MOCK_PROTOCOL: "1" }),
+        [
+          ["set_model grok-4.6 effort=low"],
+          ["set_model grok-4.6 effort=high"],
+          [],
+          ["set_model grok-4.6 effort=high"],
+          ["set_model grok-4.6-fast"],
+          ["set_model grok-4.6 effort=low"],
+        ],
+      );
     }),
   );
 
   it.live("newer protocols write the session's own reasoning_effort option", () =>
     Effect.gen(function* () {
-      assert.deepEqual(yield* writesPerSelection(selections, { T3_GROK_MOCK_PROTOCOL: "2" }), [
-        ["set_config_option reasoning_effort=low"],
-        ["set_config_option reasoning_effort=high"],
-        [],
-        [],
-        ["set_config_option model=grok-4.6-fast"],
-        ["set_config_option model=grok-4.6", "set_config_option reasoning_effort=low"],
-      ]);
+      assert.deepEqual(
+        yield* writesPerSelection(selections, { VIBECODINGER_GROK_MOCK_PROTOCOL: "2" }),
+        [
+          ["set_config_option reasoning_effort=low"],
+          ["set_config_option reasoning_effort=high"],
+          [],
+          [],
+          ["set_config_option model=grok-4.6-fast"],
+          ["set_config_option model=grok-4.6", "set_config_option reasoning_effort=low"],
+        ],
+      );
     }),
   );
 
@@ -248,15 +256,15 @@ describe("Grok reasoning effort", () => {
       const refused = [select("grok-4.6-fast", "low")];
       assert.deepEqual(
         yield* writesPerSelection(refused, {
-          T3_GROK_MOCK_PROTOCOL: "1",
-          T3_GROK_MOCK_REJECT_EFFORT: "low",
+          VIBECODINGER_GROK_MOCK_PROTOCOL: "1",
+          VIBECODINGER_GROK_MOCK_REJECT_EFFORT: "low",
         }),
         [["set_model grok-4.6-fast effort=low", "set_model grok-4.6-fast"]],
       );
       assert.deepEqual(
         yield* writesPerSelection(refused, {
-          T3_GROK_MOCK_PROTOCOL: "2",
-          T3_GROK_MOCK_REJECT_EFFORT: "low",
+          VIBECODINGER_GROK_MOCK_PROTOCOL: "2",
+          VIBECODINGER_GROK_MOCK_REJECT_EFFORT: "low",
         }),
         [["set_config_option model=grok-4.6-fast", "set_config_option reasoning_effort=low"]],
       );

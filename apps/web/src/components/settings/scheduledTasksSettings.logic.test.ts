@@ -7,7 +7,7 @@ import {
   ScheduledTaskId,
   type ScheduledTask,
   ThreadId,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 
 import type {
@@ -38,7 +38,7 @@ function member(id: string, environmentId: EnvironmentId): SidebarProjectGroupMe
   return {
     id: ProjectId.make(id),
     environmentId,
-    title: "T3 Code",
+    title: "VibeCodinger",
     workspaceRoot: `/repos/${id}`,
     physicalProjectKey: `${environmentId}:/repos/${id}`,
     environmentLabel:

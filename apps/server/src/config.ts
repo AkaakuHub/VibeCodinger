@@ -8,18 +8,11 @@ import * as Path from "effect/Path";
 import type * as Redacted from "effect/Redacted";
 import * as Schema from "effect/Schema";
 
-import type { OtlpEndpointSource } from "@t3tools/contracts";
 import { sweepStalePendingAttachments } from "./attachmentStore.ts";
 import { markNoCopyOnWrite } from "./noCopyOnWrite.ts";
-import { DEFAULT_SIGNAL_EXPORT, type SignalExport } from "@t3tools/shared/observability";
-import * as OtelEnvironment from "@t3tools/shared/otelEnvironment";
-import type { ReleaseChannel } from "@t3tools/shared/releaseResource";
-
-// Official release workflows set this telemetry channel; other builds report dev.
-// Unlike __T3CODE_BUILD_CHANNEL__, this is not the sign-in page's latest/nightly channel.
-declare const __T3CODE_TELEMETRY_CHANNEL__: ReleaseChannel | undefined;
-export const telemetryChannel: ReleaseChannel =
-  typeof __T3CODE_TELEMETRY_CHANNEL__ === "undefined" ? "dev" : __T3CODE_TELEMETRY_CHANNEL__;
+declare const __VIBECODINGER_RELEASE_BUILD__: boolean;
+export const releaseBuild =
+  typeof __VIBECODINGER_RELEASE_BUILD__ !== "undefined" && __VIBECODINGER_RELEASE_BUILD__;
 
 export const DEFAULT_PORT = 3773;
 
@@ -66,19 +59,7 @@ export class ServerConfig extends Context.Service<
     readonly traceBatchWindowMs: number;
     readonly traceMaxBytes: number;
     readonly traceMaxFiles: number;
-    readonly otlpTracesUrl: string | undefined;
-    readonly otlpMetricsUrl: string | undefined;
-    readonly otlpLogsUrl: string | undefined;
-    readonly otlpTracesExport: SignalExport;
-    readonly otlpMetricsExport: SignalExport;
-    readonly otlpLogsExport: SignalExport;
-    readonly otlpTracesSource?: OtlpEndpointSource;
-    readonly otlpTracesVariable?: string;
-    readonly otlpMetricsSource?: OtlpEndpointSource;
-    readonly otlpMetricsVariable?: string;
-    readonly otlpLogsSource?: OtlpEndpointSource;
-    readonly otlpLogsVariable?: string;
-    readonly otelEnvironment: OtelEnvironment.OtelEnvironment;
+
     readonly mode: RuntimeMode;
     readonly port: number;
     readonly host: string | undefined;
@@ -107,7 +88,7 @@ export class ServerConfig extends Context.Service<
     readonly tailscaleServeEnabled: boolean;
     readonly tailscaleServePort: number;
   }
->()("t3/config/ServerConfig") {
+>()("vibecodinger/config/ServerConfig") {
   static readonly layerTest = (
     cwd: string,
     baseDirOrPrefix: string | { readonly prefix: string },
@@ -222,13 +203,6 @@ const makeTest = Effect.fn("ServerConfig.makeTest")(function* (
     traceBatchWindowMs: 200,
     traceMaxBytes: 10 * 1024 * 1024,
     traceMaxFiles: 10,
-    otlpTracesUrl: undefined,
-    otlpMetricsUrl: undefined,
-    otlpLogsUrl: undefined,
-    otlpTracesExport: DEFAULT_SIGNAL_EXPORT,
-    otlpMetricsExport: DEFAULT_SIGNAL_EXPORT,
-    otlpLogsExport: DEFAULT_SIGNAL_EXPORT,
-    otelEnvironment: OtelEnvironment.none,
     cwd,
     baseDir,
     ...derivedPaths,

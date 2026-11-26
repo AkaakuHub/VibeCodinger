@@ -1,4 +1,4 @@
-# T3 Code Mobile
+# VibeCodinger Mobile
 
 > [!NOTE]
 > To install the released app from the App Store or Google Play, see [Mobile app](../../docs/user/install.md#mobile-app). This guide covers building it from source.
@@ -10,15 +10,11 @@
 
 This app has three variants:
 
-- `development`: Expo dev client, installable side-by-side as `T3 Code Dev`
-- `preview`: persistent internal preview build, installable side-by-side as `T3 Code Preview`
-- `production`: store/release build as `T3 Code`
+- `development`: Expo dev client, installable side-by-side as `VibeCodinger Dev`
+- `preview`: persistent internal preview build, installable side-by-side as `VibeCodinger Preview`
+- `production`: release build as `VibeCodinger`
 
 Run commands from `apps/mobile`.
-
-T3 Connect is optional and disabled in a fresh clone. Public configuration belongs in the
-repository-root `.env` or `.env.local`, not an `apps/mobile/.env` file. See
-[`../../.env.example`](../../.env.example).
 
 ## Development
 
@@ -33,17 +29,10 @@ vp run dev:client
 
 The device argument can be omitted when exactly one device is booted or connected. The helper
 compares this checkout's Expo fingerprint and the installed binary with its last install record,
-and reuses a matching client. Otherwise it installs the build for that fingerprint from
-`~/.cache/t3code/native-clients/artifacts`, then the shared task cache, and builds only when
-neither has it. A build runs in the `Mobile Dev Client` workflow (Blacksmith runners with warm
-Gradle and ccache state, and a macOS runner for iOS) when `gh` may dispatch workflows on
-`pingdotgg/t3code` and HEAD is pushed; the helper waits for the client in the shared cache.
-Otherwise, or when HEAD lacks your native edits or `T3_NATIVE_CLIENT_BUILD=local` is set, it builds
-on this machine. Main's client is built there on every native change, so most checkouts hit. One iOS simulator build serves every iPhone and iPad simulator, and one APK per
-ABI (x86_64 or arm64-v8a) serves every emulator and phone of that ABI. Build output goes to the
-log file it prints (`T3_NATIVE_CLIENT_VERBOSE=1` streams it instead). Builds are shared back when
-your task-cache login (`bash infra/task-cache/install.sh`) can write. `T3_NATIVE_CLIENT_CACHE=read`
-skips the upload and `off` skips the shared cache. Physical iPhones still use `vp run ios:dev`.
+and reuses a matching client. Otherwise it reuses a build for that fingerprint from
+`~/.cache/vibecodinger/native-clients/artifacts` or builds it locally. One iOS simulator build
+serves every simulator. Each Android build targets one ABI. Build output goes to the log file
+printed by the helper. Physical iPhones use `vp run ios:dev`.
 
 `--session <name>` installs into an agent-device session opened elsewhere, such as a device pool
 or a cloud simulator, instead of a local device: `vp run mobile:install android --session pool-1
@@ -84,12 +73,12 @@ project. pnpm gives each patch hash a new package path; Pods can otherwise keep 
 previous directory.
 
 If your Xcode account only has a Personal Team, use a bundle identifier you control and opt into the
-reduced-capability local build. Personal Team builds omit the widget and share extensions, push
-entitlement, and native Sign in with Apple entitlement; builds without this opt-in are unchanged.
+reduced-capability local build. Personal Team builds omit the widget and share extensions and the
+native Sign in with Apple entitlement.
 
 ```bash
-T3CODE_IOS_PERSONAL_TEAM=1 \
-T3CODE_IOS_PERSONAL_TEAM_BUNDLE_ID=com.example.t3code.dev \
+VIBECODINGER_IOS_PERSONAL_TEAM=1 \
+VIBECODINGER_IOS_PERSONAL_TEAM_BUNDLE_ID=com.example.vibecodinger.dev \
 vp run ios:dev
 ```
 
@@ -102,10 +91,27 @@ vp run ios:release
 The Personal Team equivalent also needs a unique bundle identifier:
 
 ```bash
-T3CODE_IOS_PERSONAL_TEAM=1 \
-T3CODE_IOS_PERSONAL_TEAM_BUNDLE_ID=com.example.t3code \
+VIBECODINGER_IOS_PERSONAL_TEAM=1 \
+VIBECODINGER_IOS_PERSONAL_TEAM_BUNDLE_ID=com.example.t3code \
 vp run ios:release
 ```
+
+### iPhone IPA for SideStore or AltStore Classic
+
+Run **Fork iPhone IPA** on the fork's `main` branch and give it a new tag such
+as `ios-v2.3.0`. The workflow attaches `VibeCodinger-unsigned.ipa` and its SHA-256
+checksum to a draft GitHub release. It uses the Personal Team capabilities
+above and embeds the JavaScript bundle for offline launch. Review the draft
+before publishing it.
+
+On iOS 27 or later in a region that supports AltStore PAL, install AltStore
+Classic through PAL. Complete **Set up Remote AltServer** in Classic's
+settings. Then download the IPA from GitHub Releases on the iPhone, open it
+in Classic, and sign it with your own Apple account. Install and refresh over
+Wi-Fi. See [AltStore Classic 2.3](https://faq.altstore.io/release-notes/altstore#altstore-2.3).
+
+[SideStore](https://docs.sidestore.io/docs/installation/install.html) also
+supports re-signing the IPA. Keep the same signing account when updating.
 
 Build and run the local iOS preview app:
 
@@ -133,10 +139,6 @@ The native lint task runs SwiftLint for Swift plus ktlint and detekt for Kotlin.
 Preview and production variants use Expo fingerprinting so OTA updates only reach binaries with matching native dependencies, config plugins, and patches. CI uses the `preview:dev` profile to reuse a compatible native build when possible.
 
 The development variant uses `appVersion` to avoid recalculating the native fingerprint for each Metro launch manifest. `MOBILE_VERSION_POLICY` can override either default. If you distribute a custom Release build with the development identity and publish OTA updates to it, set `MOBILE_VERSION_POLICY=fingerprint` for both its build and updates. Changing the runtime policy requires a native rebuild for OTA matching; an existing dev client can still load local Metro bundles.
-
-For preview or production EAS environments, set `T3CODE_CLERK_PUBLISHABLE_KEY`,
-`T3CODE_CLERK_JWT_TEMPLATE`, and `T3CODE_RELAY_URL`
-as EAS environment variables. Expo config maps the canonical values into the mobile build.
 
 Create a PR preview dev-client build manually:
 

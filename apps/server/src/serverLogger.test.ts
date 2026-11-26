@@ -3,7 +3,7 @@ import { assert, describe, it } from "@effect/vitest";
 import * as NodeOS from "node:os";
 import * as NodeUtil from "node:util";
 
-import { ExternalLauncherBrowserSpawnError } from "@t3tools/contracts";
+import { ExternalLauncherBrowserSpawnError } from "@vibecodinger/contracts";
 import * as Cause from "effect/Cause";
 import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
@@ -15,9 +15,6 @@ import * as Tracer from "effect/Tracer";
 import * as HttpClient from "effect/http/HttpClient";
 import * as HttpClientResponse from "effect/http/HttpClientResponse";
 import * as TestConsole from "effect/testing/TestConsole";
-
-import { DEFAULT_SIGNAL_EXPORT } from "@t3tools/shared/observability";
-import * as OtelEnvironment from "@t3tools/shared/otelEnvironment";
 
 import * as ServerConfig from "./config.ts";
 import * as ExternalLauncher from "./process/externalLauncher.ts";
@@ -55,7 +52,7 @@ const layerConfig = (overrides: Partial<ServerConfig.ServerConfig["Service"]>) =
     ServerConfig.ServerConfig,
     Effect.gen(function* () {
       const path = yield* Path.Path;
-      const baseDir = path.join(NodeOS.tmpdir(), "t3-server-logger-test");
+      const baseDir = path.join(NodeOS.tmpdir(), "vibecodinger-server-logger-test");
       const derivedPaths = yield* ServerConfig.deriveServerPaths(baseDir, undefined);
       return ServerConfig.make({
         logLevel: "Info",
@@ -64,13 +61,7 @@ const layerConfig = (overrides: Partial<ServerConfig.ServerConfig["Service"]>) =
         traceBatchWindowMs: 200,
         traceMaxBytes: 1024,
         traceMaxFiles: 1,
-        otlpTracesUrl: undefined,
-        otlpMetricsUrl: undefined,
-        otlpLogsUrl: undefined,
-        otlpTracesExport: DEFAULT_SIGNAL_EXPORT,
-        otlpMetricsExport: DEFAULT_SIGNAL_EXPORT,
-        otlpLogsExport: DEFAULT_SIGNAL_EXPORT,
-        otelEnvironment: OtelEnvironment.none,
+
         cwd: baseDir,
         baseDir,
         ...derivedPaths,
@@ -153,9 +144,7 @@ const printThroughConsole = (fields: object) =>
 describe("ServerLoggerLive", () => {
   it.effect("does not send logs to a configured external collector", () =>
     Effect.gen(function* () {
-      const { requests, spans } = yield* logInSpanThrough({
-        otlpLogsUrl: "https://collector.example.com/v1/logs",
-      });
+      const { requests, spans } = yield* logInSpanThrough({});
       assert.lengthOf(requests, 0);
       assert.isTrue(spans.some((span) => span.events.length > 0));
     }),

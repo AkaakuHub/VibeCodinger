@@ -66,13 +66,16 @@ import {
   latestProviderTurnForAttempt,
   resolveProjectProviderInstanceEnabled,
   SECRET_REQUEST_UNSAVED_NOTE,
-} from "@t3tools/contracts";
-import { getProviderOptionCurrentValue, withLegacyUltracodeEffort } from "@t3tools/shared/model";
-import { backgroundWorkHoldsCompletion } from "@t3tools/shared/orchestrationV2PendingBackgroundWork";
-import { runRanAfter } from "@t3tools/shared/orchestrationV2ThreadError";
-import { resolveProjectSettings } from "@t3tools/shared/projectSettings";
-import { formatThreadLink } from "@t3tools/shared/threadLinks";
-import { threadPullRequestUpdatedAtMs } from "@t3tools/shared/threadPullRequests";
+} from "@vibecodinger/contracts";
+import {
+  getProviderOptionCurrentValue,
+  withLegacyUltracodeEffort,
+} from "@vibecodinger/shared/model";
+import { backgroundWorkHoldsCompletion } from "@vibecodinger/shared/orchestrationV2PendingBackgroundWork";
+import { runRanAfter } from "@vibecodinger/shared/orchestrationV2ThreadError";
+import { resolveProjectSettings } from "@vibecodinger/shared/projectSettings";
+import { formatThreadLink } from "@vibecodinger/shared/threadLinks";
+import { threadPullRequestUpdatedAtMs } from "@vibecodinger/shared/threadPullRequests";
 import {
   normalizeThreadPullRequestKey,
   visibleThreadPullRequests,
@@ -97,7 +100,7 @@ import {
   subagentStopNotice,
   delegatedTaskProgress,
   delegatedTaskReportRuns,
-} from "@t3tools/provider-core/server/subagentProjection";
+} from "@vibecodinger/provider-core/server/subagentProjection";
 import {
   DispatchModeLimit,
   type DispatchModeRefusal,
@@ -243,7 +246,7 @@ export interface OrchestratorMcpServiceShape {
 export class OrchestratorMcpService extends Context.Service<
   OrchestratorMcpService,
   OrchestratorMcpServiceShape
->()("t3/mcp/OrchestratorMcpService") {}
+>()("vibecodinger/mcp/OrchestratorMcpService") {}
 
 export const isThreadManagementError = Schema.is(ThreadManagementService.ThreadManagementError);
 
@@ -1474,7 +1477,7 @@ const make = Effect.gen(function* () {
   const resolveProjectTarget = (
     parent: Pick<OrchestrationV2ThreadProjection, "thread"> | undefined,
     projectId: ProjectId | undefined,
-    missingMessage = "Pass projectId: this MCP client is not running inside a T3 thread.",
+    missingMessage = "Pass projectId: this MCP client is not running inside a VibeCodinger thread.",
   ) =>
     projectId !== undefined
       ? Effect.succeed(projectId)
@@ -2454,7 +2457,7 @@ const make = Effect.gen(function* () {
         return yield* failure(
           "invalid_request",
           parent === undefined
-            ? "bindToCurrentThread needs an agent running inside a T3 thread."
+            ? "bindToCurrentThread needs an agent running inside a VibeCodinger thread."
             : "bindToCurrentThread binds to this thread, which belongs to a different project.",
         );
       }
@@ -2552,7 +2555,7 @@ const make = Effect.gen(function* () {
           return yield* failure(
             "invalid_request",
             parent === undefined
-              ? "bindToCurrentThread needs an agent running inside a T3 thread."
+              ? "bindToCurrentThread needs an agent running inside a VibeCodinger thread."
               : "bindToCurrentThread binds to this thread, which belongs to a different project.",
           );
         }
@@ -3518,7 +3521,7 @@ const make = Effect.gen(function* () {
         : yield* resolveProjectTarget(
             parent,
             input.projectId,
-            "Pass projectId, or allProjects: true for every project. This MCP client is not running inside a T3 thread.",
+            "Pass projectId, or allProjects: true for every project. This MCP client is not running inside a VibeCodinger thread.",
           );
       if (!input.allProjects && input.projectId !== undefined) {
         yield* requireProject(input.projectId);

@@ -12,7 +12,7 @@ import { ChildProcess, ChildProcessSpawner } from "effect/process";
 import { awaitCliNotarization, signMacArchiveContents } from "./build-cli-archive.ts";
 
 const signedEnv = {
-  T3CODE_CLI_MAC_SIGN_IDENTITY: "Developer ID Application: Test (TEAM)",
+  VIBECODINGER_CLI_MAC_SIGN_IDENTITY: "Developer ID Application: Test (TEAM)",
   APPLE_API_KEY: "/tmp/AuthKey_TEST.p8",
   APPLE_API_KEY_ID: "TEST",
   APPLE_API_ISSUER: "issuer",
@@ -61,11 +61,11 @@ const withStubs = <A, E, R>(
 const makeContent = Effect.fn("test.makeContent")(function* () {
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
-  const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-cli-notary-" });
+  const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-cli-notary-" });
   const contentDir = path.join(root, "content");
   yield* fs.makeDirectory(contentDir);
-  const executablePath = path.join(contentDir, "t3");
-  yield* fs.writeFileString(executablePath, "t3");
+  const executablePath = path.join(contentDir, "vibecodinger");
+  yield* fs.writeFileString(executablePath, "vibecodinger");
   return { root, contentDir, executablePath, submissionFile: path.join(root, "submission") };
 });
 
@@ -166,7 +166,7 @@ it.layer(NodeServices.layer)("build-cli-archive notarization", (it) => {
         {
           name: "submission without credentials",
           wait: { exitCode: 0, stdout: '{"id":"sub","status":"Accepted"}' },
-          env: { T3CODE_CLI_MAC_SIGN_IDENTITY: signedEnv.T3CODE_CLI_MAC_SIGN_IDENTITY },
+          env: { VIBECODINGER_CLI_MAC_SIGN_IDENTITY: signedEnv.VIBECODINGER_CLI_MAC_SIGN_IDENTITY },
           error: "CliArchiveInputMissingError",
         },
         {

@@ -1,5 +1,5 @@
 import { assert } from "@effect/vitest";
-import type { ProviderReplayTranscript } from "@t3tools/contracts";
+import type { ProviderReplayTranscript } from "@vibecodinger/contracts";
 
 import type { OrchestratorV2ScenarioResult } from "../../OrchestratorScenario.ts";
 import {
@@ -30,7 +30,7 @@ export function assertKiroCompactionOutput(
   );
   // Compaction drops T3's instructions from Kiro's context, so the next prompt carries them again.
   assert.deepEqual(
-    prompts.map((frame) => promptText(frame).startsWith("<t3_code_instructions>")),
+    prompts.map((frame) => promptText(frame).startsWith("<vibe_codinger_instructions>")),
     [true, true],
   );
 

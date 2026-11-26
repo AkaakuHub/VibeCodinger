@@ -1,4 +1,4 @@
-import { errorDisplayMessage } from "@t3tools/client-runtime/errors";
+import { errorDisplayMessage } from "@vibecodinger/client-runtime/errors";
 import {
   ClientSettingsSchema,
   type ClientSettingsPatch,
@@ -12,17 +12,17 @@ import {
   type ProjectScopedServerSettingKey,
   type ProjectSettingsOverrides,
   ServerSettings,
-  type T3ProjectFile,
+  type VibeCodingerProjectFile,
   type ServerSettingsPatch,
-} from "@t3tools/contracts";
-import type { EnvironmentConnectionPhase } from "@t3tools/client-runtime/connection";
+} from "@vibecodinger/contracts";
+import type { EnvironmentConnectionPhase } from "@vibecodinger/client-runtime/connection";
 import {
   clearProjectSettingsOverrides,
   resolveProjectSettings,
   resolveWorktreeCleanup,
   type ProjectSettingSource,
-} from "@t3tools/shared/projectSettings";
-import { applyServerSettingsPatch } from "@t3tools/shared/serverSettings";
+} from "@vibecodinger/shared/projectSettings";
+import { applyServerSettingsPatch } from "@vibecodinger/shared/serverSettings";
 import * as Equal from "effect/Equal";
 import * as Cause from "effect/Cause";
 import { Atom } from "effect/reactivity";
@@ -154,7 +154,7 @@ export function resolveScopedSettingsTargets(
   scope: ResolvedSettingsScope,
   connectedEnvironments: readonly ScopedSettingsEnvironment[],
   // A member absent here has no file tier yet; null is a missing or invalid file.
-  projectFiles?: ReadonlyMap<string, T3ProjectFile | null>,
+  projectFiles?: ReadonlyMap<string, VibeCodingerProjectFile | null>,
 ): readonly ScopedSettingsTarget[] {
   const byId = new Map(
     connectedEnvironments.map((environment) => [environment.environmentId, environment]),
@@ -233,8 +233,8 @@ export function scopedSettingsSource(
     ? "mixed"
     : sources.has("project")
       ? "project"
-      : sources.has("t3.json")
-        ? "t3.json"
+      : sources.has("vibecodinger.json")
+        ? "vibecodinger.json"
         : "environment";
 }
 
@@ -674,7 +674,9 @@ async function persistScopedSettingsPlan(
       return [
         {
           ...environment,
-          message: m(msg("This environment does not support this setting. Update T3 Code on it.")),
+          message: m(
+            msg("This environment does not support this setting. Update VibeCodinger on it."),
+          ),
         },
       ];
     }

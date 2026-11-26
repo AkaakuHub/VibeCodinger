@@ -1,6 +1,6 @@
 import * as NodeServices from "@effect/platform-node/NodeServices";
 import { assert, describe, it } from "@effect/vitest";
-import * as HostProcess from "@t3tools/shared/HostProcess";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
 import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";
 import * as Path from "effect/Path";
@@ -46,7 +46,7 @@ describe.skipIf(HostProcess.Platform.defaultValue() !== "linux")("AUR release", 
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const inherited = yield* HostProcess.Environment;
-      const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-aur-release-" });
+      const root = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-aur-release-" });
       const aur = path.join(root, "packaging/aur");
       yield* fs.copy(path.join(import.meta.dirname, "../packaging/aur"), aur);
       const tools = path.join(root, "tools");
@@ -62,7 +62,6 @@ describe.skipIf(HostProcess.Platform.defaultValue() !== "linux")("AUR release", 
         yield* fs.chmod(file, 0o755);
       }
       const version = nightly ? "1.2.4-nightly.20261104.1" : "1.2.3";
-      const pkgname = nightly ? "t3code-nightly-bin" : "t3code-bin";
       const prefix =
         naming === "versioned" ? `T3-Code-${version}` : nightly ? "T3-Code-Nightly" : "T3-Code";
       const assets = [
@@ -81,7 +80,7 @@ describe.skipIf(HostProcess.Platform.defaultValue() !== "linux")("AUR release", 
       ];
       const fixture = path.join(root, "release.json");
       yield* fs.writeFileString(fixture, JSON.stringify({ assets }));
-      const packageDir = path.join(aur, pkgname);
+      const packageDir = path.join(aur, nightly ? "upstream-nightly" : "upstream-stable");
       const recipe = path.join(packageDir, "PKGBUILD");
       const before = yield* fs.readFileString(recipe);
       const env = {

@@ -1,5 +1,5 @@
 {
-  "name": "@t3tools/provider-cursor",
+  "name": "@vibecodinger/provider-cursor",
   "private": true,
   "type": "module",
   "exports": {
@@ -54,9 +54,9 @@
   },
   "dependencies": {
     "@cursor/sdk": "1.4.2",
-    "@t3tools/contracts": "workspace:*",
-    "@t3tools/provider-core": "workspace:*",
-    "@t3tools/shared": "workspace:*",
+    "@vibecodinger/contracts": "workspace:*",
+    "@vibecodinger/provider-core": "workspace:*",
+    "@vibecodinger/shared": "workspace:*",
     "effect": "catalog:",
     "jsonc-parser": "3.3.1",
     "yaml": "catalog:"
@@ -64,8 +64,8 @@
   "devDependencies": {
     "@effect/platform-node": "catalog:",
     "@effect/vitest": "catalog:",
-    "@t3tools/provider-testing": "workspace:*",
     "@types/node": "catalog:",
+    "@vibecodinger/provider-testing": "workspace:*",
     "vite-plus": "catalog:"
   }
 }

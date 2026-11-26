@@ -11,14 +11,14 @@ import {
   RunAttemptId,
   RunId,
   ThreadId,
-} from "@t3tools/contracts";
-import { resolveSelfInvocation } from "@t3tools/shared/nodeRuntime";
+} from "@vibecodinger/contracts";
+import { resolveSelfInvocation } from "@vibecodinger/shared/nodeRuntime";
 import {
   compactDynamicToolOutput,
   htmlRenderFromToolItem,
   previewRecordingIdFromToolItem,
   sentMessageFromToolItem,
-} from "@t3tools/shared/toolOutput";
+} from "@vibecodinger/shared/toolOutput";
 import * as SecureRandom from "effect/crypto/SecureRandom";
 import * as DateTime from "effect/DateTime";
 import * as Deferred from "effect/Deferred";
@@ -37,18 +37,18 @@ import * as TestClock from "effect/testing/TestClock";
 import type * as EffectAcpSchema from "effect-acp/compat";
 import * as EffectAcpErrors from "effect-acp/errors";
 
-import * as ProviderHost from "@t3tools/provider-core/server/ProviderHost";
-import * as McpProviderSessions from "@t3tools/provider-core/server/McpProviderSessions";
-import * as TestProviderHost from "@t3tools/provider-testing/TestProviderHost";
-import type * as AcpSessionRuntime from "@t3tools/provider-acp/server/AcpSessionRuntime";
-import { makeAcpAdapterV2 } from "@t3tools/provider-acp/server/adapter";
+import * as ProviderHost from "@vibecodinger/provider-core/server/ProviderHost";
+import * as McpProviderSessions from "@vibecodinger/provider-core/server/McpProviderSessions";
+import * as TestProviderHost from "@vibecodinger/provider-testing/TestProviderHost";
+import type * as AcpSessionRuntime from "@vibecodinger/provider-acp/server/AcpSessionRuntime";
+import { makeAcpAdapterV2 } from "@vibecodinger/provider-acp/server/adapter";
 import { makeAntigravityAcpRuntime } from "../../provider/acp/AntigravityAcpSupport.ts";
 import { normalizeAntigravitySessionUpdate } from "../../provider/acp/AntigravityProtocol.ts";
 import { ANTIGRAVITY_SIGN_IN_REQUIRED_MESSAGE } from "../../provider/antigravityAuthSupport.ts";
-import * as IdAllocator from "@t3tools/provider-core/server/IdAllocator";
-import * as ProviderAdapter from "@t3tools/provider-core/server/ProviderAdapter";
+import * as IdAllocator from "@vibecodinger/provider-core/server/IdAllocator";
+import * as ProviderAdapter from "@vibecodinger/provider-core/server/ProviderAdapter";
 import { makeTurnInput } from "./AcpAdapterV2.testkit.ts";
-import type * as ProviderContinuationRequests from "@t3tools/provider-core/server/ProviderContinuationRequests";
+import type * as ProviderContinuationRequests from "@vibecodinger/provider-core/server/ProviderContinuationRequests";
 import {
   type AntigravityAdapterV2Options,
   type AntigravityAdapterV2RuntimeInput,
@@ -190,7 +190,9 @@ describe("AntigravityAdapterV2 compaction", () => {
         const mockAgentPath = yield* path.fromFileUrl(
           new URL("../../../scripts/acp-mock-agent.ts", import.meta.url),
         );
-        const logs = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-ag-compact-" });
+        const logs = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-ag-compact-",
+        });
         const requestLog = path.join(logs, "requests.ndjson");
         const instanceId = ProviderInstanceId.make("antigravity-compaction-test");
         const goalSupport = yield* Ref.make(false);
@@ -212,9 +214,9 @@ describe("AntigravityAdapterV2 compaction", () => {
                 args: [mockAgentPath],
                 cwd: input.cwd,
                 env: {
-                  T3_ACP_ANTIGRAVITY: "1",
-                  T3_ACP_AVAILABLE_COMMANDS: compact ? "compact" : "",
-                  T3_ACP_REQUEST_LOG_PATH: requestLog,
+                  VIBECODINGER_ACP_ANTIGRAVITY: "1",
+                  VIBECODINGER_ACP_AVAILABLE_COMMANDS: compact ? "compact" : "",
+                  VIBECODINGER_ACP_REQUEST_LOG_PATH: requestLog,
                 },
               },
             }).pipe(
@@ -384,7 +386,9 @@ describe("AntigravityAdapterV2 client file system", () => {
       // effect-acp keeps the last handler registered per method; so does this.
       let readTextFile: Parameters<RuntimeService["handleReadTextFile"]>[0] | undefined;
       let writeTextFile: Parameters<RuntimeService["handleWriteTextFile"]>[0] | undefined;
-      const logs = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-antigravity-log-" });
+      const logs = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-antigravity-log-",
+      });
       const requestLog = path.join(logs, "requests.ndjson");
       const crypto = yield* SecureRandom.SecureRandom;
       const instanceId = ProviderInstanceId.make("antigravity-containment-test");
@@ -399,7 +403,10 @@ describe("AntigravityAdapterV2 client file system", () => {
               command: process.execPath,
               args: [mockAgentPath],
               cwd: input.cwd,
-              env: { T3_ACP_ANTIGRAVITY: "1", T3_ACP_REQUEST_LOG_PATH: requestLog },
+              env: {
+                VIBECODINGER_ACP_ANTIGRAVITY: "1",
+                VIBECODINGER_ACP_REQUEST_LOG_PATH: requestLog,
+              },
             },
           }).pipe(
             Effect.provideService(SecureRandom.SecureRandom, crypto),
@@ -419,10 +426,10 @@ describe("AntigravityAdapterV2 client file system", () => {
         defaultModel: Effect.undefined,
       });
       const workspace = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-antigravity-workspace-",
+        prefix: "vibecodinger-antigravity-workspace-",
       });
       const outside = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-antigravity-outside-",
+        prefix: "vibecodinger-antigravity-outside-",
       });
       const outsideFile = path.join(outside, "secret.txt");
       yield* fileSystem.writeFileString(outsideFile, "secret");
@@ -467,7 +474,7 @@ describe("AntigravityAdapterV2 client file system", () => {
         readTextFile: true,
         writeTextFile: false,
       });
-      assert.equal(initialize?.params?.clientInfo?.name, "zed");
+      assert.equal(initialize?.params?.clientInfo?.name, "vibecodinger");
       assert.isUndefined(writeTextFile);
       if (readTextFile === undefined) {
         return yield* Effect.die("Antigravity sessions must serve client file reads");
@@ -560,7 +567,7 @@ describe("AntigravityAdapterV2 workspace changes", () => {
               command: process.execPath,
               args: [mockAgentPath],
               cwd: input.cwd,
-              env: { T3_ACP_ANTIGRAVITY: "1", T3_ACP_HANG_PROMPT_FOREVER: "1" },
+              env: { VIBECODINGER_ACP_ANTIGRAVITY: "1", VIBECODINGER_ACP_HANG_PROMPT_FOREVER: "1" },
             },
           }).pipe(
             Effect.provideService(SecureRandom.SecureRandom, crypto),
@@ -592,8 +599,12 @@ describe("AntigravityAdapterV2 workspace changes", () => {
         withProcess: (_stop, task) => task,
         defaultModel: Effect.undefined,
       });
-      const workspaceA = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-ag-a-" });
-      const workspaceB = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-ag-b-" });
+      const workspaceA = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-ag-a-",
+      });
+      const workspaceB = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-ag-b-",
+      });
       yield* fileSystem.writeFileString(path.join(workspaceA, "a.txt"), "from a");
       yield* fileSystem.writeFileString(path.join(workspaceB, "b.txt"), "from b");
       const policyFor = (cwd: string) =>
@@ -735,7 +746,7 @@ describe("AntigravityAdapterV2 html_render pages", () => {
               command: process.execPath,
               args: [mockAgentPath],
               cwd: input.cwd,
-              env: { T3_ACP_ANTIGRAVITY: "1" },
+              env: { VIBECODINGER_ACP_ANTIGRAVITY: "1" },
             },
           }).pipe(
             Effect.provideService(SecureRandom.SecureRandom, crypto),
@@ -844,7 +855,7 @@ describe("AntigravityAdapterV2 html_render pages", () => {
                   yield* send({
                     sessionUpdate: "tool_call",
                     toolCallId: "agy-1.5.8",
-                    title: "Run mcp_t3-code_html_render",
+                    title: "Run mcp_vibe-codinger_html_render",
                     kind: "other",
                     status: "in_progress",
                     rawInput: { ...telemetry, toolSummary: "Render telemetry" },
@@ -947,25 +958,25 @@ describe("AntigravityAdapterV2 html_render pages", () => {
 
       assert.deepEqual(tool("published"), {
         status: "completed",
-        toolName: "t3-code.html_render",
+        toolName: "vibe-codinger.html_render",
         page: page("replacement"),
         output: { htmlRender: page("replacement") },
       });
       assert.deepEqual(tool("unpublished"), {
         status: "completed",
-        toolName: "t3-code.html_render",
+        toolName: "vibe-codinger.html_render",
         page: undefined,
         output: "Summary of unpublished",
       });
       assert.deepEqual(tool("failed"), {
         status: "failed",
-        toolName: "t3-code.html_render",
+        toolName: "vibe-codinger.html_render",
         page: undefined,
         output: "Summary of failed",
       });
       assert.deepEqual(tool("error"), {
         status: "completed",
-        toolName: "t3-code.html_render",
+        toolName: "vibe-codinger.html_render",
         page: undefined,
         output: [],
       });
@@ -983,7 +994,7 @@ describe("AntigravityAdapterV2 html_render pages", () => {
       for (const name of ["failed-retry", "error-retry", "agy-1.5.8"]) {
         assert.deepEqual(tool(name), {
           status: "completed",
-          toolName: "t3-code.html_render",
+          toolName: "vibe-codinger.html_render",
           page: page(name),
           output: { htmlRender: page(name) },
         });
@@ -1028,7 +1039,7 @@ describe("AntigravityAdapterV2 html_render pages", () => {
                 command: process.execPath,
                 args: [mockAgentPath],
                 cwd: input.cwd,
-                env: { T3_ACP_ANTIGRAVITY: "1" },
+                env: { VIBECODINGER_ACP_ANTIGRAVITY: "1" },
               },
             }).pipe(
               Effect.provideService(SecureRandom.SecureRandom, crypto),
@@ -1058,7 +1069,7 @@ describe("AntigravityAdapterV2 html_render pages", () => {
                       send({
                         sessionUpdate: "tool_call",
                         toolCallId,
-                        title: `Run mcp_t3-code_${toolName}`,
+                        title: `Run mcp_vibe-codinger_${toolName}`,
                         kind: "other",
                         status: "in_progress",
                         rawInput,
@@ -1382,8 +1393,10 @@ const openSessionWithRunningCommand = Effect.fn("openSessionWithRunningCommand")
           args: [mockAgentPath],
           cwd: input.cwd,
           env: {
-            T3_ACP_ANTIGRAVITY: "1",
-            ...(steering === undefined ? {} : { T3_ACP_AGENT_VERSION: steering.agentVersion }),
+            VIBECODINGER_ACP_ANTIGRAVITY: "1",
+            ...(steering === undefined
+              ? {}
+              : { VIBECODINGER_ACP_AGENT_VERSION: steering.agentVersion }),
           },
         },
       }).pipe(
@@ -1809,7 +1822,9 @@ describe("AntigravityAdapterV2 work after the prompt ends", () => {
       Effect.gen(function* () {
         const fileSystem = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const profile = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-agy-race-" });
+        const profile = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-agy-race-",
+        });
         const generated = (kind: string) =>
           path.join(
             profile,
@@ -2030,7 +2045,9 @@ describe("AntigravityAdapterV2 work after the prompt ends", () => {
       Effect.gen(function* () {
         const fileSystem = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const profile = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-agy-pre-settle-" });
+        const profile = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-agy-pre-settle-",
+        });
         const generated = (kind: string) =>
           path.join(
             profile,
@@ -2101,15 +2118,15 @@ describe("AntigravityAdapterV2 work after the prompt ends", () => {
   );
 
   // agy names its background commands `<session>/task-<n>`; the agent passes that to
-  // t3_background_wait, which must not fail since the adapter already holds the run open.
-  it.effect("accepts t3_background_wait for a command it already tracks", () =>
+  // vc_background_wait, which must not fail since the adapter already holds the run open.
+  it.effect("accepts vc_background_wait for a command it already tracks", () =>
     Effect.gen(function* () {
       const { session, providerThread, startTurn, throughPromptSettled } =
         yield* openSessionWithRunningCommand({ WaitMsBeforeAsync: 10000 });
       yield* startTurn(1, false);
       yield* throughPromptSettled;
       const taskIds = ["mock-session-1/task-2"];
-      assert.isDefined(session.awaitBackgroundTasks, "t3_background_wait must not be unsupported");
+      assert.isDefined(session.awaitBackgroundTasks, "vc_background_wait must not be unsupported");
       const result = yield* session.awaitBackgroundTasks!({
         providerThread,
         taskIds,
@@ -2273,7 +2290,9 @@ describe("AntigravityAdapterV2 work after the prompt ends", () => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const profile = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-antigravity-kids-" });
+      const profile = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-antigravity-kids-",
+      });
       const records = (conversationId: string, kind: string) =>
         path.join(profile, "antigravity-acp", "brain", conversationId, ".system_generated", kind);
       const write = (directory: string, name: string, value: unknown) =>
@@ -2345,7 +2364,9 @@ describe("AntigravityAdapterV2 work after the prompt ends", () => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const profile = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-antigravity-kids-" });
+      const profile = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-antigravity-kids-",
+      });
       const records = (conversationId: string, kind: string) =>
         path.join(profile, "antigravity-acp", "brain", conversationId, ".system_generated", kind);
       const write = (directory: string, name: string, value: unknown) =>
@@ -2402,7 +2423,9 @@ describe("AntigravityAdapterV2 work after the prompt ends", () => {
     Effect.gen(function* () {
       const fileSystem = yield* FileSystem.FileSystem;
       // No records: nothing proves a child is at work, so none may hold a run open.
-      const profile = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-antigravity-kids-" });
+      const profile = yield* fileSystem.makeTempDirectoryScoped({
+        prefix: "vibecodinger-antigravity-kids-",
+      });
       const { usage, offers, send, startTurn, throughTerminal } =
         yield* openSessionWithRunningCommand({}, profile);
       yield* startTurn(1, false);
@@ -2470,10 +2493,10 @@ describe("AntigravityAdapterV2 subagent reads", () => {
         new URL("../../../scripts/acp-mock-agent.ts", import.meta.url),
       );
       const workspace = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-antigravity-reads-",
+        prefix: "vibecodinger-antigravity-reads-",
       });
       const outside = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-antigravity-reads-outside-",
+        prefix: "vibecodinger-antigravity-reads-outside-",
       });
       const served = path.join(workspace, "served.ts");
       yield* fileSystem.writeFileString(served, "export {};");
@@ -2498,7 +2521,7 @@ describe("AntigravityAdapterV2 subagent reads", () => {
               command: process.execPath,
               args: [mockAgentPath],
               cwd: input.cwd,
-              env: { T3_ACP_ANTIGRAVITY: "1" },
+              env: { VIBECODINGER_ACP_ANTIGRAVITY: "1" },
             },
           }).pipe(
             Effect.provideService(SecureRandom.SecureRandom, crypto),
@@ -2693,7 +2716,7 @@ describe("AntigravityAdapterV2 runtime mode ceiling", () => {
               command: process.execPath,
               args: [mockAgentPath],
               cwd: input.cwd,
-              env: { T3_ACP_ANTIGRAVITY: "1" },
+              env: { VIBECODINGER_ACP_ANTIGRAVITY: "1" },
             },
           }).pipe(
             Effect.provideService(SecureRandom.SecureRandom, crypto),
@@ -2767,7 +2790,7 @@ describe("AntigravityAdapterV2 runtime mode ceiling", () => {
               command: process.execPath,
               args: [mockAgentPath],
               cwd: input.cwd,
-              env: { T3_ACP_ANTIGRAVITY: "1" },
+              env: { VIBECODINGER_ACP_ANTIGRAVITY: "1" },
             },
           }).pipe(
             Effect.provideService(SecureRandom.SecureRandom, crypto),
@@ -2839,7 +2862,9 @@ describe("AntigravityAdapterV2 session system prompt", () => {
         const mockAgentPath = yield* path.fromFileUrl(
           new URL("../../../scripts/acp-mock-agent.ts", import.meta.url),
         );
-        const logs = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-antigravity-log-" });
+        const logs = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-antigravity-log-",
+        });
         const requestLog = path.join(logs, "requests.ndjson");
         type RuntimeService = AcpSessionRuntime.AcpSessionRuntime["Service"];
         const promptReceived = yield* Deferred.make<Parameters<RuntimeService["prompt"]>[0]>();
@@ -2856,10 +2881,10 @@ describe("AntigravityAdapterV2 session system prompt", () => {
                 args: [mockAgentPath],
                 cwd: input.cwd,
                 env: {
-                  T3_ACP_ANTIGRAVITY: "1",
-                  T3_ACP_AGENT_VERSION: agentVersion,
-                  T3_ACP_REQUEST_LOG_PATH: requestLog,
-                  T3_ACP_HANG_PROMPT_FOREVER: "1",
+                  VIBECODINGER_ACP_ANTIGRAVITY: "1",
+                  VIBECODINGER_ACP_AGENT_VERSION: agentVersion,
+                  VIBECODINGER_ACP_REQUEST_LOG_PATH: requestLog,
+                  VIBECODINGER_ACP_HANG_PROMPT_FOREVER: "1",
                 },
               },
             }).pipe(
@@ -2875,7 +2900,9 @@ describe("AntigravityAdapterV2 session system prompt", () => {
           withProcess: (_stop, task) => task,
           defaultModel: Effect.undefined,
         });
-        const workspace = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-ag-sp-" });
+        const workspace = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "vibecodinger-ag-sp-",
+        });
         const runtimePolicy = ProviderAdapter.ProviderAdapterV2RuntimePolicy.make({
           runtimeMode: "full-access",
           interactionMode: "default",
@@ -2946,7 +2973,7 @@ describe("AntigravityAdapterV2 session system prompt", () => {
           .find((request) => request.method === "session/new");
         const append = JSON.stringify(sessionNew?.params?._meta ?? null);
         // Identity stays per turn either way.
-        assert.include(sent, "through the Antigravity harness, as gemini-test-low");
+        assert.include(sent, "Antigravity as the harness, as gemini-test-low");
         assert.notInclude(append, "systemPrompt");
         assert.include(sent, "<pull_request_linking>");
       }).pipe(Effect.provide(layerSession)),
@@ -2977,7 +3004,7 @@ describe("AntigravityAdapterV2 update_steps checklist", () => {
               command: process.execPath,
               args: [mockAgentPath],
               cwd: input.cwd,
-              env: { T3_ACP_ANTIGRAVITY: "1" },
+              env: { VIBECODINGER_ACP_ANTIGRAVITY: "1" },
             },
           }).pipe(
             Effect.provideService(SecureRandom.SecureRandom, crypto),

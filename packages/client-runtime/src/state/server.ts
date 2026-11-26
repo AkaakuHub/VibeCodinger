@@ -22,7 +22,7 @@ import {
   shouldRecommendDatabaseCompaction,
   type UsageSummary,
   WS_METHODS,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import * as Cause from "effect/Cause";
 import * as Duration from "effect/Duration";
 import * as Equal from "effect/Equal";
@@ -2004,10 +2004,6 @@ export function createServerEnvironmentAtoms<R, E>(
       scheduler: workflowDefinitionScheduler,
       concurrency: workflowDefinitionConcurrency,
     }),
-    createGuestShare: createEnvironmentRpcCommand(runtime, {
-      label: "environment-data:server:guest-share:create",
-      tag: WS_METHODS.guestShareCreate,
-    }),
     // Off the config lane: answering a card must not queue behind settings
     // edits. One answer per card at a time.
     answerSecretRequest: createEnvironmentRpcCommand(runtime, {
@@ -2035,10 +2031,6 @@ export function createServerEnvironmentAtoms<R, E>(
         mode: "singleFlight",
         key: ({ environmentId }) => environmentId,
       },
-    }),
-    checkOtlpEndpoint: createEnvironmentRpcCommand(runtime, {
-      label: "environment-data:server:check-otlp-endpoint",
-      tag: WS_METHODS.serverCheckOtlpEndpoint,
     }),
     checkSecretSource: createEnvironmentRpcCommand(runtime, {
       label: "environment-data:server:check-secret-source",

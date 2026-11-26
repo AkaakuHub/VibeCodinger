@@ -10,12 +10,12 @@ import {
   type OrchestrationV2LinkedSender,
   type RuntimeMode,
   type ThreadId,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import * as Context from "effect/Context";
 import type * as DateTime from "effect/DateTime";
 import * as Effect from "effect/Effect";
 import * as Fiber from "effect/Fiber";
-import { formatThreadLink, hostedThreadLink } from "@t3tools/shared/threadLinks";
+import { formatThreadLink, hostedThreadLink } from "@vibecodinger/shared/threadLinks";
 
 const ALL_MCP_CAPABILITIES = [
   "preview",
@@ -41,43 +41,43 @@ export interface McpClientCaller {
   readonly label: string;
   readonly access: AuthMcpClientAccess;
   /**
-   * Another T3 Code environment's peer link. What it starts here carries its
+   * Another VibeCodinger environment's peer link. What it starts here carries its
    * session as `linkOrigin`, and it changes only that work (`linkOrigin.ts`).
    */
   readonly linked?: boolean | undefined;
   /** When a peer link's session ends unless it is used again, answered as `T3-Link-Expires-At`. */
   readonly linkExpiresAt?: DateTime.Utc | undefined;
   /**
-   * Narrower modes the client asked for on this request (`T3-Mode-Limit`):
+   * Narrower modes the client asked for on this request (`VC-Mode-Limit`):
    * another environment passing on the limits of the agent it calls for.
    */
   readonly narrowedTo?: ClientModes | undefined;
-  /** A linked environment's thread this request is made for (`T3-Sender-Thread`). */
+  /** A linked environment's thread this request is made for (`VC-Sender-Thread`). */
   readonly senderThread?: OrchestrationV2LinkedSender | undefined;
-  /** An outside client's thread links go through this hosted app, as Copy thread's do. */
-  readonly hostedAppUrl?: string | undefined;
+  /** The server's HTTP origin for an outside client's thread links. */
+  readonly threadLinkOrigin?: string | undefined;
 }
 
 /**
- * `T3-Mode-Limit: <runtimeMode>/<interactionMode>` lets an OAuth client cap
+ * `VC-Mode-Limit: <runtimeMode>/<interactionMode>` lets an OAuth client cap
  * a request below what it was approved with: another environment passes on
  * the limits of the agent it calls for. It can only narrow (see
  * `clientModeCeiling`), so a client gains nothing by sending a broad one.
  */
-export const MODE_LIMIT_HEADER = "t3-mode-limit";
+export const MODE_LIMIT_HEADER = "vc-mode-limit";
 
 /**
  * `T3-Link-Expires-At: <ISO time>` answers a peer link's request with when its
  * session now ends. Using a link renews it, so the linking side keeps this.
  */
-export const LINK_EXPIRES_AT_HEADER = "t3-link-expires-at";
+export const LINK_EXPIRES_AT_HEADER = "vibecodinger-link-expires-at";
 
 /**
- * `T3-Sender-Thread: <environmentId>/<threadId>/<title>`, each URI-encoded: the
+ * `VC-Sender-Thread: <environmentId>/<threadId>/<title>`, each URI-encoded: the
  * thread another environment makes a request for, so what it sends here can name
  * it. Read only from a linked client.
  */
-export const SENDER_THREAD_HEADER = "t3-sender-thread";
+export const SENDER_THREAD_HEADER = "vc-sender-thread";
 
 export interface ClientModes {
   readonly runtimeMode: RuntimeMode;
@@ -166,31 +166,26 @@ export interface McpInvocationScope {
    * see the URL they were configured with, so links they must fetch carry it. Unset in-process.
    */
   readonly origin?: string | undefined;
-  /** False when the calling thread's project is on no forge T3 reads; `/mcp` reads it per request. */
+  /** False when the calling thread's project is on no forge VibeCodinger reads; `/mcp` reads it per request. */
   readonly forge?: boolean;
 }
 
-/**
- * T3 Code renders `t3-thread://` links as thread chips. Other MCP clients cannot open them, so
- * they get the hosted link Copy thread copies, which opens the thread in either app or a browser.
- * A known `title` labels the chip for clients that cannot load this environment's threads.
- */
 export const threadLinkFor = (
   scope: Pick<McpInvocationScope, "environmentId" | "client">,
   threadId: ThreadId,
   title?: string,
 ): string => {
-  const hostedAppUrl = scope.client?.hostedAppUrl;
+  const threadLinkOrigin = scope.client?.threadLinkOrigin;
   const ref = { environmentId: scope.environmentId, threadId };
-  return hostedAppUrl === undefined
+  return threadLinkOrigin === undefined
     ? formatThreadLink(ref, title)
-    : hostedThreadLink(ref, hostedAppUrl);
+    : hostedThreadLink(ref, threadLinkOrigin);
 };
 
 export class McpInvocationContext extends Context.Service<
   McpInvocationContext,
   McpInvocationScope
->()("t3/mcp/McpInvocationContext") {}
+>()("vibecodinger/mcp/McpInvocationContext") {}
 
 /**
  * `McpSchema.EnabledWhen` for tools a delegated child must not see or call.
@@ -306,7 +301,7 @@ export const requireThreadMcpCapability = <const C extends "preview" | "device">
 const threadCallerRequired = (operation: string) =>
   new OrchestratorMcpFailure({
     code: "thread_credential_required",
-    message: `${operation} acts as the calling T3 thread, so it needs an agent running inside T3 Code. This MCP client signed in from outside a thread.`,
+    message: `${operation} acts as the calling VibeCodinger thread, so it needs an agent running inside VibeCodinger. This MCP client signed in from outside a thread.`,
   });
 
 export type McpThreadInvocationScope = McpInvocationScope & { readonly thread: McpThreadCaller };

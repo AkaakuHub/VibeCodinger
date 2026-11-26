@@ -9,13 +9,16 @@ import {
   type SecretReference,
   SettingsSecretValue,
   type ServerProvider,
-} from "@t3tools/contracts";
-import type { AnyProviderDriver, ProviderInstance } from "@t3tools/provider-core/server/driver";
-import { makeManualOnlyProviderMaintenanceCapabilities } from "@t3tools/provider-core/server/maintenanceResolver";
-import * as ProviderLatestVersions from "@t3tools/provider-core/server/ProviderLatestVersions";
-import * as SecretResolver from "@t3tools/secret-provider-core/server/SecretResolver";
-import { defineSecretProviderDriver } from "@t3tools/secret-provider-core/server/driver";
-import { defineSecretProvider } from "@t3tools/secret-provider-core/shared/definition";
+} from "@vibecodinger/contracts";
+import type {
+  AnyProviderDriver,
+  ProviderInstance,
+} from "@vibecodinger/provider-core/server/driver";
+import { makeManualOnlyProviderMaintenanceCapabilities } from "@vibecodinger/provider-core/server/maintenanceResolver";
+import * as ProviderLatestVersions from "@vibecodinger/provider-core/server/ProviderLatestVersions";
+import * as SecretResolver from "@vibecodinger/secret-provider-core/server/SecretResolver";
+import { defineSecretProviderDriver } from "@vibecodinger/secret-provider-core/server/driver";
+import { defineSecretProvider } from "@vibecodinger/secret-provider-core/shared/definition";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
 import * as Fiber from "effect/Fiber";
@@ -188,7 +191,7 @@ const setup = Effect.fn("SecretCheckTest.setup")(function* (
 });
 
 const layerTest = Layer.mergeAll(
-  ServerConfig.layerTest(process.cwd(), { prefix: "t3-secret-check-" }),
+  ServerConfig.layerTest(process.cwd(), { prefix: "vibecodinger-secret-check-" }),
   ModelManifest.layerTest,
   ProviderLatestVersions.layer,
   Layer.succeed(

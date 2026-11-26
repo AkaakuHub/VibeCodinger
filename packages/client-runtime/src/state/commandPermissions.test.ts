@@ -24,7 +24,7 @@ import {
   WS_METHODS,
   type AuthSessionState,
   type PeerLinkSummary,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import * as Cause from "effect/Cause";
 import * as DateTime from "effect/DateTime";
 import * as Effect from "effect/Effect";
@@ -179,25 +179,23 @@ describe("command permissions", () => {
     }),
   );
 
-  it.effect.each([WS_METHODS.serverCheckOtlpEndpoint, WS_METHODS.serverCheckSecretSource])(
-    "requires the destination settings grant for %s",
-    (method) =>
-      Effect.gen(function* () {
-        const registry = yield* setup;
-        const check = createCommandPermissions(runtime, method);
-        registry.set(sessions(env), AsyncResult.success(grant(true)));
-        expect(registry.get(check.permissionAtom(env))).toBe(false);
-        registry.set(
-          sessions(env),
-          AsyncResult.success({
-            ...grant(false),
-            scopes: [AuthSettingsWriteScope],
-            permissions: [AuthSettingsWriteScope],
-          }),
-        );
-        expect(registry.get(check.permissionAtom(env))).toBe(true);
-        yield* check.authorize(registry, env);
-      }),
+  it.effect("requires the destination settings grant to check a secret source", () =>
+    Effect.gen(function* () {
+      const registry = yield* setup;
+      const check = createCommandPermissions(runtime, WS_METHODS.serverCheckSecretSource);
+      registry.set(sessions(env), AsyncResult.success(grant(true)));
+      expect(registry.get(check.permissionAtom(env))).toBe(false);
+      registry.set(
+        sessions(env),
+        AsyncResult.success({
+          ...grant(false),
+          scopes: [AuthSettingsWriteScope],
+          permissions: [AuthSettingsWriteScope],
+        }),
+      );
+      expect(registry.get(check.permissionAtom(env))).toBe(true);
+      yield* check.authorize(registry, env);
+    }),
   );
 
   it.effect("requires the destination settings grant to connect or bind an issue tracker", () =>

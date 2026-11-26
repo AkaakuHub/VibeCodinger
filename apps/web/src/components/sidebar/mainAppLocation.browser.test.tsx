@@ -1,4 +1,9 @@
-import { EnvironmentId, MessageId, ThreadId, type AssistantCitation } from "@t3tools/contracts";
+import {
+  EnvironmentId,
+  MessageId,
+  ThreadId,
+  type AssistantCitation,
+} from "@vibecodinger/contracts";
 import type { AnyRouter } from "@tanstack/react-router";
 import { describe, expect, it, vi } from "vite-plus/test";
 import { userEvent } from "vite-plus/test/browser";

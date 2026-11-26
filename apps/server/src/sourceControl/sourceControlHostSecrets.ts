@@ -4,8 +4,8 @@ import {
   secretSettingsFields,
   type SecretReference,
   type ServerSettings,
-} from "@t3tools/contracts";
-import type * as SecretResolver from "@t3tools/secret-provider-core/server/SecretResolver";
+} from "@vibecodinger/contracts";
+import type * as SecretResolver from "@vibecodinger/secret-provider-core/server/SecretResolver";
 import * as Effect from "effect/Effect";
 
 import { resolveSettingsSecrets } from "../secrets/settingsSecretValue.ts";

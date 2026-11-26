@@ -1,18 +1,19 @@
+import { encodeIdentityKey } from "@vibecodinger/shared/socketE2ee";
 import * as Mime from "effect/http/Mime";
-import { EnvironmentHttpApi } from "@t3tools/contracts";
-import { isDevProxiedPath } from "@t3tools/shared/devProxy";
+import { EnvironmentHttpApi } from "@vibecodinger/contracts";
+import { isDevProxiedPath } from "@vibecodinger/shared/devProxy";
 import {
   injectMcpAppCookieBootstrap,
   injectMcpAppDocumentBootstrap,
   injectMcpAppThemeBootstrap,
-} from "@t3tools/shared/mcpApp";
-import { FILE_PREVIEW_SCROLL_SCRIPT } from "@t3tools/shared/htmlRender";
+} from "@vibecodinger/shared/mcpApp";
+import { FILE_PREVIEW_SCROLL_SCRIPT } from "@vibecodinger/shared/htmlRender";
 import {
   DESKTOP_READINESS_CHALLENGE_MAX_LENGTH,
   DESKTOP_READINESS_CHALLENGE_PARAM,
   DESKTOP_READINESS_PROOF_PATH,
   desktopReadinessProof,
-} from "@t3tools/shared/desktopReadinessProof";
+} from "@vibecodinger/shared/desktopReadinessProof";
 import * as ByteSize from "effect/ByteSize";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
@@ -35,6 +36,8 @@ import * as HttpIncomingMessage from "effect/http/HttpIncomingMessage";
 import * as HttpApiBuilder from "effect/http-api/HttpApiBuilder";
 
 import * as ServerConfig from "./config.ts";
+import { isDirectTlsRequest } from "./transportTls.ts";
+import * as ServerE2eeIdentity from "./auth/ServerE2eeIdentity.ts";
 import { ASSET_ROUTE_PREFIX, readMcpAppHtml, resolveAsset } from "./assets/AssetAccess.ts";
 import { sourceControlMediaResponse } from "./assets/sourceControlMediaResponse.ts";
 import { statMediaFile, streamMediaFile, type OpenMediaFile } from "./assets/MediaFile.ts";
@@ -43,7 +46,6 @@ import {
   storeAttachmentUpload,
   validateAttachmentUploadToken,
 } from "./assets/AttachmentUpload.ts";
-import { traceRelayRequest } from "./cloud/traceRelayRequest.ts";
 import { annotateEnvironmentRequest } from "./auth/http.ts";
 import * as ServerEnvironment from "./environment/ServerEnvironment.ts";
 import {
@@ -363,15 +365,20 @@ export const layerServerEnvironmentHttpApi = HttpApiBuilder.group(
   "metadata",
   Effect.fnUntraced(function* (handlers) {
     const serverEnvironment = yield* ServerEnvironment.ServerEnvironment;
+    const identity = yield* ServerE2eeIdentity.ServerE2eeIdentity;
     return handlers.handle(
       "descriptor",
       Effect.fn("environment.metadata.descriptor")(function* (args) {
         yield* annotateEnvironmentRequest(args.endpoint.name);
-        return yield* serverEnvironment.getDescriptor;
-      }, traceRelayRequest),
+        const descriptor = yield* serverEnvironment.getDescriptor;
+        const request = yield* HttpServerRequest.HttpServerRequest;
+        if (!isDirectTlsRequest(request)) return descriptor;
+        const { publicKey } = yield* identity.keypair.pipe(Effect.orDie);
+        return { ...descriptor, e2eeServerIdentityKey: encodeIdentityKey(publicKey) };
+      }),
     );
   }),
-);
+).pipe(Layer.provide(ServerE2eeIdentity.layer));
 
 // Answers only for a launch that was handed a readiness secret, so the desktop app can tell the
 // backend it started from any other listener at the same address.
@@ -590,7 +597,12 @@ const handleStaticAndDevRequest = Effect.fn("handleStaticAndDevRequest")(
     }
 
     const config = yield* ServerConfig.ServerConfig;
-    if (config.devUrl && isDevProxiedPath(url.value.pathname)) {
+    const pathname = url.value.pathname;
+    if (
+      pathname === "/api" ||
+      pathname.startsWith("/api/") ||
+      (config.devUrl && isDevProxiedPath(pathname))
+    ) {
       return HttpServerResponse.text("Not Found", { status: 404 });
     }
 
@@ -618,7 +630,7 @@ const handleStaticAndDevRequest = Effect.fn("handleStaticAndDevRequest")(
 
     const path = yield* Path.Path;
     const staticRoot = path.resolve(staticDir);
-    const staticRequestPath = url.value.pathname === "/" ? "/index.html" : url.value.pathname;
+    const staticRequestPath = pathname === "/" ? "/index.html" : pathname;
     const rawStaticRelativePath = staticRequestPath.replace(/^[/\\]+/, "");
     const hasRawLeadingParentSegment = rawStaticRelativePath.startsWith("..");
     const staticRelativePath = path.normalize(rawStaticRelativePath).replace(/^[/\\]+/, "");

@@ -13,14 +13,14 @@ import {
   type RuntimeMode,
   ThreadId,
   type OrchestrationV2ThreadShell,
-} from "@t3tools/contracts";
+} from "@vibecodinger/contracts";
 import {
   hasThreadLinks,
   parseThreadLinkHref,
   threadLinkCandidates,
   threadLinkRefs,
-} from "@t3tools/shared/threadLinks";
-import { hasPendingBackgroundSubagent } from "@t3tools/shared/orchestrationV2PendingBackgroundWork";
+} from "@vibecodinger/shared/threadLinks";
+import { hasPendingBackgroundSubagent } from "@vibecodinger/shared/orchestrationV2PendingBackgroundWork";
 import * as SecureRandom from "effect/crypto/SecureRandom";
 import * as Effect from "effect/Effect";
 
@@ -42,12 +42,16 @@ const suggestedThreadId = (threadId: ThreadId) => {
 };
 
 // A pasted link (bare, Markdown, or hosted) names its thread; only this environment's can be read here.
-const candidateThreadIds = (threadId: ThreadId, environmentId: EnvironmentId) => {
-  if (!hasThreadLinks(threadId)) {
+const candidateThreadIds = (
+  threadId: ThreadId,
+  environmentId: EnvironmentId,
+  link: ReturnType<typeof parseThreadLinkHref>,
+  containsThreadLink: boolean,
+) => {
+  if (!containsThreadLink) {
     const suggested = suggestedThreadId(threadId);
     return suggested === null ? [] : [suggested];
   }
-  const link = parseThreadLinkHref(threadId);
   const refs =
     link === null
       ? threadLinkRefs(threadId, environmentId)
@@ -68,14 +72,21 @@ export const threadNotFound = Effect.fn("OrchestratorMcpService.threadNotFound")
   message: string,
 ) {
   let suggested: ThreadId | null = null;
-  for (const candidate of candidateThreadIds(threadId, scope.environmentId)) {
+  const link = parseThreadLinkHref(threadId, scope.client?.threadLinkOrigin);
+  const containsThreadLink = link !== null || hasThreadLinks(threadId);
+  for (const candidate of candidateThreadIds(
+    threadId,
+    scope.environmentId,
+    link,
+    containsThreadLink,
+  )) {
     const shell = yield* threads.getThreadShell(candidate).pipe(Effect.orElseSucceed(() => null));
     if (shell !== null && shell.deletedAt === null) {
       suggested = candidate;
       break;
     }
   }
-  if (suggested !== null && hasThreadLinks(threadId)) {
+  if (suggested !== null && containsThreadLink) {
     return yield* new OrchestratorMcpFailure({
       code: "thread_not_found",
       message: `\`${threadId}\` is a thread link, not a thread id. Pass \`${suggested}\` instead.`,
@@ -92,7 +103,7 @@ export const threadNotFound = Effect.fn("OrchestratorMcpService.threadNotFound")
     scope.client?.linked === true ||
     fencingLinkOrigin({ scope, caller: caller ?? undefined }) !== undefined
       ? ""
-      : " Thread ids belong to one environment: for a thread on a linked one, find it with `t3_environment_links` and pass its `environmentId` to a tool that takes one.";
+      : " Thread ids belong to one environment: for a thread on a linked one, find it with `vc_environment_links` and pass its `environmentId` to a tool that takes one.";
   return yield* new OrchestratorMcpFailure({
     code: "thread_not_found",
     message: `${message}${mcpHint}${linksHint}`,
@@ -246,7 +257,7 @@ export const resolveProjectId = (context: Caller, projectId: ProjectId | undefin
       : Effect.fail(
           new OrchestratorMcpFailure({
             code: "target_required",
-            message: "Pass projectId: this MCP client is not running inside a T3 thread.",
+            message: "Pass projectId: this MCP client is not running inside a VibeCodinger thread.",
           }),
         );
 
@@ -258,7 +269,7 @@ const resolveThreadId = (context: Caller, threadId: ThreadId | undefined) =>
       : Effect.fail(
           new OrchestratorMcpFailure({
             code: "target_required",
-            message: "Pass threadId: this MCP client is not running inside a T3 thread.",
+            message: "Pass threadId: this MCP client is not running inside a VibeCodinger thread.",
           }),
         );
 

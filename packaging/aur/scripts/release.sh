@@ -8,9 +8,11 @@ pkgrel="${PKGREL:-1}"
 
 if [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   pkgname='t3code-bin'
+  package_channel='upstream-stable'
   asset_prefix='T3-Code'
 elif [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+-nightly\.[0-9]{8}\.[0-9]+$ ]]; then
   pkgname='t3code-nightly-bin'
+  package_channel='upstream-nightly'
   asset_prefix='T3-Code-Nightly'
 else
   echo "Release $tag does not publish an AUR package."
@@ -49,7 +51,7 @@ gh api -H 'Accept: application/vnd.github.raw' \
   "repos/$repo/contents/LICENSE?ref=$tag" > "$work_dir/LICENSE"
 license_sha256="$(sha256sum "$work_dir/LICENSE" | awk '{print $1}')"
 
-package_dir="$repo_root/packaging/aur/$pkgname"
+package_dir="$repo_root/packaging/aur/$package_channel"
 cd "$package_dir"
 sed -Ei \
   -e "s/^pkgver=.*/pkgver=$pkgver/" \
