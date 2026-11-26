@@ -1,13 +1,9 @@
 name: Fork iPhone IPA
 
 on:
-  workflow_dispatch:
+  workflow_call:
 
 permissions: {}
-
-concurrency:
-  group: fork-ios-ipa-${{ github.ref }}
-  cancel-in-progress: true
 
 jobs:
   package:
