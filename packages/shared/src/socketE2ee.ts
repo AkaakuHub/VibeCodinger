@@ -378,10 +378,8 @@ const makeE2eeSocket = Effect.fn("socketE2ee.makeSocket")(function* (
   socket: Socket.Socket,
   config: E2eeSocketConfig,
 ) {
-  // The deferred for the connection a writer may send on. Each reader
-  // acquisition installs its own deferred before the handshake and resolves it
-  // on completion, so a writer either sends on the live session or waits for
-  // the next handshake.
+  // Writers that start before the reader wait on the ticket that the next
+  // handshake resolves. Closing the reader replaces that ticket.
   const tickets = yield* Ref.make<Deferred.Deferred<ActiveConnection, Socket.SocketError>>(
     yield* Deferred.make<ActiveConnection, Socket.SocketError>(),
   );
@@ -550,8 +548,7 @@ const makeE2eeSocket = Effect.fn("socketE2ee.makeSocket")(function* (
     reader: Effect.gen(function* () {
       const reader = yield* socket.reader;
       const writer = yield* socket.writer;
-      const ticket = yield* Deferred.make<ActiveConnection, Socket.SocketError>();
-      yield* Ref.set(tickets, ticket);
+      const ticket = yield* Ref.get(tickets);
       const outcome = yield* Effect.result(
         (config.role === "client"
           ? clientHandshake(reader, writer)
