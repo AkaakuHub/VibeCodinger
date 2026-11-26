@@ -1,12 +1,13 @@
 name: Mobile Showcase Screenshots
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       build_only:
-        description: Build an arm64 Android debug APK without running the showcase
         type: boolean
-        default: false
+        required: true
+  workflow_dispatch:
+    inputs:
       platform:
         description: Device platforms to capture
         required: true
@@ -129,7 +130,7 @@ jobs:
 
   android:
     name: ${{ inputs.build_only && 'Android debug APK (arm64)' || 'Android phone, 7-inch tablet, and 10-inch tablet' }}
-    if: inputs.build_only || inputs.platform == 'all' || inputs.platform == 'android'
+    if: inputs.build_only && github.ref == 'refs/heads/main' || !inputs.build_only && (inputs.platform == 'all' || inputs.platform == 'android')
     runs-on: ${{ inputs.build_only && 'ubuntu-24.04' || 'blacksmith-16vcpu-ubuntu-2404' }}
     # Capturing every palette multiplies the device matrix by six, and only the
     # one native build is shared between them.
@@ -220,6 +221,7 @@ jobs:
           name: android-arm64-debug-apk
           path: apps/mobile/android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+          retention-days: 7
           compression-level: 0
 
       - name: Enable KVM

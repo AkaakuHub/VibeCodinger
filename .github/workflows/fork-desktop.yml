@@ -1,26 +1,16 @@
 name: Fork desktop packages
 
 on:
-  pull_request:
-    branches: [main]
-  workflow_dispatch:
+  workflow_call:
 
 permissions:
   actions: read
   contents: read
 
-concurrency:
-  group: fork-desktop-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
-
 jobs:
   bundle:
     if: >-
-      github.repository == 'AkaakuHub/t3code' &&
-      ((github.event_name == 'pull_request' &&
-        github.event.pull_request.head.repo.full_name == github.repository &&
-        !startsWith(github.head_ref, 'review/upstream-')) ||
-       (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'))
+      github.repository == 'AkaakuHub/t3code' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     outputs:
@@ -38,6 +28,13 @@ jobs:
       - uses: ./.github/actions/setup-ci-deps
         with:
           install-args: --frozen-lockfile --filter=vibecodinger... --filter=@vibecodinger/web... --filter=@vibecodinger/desktop... --filter=@vibecodinger/scripts...
+
+      - name: Upload dependency verification
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-dependency-verification
+          path: ${{ runner.temp }}/pnpm-metadata/lockfile-verified.jsonl
+          retention-days: 2
 
       - name: Set package version
         id: version
@@ -61,6 +58,7 @@ jobs:
           path: |
             apps/server/dist
             apps/desktop/dist-electron
+          include-hidden-files: true
           if-no-files-found: error
           retention-days: 2
 
@@ -129,3 +127,4 @@ jobs:
       version: ${{ needs.bundle.outputs.version }}
       ref: ${{ github.sha }}
       release_channel: preview
+      artifact_retention_days: 7
