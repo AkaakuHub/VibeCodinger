@@ -28,9 +28,11 @@ const UsageOutput = Schema.Struct({
 
 const decodeUsageOutput = Schema.decodeUnknownOption(Schema.fromJsonString(UsageOutput));
 
-export function parseAntigravityCliUsage(stdout: string): ReadonlyArray<ServerProviderUsageWindow> {
+export function parseAntigravityCliUsage(
+  stdout: string,
+): ReadonlyArray<ServerProviderUsageWindow> | undefined {
   const decoded = decodeUsageOutput(stdout);
-  if (Option.isNone(decoded)) return [];
+  if (Option.isNone(decoded)) return undefined;
   return decoded.value.command.data.groups.flatMap((group) =>
     group.buckets.map((bucket) => {
       const reset = bucket.reset_time ? DateTime.make(bucket.reset_time) : Option.none();

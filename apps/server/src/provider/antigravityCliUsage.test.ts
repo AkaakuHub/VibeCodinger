@@ -36,5 +36,13 @@ it("maps the CLI's quota groups to session and weekly limits", () => {
       resetsAt: "2026-11-29T08:00:00.000Z",
     },
   ]);
-  expect(parseAntigravityCliUsage('{"status":"ERROR"}')).toEqual([]);
+});
+
+it("distinguishes an empty quota response from a CLI failure", () => {
+  expect(
+    parseAntigravityCliUsage(
+      '{"status":"SUCCESS","command":{"name":"usage","data":{"groups":[]}}}',
+    ),
+  ).toEqual([]);
+  expect(parseAntigravityCliUsage('{"status":"ERROR"}')).toBeUndefined();
 });

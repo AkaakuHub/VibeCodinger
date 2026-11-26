@@ -592,11 +592,17 @@ export const AntigravityDriver: ProviderDriver<AntigravitySettings, AntigravityD
       /^(?:1\.(?:[5-9]|[1-9]\d+)\.|(?:[2-9]|[1-9]\d+)\.)\d+/.test(version ?? "");
     const probeUsage = Effect.gen(function* () {
       const checkedAt = DateTime.formatIso(yield* DateTime.now);
-      const unavailable = (reason: "unsupported" | "probeFailed") =>
-        makeUnavailableUsageLimits({ checkedAt, reason });
-      const windows = yield* Effect.gen(function* () {
+      const unsupportedVersion = makeUnavailableUsageLimits({
+        checkedAt,
+        reason: "unsupported",
+        message: "Update Antigravity to read subscription limits.",
+      });
+      const failed = makeUnavailableUsageLimits({ checkedAt, reason: "probeFailed" });
+      const result = yield* Effect.gen(function* () {
         const resolved = yield* installation.resolve(settings.binaryPath, processEnvironment);
-        if (resolved.version !== null && !supportsUsageCommand(resolved.version)) return [];
+        if (resolved.version !== null && !supportsUsageCommand(resolved.version)) {
+          return unsupportedVersion;
+        }
         const { executable, spawn, profile, runtimeTempDirectory } = yield* prepareSpawn(
           userHome,
           processEnvironment,
@@ -620,14 +626,20 @@ export const AntigravityDriver: ProviderDriver<AntigravitySettings, AntigravityD
             }),
           ).pipe(Effect.provideService(ChildProcessSpawner.ChildProcessSpawner, spawner));
         const version = executable.version ?? parseCliVersionResult(yield* run(["--version"]));
-        if (!supportsUsageCommand(version)) return [];
-        const result = yield* run(usageSpawn.args);
-        return result.code === 0 ? parseAntigravityCliUsage(result.stdout) : [];
-      }).pipe(Effect.scoped, Effect.timeout("20 seconds"), Effect.option);
-      if (Option.isNone(windows)) return unavailable("probeFailed");
-      return windows.value.length > 0
-        ? makeUsageLimits({ checkedAt, windows: windows.value })
-        : unavailable("unsupported");
+        if (version === null) return failed;
+        if (!supportsUsageCommand(version)) return unsupportedVersion;
+        const usage = yield* run(usageSpawn.args);
+        const windows = usage.code === 0 ? parseAntigravityCliUsage(usage.stdout) : undefined;
+        if (windows === undefined) return failed;
+        return windows.length > 0
+          ? makeUsageLimits({ checkedAt, windows })
+          : makeUnavailableUsageLimits({
+              checkedAt,
+              reason: "unsupported",
+              message: "Antigravity reported no subscription limits for this account.",
+            });
+      }).pipe(Effect.scoped, Effect.timeout("60 seconds"), Effect.option);
+      return Option.getOrElse(result, () => failed);
     });
 
     const provider = yield* makeAntigravityProvider(settings, {
