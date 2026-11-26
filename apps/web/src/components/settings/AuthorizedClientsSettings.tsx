@@ -61,6 +61,7 @@ import {
 import { authEnvironment } from "~/state/auth";
 import { readEnvironmentScope } from "~/state/session";
 import { useManagedPolicy, usePrimaryManagedPolicy } from "~/state/managedPolicy";
+import { isTailscaleHttpsEndpoint } from "~/state/desktopNetworkAccess";
 import { useAtomCommand } from "~/state/use-atom-command";
 import { ManagedControl } from "../ManagedPolicy";
 import { openUseInAnotherApp } from "../mcp/UseInAnotherAppDialog";
@@ -69,7 +70,6 @@ import { ITEM_ROW_CLASSNAME, ITEM_ROW_INNER_CLASSNAME } from "./itemRows";
 import {
   formatAccessTimestamp,
   selectPairingEndpoint,
-  isTailscaleHttpsEndpoint,
   endpointDefaultPreferenceKey,
   resolveAdvertisedEndpointPairingUrl,
   resolveCurrentOriginPairingUrl,

@@ -5,6 +5,7 @@ import { msg } from "gt-react";
 import { resolveDesktopPairingUrl } from "./pairingUrls";
 import { getPairingTokenFromUrl, setPairingTokenOnUrl } from "@vibecodinger/shared/remote";
 import { readHostedPairingRequest } from "../../hostedPairing";
+import { isTailscaleHttpsEndpoint } from "~/state/desktopNetworkAccess";
 import { m, type MessageResolver } from "../../i18n/messages";
 import {
   isLoopbackHostname,
@@ -407,10 +408,6 @@ export function isServerNetworkAccessible(input: {
 }): boolean {
   if (input.authPolicy === "remote-reachable") return true;
   return input.authPolicy === "loopback-browser" && (input.directEndpoints?.length ?? 0) > 0;
-}
-
-export function isTailscaleHttpsEndpoint(endpoint: AdvertisedEndpoint): boolean {
-  return endpoint.id.startsWith("tailscale-magicdns:");
 }
 
 export function endpointDefaultPreferenceKey(endpoint: AdvertisedEndpoint): string {

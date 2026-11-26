@@ -5,7 +5,7 @@ import type {
 } from "@vibecodinger/contracts";
 import * as Effect from "effect/Effect";
 import * as Schema from "effect/Schema";
-import { Atom } from "effect/reactivity";
+import { AsyncResult, Atom } from "effect/reactivity";
 
 import { appAtomRegistry } from "~/rpc/atomRegistry";
 import { msg } from "gt-react";
@@ -13,6 +13,10 @@ import { msg } from "gt-react";
 import { m } from "../i18n/messages";
 
 const DESKTOP_NETWORK_ACCESS_STALE_TIME_MS = 30_000;
+
+export function isTailscaleHttpsEndpoint(endpoint: AdvertisedEndpoint): boolean {
+  return endpoint.id.startsWith("tailscale-magicdns:");
+}
 
 type DesktopNetworkAccessBridge = Pick<
   DesktopBridge,
@@ -93,9 +97,24 @@ function createDesktopNetworkAccessStateAtom(
   );
 }
 
-export const desktopNetworkAccessStateAtom = createDesktopNetworkAccessStateAtom(
+const desktopNetworkAccessStateAtom = createDesktopNetworkAccessStateAtom(
   getDesktopNetworkAccessBridge,
 );
+
+export const retryingDesktopNetworkAccessStateAtom = Atom.make((get) => {
+  const result = get(desktopNetworkAccessStateAtom);
+  const snapshot = AsyncResult.getOrElse(result, () => null);
+  if (
+    snapshot?.serverExposureState.tailscaleServeEnabled &&
+    !snapshot.advertisedEndpoints.some(
+      (endpoint) => isTailscaleHttpsEndpoint(endpoint) && endpoint.status === "available",
+    )
+  ) {
+    const timer = setTimeout(() => get.refresh(desktopNetworkAccessStateAtom), 5_000);
+    get.addFinalizer(() => clearTimeout(timer));
+  }
+  return result;
+});
 
 export function refreshDesktopNetworkAccessState(): void {
   appAtomRegistry.refresh(desktopNetworkAccessStateAtom);
