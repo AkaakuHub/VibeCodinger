@@ -7756,7 +7756,6 @@
   "6d0078b22dd48e5e": "Endast WSL",
   "6bbbad2cd959de78": "Kör bara WSL-backenden. VibeCodinger startar om när detta ändras.",
   "2436c98b544eff80": "Kör endast WSL",
-  "f060774ce36f44fb": "Använd Tailscale Serve för att exponera den här backenden via en HTTPS-URL i MagicDNS.",
   "ec43c3fd73a863f3": "Aktivera Tailscale HTTPS",
   "1d87b96f13c2dfd7": "Nås på {url}",
   "035a3c35d77332ef": "Exponerad på alla gränssnitt. Parkopplingslänkar använder {host}.",

@@ -7769,7 +7769,6 @@
   "6d0078b22dd48e5e": "仅 WSL",
   "6bbbad2cd959de78": "仅运行 WSL 后端。更改后 VibeCodinger 会重启。",
   "2436c98b544eff80": "仅运行 WSL",
-  "f060774ce36f44fb": "通过 Tailscale Serve，让其他设备使用 MagicDNS HTTPS URL 访问此后端。",
   "ec43c3fd73a863f3": "启用 Tailscale HTTPS",
   "1d87b96f13c2dfd7": "访问地址：{url}",
   "035a3c35d77332ef": "已向所有网络接口开放。配对链接使用 {host}。",

@@ -7750,7 +7750,6 @@
   "6d0078b22dd48e5e": "Só WSL",
   "6bbbad2cd959de78": "Executa só o backend do WSL. O VibeCodinger reinicia quando isto muda.",
   "2436c98b544eff80": "Executar só o WSL",
-  "f060774ce36f44fb": "Usa o Tailscale Serve para expor este backend por uma URL HTTPS do MagicDNS.",
   "ec43c3fd73a863f3": "Ativar o Tailscale HTTPS",
   "1d87b96f13c2dfd7": "Acessível em {url}",
   "035a3c35d77332ef": "Exposto em todas as interfaces. Os links de pareamento usam {host}.",

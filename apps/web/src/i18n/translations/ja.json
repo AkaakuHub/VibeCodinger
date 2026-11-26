@@ -7717,7 +7717,6 @@
   "6d0078b22dd48e5e": "WSL のみ",
   "6bbbad2cd959de78": "WSL バックエンドのみを実行します。変更すると VibeCodinger が再起動します。",
   "2436c98b544eff80": "WSL のみを実行",
-  "f060774ce36f44fb": "Tailscale Serve を使用して、このバックエンドを MagicDNS の HTTPS URL で公開します。",
   "ec43c3fd73a863f3": "Tailscale HTTPS を有効にする",
   "1d87b96f13c2dfd7": "接続先: {url}",
   "035a3c35d77332ef": "すべてのインターフェイスで公開されています。ペアリングリンクは {host} を使用します。",
