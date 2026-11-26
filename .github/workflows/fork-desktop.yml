@@ -39,6 +39,13 @@ jobs:
         with:
           install-args: --frozen-lockfile --filter=vibecodinger... --filter=@vibecodinger/web... --filter=@vibecodinger/desktop... --filter=@vibecodinger/scripts...
 
+      - name: Upload dependency verification
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-dependency-verification
+          path: ${{ runner.temp }}/pnpm-metadata/lockfile-verified.jsonl
+          retention-days: 2
+
       - name: Set package version
         id: version
         shell: bash
@@ -61,6 +68,7 @@ jobs:
           path: |
             apps/server/dist
             apps/desktop/dist-electron
+          include-hidden-files: true
           if-no-files-found: error
           retention-days: 2
 
