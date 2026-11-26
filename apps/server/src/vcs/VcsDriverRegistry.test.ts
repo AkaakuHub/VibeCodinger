@@ -91,12 +91,7 @@ describe("VcsDriverRegistry", () => {
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
       const parentDir = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-vcs-registry-" });
-      const projectDir = path.join(parentDir, "project");
-=======
-      const parentDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-vcs-registry-" });
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
       yield* fs.makeDirectory(path.join(parentDir, ".git"));
       const calls: string[] = [];
 

@@ -511,7 +511,7 @@ export const AntigravityDriver: ProviderDriver<AntigravitySettings, AntigravityD
           return Deferred.succeed(event.acknowledge, undefined).pipe(Effect.asVoid);
         }
         if (event._tag === "ConfigOptionsUpdated") {
-          return provider.onConfigOptionsUpdated(event.configOptions, { fromCatalogProbe: true });
+          return provider.onConfigOptionsUpdated(event.configOptions);
         }
         return event._tag === "AvailableCommandsUpdated"
           ? provider.onAvailableCommands(event.availableCommands)
@@ -531,7 +531,11 @@ export const AntigravityDriver: ProviderDriver<AntigravitySettings, AntigravityD
     const authFlow: AntigravityAuth = yield* makeAntigravityAuth({
       instanceId,
       makeRuntime: makeDisposableRuntime,
-      onAuthenticated: publishCatalog,
+      // A new sign-in may be another account; drop any in-flight quota read first.
+      onAuthenticated: (started, runtime) =>
+        Effect.suspend(() => provider.onSignedIn).pipe(
+          Effect.andThen(publishCatalog(started, runtime)),
+        ),
       onSignedOut: Effect.suspend(() => provider.onSignedOut),
       usesBrowser: antigravityAuthUsesBrowser(auth.authMethod),
       codeLogin,
@@ -576,7 +580,6 @@ export const AntigravityDriver: ProviderDriver<AntigravitySettings, AntigravityD
       };
     });
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
     // Google documents /usage in print mode for these releases. Do not send it to older CLIs
     // that could interpret it as a model prompt.
     const supportsUsageCommand = (version: string | null) =>
@@ -618,16 +621,11 @@ export const AntigravityDriver: ProviderDriver<AntigravitySettings, AntigravityD
         : unavailable("unsupported");
     });
 
-=======
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
     const provider = yield* makeAntigravityProvider(settings, {
       environment: processEnvironment,
       stampIdentity: classifyModels,
       probe,
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
       probeUsage,
-=======
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
       auth: { type: auth.authMethod, label: antigravityAuthLabel(auth.authMethod) },
       ...(rememberedRuntimeModes ? { rememberedRuntimeModes } : {}),
       rememberRuntimeModes: (modes) =>
@@ -668,10 +666,8 @@ export const AntigravityDriver: ProviderDriver<AntigravitySettings, AntigravityD
         ),
       ),
       profileDirectory,
-      onSessionStarted: (started, cwd, session) =>
-        provider
-          .onSessionStarted(started, cwd, session)
-          .pipe(Effect.andThen(authFlow.onSignedInElsewhere)),
+      onSessionStarted: (started, cwd) =>
+        provider.onSessionStarted(started, cwd).pipe(Effect.andThen(authFlow.onSignedInElsewhere)),
       onSessionEvent: (event, cwd) => {
         if (event._tag === "ConfigOptionsUpdated") {
           return provider.onConfigOptionsUpdated(event.configOptions);
@@ -738,9 +734,7 @@ export const AntigravityDriver: ProviderDriver<AntigravitySettings, AntigravityD
               detail: isAntigravitySignInRequiredError(cause)
                 ? "Sign in to Antigravity in provider settings before refreshing models."
                 : cause._tag === "ProviderSetupError" &&
-                    (cause.operation === "configure" ||
-                      cause.operation === "resolve" ||
-                      cause.operation === "start")
+                    (cause.operation === "configure" || cause.operation === "start")
                   ? cause.detail
                   : cause._tag === "AcpTransportError" &&
                       isProviderSetupError(cause.cause) &&

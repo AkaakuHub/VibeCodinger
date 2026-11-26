@@ -34,7 +34,6 @@ On web and desktop, choose **Create theme** in **Settings → Appearance** to ed
 
 Open **Custom CSS** in the theme editor for styling beyond palette colors. Custom CSS is saved with the theme and included in exports.
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 Custom CSS cannot load files. `@import`, `image-set()`, and `url()` are ignored, except `url()`
 with a `data:` address or an `#id`. This keeps an imported theme from sending what is on your screen
 to another site. For a full-size image, use a [background image](#background-image).
@@ -45,12 +44,6 @@ and other `data-` attributes, such as `[data-chat-header]` or `[data-slot="butto
 If a rule hides something you need, run `vibecodinger theme set t3-chat` on the server to switch to a
 built-in theme, or press **Cmd+Option+A** on macOS or **Ctrl+Alt+A** on Windows/Linux to pick
 another theme.
-=======
-- Use `.dark` or `:root:not(.dark)` to target one appearance.
-- Target `data-slot` and other `data-` attributes (such as `[data-chat-header]` or `[data-slot="button"]`) rather than class names, which change between releases.
-- External resource loading (`@import`, `image-set()`, and non-`data:`/`#id` `url()`) is blocked for security. Use a [background image](#background-image) for full-size images.
-- **Recovery**: If custom CSS hides something you need, run `t3 theme set t3-chat` on the server or press `Cmd+Option+A` / `Ctrl+Alt+A` to switch themes.
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 ### Ask an agent
 
@@ -65,7 +58,6 @@ Select a published theme in **Settings → Appearance** to track server updates,
 Manage the server default from the CLI:
 
 ```bash
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 vibecodinger theme set nightfall
 ```
 
@@ -82,16 +74,6 @@ Save a theme exported from T3 Code into `~/.vibecodinger/userdata/themes/` on th
 directory under your custom state directory. The filename supplies the theme ID: `nightfall.json`
 can be selected with `vibecodinger theme set nightfall`. Keep the filename stable when updating its colors.
 Do not use `system`, `light`, `dark`, or a built-in theme's ID.
-=======
-t3 theme set nightfall   # Set default and switch connected/reconnecting clients once
-t3 theme clear           # Remove the default without changing current client themes
-t3 theme show            # List the default and all published themes
-```
-
-### Publish a theme
-
-Save an exported theme JSON into `~/.t3/userdata/themes/` on the server (or `themes/` under your custom state directory). The filename sets the theme ID (e.g. `nightfall.json` → `t3 theme set nightfall`). Avoid reserved IDs (`system`, `light`, `dark`, or built-in theme IDs).
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 You can also use a minimal palette format—T3 Code generates the remaining tokens:
 

@@ -456,16 +456,11 @@ const cwd =
   process.env.VIBECODINGER_CLAUDE_REPLAY_CWD ??
   (scenario === "tool_call_read_only"
     ? await makeToolCallReadOnlyRecordingWorkspace()
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-    : await makeCheckpointWorkspace(`claude-agent-sdk-record-${scenario}`));
-const shouldRemoveCwd = process.env.VIBECODINGER_CLAUDE_REPLAY_CWD === undefined;
-=======
     : await makeCheckpointWorkspace(
         `claude-agent-sdk-record-${scenario}`,
         "workspaceFiles" in recording ? recording.workspaceFiles : undefined,
       ));
-const shouldRemoveCwd = process.env.T3_CLAUDE_REPLAY_CWD === undefined;
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
+const shouldRemoveCwd = process.env.VIBECODINGER_CLAUDE_REPLAY_CWD === undefined;
 
 const expectedAbsentWorkspacePaths =
   "expectedAbsentWorkspacePaths" in recording ? recording.expectedAbsentWorkspacePaths : [];

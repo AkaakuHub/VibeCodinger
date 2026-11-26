@@ -122,30 +122,13 @@ const LOGIN_SHELL_ENV_NAMES = [
   "SSL_CERT_FILE",
   "SSL_CERT_DIR",
   "NODE_EXTRA_CA_CERTS",
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
   "VIBECODINGER_FEATURE_FLAGS",
   "VIBECODINGER_RELEASE_BASE_URL",
-=======
-  "T3CODE_TELEMETRY_ENABLED",
-  "DO_NOT_TRACK",
-  "T3CODE_FEATURE_FLAGS",
-  "T3CODE_RELEASE_BASE_URL",
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
   "__MISE_DIFF",
   "JAVA_HOME",
   "PNPM_HOME",
 ] as const;
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 const WINDOWS_PROFILE_ENV_NAMES = ["PATH", "FNM_DIR", "FNM_MULTISHELL_PATH"] as const;
-=======
-const WINDOWS_PROFILE_ENV_NAMES = [
-  "PATH",
-  "FNM_DIR",
-  "FNM_MULTISHELL_PATH",
-  "T3CODE_TELEMETRY_ENABLED",
-  "DO_NOT_TRACK",
-] as const;
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 const LOCALE_ENV_NAMES = ["LANG", "LC_ALL", "LC_CTYPE"] as const;
 const ANDROID_SDK_ENV_NAMES = ["ANDROID_HOME", "ANDROID_SDK_ROOT"] as const;
 const FALLBACK_LC_CTYPE = "en_US.UTF-8";
@@ -470,14 +453,6 @@ const installWindowsEnvironment = Effect.fn("desktop.shellEnvironment.installWin
     if (!config.env.FNM_MULTISHELL_PATH && profile.FNM_MULTISHELL_PATH) {
       config.env.FNM_MULTISHELL_PATH = profile.FNM_MULTISHELL_PATH;
     }
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-=======
-    for (const name of ["T3CODE_TELEMETRY_ENABLED", "DO_NOT_TRACK"] as const) {
-      if (!config.env[name] && profile[name]) {
-        config.env[name] = profile[name];
-      }
-    }
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
     return Boolean(noProfile.PATH && profile.PATH);
   },
 );
@@ -577,15 +552,8 @@ const installPosixEnvironment = Effect.fn("desktop.shellEnvironment.installPosix
       "NODE_EXTRA_CA_CERTS",
       "JAVA_HOME",
       "PNPM_HOME",
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
       "VIBECODINGER_FEATURE_FLAGS",
       "VIBECODINGER_RELEASE_BASE_URL",
-=======
-      "T3CODE_TELEMETRY_ENABLED",
-      "DO_NOT_TRACK",
-      "T3CODE_FEATURE_FLAGS",
-      "T3CODE_RELEASE_BASE_URL",
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
     ] as const) {
       if (!config.env[name] && shellEnvironment[name]) {
         config.env[name] = shellEnvironment[name];
@@ -690,11 +658,6 @@ const CACHED_ENV_NAMES = [
   "SSL_CERT_FILE",
   "SSL_CERT_DIR",
   "NODE_EXTRA_CA_CERTS",
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-=======
-  "T3CODE_TELEMETRY_ENABLED",
-  "DO_NOT_TRACK",
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
   // The server reads its flags once at start, before discovery can finish.
   "VIBECODINGER_FEATURE_FLAGS",
 ] as const;

@@ -26,12 +26,8 @@ internal object VibeCodingerComposerClipboard {
     }
     val records = payload?.optJSONArray("records")
     if (payload == null || records == null) {
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886:apps/mobile/modules/vibecodinger-composer-editor/android/src/main/java/expo/modules/vibecodingercomposereditor/VibeCodingerComposerEditorModule.kt
-      clipboard.setPrimaryClip(ClipData.newPlainText("VibeCodinger", text))
-=======
       copiedContext = null
-      clipboard.setPrimaryClip(ClipData.newPlainText("T3 Code", text))
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432:apps/mobile/modules/t3-composer-editor/android/src/main/java/expo/modules/t3composereditor/T3ComposerEditorModule.kt
+      clipboard.setPrimaryClip(ClipData.newPlainText("VibeCodinger", text))
       return
     }
     val all = (0 until records.length()).map { records.getJSONObject(it) }

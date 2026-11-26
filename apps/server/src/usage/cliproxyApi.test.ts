@@ -513,8 +513,6 @@ describe("CLIProxyAPI built-in management API", () => {
     }),
   );
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-=======
   it.effect.each([
     { name: "a refused xAI call", provider: "xai", status: 403, body: { error: "denied" } },
     { name: "a malformed xAI answer", provider: "xai", status: 200, body: { config: "x" } },
@@ -529,7 +527,6 @@ describe("CLIProxyAPI built-in management API", () => {
     }),
   );
 
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
   it.effect("skips accounts of providers the hub table does not know", () =>
     Effect.gen(function* () {
       const test = fixture({

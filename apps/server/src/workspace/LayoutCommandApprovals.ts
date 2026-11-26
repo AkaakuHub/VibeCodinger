@@ -1,4 +1,8 @@
-import { ProjectId, TaskFolderError, type WorktreeLayoutCommandKind } from "@vibecodinger/contracts";
+import {
+  ProjectId,
+  TaskFolderError,
+  type WorktreeLayoutCommandKind,
+} from "@vibecodinger/contracts";
 import * as Context from "effect/Context";
 import * as Digest from "effect/crypto/Digest";
 import * as Effect from "effect/Effect";
@@ -23,7 +27,7 @@ export class LayoutCommandApprovals extends Context.Service<
       readonly command: string;
     }) => Effect.Effect<boolean, TaskFolderError>;
   }
->()("t3/workspace/LayoutCommandApprovals") {}
+>()("vibecodinger/workspace/LayoutCommandApprovals") {}
 
 export const failed = (cause: unknown) =>
   new TaskFolderError({

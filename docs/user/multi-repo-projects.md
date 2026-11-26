@@ -12,7 +12,6 @@ The project folder itself does not need to be a Git repository.
 
 T3 Code automatically discovers every Git repository inside the project folder—one level down, plus one level deeper inside non-repo folders (such as `src/` or `packages/`). Cloned or deleted repos update automatically; worktrees of other repos are ignored. View covered repos in **Settings → Projects → Repositories**.
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 **Settings → Projects → Repositories** shows what the project covers on each machine.
 
 ### Folders outside the project
@@ -33,10 +32,6 @@ paths on one machine, so the same project on another machine has its own. A proj
 
 To keep a repository inside the project folder out of the project, name it in the `vibecodinger.json` in the
 project folder, relative to that folder:
-=======
-- **Add external folders**: Use **Add folder** in **Settings → Projects → Repositories** (web/desktop), import entries from a `.code-workspace` file (web/desktop/mobile), or run `t3 project add <path> --track <folder>`. Added folders are per machine (up to 128 folders per project); removing one never deletes files.
-- **Ignore a repository**: Add relative paths to `t3.json` in the project folder (applies on every machine):
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 ```json
 {
@@ -62,7 +57,6 @@ project folder, relative to that folder:
 
 ### Custom worktree layout
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 In a plain folder, the files outside your repositories are shared links to the originals, not
 copies. Editing one changes it for every thread.
 
@@ -71,9 +65,6 @@ copies. Editing one changes it for every thread.
 If the default layout does not suit your project, for example because build output must be per
 thread, workspace metadata has to be generated, or submodules need preparing, the project can
 create the folder with its own command. Add this to the `vibecodinger.json` in the project folder:
-=======
-For custom workspace generation (e.g., per-thread build dirs or submodule setup), declare `worktreeLayout` in the project folder's `t3.json`:
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 ```json
 {
@@ -86,7 +77,6 @@ For custom workspace generation (e.g., per-thread build dirs or submodule setup)
 
 `create` runs in the project folder (10-minute timeout, serialized per project) with these environment variables:
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 | Variable                             | Value                                                      |
 | ------------------------------------ | ---------------------------------------------------------- |
 | `VIBECODINGER_PROJECT_ROOT`          | The project folder.                                        |
@@ -95,16 +85,6 @@ For custom workspace generation (e.g., per-thread build dirs or submodule setup)
 | `VIBECODINGER_WORKTREE_BRANCH`       | The thread's branch name.                                  |
 | `VIBECODINGER_WORKTREE_BASE`         | The base branch, or empty when the thread has none.        |
 | `VIBECODINGER_WORKTREE_REPOSITORIES` | The repositories chosen for the thread, one path per line. |
-=======
-| Variable                   | Value                                         |
-| -------------------------- | --------------------------------------------- |
-| `T3_PROJECT_ROOT`          | The project folder.                           |
-| `T3_WORKTREE_ROOT`         | Empty folder to populate for this thread.     |
-| `T3_WORKTREE_PROJECT_PATH` | Target path for the project folder inside it. |
-| `T3_WORKTREE_BRANCH`       | The thread's branch name.                     |
-| `T3_WORKTREE_BASE`         | Base branch, or empty if none.                |
-| `T3_WORKTREE_REPOSITORIES` | Selected repositories, one path per line.     |
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 Requirements for layout scripts:
 
@@ -112,7 +92,6 @@ Requirements for layout scripts:
 - `create` must be idempotent (if re-run when a folder is missing, check out the existing branch). Failed `create` runs roll back created checkouts.
 - `remove` (optional) runs before T3 Code cleans up and should handle partially missing folders and delete generated files.
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 - **Checkouts are linked worktrees on the thread's branch.** Make each one with
   `git worktree add` from the repository it belongs to, on `VIBECODINGER_WORKTREE_BRANCH`. T3 Code later
   removes, restores, and renames these through Git, so it refuses a clone or a checkout on another
@@ -135,9 +114,6 @@ Requirements for layout scripts:
 A project with no other repository can declare a layout too. This example gives each thread
 a worktree with its submodules checked out. The command runs in `sh`, and in `cmd.exe` on Windows,
 so write it for the shell of the machine the project is on; this one is for `sh`:
-=======
-Example (`sh`) for a single repo that also initializes submodules:
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 ```json
 {
@@ -157,13 +133,8 @@ T3 Code prompts you to approve the exact `create` and `remove` command strings o
 
 ## Rewind and limits
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 - One Git action runs in one repository. There is no commit or push across several at once.
 - Only the project folder's `vibecodinger.json` is read. Setup scripts and actions inside one of its
   repositories are not picked up.
 - The Diff pane's repository picker and the base branch field for a plain folder are on web and
   desktop only.
-=======
-- **Rewind**: Restores every repository with an earlier snapshot. Plain-folder files outside repositories and repositories with no earlier snapshot keep their current contents (the rewind reports any skipped repos).
-- **Limits**: Git actions run one repository at a time; only the project folder's `t3.json` is read; the Diff pane repository picker and plain-folder base branch field are web/desktop only.
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432

@@ -727,12 +727,8 @@ export class GhosttyTerminalSurface {
     canvas.setAttribute("aria-hidden", "true");
 
     const input = document.createElement("textarea");
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
     input.className = "vc-ghostty-input";
     input.setAttribute("aria-label", m(msg("Terminal input")));
-=======
-    input.className = "t3-ghostty-input";
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
     input.autocapitalize = "off";
     input.autocomplete = "off";
     input.spellcheck = false;

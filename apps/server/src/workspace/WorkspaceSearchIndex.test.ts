@@ -307,13 +307,7 @@ it.live("answers content searches with git grep while a slow content index build
     const fileSystem = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
     const vcsProcess = yield* VcsProcess.VcsProcess;
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-    const cwd = yield* fileSystem.makeTempDirectoryScoped({
-      prefix: "vibecodinger-content-warmup-",
-    });
-    yield* vcsProcess.run({ operation: "test.gitInit", command: "git", args: ["init"], cwd });
-=======
-    const repoRoot = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-content-warmup-" });
+    const repoRoot = yield* fileSystem.makeTempDirectoryScoped({ prefix: "vc-content-warmup-" });
     yield* vcsProcess.run({
       operation: "test.gitInit",
       command: "git",
@@ -331,7 +325,6 @@ it.live("answers content searches with git grep while a slow content index build
     }
     const cwd = path.join(repoRoot, "project");
     yield* fileSystem.makeDirectory(cwd);
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
     yield* fileSystem.writeFileString(path.join(cwd, ".gitignore"), "ignored.txt\n");
     yield* fileSystem.makeDirectory(path.join(cwd, "src"));
     yield* fileSystem.writeFileString(

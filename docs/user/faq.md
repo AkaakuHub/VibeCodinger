@@ -8,7 +8,6 @@ Bring your own: Claude Code, Codex, Cursor, Grok Build, OpenCode, Google Antigra
 
 ## Why use T3 Code instead of Claude Code or the Codex app?
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 We were inspired by the Codex desktop app, Conductor, Claude Desktop, and Cursor Glass, but none met our bar. What you get:
 
 - Bring your own sub. Claude, Codex, and whatever else you already have installed.
@@ -17,12 +16,6 @@ We were inspired by the Codex desktop app, Conductor, Claude Desktop, and Cursor
 - Truly 100% open source code (MIT). If we go the wrong direction, fork it under your own branding.
 
 Every harness feels nearly identical in here, so you can stop worrying about harnesses and focus on building :) [Install](./install.md)
-=======
-- **Bring your own subscription**: Use Claude, Codex, and every other agent you already have installed in one place.
-- **Remote-first**: Run `t3 up` on any box and drive it from anywhere.
-- **Native mobile app**: Approve steps, review PRs, and steer threads from iOS and Android.
-- **Open source (MIT)**: Fork the source code under your own branding if you ever want something different.
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 ## Can I use T3 Code with my Claude Code subscription?
 
@@ -30,11 +23,7 @@ Yes.
 
 ## How much does VibeCodinger cost?
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 The fork is available under the MIT License. Your provider charges under its own plan.
-=======
-Nothing. You pay your own model/agent providers. T3 Connect is free for up to 3 connected host machines per account (phones and browsers don't count). You can also self-host or use LAN/Tailscale.
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 ## Can I fork or redistribute T3 Code?
 
@@ -42,11 +31,7 @@ Yes, for the source code. The [MIT License](../../LICENSE) covers source code on
 
 ## Can I connect several machines?
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 Pair separately with each environment you can reach through the tailnet. [Remote access](./remote-access.md)
-=======
-Yes. Link a paid T3 Chat account from your account menu → **T3 Chat → Link T3 Chat**: T3 Chat Pro raises the limit to 10 machines, and Premier raises it to 100. See [More machines with T3 Chat](./remote-access.md#more-machines-with-t3-chat).
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 ## Why is my Claude 5-hour limit draining so fast?
 
@@ -54,23 +39,11 @@ Since v0.1.7, Claude in T3 Code drains your 5-hour limit at the same rate as Cla
 
 ## How do I use T3 Code remotely?
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 Agents run on the machine that hosts VibeCodinger. To connect from another computer or your phone, pair over the tailnet. [Remote access](./remote-access.md#direct-tls-over-tailscale)
-=======
-Your agents run wherever the T3 Code server runs (desktop, server, or VPS). Run `t3 up` on that machine and connect via T3 Connect, LAN, Tailscale, or [app.t3.codes](https://app.t3.codes). See [Remote access](./remote-access.md).
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 ## How do I use VibeCodinger on my phone?
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 Install a native build from the fork and pair it with the server. Keep the host running while you use the phone. [Releases](https://github.com/AkaakuHub/t3code/releases) · [Remote access](./remote-access.md#direct-tls-over-tailscale)
-=======
-Install the [iOS](https://apps.apple.com/us/app/t3-code-remote-claude-more/id6787819824) or [Android](https://play.google.com/store/apps/details?id=com.t3tools.t3code) app and connect it to your computer with T3 Connect or a pairing link. The phone is a remote control—your host computer runs the agents and must stay on. See [Mobile app](./install.md#mobile-app) and [Remote access](./remote-access.md).
-
-## Why does T3 Connect keep disconnecting?
-
-Open **Settings → Environments**, select the machine, and choose **Details**—the first failed check identifies the cause. See [T3 Connect troubleshooting](./t3-connect-troubleshooting.md). Tailscale also works great as a direct fallback.
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 ## Will I get banned for using my subscription?
 
@@ -90,13 +63,7 @@ No. T3 Code focuses on frontier coding agents.
 
 ## Where does my code go?
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 VibeCodinger connects directly to your host over its configured network route. The host executes your agents and sends their requests to the provider you choose. Product usage reporting has been removed from the fork.
-=======
-No. Code and prompts go directly from your machine to your chosen provider. With T3 Connect, traffic travels over a Cloudflare tunnel (`cloudflared` on your machine); T3's relay coordinates the link without proxying your HTTP/WebSocket sessions.
-
-T3 Code sends basic product usage events (provider, model, token totals—no prompts or file contents). Disable with `T3CODE_TELEMETRY_ENABLED=false` or `DO_NOT_TRACK=1`. See [Product usage data](./telemetry.md).
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 ## Worktrees are eating my disk. How do I clean them up?
 
@@ -108,11 +75,7 @@ Yes—on-device speech on iOS, Android, and macOS 26+ desktop, or via a paired e
 
 ## Does it work on Windows, Mac, and Linux?
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 Yes, all three. Desktop app, CLI, the works. One catch: there is no `vibecodinger` binary for Intel Macs, so use the desktop app there. Windows folks can also run agents inside WSL. [Install](./install.md)
-=======
-Yes, all three (desktop app and CLI). Note: there is no standalone `t3` binary for Intel Macs (use the desktop app there), and Windows users can also run agents inside WSL. See [Install](./install.md).
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 ## Why is my provider not showing up?
 

@@ -76,7 +76,10 @@ import {
   type ProviderSubagentStatus,
 } from "@vibecodinger/client-runtime/state/thread-execution";
 import { formatModelSlugName, resolveSelectableModel } from "@vibecodinger/shared/model";
-import { AuthOrchestrationOperateScope, isProviderNativeSubagentThread } from "@vibecodinger/contracts";
+import {
+  AuthOrchestrationOperateScope,
+  isProviderNativeSubagentThread,
+} from "@vibecodinger/contracts";
 import type { QueuedRunEdit } from "../../state/queued-run-edit";
 import type { FollowUpBehavior } from "../../lib/followUpBehavior";
 import type { ActiveTurnComposerAction } from "@vibecodinger/client-runtime/state/composer-dispatch";

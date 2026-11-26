@@ -279,18 +279,13 @@ const makeHarness = Effect.fn("test.make_boot_service_harness")(function* (
         control.linger = "yes";
         control.managerReachable ||= control.lingerStartsManager;
       }
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-      if (!failed && command === "systemctl --user enable vibecodinger.service")
-        control.enabled = true;
-=======
       if (
         !failed &&
-        (command === "systemctl --user enable t3code.service" ||
+        (command === "systemctl --user enable vibecodinger.service" ||
           command.startsWith("launchctl enable "))
       ) {
         control.enabled = true;
       }
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
       const taskMissing =
         input.command === SCHTASKS && input.args[0] !== "/Create" && control.task === undefined;
       if (input.command === SCHTASKS && !failed) {
@@ -317,16 +312,12 @@ const makeHarness = Effect.fn("test.make_boot_service_harness")(function* (
         command === "systemctl --user enable vibecodinger.service" &&
         !(yield* fs.exists(path.join(managerUnitDir, "vibecodinger.service")));
       // A timed-out stop may still stop the service.
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-      if (command === "systemctl --user stop vibecodinger.service") control.active = false;
-=======
       if (
-        command === "systemctl --user stop t3code.service" ||
+        command === "systemctl --user stop vibecodinger.service" ||
         command.startsWith("launchctl bootout --wait ")
       ) {
         control.active = false;
       }
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
       if (
         control.stateAfterStop !== undefined &&
         (command === "systemctl --user stop vibecodinger.service" ||

@@ -981,7 +981,7 @@ it.effect("only a full-access client may change a thread's own agent mode", () =
     const configure = (access: "approval-required" | "full-access", mode: string) =>
       server
         .callTool({
-          name: "t3_thread_configure",
+          name: "vc_thread_configure",
           arguments: {
             threadId: "agent-thread",
             modelSelection: {

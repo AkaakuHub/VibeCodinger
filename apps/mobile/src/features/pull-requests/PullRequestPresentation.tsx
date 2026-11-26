@@ -65,13 +65,8 @@ export function PullRequestAvatar(props: {
       className="items-center justify-center rounded-full bg-grouped-card"
       style={{ width: size, height: size }}
     >
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
       <Text className="font-vc-medium text-foreground-muted" style={{ fontSize: size * 0.45 }}>
-        {props.actor?.login.slice(0, 1).toUpperCase() ?? "?"}
-=======
-      <Text className="font-t3-medium text-foreground-muted" style={{ fontSize: size * 0.45 }}>
-        {props.actor ? [...props.actor.login][0]?.toUpperCase() : "?"}
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
+        {props.actor ? ([...props.actor.login][0]?.toUpperCase() ?? "?") : "?"}
       </Text>
     </View>
   );

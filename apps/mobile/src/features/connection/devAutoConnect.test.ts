@@ -128,7 +128,7 @@ it("auto-connects in a production bundle only when mobile:metrics built it with 
   harness.pair.mockClear();
   harness.pair.mockResolvedValueOnce({ ok: false, error: null });
   vi.stubGlobal("__DEV__", false);
-  vi.stubEnv("EXPO_PUBLIC_T3_BEHAVIOR_PROBE", "1");
+  vi.stubEnv("EXPO_PUBLIC_VC_BEHAVIOR_PROBE", "1");
   startDevAutoConnect(settingsLink({ pairingUrl: PAIRING_URL, autoConnect: "1" }));
   vi.unstubAllEnvs();
   expect(harness.pair).toHaveBeenCalledOnce();

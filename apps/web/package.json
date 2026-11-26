@@ -30,19 +30,8 @@
     "@legendapp/list": "catalog:",
     "@noble/hashes": "catalog:",
     "@pierre/diffs": "catalog:",
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-    "@pierre/trees": "1.0.0-beta.6",
-    "@pierre/words": "file:deps/pierre-words-0.2.2-vendor.4-7c04b7f1.tgz",
-=======
     "@pierre/trees": "catalog:",
-    "@pierre/words": "file:deps/pierre-words-0.2.2-t3.4-7c04b7f1.tgz",
-    "@vibecodinger/client-runtime": "workspace:*",
-    "@vibecodinger/contracts": "workspace:*",
-    "@vibecodinger/provider-core": "workspace:*",
-    "@vibecodinger/secret-provider-definitions": "workspace:*",
-    "@vibecodinger/secret-provider-onepassword": "workspace:*",
-    "@vibecodinger/shared": "workspace:*",
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
+    "@pierre/words": "file:deps/pierre-words-0.2.2-vendor.4-7c04b7f1.tgz",
     "@tanstack/react-pacer": "^0.19.4",
     "@tanstack/react-router": "^1.160.2",
     "@tiptap/core": "^3.31.3",

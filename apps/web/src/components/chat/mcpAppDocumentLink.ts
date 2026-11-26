@@ -6,11 +6,9 @@ import {
 const MAX_UNCONFIRMED_MESSAGES = 256;
 
 interface DocumentLink {
-  // `null` until the frame's first message, `false` once that message was not the document's port.
-  link: MessagePort | false | null;
+  link: MessagePort | "window" | null;
   nextProbe: number;
   deliver: (data: unknown) => void;
-  onMissing: () => void;
   readonly unconfirmed: Map<number, unknown>;
 }
 
@@ -20,29 +18,24 @@ const documentLinks = new WeakMap<HTMLIFrameElement, DocumentLink>();
 
 /**
  * Ties the bridge to the frame's first document. A frame's window outlives its document, so the
- * bridge follows the port that document's bootstrap sends first, not the window. A frame whose
- * first message is anything else was served without the bootstrap and gets no bridge:
- * `onMissing` reports it and nothing is delivered or posted.
+ * bridge follows the port that document's bootstrap sends first, not the window. Servers without
+ * the bootstrap keep the plain window bridge.
  */
 export function attachMcpAppDocumentLink(
   frame: HTMLIFrameElement,
   deliver: (data: unknown) => void,
-  onMissing: () => void,
 ) {
   let state = documentLinks.get(frame);
   if (state === undefined) {
-    state = { link: null, nextProbe: 0, deliver, onMissing, unconfirmed: new Map() };
+    state = { link: null, nextProbe: 0, deliver, unconfirmed: new Map() };
     documentLinks.set(frame, state);
   }
   const current = state;
   current.deliver = deliver;
-  current.onMissing = onMissing;
   return {
     receive: (event: MessageEvent) => {
       if (event.source === null || event.source !== frame.contentWindow) return;
-      if (current.link === false) return;
       if (current.link === null) {
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
         const port =
           event.data?.[MCP_APP_DOCUMENT_MESSAGE_KEY] === MCP_APP_DOCUMENT_MESSAGE
             ? (event.ports[0] ?? null)
@@ -56,22 +49,12 @@ export function attachMcpAppDocumentLink(
             current.unconfirmed.delete(probe);
             current.deliver(data);
           };
-=======
-        const port = event.data?.t3 === MCP_APP_DOCUMENT_MESSAGE ? (event.ports[0] ?? null) : null;
-        if (port === null) {
-          current.link = false;
-          current.onMissing();
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
           return;
         }
-        current.link = port;
-        port.onmessage = (reply: MessageEvent) => {
-          const probe: unknown = reply.data?.alive;
-          if (typeof probe !== "number" || !current.unconfirmed.has(probe)) return;
-          const data = current.unconfirmed.get(probe);
-          current.unconfirmed.delete(probe);
-          current.deliver(data);
-        };
+        current.link = "window";
+      }
+      if (current.link === "window") {
+        current.deliver(event.data);
         return;
       }
       // Only the first document can answer, so a reply proves it sent this message.
@@ -82,8 +65,9 @@ export function attachMcpAppDocumentLink(
       current.nextProbe += 1;
     },
     post: (message: unknown) => {
-      // oxlint-disable-next-line unicorn/require-post-message-target-origin -- A MessagePort takes no target origin.
-      if (current.link) current.link.postMessage({ message, origin: window.location.origin });
+      // Opaque origins require "*"; the window reference scopes delivery to this frame.
+      if (current.link === "window") frame.contentWindow?.postMessage(message, "*");
+      else current.link?.postMessage({ message, origin: window.location.origin });
     },
   };
 }

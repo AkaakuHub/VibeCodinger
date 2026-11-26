@@ -9,17 +9,11 @@ Run [Muse Code](https://dev.meta.ai/docs/muse-code) on your T3 Code server. Muse
 
 > Note: Provider status does not verify login—if you are signed out, turns fail until you run `muse login` on the host.
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 T3 Code ignores a `META_API_KEY` that the VibeCodinger server inherits from its own
 environment, so Muse uses the credential saved on the host by `muse login`. To
 use an API key instead, add `META_API_KEY` to the Muse instance's environment
 variables in **Settings → Providers**. Muse gives that key priority over the
 saved login.
-=======
-- **API key**: T3 Code ignores inherited server `META_API_KEY`. To bill an instance via API key instead of `muse login`, add `META_API_KEY` in that instance's **Environment** settings (overrides the saved login).
-- **Multiple instances**: Instances on the same host share `muse login` unless given their own `META_API_KEY`.
-- **Updates**: In-app updates work when T3 Code recognizes the Muse launcher; otherwise update Muse on the host manually.
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 ## Models, permissions, and limitations
 

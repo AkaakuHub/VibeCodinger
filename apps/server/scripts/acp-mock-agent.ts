@@ -16,15 +16,10 @@ import type * as AcpCompat from "effect-acp/compat";
 
 import { beginAcpMockPrompt } from "./acpMockCancellationState.ts";
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 const requestLogPath = process.env.VIBECODINGER_ACP_REQUEST_LOG_PATH;
 const antigravityProfile = process.env.VIBECODINGER_ACP_ANTIGRAVITY === "1";
-=======
-const requestLogPath = process.env.T3_ACP_REQUEST_LOG_PATH;
-const antigravityProfile = process.env.T3_ACP_ANTIGRAVITY === "1";
-const antigravityThoughtLevel = process.env.T3_ACP_ANTIGRAVITY_THOUGHT_LEVEL === "1";
-const antigravityResumeThoughtLevel = process.env.T3_ACP_RESUME_THOUGHT_LEVEL;
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
+const antigravityThoughtLevel = process.env.VIBECODINGER_ACP_ANTIGRAVITY_THOUGHT_LEVEL === "1";
+const antigravityResumeThoughtLevel = process.env.VIBECODINGER_ACP_RESUME_THOUGHT_LEVEL;
 // GitHub Copilot CLI advertises URL-shaped session mode ids.
 const copilotModesProfile = process.env.VIBECODINGER_ACP_COPILOT_MODES === "1";
 const copilotModeId = (name: string) =>
@@ -70,26 +65,19 @@ const floodStderr = process.env.VIBECODINGER_ACP_FLOOD_STDERR === "1";
 const hangPromptForever = process.env.VIBECODINGER_ACP_HANG_PROMPT_FOREVER === "1";
 const agentVersion = process.env.VIBECODINGER_ACP_AGENT_VERSION ?? "0.0.0";
 const geminiApiKey = process.env.GEMINI_API_KEY;
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 const idleError = process.env.VIBECODINGER_ACP_IDLE_ERROR;
 const emitTrackedToolCallKindThenHang =
   process.env.VIBECODINGER_ACP_EMIT_TRACKED_TOOL_CALL_KIND_THEN_HANG;
-const clientFsProbePath = process.env.VIBECODINGER_ACP_CLIENT_FS_PROBE_PATH;
-const clientFsProbeLogPath = process.env.VIBECODINGER_ACP_CLIENT_FS_PROBE_LOG_PATH;
-=======
-const idleError = process.env.T3_ACP_IDLE_ERROR;
-const emitTrackedToolCallKindThenHang = process.env.T3_ACP_EMIT_TRACKED_TOOL_CALL_KIND_THEN_HANG;
 // A JSON array of `update` objects written as they are, valid or not, for the tool call
 // "edit-tracked"; an edit permission request naming only that id follows them.
 const editUpdatesThenRequest =
-  process.env.T3_ACP_EMIT_EDIT_UPDATES_THEN_REQUEST === undefined
+  process.env.VIBECODINGER_ACP_EMIT_EDIT_UPDATES_THEN_REQUEST === undefined
     ? undefined
     : Schema.decodeSync(Schema.fromJsonString(Schema.Array(Schema.Unknown)))(
-        process.env.T3_ACP_EMIT_EDIT_UPDATES_THEN_REQUEST,
+        process.env.VIBECODINGER_ACP_EMIT_EDIT_UPDATES_THEN_REQUEST,
       );
-const clientFsProbePath = process.env.T3_ACP_CLIENT_FS_PROBE_PATH;
-const clientFsProbeLogPath = process.env.T3_ACP_CLIENT_FS_PROBE_LOG_PATH;
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
+const clientFsProbePath = process.env.VIBECODINGER_ACP_CLIENT_FS_PROBE_PATH;
+const clientFsProbeLogPath = process.env.VIBECODINGER_ACP_CLIENT_FS_PROBE_LOG_PATH;
 const encodeJson = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
 const emitEmptySuccessfulBash = process.env.VIBECODINGER_ACP_EMIT_EMPTY_SUCCESSFUL_BASH === "1";
 const emitEmptySuccessfulBashThenHang =

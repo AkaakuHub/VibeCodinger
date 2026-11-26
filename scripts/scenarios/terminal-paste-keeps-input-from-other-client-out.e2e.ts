@@ -5,7 +5,7 @@ import * as Effect from "effect/Effect";
 import * as Fiber from "effect/Fiber";
 import * as FileSystem from "effect/FileSystem";
 
-import { T3_HOME } from "../e2e.config.ts";
+import { APP_DATA_HOME } from "../e2e.config.ts";
 import { rpcClient, runPromise, test, WEB } from "./t3.ts";
 
 const TAIL = "end-of-first-paste";
@@ -61,7 +61,7 @@ test(
       );
     await runPromise(
       Effect.gen(function* () {
-        const client = yield* rpcClient(T3_HOME, origin);
+        const client = yield* rpcClient(APP_DATA_HOME, origin);
         yield* client["terminal.open"]({ threadId, terminalId, cwd });
       }).pipe(Effect.scoped),
     );
@@ -128,7 +128,7 @@ test(
 
     await runPromise(
       Effect.gen(function* () {
-        const client = yield* rpcClient(T3_HOME, origin);
+        const client = yield* rpcClient(APP_DATA_HOME, origin);
         const write = yield* client["terminal.write"]({
           threadId,
           terminalId,

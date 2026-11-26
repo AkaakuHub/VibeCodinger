@@ -613,7 +613,7 @@ describe("DesktopShellEnvironment", () => {
     }),
   );
 
-  it.effect("hydrates PATH, SSH_AUTH_SOCK, and DO_NOT_TRACK from the login shell on macOS", () =>
+  it.effect("hydrates PATH and missing SSH_AUTH_SOCK from the login shell on macOS", () =>
     Effect.gen(function* () {
       const env: NodeJS.ProcessEnv = {
         SHELL: "/bin/zsh",
@@ -630,7 +630,6 @@ describe("DesktopShellEnvironment", () => {
             PATH: "/opt/homebrew/bin:/usr/bin:/opt/bin ",
             SSH_AUTH_SOCK: "/tmp/secretive.sock",
             HOMEBREW_PREFIX: "/opt/homebrew",
-            DO_NOT_TRACK: "1",
           });
         },
       });
@@ -640,7 +639,6 @@ describe("DesktopShellEnvironment", () => {
       assert.equal(env.PATH, "/opt/homebrew/bin:/usr/bin:/opt/bin : /Users/test/.local/bin");
       assert.equal(env.SSH_AUTH_SOCK, "/tmp/secretive.sock");
       assert.equal(env.HOMEBREW_PREFIX, "/opt/homebrew");
-      assert.equal(env.DO_NOT_TRACK, "1");
       assert.isTrue(prepared);
     }),
   );
@@ -1087,32 +1085,6 @@ describe("DesktopShellEnvironment", () => {
     }),
   );
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-=======
-  it.effect("applies saved Windows user telemetry opt-outs missing from the launcher", () =>
-    Effect.gen(function* () {
-      const env: NodeJS.ProcessEnv = { PATH: "C:\\Windows\\System32" };
-
-      yield* runShellEnvironment({
-        env,
-        platform: "win32",
-        handler: (command) =>
-          command._tag === "StandardCommand" &&
-          String(command.args.at(-1)).includes("T3CODE_TELEMETRY_ENABLED")
-            ? envOutput({
-                PATH: "C:\\Windows\\System32",
-                T3CODE_TELEMETRY_ENABLED: "false",
-                DO_NOT_TRACK: "1",
-              })
-            : envOutput({ PATH: "C:\\Windows\\System32" }),
-      });
-
-      assert.equal(env.T3CODE_TELEMETRY_ENABLED, "false");
-      assert.equal(env.DO_NOT_TRACK, "1");
-    }),
-  );
-
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
   it.effect("replaces a Path-spelled Windows PATH instead of adding a second key", () =>
     Effect.gen(function* () {
       const env: NodeJS.ProcessEnv = { Path: "C:\\Windows\\System32" };

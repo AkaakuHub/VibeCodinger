@@ -16,7 +16,6 @@ import * as Effect from "effect/Effect";
 import * as Exit from "effect/Exit";
 import * as Fiber from "effect/Fiber";
 import * as Layer from "effect/Layer";
-import * as Option from "effect/Option";
 import * as Queue from "effect/Queue";
 import * as EffectScheduler from "effect/Scheduler";
 import * as Schema from "effect/Schema";
@@ -33,7 +32,6 @@ import * as SqlitePersistence from "../persistence/Sqlite.ts";
 import * as Scheduler from "../scheduling/Scheduler.ts";
 import * as ScheduledTaskService from "./ScheduledTaskService.ts";
 import { renderWebhookPrompt } from "./webhookTemplate.ts";
-import { RelayClientTracer, withRelayClientTracing } from "@vibecodinger/shared/relayTracing";
 
 const decodeUpsertInput = Schema.decodeUnknownEffect(ScheduledTaskUpsertInput);
 
@@ -312,49 +310,12 @@ it.effect("dispatches exactly the rendered prompt and logs the delivery", () =>
   ),
 );
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 it.effect("returns a direct path for webhook tasks", () =>
   withService(({ service }) =>
     Effect.gen(function* () {
       const { task } = yield* service.upsert(yield* webhookTaskInput());
       assert.match(task.webhook?.path ?? "", /^\/api\/hooks\/scheduled-task%3Ahook\/[^/]+$/u);
       assert.isNull(task.webhook?.url);
-=======
-it.effect("a relay-delivered webhook keeps the run it starts off the relay tracer", () =>
-  withService(({ service, launches }) =>
-    Effect.gen(function* () {
-      const { task } = yield* service.upsert(yield* webhookTaskInput());
-      const relaySpans: Array<string> = [];
-      const relayTracer = Tracer.make({
-        span: (options) => {
-          relaySpans.push(options.name);
-          return new Tracer.NativeSpan(options);
-        },
-      });
-
-      const result = yield* service
-        .triggerWebhook(requestFor(task))
-        .pipe(
-          withRelayClientTracing,
-          Effect.provideService(RelayClientTracer, Option.some(relayTracer)),
-        );
-      assert.equal(result._tag, "accepted");
-      yield* Queue.take(launches);
-
-      assert.include(relaySpans, "ScheduledTaskService.triggerWebhook");
-      assert.notInclude(relaySpans, "ScheduledTaskService.runWebhookDelivery");
-      assert.notInclude(relaySpans, "ScheduledTaskService.runTask");
-    }),
-  ),
-);
-
-it("builds the relay hook URL from the managed tunnel's key, never the environment id", () => {
-  const relayUrl = "https://relay.example.com/";
-  assert.equal(
-    ScheduledTaskService.relayHookBaseUrl({
-      relayUrl,
-      tunnelName: "t3coderelay-managedendpoint-dev-julius-0123456789abcdef",
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
     }),
   ),
 );

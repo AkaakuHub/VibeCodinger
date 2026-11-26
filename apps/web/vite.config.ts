@@ -1,3 +1,5 @@
+// @effect-diagnostics-next-line nodeBuiltinImport:off -- Vite config runs before any Effect runtime.
+import * as NodeFSP from "node:fs/promises";
 import * as NodeZlib from "node:zlib";
 
 import react from "@vitejs/plugin-react";
@@ -11,7 +13,10 @@ import * as Hash from "effect/Hash";
 import pkg from "./package.json" with { type: "json" };
 import pdfjsPkg from "pdfjs-dist/package.json" with { type: "json" };
 
-import { DEV_PROXIED_PATH_PREFIXES } from "@vibecodinger/shared/devProxy";
+import {
+  DEV_PROXIED_ORIGIN_PRESERVING_PREFIXES,
+  DEV_PROXIED_PATH_PREFIXES,
+} from "@vibecodinger/shared/devProxy";
 
 import { loadRepoEnv } from "../../scripts/lib/public-config";
 import { resolveTaggedSourceVersion } from "../../scripts/lib/tagged-source-version";
@@ -145,7 +150,6 @@ const browserTestProject = {
         resetPointer: async ({ page }) => {
           await page.mouse.move(-1, -1);
         },
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
       },
     },
   },
@@ -173,14 +177,6 @@ const renderScenariosProject = {
           const directory = process.env.VIBECODINGER_RENDER_REPORT_DIR;
           if (!directory) throw new Error("VIBECODINGER_RENDER_REPORT_DIR is not set");
           await NodeFSP.writeFile(`${directory}/${scenario}.json`, json);
-=======
-        // A press held across a render: userEvent only offers whole clicks.
-        pointerDown: async ({ page }) => {
-          await page.mouse.down();
-        },
-        pointerUp: async ({ page }) => {
-          await page.mouse.up();
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
         },
       },
     },
@@ -395,9 +391,7 @@ export default defineConfig(({ command }) => {
                 prefix,
                 {
                   target: devProxyTarget,
-                  // Keep the client's Host: OAuth metadata, cookie Origin checks and DPoP proofs
-                  // all compare against the URL the client used.
-                  changeOrigin: false,
+                  changeOrigin: !DEV_PROXIED_ORIGIN_PRESERVING_PREFIXES.has(prefix),
                   ...(prefix === "/ws" || prefix === "/api" ? { ws: true } : {}),
                 },
               ]),
@@ -437,7 +431,11 @@ export default defineConfig(({ command }) => {
     },
     worker: { format: "es" },
     test: {
-      projects: [defineProject(unitTestProject), defineProject(browserTestProject)],
+      projects: [
+        defineProject(unitTestProject),
+        defineProject(browserTestProject),
+        defineProject(renderScenariosProject),
+      ],
     },
   };
 });

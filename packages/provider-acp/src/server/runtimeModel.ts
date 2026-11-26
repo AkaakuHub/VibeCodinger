@@ -10,16 +10,12 @@ import {
   deriveToolActivityPresentation,
   mergeToolActivityData,
 } from "@vibecodinger/shared/toolActivity";
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 import { VIBECODINGER_MCP_TOOL_NAMES } from "@vibecodinger/shared/vibeCodingerMcpToolPresentation";
-=======
-import { T3_MCP_TOOL_NAMES } from "@vibecodinger/shared/t3McpToolPresentation";
 import {
   acpChangedPathsOfToolCall,
   mergeAcpChangedPaths,
   type AcpChangedPaths,
 } from "./clientPolicy.ts";
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 import type {
   OrchestrationV2ProviderThreadNativeMetadata,
   ThreadTokenUsageSnapshot,

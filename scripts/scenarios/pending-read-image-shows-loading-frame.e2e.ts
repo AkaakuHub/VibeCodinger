@@ -6,7 +6,7 @@ import { expect } from "e2e";
 import * as Effect from "effect/Effect";
 import * as Stream from "effect/Stream";
 
-import { T3_HOME } from "../e2e.config.ts";
+import { APP_DATA_HOME } from "../e2e.config.ts";
 import { makeState, rpcClient, runPromise, test, WEB } from "./t3.ts";
 
 const REPLY = "The screenshot is a blue frame.";
@@ -71,10 +71,10 @@ test(
   async ({ t3, app, screen, browser }) => {
     const project = await t3.project("demo");
     const script = NodePath.join(project, "pending-read-acp.mjs");
-    const settingsPath = NodePath.join(T3_HOME, "userdata/settings.json");
+    const settingsPath = NodePath.join(APP_DATA_HOME, "userdata/settings.json");
     const originalSettings = await NodeFSP.readFile(settingsPath, "utf8");
     const settings = JSON.parse(originalSettings);
-    const signals = await NodeFSP.mkdtemp(NodePath.join(T3_HOME, "pending-read-"));
+    const signals = await NodeFSP.mkdtemp(NodePath.join(APP_DATA_HOME, "pending-read-"));
     await NodeFSP.writeFile(script, acp(NodePath.join(project, "later.png"), signals));
     settings.providerInstances["pending-read-agent"] = {
       driver: "acpRegistry",
@@ -87,7 +87,7 @@ test(
       // The settings watcher registers the agent asynchronously; start once the server lists it.
       await runPromise(
         Effect.gen(function* () {
-          const client = yield* rpcClient(T3_HOME, app.baseUrl ?? "");
+          const client = yield* rpcClient(APP_DATA_HOME, app.baseUrl ?? "");
           yield* client.subscribeServerConfig({}).pipe(
             Stream.filter((event) =>
               (event.type === "snapshot"
@@ -101,7 +101,7 @@ test(
           );
         }).pipe(Effect.scoped),
       );
-      const { cli } = makeState(T3_HOME);
+      const { cli } = makeState(APP_DATA_HOME);
       const started = await runPromise(
         cli([
           "thread",

@@ -12,7 +12,6 @@ Use a separate thread for each task. Choose **New worktree** when a task needs i
 
 Threads don't require a project. Pick **No project** (or press `mod+alt+n` on web/desktop) to start a scratch thread in `~/.t3/scratch/<date>-<slug>-<id>`.
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 Each thread without a project works in its own folder under `~/.vibecodinger/scratch` (the
 `scratch` folder of your T3 data directory), named after its date, the first words
 of its first message, and a short id, like
@@ -20,11 +19,6 @@ of its first message, and a short id, like
 folder, so the files the agent wrote stay until you delete them. Branch, worktree, and diff controls stay hidden because
 these folders are not Git repositories. This is unavailable when the data
 directory itself sits inside a Git checkout.
-=======
-- Deleting a scratch thread leaves its folder on disk.
-- Git branch, worktree, and diff controls are hidden (and scratch threads are unavailable if your T3 data directory itself is inside a Git repo).
-- Choose **Turn into project** from the thread menu to promote the folder into a real project in place, then **Initialize Git** if needed.
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 ### Start in the background and multi-model runs
 
@@ -51,7 +45,6 @@ Enable **Settings → Labs → Boring sidebar (group by project)** on web/deskto
 
 ## Settle, snooze, and archive
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 Choose **Settle thread** from its menu to move finished work out of the active list
 without deleting the conversation. **Un-settle thread** restores it to active work
 and prevents automatic settlement until new activity resumes the usual rules.
@@ -70,19 +63,9 @@ thread settles** for one of the project's actions, or set `"runOnSettle": true` 
 worktree settles, manually or automatically, even if a terminal there still runs a
 command such as a dev server. Threads in the project's main checkout skip it. Its terminal
 closes when the command succeeds and stays open when it fails.
-=======
-| Action      | When to use          | Effect                                                                                                                                         |
-| ----------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Settle**  | Task is done for now | Moves to **Settled**; stays searchable; any new message reactivates it. Closes idle terminals (and stops actions with `stopOnSettle: true`).   |
-| **Snooze**  | Defer until later    | Hides until wake time (thread keeps working in the background). Wakes early on approvals, questions, errors, or new messages.                  |
-| **Archive** | Out of the way       | Leaves sidebar and search; lives in **Settings → Archive**. Refuses new messages (including from agents and scheduled tasks) until unarchived. |
-
-> Tip: If a scheduled task targets a thread, settle it instead of archiving—archiving causes scheduled runs to fail.
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 ### Settlement rules and hooks
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 By default, environments settle inactive threads after seven days and settle
 threads whose pull request merged. A closed pull request can also settle an idle
 thread. An empty thread's inactivity counts from when it was created.
@@ -93,13 +76,6 @@ but an old closed or merged pull request does not settle work you
 resumed after it closed. Your own messages count as resuming, and so does a
 message an agent sends with `t3_thread_send` or `vibecodinger thread send`. A turn that finished
 background work or a pull request watch starts on its own does not.
-=======
-- **Automatic settlement**: By default, environments settle threads after 7 days of inactivity or when their linked PR merges/closes (even while your apps are closed). Active work, pending questions/approvals, and waited-on background work block auto-settlement. Configure rules in **Settings → Threads** (per environment or **All environments**), including **Keep threads with a PR**.
-- **Per-thread override**: Open a thread's menu → **Auto-settle behavior → Never** to exempt a single thread.
-- **Drag-to-settle** (web/desktop): Press and drag down/up from a thread's **Settle**, **Un-settle**, or **Wake** button to act on a contiguous range (`Esc` cancels).
-- **Offline settle/snooze**: Queues locally (**Pending** / **Waiting to sync**) and syncs on reconnect; remote changes take precedence if the thread changed in the meantime.
-- **Worktree cleanup on settle**: Enable **Run in the thread's worktree when the thread settles** on a project action (or `"runOnSettle": true` in `t3.json`), e.g. `cargo clean`, to reclaim disk space automatically in worktree threads.
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 ### Snooze options
 
@@ -114,7 +90,6 @@ The server automatically links open PRs matching an unsettled thread's branch. O
 - **Command palette** (`Cmd/Ctrl+K`): Searches threads across connected environments by title, branch, PR, project, and message contents (use `"exact phrase"` for exact matches). On mobile, use the thread list search (or `Cmd+K` on iPad with a keyboard).
 - **Copy reference**: Copies the linked PR URL if one exists, otherwise a thread link that pastes into any composer as a thread chip. Use **Copy → Thread** (or **Copy thread** on mobile) to force a thread link, or **Thread ID** for scripts and the `t3` CLI.
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 Use **Settings → Keybindings** to find or customize shortcuts for searching files
 and copying a thread reference. A copied reference uses the thread's pull request
 link when available, otherwise a link to the thread, which opens it from anywhere
@@ -124,9 +99,6 @@ when it has a PR, choose **Copy → Thread** from its context menu, or **Copy
 thread** from its long-press menu on mobile.
 **Thread ID** copies the bare ID for scripts and the `vibecodinger` CLI. See
 [keybindings](./keybindings.md) for custom configuration.
-=======
-## Usage limits, subagents, and thread details
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 - **Usage limits**: When a provider hits a rate/usage limit (**Limited**), press **Resume** in an empty composer after reset (or send a message). If the provider reports a reset time, choose **Resume at reset** or **Snooze until reset**—or enable defaults in **Settings → Threads** (**Resume after usage limits** / **Snooze until limits reset**).
 - **Subagents**: Follow delegated work from the conversation card or **Agents**. Stopping a parent thread also stops its delegated subagents. Subagents started internally by the provider are read-only; message the parent thread instead.

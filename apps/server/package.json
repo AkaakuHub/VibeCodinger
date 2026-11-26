@@ -1,11 +1,6 @@
 {
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
   "name": "vibecodinger",
-  "version": "0.1.11",
-=======
-  "name": "t3",
   "version": "0.1.12",
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
   "license": "MIT",
   "repository": {
     "type": "git",

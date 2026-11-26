@@ -45,7 +45,6 @@ Use simulators/emulators on another macOS or Linux machine (e.g., a Mac build ho
 
 Connect to a [Simlock](https://incubator.callstack.com/simlock/) device pool (requires Simlock `main` at commit `6316e10`+ with `capabilities.stream.enabled` and `capabilities.input.enabled`):
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 Turn on **Settings → Labs → Simlock device hosts (alpha)** and **Use devices**
 in Settings → Devices, then choose **Add source → Simlock pool** with an **agent token**
 (`simlock --gateway token create --role agent`). Give each VibeCodinger server its own
@@ -77,12 +76,3 @@ localhost; use an address its worker can reach.
 The connected VibeCodinger server manages the device hub and agent tools on its own machine and configured SSH hosts. Required versions install automatically the next time those tools are used. In Settings → Devices, select a version and choose **Check versions** to read installed versions without installing tools or starting devices.
 
 To receive newer tool versions on a remote environment, update that environment's VibeCodinger server. Updating only the browser or mobile app does not update the remote server. An offline host keeps its installed files, but an update needs network access before device support can start; T3 does not fall back to an older version. Reconnect the host and use Retry if installation fails. Existing device and agent-access settings are preserved.
-=======
-1. Enable **Settings → Labs → Simlock device hosts (alpha)** and **Settings → Devices → Use devices**.
-2. Choose **Add source → Simlock pool** with an agent token (`simlock --gateway token create --role agent`) over HTTPS or Tailscale (give each T3 server its own token; treat it like worker shell access).
-3. Closing a device with **Return device to the pool** wipes and releases the lease. Toolbar tools/rotation/screenshots are unavailable in the UI (agents can still invoke them via `device_open`).
-
-## Device tool updates
-
-The T3 server manages device hub and `agent-device` versions automatically on itself and SSH hosts. Check versions in **Settings → Devices → Check versions**; update the remote T3 server to receive newer device tools.
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432

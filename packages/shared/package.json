@@ -59,17 +59,10 @@
       "types": "./src/projectFavicon.ts",
       "import": "./src/projectFavicon.ts"
     },
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-=======
     "./projectMonogram": {
       "types": "./src/projectMonogram.ts",
       "import": "./src/projectMonogram.ts"
     },
-    "./mobileSourceMaps": {
-      "types": "./src/mobileSourceMaps.ts",
-      "import": "./src/mobileSourceMaps.ts"
-    },
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
     "./model": {
       "types": "./src/model.ts",
       "import": "./src/model.ts"

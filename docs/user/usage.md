@@ -7,16 +7,12 @@ Track token usage, cache hit rates, estimated API-equivalent costs, and pooled s
 
 ## Understand your usage
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 **Usage** combines Codex, Claude Code, Grok Build, OpenCode, Pi, Muse Code, and Cursor history
 from your connected environments. It shows token use, cache savings, model breakdowns, and estimated API-equivalent
 cost, split by token type and by speed. These estimates are not your subscription bill.
 **Premium** is what Fast and Ultrafast requests cost above standard rates. Cost that cannot be
 split, such as a provider-reported cost for a model without public rates, shows as **Other**.
 Select a model under **Breakdown** to see its trend, cache hit rate, and cost per million tokens.
-=======
-Usage aggregates history across Codex, Claude Code, Grok Build, OpenCode, Antigravity, Pi, Muse Code, and Cursor from your selected environments. Estimates reflect API-equivalent rates (not your subscription bill); **Premium** shows Fast/Ultrafast surcharge, and **Other** shows unsplit provider-reported costs.
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 - **Retention**: Servers keep scanned usage history for **92 days** by default (preserving Claude history after Claude's 30-day cleanup). Change `usageHistoryRetentionDays` in `<t3-home>/userdata/settings.json` (e.g. `365` or `"unlimited"`; views show up to 90 days).
 - **Custom data directories**: Honors `CODEX_HOME`, `CLAUDE_CONFIG_DIR`, `GROK_HOME`, `PI_CODING_AGENT_DIR` / `PI_CODING_AGENT_SESSION_DIR`, `OPENCODE_DATA_DIR`, `ANTIGRAVITY_DATA_DIR`, and `XDG_DATA_HOME` (Muse). Use absolute or `~/` paths. Set `T3CODE_HOST_ID` to pin a container's host identity.
@@ -24,7 +20,6 @@ Usage aggregates history across Codex, Claude Code, Grok Build, OpenCode, Antigr
 
 ## Custom model prices and filtering
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 OpenCode reads its SQLite database and older JSON history. Set `OPENCODE_DATA_DIR` on the
 server to read a different data directory; comma-separated paths read multiple directories.
 Antigravity's current model quotas appear under **Usage → Limits** through the official CLI.
@@ -93,10 +88,6 @@ the dialog.
 
 To count only some models, or to leave some out, add `usageModelFilter` to the server's
 `settings.json` in its `userdata` directory, such as `~/.vibecodinger/userdata/settings.json`:
-=======
-- **Custom prices & model mapping**: Open the environment dropdown on **Usage → Model prices** (or click **Set price** on an unpriced model) to set USD per million input/output/cache tokens, or set **Map to** to merge a preview/alias model ID into a target model's totals.
-- **Filter models**: Add `usageModelFilter` to `<t3-home>/userdata/settings.json` (applied before **Map to**):
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 ```json
 {

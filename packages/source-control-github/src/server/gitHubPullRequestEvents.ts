@@ -137,21 +137,6 @@ export const make = Effect.gen(function* () {
     Stream.unwrap(
       Effect.gen(function* () {
         const held = yield* rest.credential(host, { personal });
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-        const response = yield* httpClient
-          .execute(
-            HttpClientRequest.get(eventsUrl).pipe(
-              HttpClientRequest.setHeaders({
-                accept: "text/event-stream",
-                "x-github-api-version": "2022-11-28",
-                "user-agent": "vibecodinger",
-                authorization: `Bearer ${Redacted.value(held.token)}`,
-              }),
-            ),
-          )
-          // Client spans would carry the subscription URL.
-          .pipe(Effect.provideService(HttpClient.TracerDisabledWhen, () => true));
-=======
         const response = yield* (
           httpClient
             .execute(
@@ -159,7 +144,7 @@ export const make = Effect.gen(function* () {
                 HttpClientRequest.setHeaders({
                   accept: "text/event-stream",
                   "x-github-api-version": "2022-11-28",
-                  "user-agent": "t3code",
+                  "user-agent": "vibecodinger",
                   authorization: `Bearer ${Redacted.value(held.token)}`,
                 }),
               ),
@@ -167,7 +152,6 @@ export const make = Effect.gen(function* () {
             // Client spans would carry the subscription URL.
             .pipe(Effect.provideService(HttpClient.TracerDisabledWhen, () => true))
         );
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
         if (response.status === 403 || response.status === 404) {
           return Stream.succeed<Ending>(held.source === "app" ? "personal" : "stop");
         }

@@ -37,22 +37,6 @@ export function useEnvironmentScope(
   );
 }
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-=======
-export function useEnvironmentCanConfigureRelay(environmentId: EnvironmentId | null): boolean {
-  return useAtomValue(
-    environmentId === null
-      ? EMPTY_SESSION_STATE_ATOM
-      : environmentSession.sessionStateAtom(environmentId),
-    (result) => sessionHasScope(result, AuthRelayConfigureScope),
-  );
-}
-
-export function readEnvironmentCanConfigureRelay(environmentId: EnvironmentId): boolean {
-  const result = appAtomRegistry.get(environmentSession.sessionStateAtom(environmentId));
-  return sessionHasScope(result, AuthRelayConfigureScope);
-}
-
 /** This client's own session on the environment, or null until the host has said. */
 export function useEnvironmentSessionId(environmentId: EnvironmentId | null): string | null {
   return useAtomValue(
@@ -63,7 +47,6 @@ export function useEnvironmentSessionId(environmentId: EnvironmentId | null): st
   );
 }
 
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 export function sessionHasScope(
   result: AsyncResult.AsyncResult<AuthSessionState, unknown>,
   scope: AuthEnvironmentScope,

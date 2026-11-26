@@ -3,7 +3,11 @@ import {
   workflowReferenceLabel,
   workflowReferencePullRequest,
 } from "@vibecodinger/client-runtime/workflows";
-import type { EnvironmentId, WorkflowRunReference, WorkflowRunSubject } from "@vibecodinger/contracts";
+import type {
+  EnvironmentId,
+  WorkflowRunReference,
+  WorkflowRunSubject,
+} from "@vibecodinger/contracts";
 import { useNavigate } from "@tanstack/react-router";
 import { T } from "gt-react";
 import { CircleCheckIcon, CircleDotIcon, ExternalLinkIcon, LinkIcon } from "lucide-react";

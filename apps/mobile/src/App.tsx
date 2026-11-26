@@ -292,17 +292,12 @@ function AppContent() {
       <SplashScreenCoordinator />
       <QuickActionsLanguage />
       <SubscriptionUsageCoordinator />
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-      <GestureHandlerRootView className="flex-1">
-=======
-      <ConnectDeviceApprovalCoordinator />
       <GestureHandlerRootView
         className="flex-1"
         onTouchStartCapture={perfProbe?.touchStart}
         onTouchEndCapture={perfProbe?.touchEnd}
         onTouchCancelCapture={perfProbe?.touchEnd}
       >
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
         <KeyboardProvider statusBarTranslucent>
           <SafeAreaProvider>
             <StatusBar barStyle={themeAppearance === "dark" ? "light-content" : "dark-content"} />

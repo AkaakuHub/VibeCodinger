@@ -17,7 +17,6 @@ Install Git and authenticate on the machine running your T3 Code server (for rem
 | **Cursor Origin**                  | Install [Origin CLI](https://cursor.com/docs/origin/cli) and run `origin auth login` (`origin auth setup-git` if push prompts for credentials). Uses private HTTPS repos; GitHub-mirrored PRs stay on GitHub.                                                                                                                                                                                                             |
 | **TanStack Source** (private beta) | Set `T3CODE_FEATURE_FLAGS=tanstack_source` and restart the server. Save a token in Settings, set `SRC_TOKEN`, or run `src auth login --web`. Supports live CI logs, private PRs on public repos, and issues.                                                                                                                                                                                                              |
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 T3 Code talks to GitHub's API directly and only needs a token. Any of these works, in this
 order of precedence:
 
@@ -165,15 +164,6 @@ threads work in its folder, even when your default is a new worktree. The folder
 like `pinball-stats` for "Pinball Stats". Turn on **Create private repository on GitHub** to also
 publish it. If Git has no name or email on that machine, the project is created without the
 first commit.
-=======
-> Note: Git `push` and `clone` still require Git SSH/HTTPS credentials on the server, separate from API tokens.
-
-## Start, clone, or publish a project
-
-- **New project**: Run **New project** from the command palette (`Cmd/Ctrl+K`) or **Add Project** to initialize a new Git repo in `~/.t3/projects/<slug>` with a README, icon, and first commit (optionally creating a private GitHub repo).
-- **Clone**: Use **Add Project** to pick a host (enable non-GitHub hosts in **Settings → Source control & issues**) or paste a Git URL or web page URL. Cloning runs in the background so you can draft your first prompt immediately; falls back to HTTPS if SSH auth fails. Enable **Clone into host folders** (**Settings → Threads**, or **Source control** on mobile) for `ghq`-style `<host>/<owner>/<repo>` paths.
-- **Publish**: For a local repo without a remote, **Publish Repository** creates the remote, adds `origin`, and pushes commits.
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 ## Review turn changes
 

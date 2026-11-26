@@ -491,46 +491,12 @@ it.effect.each(["interrupt", "timeout"] as const)(
     }).pipe(Effect.scoped, Effect.provide(layerGitContract)),
 );
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-it.effect("checkpoint staging moves Git LFS objects its clean filter wrote into LFS storage", () =>
-  Effect.gen(function* () {
-    const fs = yield* FileSystem.FileSystem;
-    const path = yield* Path.Path;
-    const driver = yield* GitVcsDriver.makeVcsDriverShape();
-    const sandbox = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-lfs-checkpoint-" });
-    const cwd = path.join(sandbox, "repo");
-    yield* fs.makeDirectory(cwd);
-    const { git, checkpointRef } = yield* makeCheckpointFixture(driver, cwd);
-    // Like git-lfs clean: hash through <lfs.storage>/tmp, then move the copy into objects.
-    const filter = path.join(sandbox, "lfs-clean.cjs");
-    yield* fs.writeFileString(
-      filter,
-      [
-        "const fs = require('node:fs');",
-        `const storage = require('node:child_process').execSync('git config --default .git/lfs lfs.storage').toString().trim();`,
-        "const content = fs.readFileSync(0);",
-        "const oid = require('node:crypto').createHash('sha256').update(content).digest('hex');",
-        "fs.mkdirSync(storage + '/tmp', { recursive: true });",
-        "const dir = storage + '/objects/' + oid.slice(0, 2) + '/' + oid.slice(2, 4);",
-        "fs.mkdirSync(dir, { recursive: true });",
-        "fs.writeFileSync(storage + '/tmp/' + process.pid, content);",
-        "fs.renameSync(storage + '/tmp/' + process.pid, dir + '/' + oid);",
-        "process.stdout.write('oid sha256:' + oid + '\\n');",
-      ].join("\n"),
-    );
-    // Not "lfs": a machine-wide git-lfs install sets filter.lfs.process, which wins over clean.
-    yield* git(["config", "filter.lfs-standin.clean", `"${process.execPath}" "${filter}"`]);
-    yield* git(["config", "filter.lfs-standin.required", "true"]);
-    yield* fs.writeFileString(path.join(cwd, ".gitattributes"), "*.npz filter=lfs-standin\n");
-    yield* fs.writeFileString(path.join(cwd, "weights.npz"), "large untracked data\n");
-=======
 const checkpointLfsStorageCases = [
   undefined,
   "lfs objects\u00a0",
   " lfs objects",
   ...(HostProcess.Platform.defaultValue() === "win32" ? [] : ["lfs objects "]),
 ];
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 it.effect.each(checkpointLfsStorageCases)(
   "checkpoint staging moves Git LFS objects into configured storage %s",
@@ -1192,13 +1158,7 @@ it.effect.each([
           },
         }),
       );
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-      // A driver that has never captured this workspace hashes every file, as a first capture does.
-      const fresh = yield* GitVcsDriver.makeVcsDriverShape();
-      const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "vibecodinger-untracked-blobs-" });
-=======
-      const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "t3-capture-index-" });
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
+      const cwd = yield* fs.makeTempDirectoryScoped({ prefix: "vc-capture-index-" });
       const { git, checkpointRef } = yield* makeCheckpointFixture(driver, cwd);
       const write = (relativePath: string, contents: string) =>
         fs.writeFileString(path.join(cwd, relativePath), contents);
@@ -1229,21 +1189,14 @@ it.effect.each([
       afterPublish = Effect.void;
       rebuilt = 0;
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-      yield* change({ git, write, checkpointRef });
-      yield* driver.checkpoints.captureCheckpoint({ cwd, checkpointRef });
-      const freshRef = CheckpointRef.make("refs/vibecodinger/checkpoints/fresh");
-      yield* fresh.checkpoints.captureCheckpoint({ cwd, checkpointRef: freshRef });
-=======
       yield* change(context);
       yield* driver.checkpoints.captureCheckpoint({ cwd: captureCwd, checkpointRef });
       // Another scope has no kept index, so it captures the way every capture used to.
-      const freshRef = CheckpointRef.make("refs/t3/fresh/0");
+      const freshRef = CheckpointRef.make("refs/vibecodinger/fresh/0");
       yield* (yield* GitVcsDriver.makeVcsDriverShape()).checkpoints.captureCheckpoint({
         cwd: captureCwd,
         checkpointRef: freshRef,
       });
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
       assert.strictEqual(
         (yield* git(["rev-parse", `${checkpointRef}^{tree}`])).stdout,

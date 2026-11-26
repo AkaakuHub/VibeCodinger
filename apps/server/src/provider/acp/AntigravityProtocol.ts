@@ -485,16 +485,12 @@ export function normalizeAntigravitySessionUpdate(
       ...update,
       ...(typeof update.title === "string" ? { title: boundText(update.title) } : {}),
       ...(update.rawInput !== undefined
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-        ? { rawInput: sanitizeAntigravityToolPayload(withoutVibeCodingerMcpToolSummary(update)) }
-=======
         ? {
             rawInput: withSentRawInputPaths(
               update.rawInput,
-              sanitizeAntigravityToolPayload(withoutT3McpToolSummary(update)),
+              sanitizeAntigravityToolPayload(withoutVibeCodingerMcpToolSummary(update)),
             ),
           }
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
         : {}),
       ...(update.rawOutput !== undefined
         ? { rawOutput: sanitizeAntigravityToolPayload(update.rawOutput) }

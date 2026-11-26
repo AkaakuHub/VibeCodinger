@@ -14,14 +14,9 @@ Click the **Update** button at the bottom of the sidebar (web or desktop) to upd
 
 In the desktop app, change **Settings → About → Update track** to switch connected machines together.
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 A background service cannot move to an older release remotely. When Stable is
 older than its Nightly, run `vibecodinger update --channel stable --allow-downgrade` on
 that machine.
-=======
-- Moving a background service to an older Stable release requires running `t3 update --channel stable --allow-downgrade` on that host.
-- A switch is blocked if the machine's database has schema changes the target track doesn't support yet. macOS desktop apps must switch on that Mac.
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 ## Continue threads after restarts
 
@@ -40,7 +35,6 @@ that machine.
 | `npx` server                        | Stop the server and relaunch with `npx t3@<version>` and your usual flags.                            |
 | Package manager (Nix, AUR)          | Update via your package manager.                                                                      |
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 Updates from the previous orchestration system preserve conversation transcripts but cannot carry
 every kind of runtime history forward. Read [Threads from older T3 Code versions](./thread-migration.md)
 before continuing an important older thread.
@@ -130,9 +124,6 @@ tools.
 Configure npm on the server's machine. If that registry cannot be reached, the
 release shows as unavailable; T3 Code does not try the public registry instead.
 Machines without npm check the public npm registry directly.
-=======
-Each server checks npm/Homebrew/pnpm using its own local registry and proxy settings.
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 ## Update providers
 

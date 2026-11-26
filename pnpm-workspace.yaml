@@ -22,33 +22,11 @@ allowBuilds:
   node-pty: true
   # Ships N-API prebuilds; its install script only rebuilds from source.
   objc-js: false
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-  "react-native-enriched-markdown@file:apps/mobile/deps/react-native-enriched-markdown-1.2.0-vendor.18-16db4c75.tgz": true
-=======
-  "react-native-enriched-markdown@file:apps/mobile/deps/react-native-enriched-markdown-1.2.0-t3.19-3757a449.tgz": true
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
+  "react-native-enriched-markdown@file:apps/mobile/deps/react-native-enriched-markdown-1.2.0-vendor.19-3757a449.tgz": true
   sharp: true
   utf-8-validate: false
 
 catalog:
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-=======
-  "@alchemy.run/axiom": 2.0.0-beta.85
-  "@alchemy.run/cloudflare": 2.0.0-beta.85
-  "@alchemy.run/drizzle": 2.0.0-beta.85
-  "@alchemy.run/planetscale": 2.0.0-beta.85
-  "@alchemy.run/test": 2.0.0-beta.85
-  "@clerk/backend": 3.33.0
-  "@clerk/clerk-js": 6.47.0
-  "@clerk/electron": 0.1.20
-  "@clerk/electron-passkeys": 0.0.3
-  "@clerk/expo": 4.17.6
-  "@clerk/react": 6.19.6
-  "@clerk/shared": 4.49.0
-  # Must match the version alchemy depends on: the relay overrides its
-  # Cloudflare retry policy through this package's Retry service.
-  "@distilled.cloud/cloudflare": 1.0.0-rc.18
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
   "@effect/atom-react": 4.1.5
   "@effect/graphql-generator": 4.1.5
   "@effect/openapi-generator": 4.1.5
@@ -110,21 +88,11 @@ overrides:
   micromark-extension-llm-math: 3.1.0
   micromark: 4.0.2
   mdast-util-to-hast: 13.2.1
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-  expo-audio: 58.0.11
-  expo-network: 58.0.4
-  "@cursor/sdk": 1.4.2
-  expo-sharing: 58.0.22
-  expo-widgets: 58.0.27
-=======
-  alchemy: "catalog:"
   expo-audio: 58.0.12
   expo-network: 58.0.5
-  "@clerk/expo-native-components": 0.4.8
   "@cursor/sdk": 1.5.0
   expo-sharing: 58.0.23
   expo-widgets: 58.0.29
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
   "@ff-labs/fff-node": 0.11.0
   "@legendapp/list": 3.9.0
   "@pierre/diffs": 1.7.0-beta.4
@@ -212,15 +180,6 @@ overrides:
   "@vercel/config>zod": 4.6.7
 
 packageExtensions:
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-=======
-  "@clerk/expo@*":
-    dependencies:
-      "@expo/config-plugins": 58.0.13
-  "@clerk/expo-native-components@*":
-    dependencies:
-      "@expo/config-plugins": 58.0.13
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
   # Our patch makes @effect/vitest import vite-plus/test. A catalog: spec here
   # resolves through the vite-plus override above.
   "@effect/vitest@*":
@@ -235,17 +194,9 @@ patchedDependencies:
   micromark-extension-gfm-table@2.1.1: patches/micromark-extension-gfm-table@2.1.1.patch
   micromark@4.0.2: patches/micromark@4.0.2.patch
   mdast-util-to-hast@13.2.1: patches/mdast-util-to-hast@13.2.1.patch
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-  expo-audio@58.0.11: patches/expo-audio@58.0.11.patch
-  expo-video@58.0.13: patches/expo-video@58.0.13.patch
-  expo-network@58.0.4: patches/expo-network@58.0.4.patch
-=======
   expo-audio@58.0.12: patches/expo-audio@58.0.12.patch
   expo-video@58.0.14: patches/expo-video@58.0.14.patch
   expo-network@58.0.5: patches/expo-network@58.0.5.patch
-  "@clerk/expo-native-components@0.4.8": patches/@clerk__expo-native-components@0.4.8.patch
-  "@alchemy.run/test@2.0.0-beta.85": patches/@alchemy.run__test@2.0.0-beta.85.patch
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
   "@effect/vitest@4.1.5": patches/@effect__vitest@4.1.5.patch
   expo-sharing@58.0.23: patches/expo-sharing@58.0.23.patch
   expo-widgets@58.0.29: patches/expo-widgets@58.0.29.patch
@@ -280,18 +231,7 @@ patchedDependencies:
   # Electron net requests never emit "socket", so upstream's idle timeout never fires and a
   # stalled update download hangs forever.
   electron-updater@6.8.9: patches/electron-updater@6.8.9.patch
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-  # Local agents honor the attribution settings in the user's Cursor CLI cli-config.json, stream
-  # shell output while it runs, expose agent.resume() (the protocol's ResumeAction), and offer
-  # background shells to the host so they can outlive the run.
-  "@cursor/sdk@1.4.2": patches/@cursor__sdk@1.4.2.patch
-=======
-  # Local agents expose agent.resume() (the protocol's ResumeAction), report startup progress,
-  # offer background shells to the host, and refresh a cached model list on a miss.
   "@cursor/sdk@1.5.0": patches/@cursor__sdk@1.5.0.patch
-  # A failed Artifacts.cached effect hangs every later caller: https://github.com/alchemy-run/alchemy/issues/2981
-  alchemy@2.0.0-beta.85: patches/alchemy@2.0.0-beta.85.patch
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
   # Android: a marker orient other than "auto" or a number (auto-start-reverse) no longer throws.
   react-native-svg@15.16.1: patches/react-native-svg@15.16.1.patch
   # Android: double-tap zoom no longer cancels itself, and taps near a link open it.
@@ -301,12 +241,9 @@ patchedDependencies:
   gt-react-native@11.4.18: patches/gt-react-native@11.4.18.patch
   # The MCP Events extension (SEP-3415) on effect/ai, until Effect ships it.
   effect@4.1.5: patches/effect@4.1.5.patch
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
   expo-quick-actions@6.0.2: patches/expo-quick-actions@6.0.2.patch
-=======
   "@generaltranslation/format@0.1.9": patches/@generaltranslation__format@0.1.9.patch
   gt-i18n@1.0.40: patches/gt-i18n@1.0.40.patch
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 # Unmet peers fail resolution, so a pin outside a dependency's peer range is
 # caught when the lockfile changes instead of scrolling past as a warning.
@@ -376,10 +313,3 @@ minimumReleaseAgeExclude:
   - "@voidzero-dev/vite-plus-win32-arm64-msvc@1.8.0"
   - "@voidzero-dev/vite-plus-win32-x64-msvc@1.8.0"
   - vite-plus@1.8.0
-  - "@clerk/backend@3.33.0"
-  - "@clerk/clerk-js@6.47.0"
-  - "@clerk/electron@0.1.20"
-  - "@clerk/expo-native-components@0.4.8"
-  - "@clerk/expo@4.17.6"
-  - "@clerk/react@6.19.6"
-  - "@clerk/shared@4.49.0"

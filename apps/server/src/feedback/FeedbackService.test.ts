@@ -436,44 +436,12 @@ it.effect("scrubs private values before storing feedback", () =>
       expect(closed).toMatchObject({ feedbackStatus: "cancelled", preview: card.preview });
       expect(closed.conversationTrace).toBeUndefined();
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
       yield* feedback.submit({ ...input, subject: "vibecodinger thread show" }, fromThread);
       yield* feedback.submit({ ...input, subject: " general " }, { source: "cli" });
       yield* feedback.submit(
         { ...input, subject: "mcp__vibe_codinger__vc_thread_read" },
         fromThread,
       );
-=======
-      yield* Ref.set(telemetry, true);
-      const sent = yield* feedback.submit({ ...input, subject: "t3 thread show" }, fromThread);
-      expect("sent" in sent && sent.sent).toBe(true);
-      expect(yield* Ref.get(events)).toEqual([
-        [
-          "agent.feedback",
-          {
-            kind: "bug",
-            subject: "t3 thread show",
-            userRequested: false,
-            trace: null,
-            source: "mcp",
-            provider: "codex",
-            model: "gpt-5.5",
-          },
-        ],
-      ]);
-      yield* feedback.submit({ ...input, subject: " general " }, { source: "cli" });
-      expect((yield* Ref.get(events))[1]).toEqual([
-        "agent.feedback",
-        {
-          kind: "bug",
-          subject: "general",
-          userRequested: false,
-          trace: null,
-          source: "cli",
-        },
-      ]);
-      yield* feedback.submit({ ...input, subject: "mcp__t3_code__t3_thread_read" }, fromThread);
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
       // Codex's second server, for T3 tools kept out of Code Mode, in both of its forms.
       for (const subject of [
         "vibe-codinger-direct.vc_thread_read",

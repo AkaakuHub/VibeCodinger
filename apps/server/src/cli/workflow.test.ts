@@ -207,12 +207,12 @@ it.effect("signal from an agent's shell answers in the name of the agent's threa
     const answer = ["signal", '{"choice":"Ship"}', "--run", "run-1", "--wait", "approve"];
     const delivered = Effect.succeed({ structuredContent: { delivery: "delivered" } });
     const read = (tool: string) =>
-      tool === "t3_thread_read"
+      tool === "vc_thread_read"
         ? Effect.succeed({ structuredContent: { thread: { title: "Release reviewer agent" } } })
         : delivered;
 
     sessionLabels.length = 0;
-    const fromThread = yield* runCli(answer, read, { T3CODE_THREAD_ID: "thread-7" });
+    const fromThread = yield* runCli(answer, read, { VIBECODINGER_THREAD_ID: "thread-7" });
     assert.isUndefined(fromThread.error);
     assert.deepStrictEqual(fromThread.calls.at(0), { threadId: "thread-7", limit: 1, runLimit: 1 });
     assert.strictEqual(sessionLabels.at(-1), "Release reviewer agent");
@@ -220,9 +220,9 @@ it.effect("signal from an agent's shell answers in the name of the agent's threa
     // A thread it cannot read, or no thread at all, answers as the command.
     for (const [env, call] of [
       [
-        { T3CODE_THREAD_ID: "gone" },
+        { VIBECODINGER_THREAD_ID: "gone" },
         (tool: string) =>
-          tool === "t3_thread_read"
+          tool === "vc_thread_read"
             ? Effect.fail(new McpBridge.AcpMcpBridgeError({ message: "Thread not found." }))
             : delivered,
       ],

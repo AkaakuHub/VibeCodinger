@@ -13,13 +13,9 @@ Sending your first message starts a fresh provider session using the [portable h
 
 ## Keeping a recovery copy
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 T3 Code does not currently have a whole-thread export command. Before a major server update, stop
 the server and copy its `userdata` directory to a safe location. The default is
 `~/.vibecodinger/userdata`; a server started with `--base-dir <path>` uses `<path>/userdata`.
-=======
-T3 Code does not have a whole-thread export command. Before a major server update, stop the server and back up your `userdata` directory (`~/.t3/userdata` by default, or `<base-dir>/userdata`).
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 If a migrated transcript is missing, inspect your backup read-only without pointing a server at it:
 

@@ -99,11 +99,7 @@ export const installDesktopIpcHandlers = Effect.fn("desktop.ipc.installHandlers"
   yield* ipc.handle(WebLinksIpc.setReady);
 
   yield* ipc.handleSync(getAppBranding);
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-=======
   yield* ipc.handle(getDatabaseMigrationProgress);
-  yield* installRelayTelemetryEnabled();
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
   yield* ipc.handleSync(getSystemLocale);
   yield* ipc.handleSync(getPreferredSystemLanguages);
   yield* ipc.handleSync(getPrimaryPasteEnabled);

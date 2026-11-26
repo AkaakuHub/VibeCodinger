@@ -7,13 +7,7 @@ import {
 } from "@vibecodinger/contracts";
 import { T, useGT, useMessages } from "gt-react";
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-=======
-import { hasCloudPublicConfig } from "~/cloud/publicConfig";
-import { useT3ConnectAuthPrompt } from "../clerk/useT3ConnectAuthPrompt";
-import { Button } from "../ui/button";
 import { NumberField, NumberFieldGroup, NumberFieldInput } from "../ui/number-field";
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from "../ui/select";
 import { Switch } from "../ui/switch";
 import { commitNumberFieldOnEnter } from "./commitNumberFieldOnEnter";

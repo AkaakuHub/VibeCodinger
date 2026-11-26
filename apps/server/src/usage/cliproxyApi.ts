@@ -281,10 +281,6 @@ const CODEX_HUB: HubProvider = {
 };
 
 const GROK_CLI_VERSION = "1.0.77";
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-=======
-
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 // Keyed by the auth-files `provider`; accounts of any other provider are skipped.
 const HUB_PROVIDERS = new Map<string, HubProvider>([
   ["codex", CODEX_HUB],

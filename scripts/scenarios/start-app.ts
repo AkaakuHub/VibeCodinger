@@ -134,15 +134,10 @@ const startApp = Effect.fn("startApp")(function* (input: {
   yield* prepareHome(input.home);
   const env = {
     ...hostEnvironment,
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-    PATH: `${path.join(input.home, "bin")}:${hostEnvironment.PATH ?? ""}`,
-    VIBECODINGER_AUTO_BOOTSTRAP_PROJECT_FROM_CWD: "0",
-=======
     PATH: [path.join(input.home, "bin"), hostEnvironment.PATH ?? ""].join(
       (yield* HostProcess.Platform) === "win32" ? ";" : ":",
     ),
-    T3CODE_AUTO_BOOTSTRAP_PROJECT_FROM_CWD: "0",
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
+    VIBECODINGER_AUTO_BOOTSTRAP_PROJECT_FROM_CWD: "0",
     ...SCENARIO_MACHINE_ENV,
   };
   const devRunner = (mode: string, args: ReadonlyArray<string>) => [

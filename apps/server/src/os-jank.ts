@@ -35,14 +35,9 @@ function logPathHydrationWarning(message: string, error?: unknown): void {
 const LOGIN_SHELL_ENV_NAMES = [
   "PATH",
   "__MISE_DIFF",
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-  "JAVA_HOME",
-  "VIBECODINGER_FEATURE_FLAGS",
-=======
   "FNM_MULTISHELL_PATH",
   "JAVA_HOME",
-  "T3CODE_FEATURE_FLAGS",
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
+  "VIBECODINGER_FEATURE_FLAGS",
 ] as const;
 const LOGIN_SHELL_TIMEOUT = Duration.seconds(5);
 const SLOW_LOGIN_SHELL_TIMEOUT_MS = 20_000;

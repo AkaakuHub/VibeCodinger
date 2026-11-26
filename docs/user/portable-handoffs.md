@@ -15,7 +15,6 @@ When you switch providers mid-thread, continue after a portable restart, or fork
 
 If the target session doesn't have enough context room, T3 Code automatically starts a fresh provider session with a bounded history selection and sends your request—no manual `/compact` needed. If your request and attachments alone exceed the model's window, shorten the message or choose a larger-context model.
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 A handoff must leave room for existing provider context, your request and attachments, instructions,
 tools, and subsequent work. If the target conversation has no room for the handoff, T3 Code starts
 a fresh provider conversation with a bounded selection of saved history and sends your request
@@ -43,8 +42,3 @@ attachments reserve 4,096 each for their references. Existing context is estimat
 activity when usage telemetry is unavailable. Known smaller windows still constrain the handoff.
 These are fallback estimates, not exact token counts. Image resolution, custom models, and hidden
 native context can differ, so the provider may still reject an input.
-=======
-- **History budget**: Operators can set `T3CODE_CONTEXT_HANDOFF_TOKEN_CAP` (default `16000`, range `1024`–`64000`) to adjust the initial history allowance. Imported history has a separate 64,000-byte ceiling.
-- **Fallback estimates**: When a model doesn't report capacity, T3 Code assumes a 128,000-token window, reserves at least 16,000 tokens (or 25%) for instructions/tools/work, and conservatively estimates 1 token per UTF-8 byte, 8,192 tokens per image, and 4,096 tokens per other attachment.
-- Running background work stays intact during recovery—let it finish or stop it before retrying a handoff.
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432

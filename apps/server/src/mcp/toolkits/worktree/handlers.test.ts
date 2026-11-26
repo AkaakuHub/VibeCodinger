@@ -1,4 +1,4 @@
-// `t3_worktree_handoff` through its real access declaration, the real WorktreeMcpService and the
+// `vc_worktree_handoff` through its real access declaration, the real WorktreeMcpService and the
 // real TaskFolders over real Git; only the orchestrator, the project record and the setup-script
 // runner are stand-ins.
 import * as NodeCrypto from "@effect/platform-node/NodeCrypto";
@@ -197,7 +197,7 @@ const handoffFrom = <A, E>(
     );
     return yield* test({
       handoff: toolkit
-        .handle("t3_worktree_handoff", { branch: "handed-off", startFromOrigin: false })
+        .handle("vc_worktree_handoff", { branch: "handed-off", startFromOrigin: false })
         .pipe(
           Stream.unwrap,
           Stream.runCollect,
@@ -224,7 +224,7 @@ const handoffFrom = <A, E>(
 };
 
 it.live.each(belowFullAccess)(
-  "t3_worktree_handoff from a $runtimeMode/$interactionMode thread leaves an approved layout command unrun",
+  "vc_worktree_handoff from a $runtimeMode/$interactionMode thread leaves an approved layout command unrun",
   (modes) =>
     handoffFrom(modes, ({ handoff, writeLayout, layoutRan, setupScriptRuns }) =>
       Effect.gen(function* () {
@@ -242,7 +242,7 @@ it.live.each(belowFullAccess)(
 );
 
 it.live.each(belowFullAccess)(
-  "t3_worktree_handoff from a $runtimeMode/$interactionMode thread leaves the setup script unrun",
+  "vc_worktree_handoff from a $runtimeMode/$interactionMode thread leaves the setup script unrun",
   (modes) =>
     handoffFrom(modes, ({ handoff, setupScriptRuns }) =>
       Effect.gen(function* () {
@@ -256,7 +256,7 @@ it.live.each(belowFullAccess)(
     ),
 );
 
-it.live("t3_worktree_handoff from a Full access thread runs an approved layout command", () =>
+it.live("vc_worktree_handoff from a Full access thread runs an approved layout command", () =>
   handoffFrom(
     { runtimeMode: "full-access", interactionMode: "default" },
     ({ handoff, writeLayout, layoutRan, setupScriptRuns }) =>
@@ -280,7 +280,7 @@ const limitedToAuto: ManagedPolicySummary = {
 };
 
 it.live(
-  "t3_worktree_handoff from a Full access thread above the administrator's limit leaves an approved layout command unrun",
+  "vc_worktree_handoff from a Full access thread above the administrator's limit leaves an approved layout command unrun",
   () =>
     handoffFrom(
       fullAccess,
@@ -302,7 +302,7 @@ it.live(
 );
 
 it.live(
-  "t3_worktree_handoff from a Full access thread above the administrator's limit leaves the setup script unrun",
+  "vc_worktree_handoff from a Full access thread above the administrator's limit leaves the setup script unrun",
   () =>
     handoffFrom(
       fullAccess,
@@ -318,7 +318,7 @@ it.live(
     ),
 );
 
-it.live("t3_worktree_handoff neither runs nor approves a layout command nobody approved", () =>
+it.live("vc_worktree_handoff neither runs nor approves a layout command nobody approved", () =>
   handoffFrom(
     { runtimeMode: "full-access", interactionMode: "default" },
     ({ handoff, writeLayout, layoutRan }) =>

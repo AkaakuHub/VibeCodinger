@@ -1190,19 +1190,11 @@ export const toolkitRegistration = <Tools extends Record<string, Tool.Any>, EX, 
   handlers: McpToolAccess.HandlersLayer<Tools, EX, RX>,
 ) =>
   Layer.effectDiscard(
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
     withToolResultCapture(
       withToolSpans(
-        withAdvertisedSchemas(toolkit, McpServer.registerToolkit(decodeAsAdvertised(toolkit))),
-=======
-    withToolAnalytics(
-      withToolResultCapture(
-        withToolSpans(
-          withClientInput(
-            withAdvertisedSchemas(toolkit, McpServer.registerToolkit(decodeAsAdvertised(toolkit))),
-          ),
+        withClientInput(
+          withAdvertisedSchemas(toolkit, McpServer.registerToolkit(decodeAsAdvertised(toolkit))),
         ),
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
       ),
     ),
   ).pipe(

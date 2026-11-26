@@ -157,7 +157,7 @@ const measureOnce = Effect.fn("mobileMetrics.measureOnce")(function* (options: M
     forgetOtherEnvironments: true,
     longTurns: options.longTurns,
     checkout: options.checkout,
-    metroEnv: options.renders ? { EXPO_PUBLIC_T3_RENDER_COUNTER: "1" } : {},
+    metroEnv: options.renders ? { EXPO_PUBLIC_VC_RENDER_COUNTER: "1" } : {},
     build: options.build,
     environment: {
       serverEnv: forge.env,

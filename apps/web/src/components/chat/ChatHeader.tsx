@@ -41,11 +41,7 @@ import { observeResize } from "~/lib/observeResize";
 import { cn } from "~/lib/utils";
 import { textDirection } from "~/textDirection";
 import { useClientSettings } from "../../hooks/useSettings";
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-=======
-import { GuestShareIndicator } from "./GuestShareControls";
 import { SharedTooltipTrigger } from "../ui/shared-tooltip";
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 interface ChatHeaderProps {
   activeThreadEnvironmentId: EnvironmentId;

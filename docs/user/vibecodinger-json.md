@@ -1,23 +1,23 @@
-# Project configuration (`t3.json`) and actions
+# Project configuration (`vibecodinger.json`) and actions
 
-Check a `t3.json` file into your repository root to share project actions (setup, dev, test, and cleanup scripts), worktree defaults, icons, and multi-repo settings with everyone opening the repo in T3 Code.
+Check a `vibecodinger.json` file into your repository root to share project actions (setup, dev, test, and cleanup scripts), worktree defaults, icons, and multi-repo settings with everyone opening the repo in VibeCodinger.
 
 ## Inheritance order
 
-Settings that `t3.json` can declare resolve in this order (first non-inherited value wins):
+Settings that `vibecodinger.json` can declare resolve in this order (first non-inherited value wins):
 
 1. **Project override** in Settings
 2. **Environment setting** in Settings
-3. **`t3.json`** in the repository
+3. **`vibecodinger.json`** in the repository
 4. **Built-in default**
 
 ## Schema reference
 
-Add `"$schema": "https://t3.codes/schema/t3.json"` for editor autocomplete and validation:
+Add `"$schema": "https://t3.codes/schema/vibecodinger.json"` for editor autocomplete and validation:
 
 ```json
 {
-  "$schema": "https://t3.codes/schema/t3.json",
+  "$schema": "https://t3.codes/schema/vibecodinger.json",
   "iconPath": "assets/logo.svg",
   "defaultThreadEnvMode": "worktree",
   "worktreeSubmodules": "top-level",
@@ -63,7 +63,7 @@ Add `"$schema": "https://t3.codes/schema/t3.json"` for editor autocomplete and v
 
 ## Project actions (`scripts`)
 
-Import `t3.json` scripts or define local actions in **Settings → Projects → Actions** (run them from the thread details panel, command palette, or [keybindings](./keybindings.md) via `script.<id>.run`).
+Import `vibecodinger.json` scripts or define local actions in **Settings → Projects → Actions** (run them from the thread details panel, command palette, or [keybindings](./keybindings.md) via `script.<id>.run`).
 
 | Field                 | Description                                                                                                                               |
 | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
@@ -77,4 +77,4 @@ Import `t3.json` scripts or define local actions in **Settings → Projects → 
 | `previewUrl`          | Opens this URL in the in-app browser when the script runs (desktop only).                                                                 |
 | `autoOpenPreview`     | Automatically opens the browser panel at `previewUrl` on script start.                                                                    |
 
-> Note: In multi-repo projects, only the project folder's `t3.json` is read—nested repo `t3.json` files are ignored.
+> Note: In multi-repo projects, only the project folder's `vibecodinger.json` is read—nested repo `vibecodinger.json` files are ignored.

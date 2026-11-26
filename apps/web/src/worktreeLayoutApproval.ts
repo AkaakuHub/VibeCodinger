@@ -1,5 +1,8 @@
 import { managedCapabilityDenial } from "@vibecodinger/client-runtime/contract-labels";
-import { runAtomCommand, squashAtomCommandFailure } from "@vibecodinger/client-runtime/state/runtime";
+import {
+  runAtomCommand,
+  squashAtomCommandFailure,
+} from "@vibecodinger/client-runtime/state/runtime";
 import {
   AuthFilesystemReadScope,
   AuthTerminalOperateScope,

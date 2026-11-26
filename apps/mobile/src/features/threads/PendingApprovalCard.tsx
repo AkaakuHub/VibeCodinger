@@ -49,15 +49,10 @@ export function PendingApprovalCard(props: PendingApprovalCardProps) {
       <Text className="font-vc-bold text-2xs uppercase tracking-[1.1px] text-foreground-secondary">
         <T>Approval needed</T>
       </Text>
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
       <Text className="font-vc-bold text-lg text-foreground">
-        {props.approval.appName ?? props.approval.requestKind}
-=======
-      <Text className="font-t3-bold text-lg text-foreground">
         {pushHooks
           ? m(PUSH_HOOKS_APPROVAL_QUESTION)
           : (props.approval.appName ?? props.approval.requestKind)}
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
       </Text>
       {pushHooks ? (
         <View className="gap-1.5">

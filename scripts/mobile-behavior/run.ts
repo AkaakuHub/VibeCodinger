@@ -24,60 +24,6 @@ import { reachableHost, startSession } from "./session.ts";
 const REPO_ROOT = NodePath.resolve(import.meta.dirname, "../..");
 const POSES = ["phone", "duo-closed", "duo-open", "ipad"] as const satisfies ReadonlyArray<Pose>;
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-/** This machine's address as the simulator sees it: the tailnet address, else the first LAN IPv4. */
-function reachableHost(): string {
-  const tailnet = NodeChildProcess.spawnSync("tailscale", ["ip", "-4"], { encoding: "utf8" });
-  const ip = tailnet.status === 0 ? tailnet.stdout.trim().split("\n")[0] : undefined;
-  if (ip) return ip;
-  const lan = Object.values(NodeOS.networkInterfaces())
-    .flatMap((entries) => entries ?? [])
-    .find((entry) => entry.family === "IPv4" && !entry.internal);
-  return lan?.address ?? "127.0.0.1";
-}
-
-/** Metro with the behavior probe compiled in, stopped with its process group when the scope ends. */
-const startMetro = Effect.fn("run.startMetro")(function* (host: string, out: string) {
-  const port = yield* freePort();
-  const log = NodeFS.openSync(NodePath.join(out, "metro.log"), "w");
-  yield* Effect.acquireRelease(
-    Effect.sync(() =>
-      NodeChildProcess.spawn(
-        "npx",
-        ["expo", "start", "--dev-client", "--scheme", SCHEME, "--lan", "--port", String(port)],
-        {
-          cwd: NodePath.join(REPO_ROOT, "apps/mobile"),
-          detached: true,
-          stdio: ["ignore", log, log],
-          env: {
-            ...process.env,
-            APP_VARIANT: "development",
-            CI: "1",
-            // Lazily fetched chunks sometimes arrive broken on pool emulators and throw SyntaxErrors.
-            EXPO_NO_METRO_LAZY: "1",
-            EXPO_PUBLIC_VC_BEHAVIOR_PROBE: "1",
-            REACT_NATIVE_PACKAGER_HOSTNAME: host,
-          },
-        },
-      ),
-    ),
-    (child) => Effect.sync(() => child.pid !== undefined && process.kill(-child.pid, "SIGTERM")),
-  );
-  const metro = `http://${host}:${port}`;
-  for (let attempt = 0; attempt < 120; attempt++) {
-    const ready = yield* HttpClient.get(`${metro}/status`).pipe(
-      Effect.flatMap((response) => response.text),
-      Effect.provide(FetchHttpClient.layer),
-      Effect.orElseSucceed(() => ""),
-    );
-    if (ready.includes("running")) return metro;
-    yield* Effect.sleep("1 second");
-  }
-  return yield* new DeviceError({ message: `Metro never started; see ${out}/metro.log.` });
-});
-
-=======
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 const decodeRows = (file: string): ReadonlyArray<SampleRow> =>
   NodeFS.readFileSync(file, "utf8")
     .split("\n")

@@ -80,8 +80,8 @@ const page = (
 });
 const readReply = (...pages: ReadonlyArray<unknown>) => {
   const there = peer({
-    t3_thread_wait: [{ ...waited, timedOut: false }],
-    t3_thread_read: [run("completed"), ...pages],
+    vc_thread_wait: [{ ...waited, timedOut: false }],
+    vc_thread_read: [run("completed"), ...pages],
   });
   return Effect.gen(function* () {
     const result = yield* Effect.provide(

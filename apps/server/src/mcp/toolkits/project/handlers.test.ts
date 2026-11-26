@@ -611,7 +611,7 @@ it.effect("only a full-access client may pick the agent's own mode at launch", (
           ),
         );
         const result = yield* toolkit
-          .handle("t3_thread_launch", {
+          .handle("vc_thread_launch", {
             projectId,
             title: "Fix",
             message: "Fix the bug",

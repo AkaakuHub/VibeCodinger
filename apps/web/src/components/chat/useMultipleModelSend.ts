@@ -8,15 +8,10 @@ import {
   type ThreadId,
 } from "@vibecodinger/contracts";
 import { scopeThreadRef } from "@vibecodinger/client-runtime/environment";
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-import { deriveThreadTitleSeed } from "@vibecodinger/client-runtime/operations";
 import {
   settlePromise,
   squashAtomCommandFailure,
 } from "@vibecodinger/client-runtime/state/runtime";
-=======
-import { settlePromise, squashAtomCommandFailure } from "@vibecodinger/client-runtime/state/runtime";
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 import type { EnvironmentProject } from "@vibecodinger/client-runtime/state/shell";
 import { useNavigate } from "@tanstack/react-router";
 import { newMessageId } from "~/lib/utils";

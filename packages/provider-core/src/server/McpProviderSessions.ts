@@ -1,6 +1,10 @@
 // @effect-diagnostics nodeBuiltinImport:off -- Pure synchronous hashing keeps page matching bounded without a runtime dependency.
 import * as NodeCrypto from "node:crypto";
-import type { ProviderApprovalPushHooks, ProviderInstanceId, ThreadId } from "@vibecodinger/contracts";
+import type {
+  ProviderApprovalPushHooks,
+  ProviderInstanceId,
+  ThreadId,
+} from "@vibecodinger/contracts";
 import type { HtmlRenderReference } from "@vibecodinger/shared/htmlRender";
 import { stableStringify } from "@vibecodinger/shared/relaySigning";
 import { resolveVibeCodingerMcpToolId } from "@vibecodinger/shared/vibeCodingerMcpToolPresentation";

@@ -212,7 +212,6 @@ import {
 } from "../previewMiniPlayerStore";
 import { threadPullRequestPanelTarget } from "./pullRequest/pullRequestDetail.logic";
 import { LinkPullRequestDialogHost } from "./pullRequest/LinkPullRequestDialog";
-import { GuestPendingMessages } from "./chat/GuestShareControls";
 import { useDeviceState } from "~/state/device";
 import { BranchToolbar, type BranchToolbarHandle } from "./BranchToolbar";
 import { ComposerContextPermissions } from "./ComposerContextPermissions";
@@ -3385,13 +3384,6 @@ export default function ChatView(props: ChatViewProps) {
           goal={goalNow}
         />
         {threadStatusLine}
-        {pendingGuestMessageCount > 0 && isServerThread && activeThread ? (
-          <GuestPendingMessages
-            threadRef={scopeThreadRef(activeThread.environmentId, activeThread.id)}
-            onImageExpand={onExpandTimelineImageStable}
-            onFileOpen={openFileAttachmentStable}
-          />
-        ) : null}
         {hasQueuedTurns ? queuedRunsControl : null}
       </>
     );

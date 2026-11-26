@@ -89,23 +89,17 @@ const colors = {
 };
 
 const customIcons = {
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
   agents: "vc-file-icon-agents",
+  csharp: "vc-file-icon-csharp",
+  elixir: "vc-file-icon-elixir",
+  javascript_test: "vc-file-icon-javascript-test",
+  kotlin: "vc-file-icon-kotlin",
+  objc: "vc-file-icon-objc",
   pnpm: "vc-file-icon-pnpm",
+  rolldown: "vc-file-icon-rolldown",
+  typescript_test: "vc-file-icon-typescript-test",
   video: "vc-file-icon-video",
-=======
-  agents: "t3-file-icon-agents",
-  csharp: "t3-file-icon-csharp",
-  elixir: "t3-file-icon-elixir",
-  javascript_test: "t3-file-icon-javascript-test",
-  kotlin: "t3-file-icon-kotlin",
-  objc: "t3-file-icon-objc",
-  pnpm: "t3-file-icon-pnpm",
-  rolldown: "t3-file-icon-rolldown",
-  typescript_test: "t3-file-icon-typescript-test",
-  video: "t3-file-icon-video",
-  vitest: "t3-file-icon-vitest",
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
+  vitest: "vc-file-icon-vitest",
 };
 
 function symbolFromSprite(sprite, id) {

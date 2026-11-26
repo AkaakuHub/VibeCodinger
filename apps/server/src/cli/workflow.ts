@@ -268,13 +268,13 @@ const signalCommand = Command.make("signal", {
         });
       }
       // An agent answers through this command, so its answer is named after its thread.
-      const callingThread = (yield* HostProcess.Environment).T3CODE_THREAD_ID?.trim();
+      const callingThread = (yield* HostProcess.Environment).VIBECODINGER_THREAD_ID?.trim();
       const threadTitle =
         callingThread === undefined || callingThread === ""
           ? undefined
           : yield* withThreadTools({ ...flags, json: false }, (tools) =>
               tools.call(
-                "t3_thread_read",
+                "vc_thread_read",
                 { threadId: callingThread, limit: 1, runLimit: 1 },
                 ThreadTitleResult,
               ),
@@ -326,7 +326,7 @@ const withdrawCommand = Command.make("withdraw", {
       flags,
       Effect.fn("cli.workflow.withdraw")(function* (tools) {
         const { withdrawal, ...result } = yield* tools.call(
-          "t3_workflow",
+          "vc_workflow",
           {
             action: "withdraw",
             runId: flags.run,
@@ -361,13 +361,8 @@ const questionsCommand = Command.make("questions", {
       flags,
       Effect.fn("cli.workflow.questions")(function* (tools) {
         const { questions } = yield* tools.call(
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
           "vc_workflow",
-          { action: "questions" },
-=======
-          "t3_workflow",
           { action: "questions", ...(Option.isSome(flags.kind) ? { kind: flags.kind.value } : {}) },
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
           QuestionsResult,
         );
         if (flags.json) return yield* printJson(questions);

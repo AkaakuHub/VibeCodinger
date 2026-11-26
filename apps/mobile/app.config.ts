@@ -222,11 +222,7 @@ const config: ExpoConfig = {
   slug: "vibecodinger",
   platforms: ["ios", "android"],
   scheme: variant.scheme,
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-  version: repoEnv.VIBECODINGER_MOBILE_VERSION ?? "2.3.0",
-=======
-  version: repoEnv.T3CODE_MOBILE_VERSION ?? "2.4.0",
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
+  version: repoEnv.VIBECODINGER_MOBILE_VERSION ?? "2.4.0",
   runtimeVersion: {
     // Skip costly fingerprinting on dev launches; preview and production OTAs require matching native projects.
     policy: runtimeVersionPolicy,

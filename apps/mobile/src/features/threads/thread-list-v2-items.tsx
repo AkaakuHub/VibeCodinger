@@ -936,15 +936,10 @@ export const ThreadListV2Row = memo(function ThreadListV2Row(props: {
   const handleDelete = useCallback(() => onDeleteThread(thread), [onDeleteThread, thread]);
   const handleRename = useCallback(() => onRenameThread(thread), [onRenameThread, thread]);
   const canOperateThread = useEnvironmentScope(thread.environmentId, AuthOrchestrationOperateScope);
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-=======
   // Until the host answers, only settle, snooze and their undo are offered: they can queue.
   const triageOnly =
     !useEnvironmentScopeDenied(thread.environmentId, AuthOrchestrationOperateScope) &&
     !canOperateThread;
-  const canShareWithGuest = useCanShareWithGuest(thread.environmentId);
-  const navigation = useNavigation();
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
   const handleRegenerateTitle = useCallback(
     () => onRegenerateThreadTitle(thread),
     [onRegenerateThreadTitle, thread],

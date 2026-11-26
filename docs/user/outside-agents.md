@@ -42,7 +42,6 @@ Tools that act as a running T3 thread (`delegate_task`, `create_threads`, `reque
 
 ## Host scripts (`t3 thread`)
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 Only approve a sign-in you just started. On the environment's own page, enter a
 code from **Use T3 Code in another app (MCP)**, **Settings → Sharing & access**,
 or `vibecodinger auth pairing create` on the host. A browser already signed in to the
@@ -140,9 +139,6 @@ plain `http`.
 
 On the machine that runs the environment, `vibecodinger thread` uses the same tools
 without a sign-in:
-=======
-On the server machine itself, drive threads directly without OAuth:
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 ```sh
 id=$(vibecodinger thread start . "Find why the tests are slow")

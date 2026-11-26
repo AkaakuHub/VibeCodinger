@@ -11,7 +11,6 @@ Open the command palette (`Cmd/Ctrl+K`) and run **Triage an issue**. A no-projec
 If the app won't start or in-app triage fails, run:
 
 ```sh
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 npx vibecodinger triage
 ```
 
@@ -22,12 +21,6 @@ choose explicitly:
 ```sh
 npx vibecodinger triage --agent antigravity
 npx vibecodinger triage --agent codex
-=======
-npx t3 triage
-# Or choose a specific CLI agent and model:
-npx t3 triage --agent codex --model <model-id>
-npx t3 triage --agent antigravity
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 ```
 
 Supports Claude Code, Codex, and standalone Antigravity (`agy` on `PATH` with its own sign-in; T3's managed ACP runtime does not include the standalone terminal CLI).

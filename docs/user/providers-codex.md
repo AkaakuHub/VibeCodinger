@@ -15,7 +15,6 @@ Connect during onboarding or in **Settings → Providers** (select your target e
 
 Run `codex login` on the environment's machine, then add a Codex instance in **Settings → Providers** via **Configure manually**. See [provider setup](./install.md#providers) for installation details.
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 Running `codex login` does not change a managed ChatGPT connection. In
 **Settings > Providers**, add a Codex instance, choose **Configure manually**,
 and complete the wizard. Then select that instance from the thread's model
@@ -48,9 +47,6 @@ API key. The flag does not add image support to an unsupported model or account.
 Launch arguments apply to Codex sessions started after you save them. Start a new
 thread with the same Codex provider and ask it to generate an image. The completed
 image appears in the thread.
-=======
-If provider status checks time out on a slower machine, set `T3CODE_CODEX_PROBE_TIMEOUT_MS=60000` in the server environment and restart. See [Provider check timeouts](./install.md#provider-check-timeouts).
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 ## Use multiple accounts
 

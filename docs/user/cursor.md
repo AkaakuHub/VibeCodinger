@@ -25,11 +25,7 @@ Cursor loads MCP servers and plugins from `~/.cursor/mcp.json`, `~/.cursor/plugi
 For OAuth MCP servers, authenticate via the CLI from the project root before starting a session:
 
 ```bash
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 pnpm --filter vibecodinger record:cursor-replay --scenario simple
-=======
-agent mcp login <server>
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 ```
 
 After adding or changing skills, plugins, or MCP logins, run **Restart agent session** from the command palette.

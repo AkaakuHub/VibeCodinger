@@ -189,7 +189,6 @@ import * as ProviderAuthService from "./provider/ProviderAuthService.ts";
 import * as ProviderInstallation from "./provider/providerInstallation.ts";
 import * as ServerSelfUpdate from "./cloud/selfUpdate.ts";
 import * as NpmRelease from "./cloud/npmRelease.ts";
-import * as RelayTracing from "./cloud/relayTracing.ts";
 import * as ServerLifecycleEvents from "./serverLifecycleEvents.ts";
 import * as ServerRuntimeStartup from "./serverRuntimeStartup.ts";
 import * as SecretResolver from "@vibecodinger/secret-provider-core/server/SecretResolver";
@@ -1485,7 +1484,6 @@ export const layerWsRpc = (
       const storageCleanup = yield* StorageCleanup.StorageCleanup;
       const databaseStorage = yield* DatabaseStorage.DatabaseStorage;
       const serverSettings = yield* ServerSettings.ServerSettingsService;
-      const hostEnvironment = yield* HostProcess.Environment;
       const secretResolver = yield* SecretResolver.SecretResolver;
       const peerLinks = yield* PeerLinks.PeerLinks;
       const peerLinkRequests = yield* PeerLinkRequests.PeerLinkRequests;
@@ -1819,37 +1817,6 @@ export const layerWsRpc = (
           observability: {
             logsDirectoryPath: config.logsDir,
             localTracingEnabled: true,
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-=======
-            ...(config.otlpTracesUrl !== undefined
-              ? {
-                  otlpTracesUrl: config.otlpTracesUrl,
-                  otlpTracesSource: config.otlpTracesSource,
-                  otlpTracesVariable: config.otlpTracesVariable,
-                }
-              : {}),
-            otlpTracesEnabled: config.otlpTracesUrl !== undefined,
-            ...(config.otlpMetricsUrl !== undefined
-              ? {
-                  otlpMetricsUrl: config.otlpMetricsUrl,
-                  otlpMetricsSource: config.otlpMetricsSource,
-                  otlpMetricsVariable: config.otlpMetricsVariable,
-                }
-              : {}),
-            otlpMetricsEnabled: config.otlpMetricsUrl !== undefined,
-            ...(config.otlpLogsUrl !== undefined
-              ? {
-                  otlpLogsUrl: config.otlpLogsUrl,
-                  otlpLogsSource: config.otlpLogsSource,
-                  otlpLogsVariable: config.otlpLogsVariable,
-                }
-              : {}),
-            otlpLogsEnabled: config.otlpLogsUrl !== undefined,
-            relayTracingAllowed: RelayTracing.allowedFor(
-              hostEnvironment,
-              serverSettings.managedPolicy,
-            ),
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
           },
           settings,
           ...(serverSettings.managedPolicy === undefined

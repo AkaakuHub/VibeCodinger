@@ -2849,7 +2849,7 @@ export const CLAUDE_READ_ONLY_VC_MCP_ALLOWED_TOOLS: ReadonlyArray<string> = [
 ];
 
 // The name this adapter registers T3's MCP server under, and so the one Claude gives for it.
-const CLAUDE_T3_MCP_SERVER = "t3-code";
+const CLAUDE_VC_MCP_SERVER = "vibe-codinger";
 
 // request_secret can wait an hour; exceed Claude's default 60 s timeout.
 export const CLAUDE_VC_MCP_TOOL_TIMEOUT_MS = 65 * 60 * 1_000;
@@ -2875,11 +2875,7 @@ export function claudeMcpQueryOverrides(input: {
   return {
     allowedTools: Array.from(new Set([...(input.allowedTools ?? []), ...mcpAllowedTools])),
     mcpServers: {
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-      "vibe-codinger": {
-=======
-      [CLAUDE_T3_MCP_SERVER]: {
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
+      [CLAUDE_VC_MCP_SERVER]: {
         type: "http",
         url: session.endpoint,
         headers: {
@@ -13554,7 +13550,7 @@ export const makeClaudeAdapterV2 = Effect.fn("makeClaudeAdapterV2")(function* (
           // T3's own tools leave what they ask with the thread's MCP session while they wait.
           // A request is T3's when it is one of those, whatever a server calls itself.
           const ownRequest =
-            request.serverName === CLAUDE_T3_MCP_SERVER
+            request.serverName === CLAUDE_VC_MCP_SERVER
               ? yield* mcpSessions.findApprovalRequest(context.input.threadId, request.message)
               : undefined;
           const grantKey = `${request.serverName}\u0000${request.message}`;

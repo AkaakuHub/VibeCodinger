@@ -3028,17 +3028,12 @@ export const makeWithOptions = Effect.fn("TerminalManager.makeWithOptions")(func
               shellResolver,
               platform,
               baseEnv,
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
               session.runtimeEnv?.VIBECODINGER_TERMINAL_SHELL ??
                 baseEnv.VIBECODINGER_TERMINAL_SHELL,
-            ).pipe(Effect.provideService(FileSystem.FileSystem, fileSystem));
-=======
-              session.runtimeEnv?.T3CODE_TERMINAL_SHELL ?? baseEnv.T3CODE_TERMINAL_SHELL,
             ).pipe(
               Effect.provideService(FileSystem.FileSystem, fileSystem),
               withShellPreparationTimeout,
             );
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
             const terminalEnv = createTerminalSpawnEnv(
               baseEnv,
               session.runtimeEnv,

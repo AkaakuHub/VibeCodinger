@@ -1,11 +1,6 @@
 import { layerWithoutOfficialRelay } from "./cloud/officialRelay.ts";
 import * as ProviderEventLoggers from "@vibecodinger/provider-core/server/ProviderEventLoggers";
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-=======
 import * as DatabaseMigrationProgress from "./persistence/DatabaseMigrationProgress.ts";
-import type { RelayManagedEndpointRuntimeConfig } from "@vibecodinger/contracts/relay";
-import * as Random from "effect/Random";
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 import * as EnvironmentKeys from "./cloud/environmentKeys.ts";
 import * as AssetSigner from "./assets/AssetSigner.ts";
 import * as WorkspacePreviewRevisions from "./assets/WorkspacePreviewRevisions.ts";
@@ -28,11 +23,7 @@ import * as FeatureFlags from "@vibecodinger/shared/FeatureFlags";
 import * as HostProcess from "@vibecodinger/shared/HostProcess";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-=======
-import * as Option from "effect/Option";
 import * as Ref from "effect/Ref";
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 import * as Layer from "effect/Layer";
 import * as Stream from "effect/Stream";
 import { HttpRouter, HttpServer } from "effect/http";
@@ -331,9 +322,9 @@ const layerHttpServer = Layer.unwrap(
     });
     yield* ManagedLimits.closeTailscaleServeTo(policy, { host: bindHost, port: config.port });
     const runSync = Effect.runSyncWith(yield* Effect.context<never>());
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
     const server = rejectRequestsUntilServing(
       keepIdleConnections(guardHttpResponseWriteErrors(NodeHttp.createServer())),
+      () => Ref.getUnsafe(migrationProgress.current),
     );
     if (config.privateNetworkOnly) runSync(closeNonPrivateNetworkConnections(server));
     return NodeHttpServer.layer(() => server, {
@@ -355,30 +346,6 @@ const layerHttpServer = Layer.unwrap(
       ),
       Layer.merge(layerSpawner),
     );
-=======
-    return NodeHttpServer.layer(
-      () => {
-        const server = rejectRequestsUntilServing(
-          keepIdleConnections(guardHttpResponseWriteErrors(NodeHttp.createServer())),
-          () => Ref.getUnsafe(migrationProgress.current),
-        );
-        if (config.privateNetworkOnly) {
-          runSync(closeNonPrivateNetworkConnections(server));
-        }
-        return server;
-      },
-      {
-        host: bindHost,
-        port: config.port,
-        gracefulShutdownTimeout: HTTP_PREEMPTIVE_SHUTDOWN_GRACE_MS,
-        // Context takeover stays enabled (ws default) so the compression
-        // window is shared across frames — that also makes small frames cheap
-        // to compress, so no size threshold is set (ws only honors
-        // `threshold` when context takeover is disabled).
-        websocket: { perMessageDeflate: true },
-      },
-    ).pipe(Layer.merge(layerSpawner));
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
   }),
 ).pipe(
   Layer.provide(ManagedPolicy.layer),

@@ -68,7 +68,7 @@ T3 Code is an open-source control plane for coding agents. It gives the coding a
 ### Projects, automation & customization
 
 - [Settings and project overrides](./project-settings.md) — Scope inheritance, pinning/archiving projects, worktree cleanup, scheduled tasks, and webhooks.
-- [Project configuration (`t3.json`) and actions](./t3-json.md) — Checked-in repo config, setup/dev/settle scripts, and schema reference.
+- [Project configuration (`vibecodinger.json`) and actions](./vibecodinger-json.md) — Checked-in repo config, setup/dev/settle scripts, and schema reference.
 - [Projects with several repositories](./multi-repo-projects.md) — Multi-repo folders, external folders, submodules, and custom worktree layouts.
 - [Workflows](./workflows.md) — Durable multi-stage TypeScript workflows (Labs) with schedules, webhooks, and approvals.
 - [Text generation models](./text-generation.md) — Fast/cheap API models for titles, commits, PR descriptions, and voice cleanup.
@@ -93,7 +93,6 @@ T3 Code is an open-source control plane for coding agents. It gives the coding a
 ### Remote, mobile & integrations
 
 - [Remote access](./remote-access.md) — T3 Connect, LAN/Tailscale pairing, desktop SSH, multi-route failover, load balancing, and linked environments.
-- [T3 Connect troubleshooting](./t3-connect-troubleshooting.md) — Diagnosing tunnel, port 7844, DNS, clock, and account errors.
 - [Mobile notifications](./mobile-notifications.md) — Push alerts, iOS Live Activities/widgets, and Android Live Updates.
 - [Guest links](./guest-links.md) — Sharing a live thread with a teammate in their browser (no account needed).
 - [Outside agents](./outside-agents.md) — Connecting Claude Code, Codex, ChatGPT, or bots to T3 Code over MCP, plus `t3 thread` host scripting.

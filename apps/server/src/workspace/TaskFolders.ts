@@ -16,13 +16,9 @@ import {
   type ThreadId,
   type VcsCreateWorktreeInput,
   type VcsCreateWorktreeResult,
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-  VIBECODINGER_PROJECT_FILE_NAME,
-=======
   type WorkspaceLayoutCommandsResult,
   type WorktreeLayoutCommandKind,
-  T3_PROJECT_FILE_NAME,
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
+  VIBECODINGER_PROJECT_FILE_NAME,
 } from "@vibecodinger/contracts";
 import { resolveProjectSettings } from "@vibecodinger/shared/projectSettings";
 import {
@@ -220,9 +216,6 @@ export class TaskFolders extends Context.Service<
 const isTaskFolderError = Schema.is(TaskFolderError);
 
 /**
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
- * A layout command is the project owner's own code. A link paired below full access grants VibeCodinger's
-=======
  * A caller's answer for who asked. Whether a person approved the command's text and whether
  * policy allows it are not the caller's to answer: this service checks both at every run.
  */
@@ -235,8 +228,7 @@ export type ProjectCommands = "permitted" | "request-not-permitted" | "agent-bel
 export type ProjectCommandsNow = ProjectCommands | Effect.Effect<ProjectCommands>;
 
 /**
- * A layout command is the project owner's own code. A link paired below full access grants T3's
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
+ * A layout command is the project owner's own code. A link paired below full access grants VibeCodinger's
  * tools only (see `mcp/linkOrigin.ts`), so work it started never runs one.
  */
 export const projectCommandsForLink = (
@@ -279,7 +271,7 @@ interface ClearedLayoutCommand {
 }
 
 const layoutRefusedDetail = (refusal: string) =>
-  `This project lays out its worktrees with its own command (worktreeLayout in ${T3_PROJECT_FILE_NAME}), ${refusal}`;
+  `This project lays out its worktrees with its own command (worktreeLayout in ${VIBECODINGER_PROJECT_FILE_NAME}), ${refusal}`;
 
 const failureDetail = (cause: unknown) =>
   typeof cause === "object" &&
@@ -469,28 +461,6 @@ const make = Effect.gen(function* () {
   ) =>
     layoutLocks.withLock(
       taskFolder.projectRoot,
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-      processes
-        .run({
-          operation: "TaskFolders.worktreeLayout",
-          command: onWindows ? windowsSystem32Path(hostEnvironment, "cmd.exe") : "sh",
-          args: onWindows ? ["/d", "/s", "/c", command] : ["-c", command],
-          cwd: taskFolder.projectRoot,
-          env: {
-            ...hostEnvironment,
-            // A `GIT_DIR` the server inherited would point the command's Git at another repository.
-            ...VcsProcess.unsetInheritedRepositoryEnv(hostEnvironment, hostPlatform),
-            VIBECODINGER_PROJECT_ROOT: taskFolder.projectRoot,
-            VIBECODINGER_WORKTREE_ROOT: taskFolder.root,
-            VIBECODINGER_WORKTREE_PROJECT_PATH: taskFolder.projectPath,
-            VIBECODINGER_WORKTREE_BRANCH: branch,
-            VIBECODINGER_WORKTREE_BASE: baseBranch ?? "",
-            VIBECODINGER_WORKTREE_REPOSITORIES: repositories.join("\n"),
-          },
-          timeoutMs: LAYOUT_COMMAND_TIMEOUT_MS,
-        })
-        .pipe(Effect.mapError(fail(operation, "The project's worktree layout command failed"))),
-=======
       Effect.gen(function* () {
         const noteStart = yield* inItsTurn;
         if (noteStart === null) return null;
@@ -519,18 +489,17 @@ const make = Effect.gen(function* () {
               ...hostEnvironment,
               // A `GIT_DIR` the server inherited would point the command's Git at another repository.
               ...VcsProcess.unsetInheritedRepositoryEnv(hostEnvironment, hostPlatform),
-              T3_PROJECT_ROOT: taskFolder.projectRoot,
-              T3_WORKTREE_ROOT: taskFolder.root,
-              T3_WORKTREE_PROJECT_PATH: taskFolder.projectPath,
-              T3_WORKTREE_BRANCH: branch,
-              T3_WORKTREE_BASE: baseBranch ?? "",
-              T3_WORKTREE_REPOSITORIES: repositories.join("\n"),
+              VIBECODINGER_PROJECT_ROOT: taskFolder.projectRoot,
+              VIBECODINGER_WORKTREE_ROOT: taskFolder.root,
+              VIBECODINGER_WORKTREE_PROJECT_PATH: taskFolder.projectPath,
+              VIBECODINGER_WORKTREE_BRANCH: branch,
+              VIBECODINGER_WORKTREE_BASE: baseBranch ?? "",
+              VIBECODINGER_WORKTREE_REPOSITORIES: repositories.join("\n"),
             },
             timeoutMs: LAYOUT_COMMAND_TIMEOUT_MS,
           })
           .pipe(Effect.mapError(fail(operation, "The project's worktree layout command failed")));
       }),
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
     );
 
   /** Where a folder's `.git` file points, or null when `.git` is a directory or absent. */
@@ -1200,11 +1169,7 @@ const make = Effect.gen(function* () {
         if (layout !== null && "refusal" in layout) {
           return yield* new TaskFolderError({
             operation: "create",
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-            detail: `This project lays out its worktrees with its own command (worktreeLayout in ${VIBECODINGER_PROJECT_FILE_NAME}), which this request is not permitted to run.`,
-=======
             detail: layoutRefusedDetail(layout.refusal),
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
           });
         }
         if (layout !== null) {

@@ -68,12 +68,8 @@ interface ProjectScriptsControlProps {
   onRequestMenuClose?: () => void;
   environmentId: EnvironmentId;
   scripts: ReadonlyArray<ProjectScript>;
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
   fileScripts?: ReadonlyArray<VibeCodingerProjectFileScript>;
-=======
-  fileScripts?: ReadonlyArray<T3ProjectFileScript>;
   onActionsMenuOpen?: () => void;
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
   preferredScriptId?: string | null;
   onRunScript?: ((script: ProjectScript) => void) | undefined;
   onAddScript: (input: NewProjectScriptInput) => Promise<ProjectScriptActionResult>;

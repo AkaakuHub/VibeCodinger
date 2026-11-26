@@ -1,6 +1,5 @@
 # Running VibeCodinger in the background
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 On Linux, macOS, and Windows, VibeCodinger can run as a service for your user so you
 do not need to keep a terminal open.
 
@@ -53,42 +52,12 @@ tailnet, set up [direct TLS over Tailscale](./remote-access.md#direct-tls-over-t
 Put custom environment variables in `service.env` under the service's VibeCodinger home
 directory, normally `~/.vibecodinger/service.env`. This file survives service installation
 and updates. For example:
-=======
-Run T3 Code as a background user service on Linux, macOS, or Windows so your host stays reachable without keeping a terminal open.
-
-## Manage the service
-
-Install the `t3` CLI first ([Command line](./install.md#command-line)), then run these commands on the host machine:
-
-| Task                                    | Command                                                   |
-| --------------------------------------- | --------------------------------------------------------- |
-| Set up access from other devices        | `t3 up`                                                   |
-| Check how other devices reach it        | `t3 status`                                               |
-| Install and start (or repair)           | `t3 service install`                                      |
-| Check status and log path               | `t3 service status`                                       |
-| Update to a newer release               | `t3 update`                                               |
-| Restart                                 | `t3 service restart`                                      |
-| Stop and remove from startup            | `t3 service uninstall`                                    |
-| Remove service, launcher, and downloads | `t3 uninstall` (keeps `~/.t3/userdata` and `service.env`) |
-
-- Pairing codes are never written to logs; run `t3 pair` or `t3 up` on the host to connect a device.
-- `t3 update` asks before restarting (pass `--yes` in scripts). Pin a version with `t3 update 0.0.42`, switch tracks with `--channel nightly`, or downgrade with `--allow-downgrade`.
-
-## Local network access
-
-New services bind to localhost only. Run `t3 up --lan` (sets `T3CODE_LAN=true` in `service.env`) to listen on LAN and Tailscale addresses for direct desktop/mobile connections, or `t3 up --no-lan` to disable it. Anyone on that network can reach the port (gated by pairing). `T3CODE_HOST` overrides `T3CODE_LAN`. Hosted `app.t3.codes` always uses T3 Connect.
-
-## Configure the service environment
-
-Add `KEY=VALUE` entries to `service.env` in your T3 home directory (`~/.t3/service.env` by default). Values are literal (quote spaces or `#`; no shell expansion) and survive installs and updates.
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 ```dotenv
 VIBECODINGER_PORT=3773
 VIBECODINGER_HOST=127.0.0.1
 ```
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 Use `KEY=VALUE` entries, quoting values that contain spaces or `#`. Values are
 literal: shell commands and variable expansion are not evaluated. Entries
 override the inherited service environment, except for `PATH`, `VIBECODINGER_HOME`,
@@ -107,20 +76,9 @@ If the file contains credentials, restrict access to that file with `chmod 600`
 Linux needs systemd user services. Setup enables lingering so VibeCodinger starts at
 boot and keeps running after logout. If this needs administrator permission,
 setup prints a recovery command before changing the service.
-=======
-- `PATH`, `T3CODE_HOME`, `T3_BOOT_SERVICE_UNIT`, and `T3_SERVICE_LAUNCHER_CONTEXT` cannot be overridden here.
-- Run `t3 service restart` after editing (and `chmod 600 ~/.t3/service.env` if it holds secrets).
-
-## Platform support
-
-- **Linux**: Requires systemd user services with lingering enabled so T3 Code starts at boot and survives logout.
-- **macOS**: Starts at login, stops at logout. Keep the Mac logged in and awake for unattended access. If agents can't read Desktop/Documents/Downloads, grant Full Disk Access to the `t3` path in `~/Library/LaunchAgents/com.t3tools.t3code.service.plist`.
-- **Windows**: Runs windowless via Task Scheduler (`t3code-<domain>-<user>`) while signed in and auto-restarts on exit. Lock the screen instead of signing out for unattended access.
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 > Note: Signing out of T3 Connect does not stop or uninstall the background service.
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 Windows starts the service when you log in and stops it when you sign out. It
 runs without a window as the `vibecodinger-<domain>-<user name>` task in Task Scheduler, and Task
 Scheduler starts it again within a minute if it exits. Lock the screen instead
@@ -134,17 +92,11 @@ On Linux, agents already run with lower priority than the server. When they
 fill the machine's memory, though, the kernel may still slow down or stop the
 server, because only an administrator can reserve memory for it. Run, as your
 normal user:
-=======
-## Keep the server responsive under memory pressure (Linux)
-
-On Linux, agents run at lower priority than the server, but heavy memory use can still trigger the OOM killer. Run as your normal user:
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 ```sh
 vibecodinger service protect
 ```
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 It shows the system settings it will change, asks before applying them, and
 then asks for your sudo password. If the machine runs Tailscale or SSH, it
 also offers to protect them, so you can still reach the machine. Memory
@@ -157,13 +109,6 @@ the protection is in place, and `vibecodinger service protect --undo` removes it
 Start with `vibecodinger service status` on the host. It prints the log path and, on Linux,
 checks whether the installed service is running, enabled, and allowed to survive
 logout.
-=======
-It previews system changes, asks for confirmation and `sudo`, and optionally protects Tailscale and SSH too. Run `t3 service restart` for OOM-killer protection to take effect, or `t3 service protect --undo` to remove it.
-
-## Troubleshooting
-
-Run `t3 service status` on the host to see the log path and health checks:
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 | Status                                 | Fix                                                                                                                                             |
 | -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -173,7 +118,6 @@ Run `t3 service status` on the host to see the log path and health checks:
 | `service-disabled` / `service-stopped` | Check the log and `systemctl --user status t3code.service`, then run `t3 service install`.                                                      |
 | `restart-pending`                      | Run `t3 service restart` to switch to the newly installed version.                                                                              |
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 ```sh
 sudo loginctl enable-linger "$(id -un)"
 ```
@@ -245,21 +189,3 @@ is gone, a version before 0.1.0 starts with no threads or settings. It does
 not offer to delete it while any project or thread you have not deleted is
 missing from the current database, so the old file stays available for
 recovery.
-=======
-For T3 Connect issues, see [T3 Connect troubleshooting](./t3-connect-troubleshooting.md).
-
-## Reclaim database space
-
-T3 Code automatically prunes old internal history while keeping conversations. Older databases that still hold freed space show a **Reclaim** button in **Settings → Maintenance** when at least 1 GiB is reclaimable (pauses the server/agents during repair).
-
-For manually started servers (or CLI use), stop any hand-started server or desktop app and run:
-
-```sh
-t3 doctor          # Interactive repair (auto-stops/restarts a background service)
-t3 doctor --dry-run
-t3 doctor --fix    # Non-interactive recommended repairs
-```
-
-- Needs free disk space of ~2× active data size (in `TMPDIR`/`/var/tmp` and beside the database). Large databases can take over an hour.
-- `t3 doctor` optionally offers to remove the legacy pre-0.1.0 `state.sqlite` backup only when all active projects and threads exist in the current database (`--fix` never deletes it automatically).
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432

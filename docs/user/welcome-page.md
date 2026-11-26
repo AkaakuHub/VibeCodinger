@@ -2,7 +2,6 @@
 
 The Welcome page runs on a fresh local installation to help you verify an agent, optionally import existing projects and conversations, and connect the mobile app. Only one ready agent is required to start.
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 To see the page again, go to **Settings → About → Welcome page** and select
 **Open**. Direct links, such as Settings, open normally before setup is done.
 
@@ -17,10 +16,6 @@ If T3 Code cannot confirm the workspace during startup, it shows
 If T3 Code cannot read your saved settings, it shows **Could not read settings**.
 Select **Retry** after storage becomes available. Setup does not replace
 unreadable settings with defaults.
-=======
-- Reopen it anytime from **Settings → About → Welcome page → Open**.
-- Hosted `app.t3.codes` skips this page and prompts you to sign in to T3 Connect and run `t3 connect` on your computer instead.
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 ## Agents
 
@@ -32,7 +27,6 @@ T3 Code lists detected agents first (ready ones on top), followed by **Add more 
 - **Outdated or other agents**: **Update** or selecting the agent opens its page in **Settings → Providers**. **Browse** opens the ACP Registry.
 - **Desktop CLI**: Click **Add to PATH** if the `t3` command isn't yet on your shell `PATH`.
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 On the desktop app, when the folder of the `vibecodinger` command is not on your `PATH`,
 **Add to PATH** adds one line to your shell's startup file.
 
@@ -42,9 +36,6 @@ terminal metadata while the terminal process can use them.
 
 **Start** waits for one ready agent. Select **Start without an agent** to finish
 without one. Checked projects are still imported.
-=======
-Click **Start** once at least one agent is ready, or **Start without an agent** to enter the app immediately (checked projects still import).
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 ## Phone
 

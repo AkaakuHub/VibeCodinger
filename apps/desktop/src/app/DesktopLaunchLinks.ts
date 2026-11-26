@@ -3,11 +3,6 @@ import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as Option from "effect/Option";
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886:apps/desktop/src/app/DesktopLaunchLinks.ts
-=======
-import * as Path from "effect/Path";
-import * as Schema from "effect/Schema";
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432:apps/desktop/src/app/DesktopClerk.ts
 import * as Scope from "effect/Scope";
 
 import { codexAuthDeliveryUrl, readCodexAuthHandoff } from "@vibecodinger/shared/codexAuthHandoff";
@@ -36,49 +31,13 @@ export class DesktopLaunchLinks extends Context.Service<
       | Scope.Scope
     >;
   }
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886:apps/desktop/src/app/DesktopLaunchLinks.ts
 >()("@vibecodinger/desktop/app/DesktopLaunchLinks") {}
-=======
->()("@vibecodinger/desktop/app/DesktopClerk") {}
-
-function resolveDesktopClerkFrontendApiHostname(
-  publishableKey: string | undefined,
-): string | undefined {
-  const normalizedKey = publishableKey?.trim();
-  if (!normalizedKey) return undefined;
-
-  try {
-    return clerkFrontendApiHostnameFromPublishableKey(normalizedKey);
-  } catch {
-    return undefined;
-  }
-}
-
-export const desktopClerkFrontendApiHostname = resolveDesktopClerkFrontendApiHostname(
-  typeof __T3CODE_BUILD_CLERK_PUBLISHABLE_KEY__ === "undefined"
-    ? undefined
-    : __T3CODE_BUILD_CLERK_PUBLISHABLE_KEY__,
-);
-
-function createDesktopClerkBridge(tokenDirectory: string, isDevelopment: boolean) {
-  return createClerkBridge({
-    storage: storage({ path: tokenDirectory }),
-    manageSingleInstanceLock: false,
-    passkeys: true,
-    renderer: {
-      scheme: ElectronProtocol.getDesktopScheme(isDevelopment),
-      host: ElectronProtocol.DESKTOP_HOST,
-    },
-  });
-}
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432:apps/desktop/src/app/DesktopClerk.ts
 
 /** @public */
 export const make = Effect.gen(function* () {
   const environment = yield* DesktopEnvironment.DesktopEnvironment;
   const electronApp = yield* ElectronApp.ElectronApp;
   const shell = yield* ElectronShell.ElectronShell;
-  const path = yield* Path.Path;
 
   const userDataPath = yield* DesktopUserData.resolveUserDataPath(environment);
   yield* electronApp.setPath("userData", userDataPath);
@@ -111,37 +70,7 @@ export const make = Effect.gen(function* () {
     if (handleOpenUrl(url)) event.preventDefault();
   });
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886:apps/desktop/src/app/DesktopLaunchLinks.ts
   return DesktopLaunchLinks.of({
-=======
-  yield* Effect.acquireRelease(
-    Effect.try({
-      try: () =>
-        createDesktopClerkBridge(
-          path.resolve(environment.stateDir, "clerk"),
-          environment.isDevelopment,
-        ),
-      catch: (cause) =>
-        new DesktopClerkBridgeInitializationError({
-          stateDir: environment.stateDir,
-          isDevelopment: environment.isDevelopment,
-          cause,
-        }),
-    }),
-    (bridge) =>
-      Effect.try({
-        try: () => bridge.cleanup(),
-        catch: (cause) =>
-          new DesktopClerkBridgeCleanupError({
-            stateDir: environment.stateDir,
-            isDevelopment: environment.isDevelopment,
-            cause,
-          }),
-      }).pipe(Effect.orDie),
-  );
-
-  return DesktopClerk.of({
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432:apps/desktop/src/app/DesktopClerk.ts
     configure: Effect.gen(function* () {
       const electronApp = yield* ElectronApp.ElectronApp;
       const electronWindow = yield* ElectronWindow.ElectronWindow;

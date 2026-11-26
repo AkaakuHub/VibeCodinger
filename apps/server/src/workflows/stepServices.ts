@@ -111,10 +111,6 @@ export type ListRuns = (filter: RunFilter) => Effect.Effect<ReadonlyArray<RunSum
 /** Other runs, from the step that is running: starting, finding and cancelling them. */
 export class Runs extends Context.Service<
   Runs,
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-  { readonly start: StartRun; readonly cancel: CancelRun; readonly list: ListRuns }
->()("vibecodinger/workflows/stepServices/Runs") {}
-=======
   {
     readonly start: StartRun;
     readonly cancel: CancelRun;
@@ -125,8 +121,7 @@ export class Runs extends Context.Service<
     ) => Effect.Effect<"withdrawn" | "not_open", WorkflowError>;
     readonly list: ListRuns;
   }
->()("t3/workflows/stepServices/Runs") {}
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
+>()("vibecodinger/workflows/stepServices/Runs") {}
 
 export type InStep = KeyValues | Signals | Runs | WorkflowForge | StepReferences;
 

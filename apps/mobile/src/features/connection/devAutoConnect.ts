@@ -89,7 +89,7 @@ export function withoutPairingTarget(
  * bundles, the one production bundle built with the probe flag; store builds never set it.
  */
 export const pairingLinksAllowed = () =>
-  __DEV__ || process.env.EXPO_PUBLIC_T3_BEHAVIOR_PROBE === "1";
+  __DEV__ || process.env.EXPO_PUBLIC_VC_BEHAVIOR_PROBE === "1";
 
 /**
  * `connections/new?pairingUrl=…&autoConnect=1` (or `settings/environment-new?…`) pairs from the

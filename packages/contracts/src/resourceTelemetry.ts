@@ -319,15 +319,8 @@ export const ShellEnvironmentPatch = Schema.Struct({
   SSL_CERT_FILE: Schema.optionalKey(Schema.NullOr(Schema.String)),
   SSL_CERT_DIR: Schema.optionalKey(Schema.NullOr(Schema.String)),
   NODE_EXTRA_CA_CERTS: Schema.optionalKey(Schema.NullOr(Schema.String)),
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
   VIBECODINGER_FEATURE_FLAGS: Schema.optionalKey(Schema.NullOr(Schema.String)),
   VIBECODINGER_RELEASE_BASE_URL: Schema.optionalKey(Schema.NullOr(Schema.String)),
-=======
-  T3CODE_TELEMETRY_ENABLED: Schema.optionalKey(Schema.NullOr(Schema.String)),
-  DO_NOT_TRACK: Schema.optionalKey(Schema.NullOr(Schema.String)),
-  T3CODE_FEATURE_FLAGS: Schema.optionalKey(Schema.NullOr(Schema.String)),
-  T3CODE_RELEASE_BASE_URL: Schema.optionalKey(Schema.NullOr(Schema.String)),
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
   __MISE_DIFF: Schema.optionalKey(Schema.NullOr(Schema.String)),
   JAVA_HOME: Schema.optionalKey(Schema.NullOr(Schema.String)),
   PNPM_HOME: Schema.optionalKey(Schema.NullOr(Schema.String)),

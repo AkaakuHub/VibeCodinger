@@ -58,12 +58,8 @@ describe("feedback preview", () => {
     ).toEqual(["Kind", "About", "Expected", "Happened"]);
     expect(feedbackTraceLines(trace)).toEqual([
       { key: "0", line: "Turn 1 · You · 5 characters", text: "Hello" },
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
       { key: "1", line: "Turn 1 · vc_thread_read · error · 1.5 s" },
-=======
-      { key: "1", line: "Turn 1 · t3_thread_read · error · 1.5 s" },
       { key: "2", line: "Turn 2 · You · 1 character", text: "y" },
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
     ]);
     // Text only in turn 4 of 5: the wording reaches back to it, not "the last turn".
     const older = {

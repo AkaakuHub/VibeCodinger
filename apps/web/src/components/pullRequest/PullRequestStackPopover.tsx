@@ -1,13 +1,8 @@
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-import { Tooltip, TooltipTrigger, TooltipPopup } from "../ui/tooltip";
 import type {
   EnvironmentId,
   PullRequestRef,
   PullRequestStackMembership,
 } from "@vibecodinger/contracts";
-=======
-import type { EnvironmentId, PullRequestRef, PullRequestStackMembership } from "@vibecodinger/contracts";
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 import { T, useGT, Var } from "gt-react";
 import { useState } from "react";
 import { usePullRequestStack } from "~/state/usePullRequestStack";

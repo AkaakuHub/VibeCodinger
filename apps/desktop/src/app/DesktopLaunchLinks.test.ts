@@ -38,13 +38,8 @@ const layerDesktopLaunchLinks = (
     copyText: () => Effect.void,
   },
   listeners = new Map<string, (...args: unknown[]) => void>(),
-  stateDir = clerkStateDir,
 ) => {
   const environment = DesktopEnvironment.DesktopEnvironment.of({
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886:apps/desktop/src/app/DesktopLaunchLinks.test.ts
-=======
-    stateDir,
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432:apps/desktop/src/app/DesktopClerk.test.ts
     isDevelopment,
     appDataDirectory: "/tmp/app-data",
     platform,
@@ -133,30 +128,8 @@ describe("DesktopLaunchLinks", () => {
         "on:second-instance",
         "on:open-url",
       ]);
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886:apps/desktop/src/app/DesktopLaunchLinks.test.ts
-=======
-      assert.deepEqual(storageMock.mock.calls, [
-        [{ path: NodePath.join(NodePath.resolve(clerkStateDir), "clerk") }],
-      ]);
-      assert.strictEqual(createClerkBridgeMock.mock.calls[0]?.[0]?.storage, storageAdapter);
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432:apps/desktop/src/app/DesktopClerk.test.ts
     },
   );
-
-  it.effect("keeps Clerk tokens under a relative state directory instead of userData", () => {
-    storageMock.mockReturnValue(storageAdapter);
-    createClerkBridgeMock.mockReturnValue({ cleanup: vi.fn(), isPrimaryInstance: true });
-
-    return Effect.sync(() => {
-      assert.deepEqual(storageMock.mock.calls, [
-        [{ path: NodePath.resolve("relative-state", "clerk") }],
-      ]);
-    }).pipe(
-      Effect.provide(
-        layerDesktopClerk(true, [], "darwin", undefined, undefined, undefined, "relative-state"),
-      ),
-    );
-  });
 
   it.effect.each(["before configure", "after configure"] as const)(
     "reveals the running window when a second instance launches %s",

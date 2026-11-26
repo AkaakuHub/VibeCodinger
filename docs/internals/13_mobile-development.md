@@ -12,7 +12,6 @@
   Metro bundles the pnpm copy—run `vp i` after editing a local module's TypeScript or changes will
   not appear on device.
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 ## Measuring renders
 
 [`render-counter.ts`](../../apps/mobile/src/features/development/render-counter.ts) loads only when
@@ -30,8 +29,6 @@ node apps/mobile/scripts/measure-renders.mts --server <server-origin> --token <t
 
 Compare before and after on the same base and device using the median of three runs.
 
-=======
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 ## React Compiler
 
 Expo enables the compiler through `experiments.reactCompiler` in `app.config.ts` (not

@@ -131,28 +131,7 @@ async function main() {
   const runId = new Date().toISOString().replaceAll(/[:.]/g, "-");
   const outputDirectory = NodePath.join(REPO_ROOT, "artifacts/mobile-behavior", runId);
   await NodeFSP.mkdir(outputDirectory, { recursive: true });
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-  const rootDir = await NodeFSP.mkdtemp(
-    NodePath.join(NodeOS.tmpdir(), "vibecodinger-mobile-behavior-"),
-  );
-  const workspace = await NodeFSP.realpath(outputDirectory);
-  const config = NodePath.join(rootDir, "agent-device.json");
-  const stateDir = NodePath.join(rootDir, "agent-device");
-  await NodeFSP.writeFile(
-    config,
-    JSON.stringify({ daemonBaseUrl: agentDeviceUrl, daemonAuthToken: token, stateDir }),
-    { mode: 0o600 },
-  );
-  const pool: Pool = {
-    repoRoot: REPO_ROOT,
-    agentDevice: NodePath.join(REPO_ROOT, "scripts/node_modules/agent-device/bin/agent-device.mjs"),
-    agentDeviceUrl,
-    workspace,
-    env: { ...NodeProcess.env, AGENT_DEVICE_CONFIG: config, PWD: workspace },
-  };
-=======
   const access = await openPool(REPO_ROOT, outputDirectory);
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
   try {
     // A cache miss builds the dev client, which can outlast a lease, so it is ready first.
     log("behavior", "preparing the ios dev client");

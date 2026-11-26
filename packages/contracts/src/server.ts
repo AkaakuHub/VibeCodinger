@@ -396,23 +396,6 @@ export const isProviderTextGenerationCapable = (snapshot: ServerProvider): boole
 export const ServerObservability = Schema.Struct({
   logsDirectoryPath: TrimmedNonEmptyString,
   localTracingEnabled: Schema.Boolean,
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-=======
-  otlpTracesUrl: Schema.optional(TrimmedNonEmptyString),
-  otlpTracesSource: Schema.optional(OtlpEndpointSource),
-  otlpTracesVariable: Schema.optional(TrimmedNonEmptyString),
-  otlpTracesEnabled: Schema.Boolean,
-  otlpMetricsUrl: Schema.optional(TrimmedNonEmptyString),
-  otlpMetricsSource: Schema.optional(OtlpEndpointSource),
-  otlpMetricsVariable: Schema.optional(TrimmedNonEmptyString),
-  otlpMetricsEnabled: Schema.Boolean,
-  otlpLogsUrl: Schema.optional(TrimmedNonEmptyString),
-  otlpLogsSource: Schema.optional(OtlpEndpointSource),
-  otlpLogsVariable: Schema.optional(TrimmedNonEmptyString),
-  otlpLogsEnabled: Schema.Boolean.pipe(Schema.withDecodingDefault(Effect.succeed(false))),
-  /** Relay tracing policy for browsers opened from this server. */
-  relayTracingAllowed: Schema.optionalKey(Schema.Boolean),
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 });
 export type ServerObservability = typeof ServerObservability.Type;
 

@@ -1,5 +1,8 @@
 import { DEFAULT_SERVER_SETTINGS, type ScopedProjectRef } from "@vibecodinger/contracts";
-import { resolveNewThreadEnvMode, resolveProjectSettings } from "@vibecodinger/shared/projectSettings";
+import {
+  resolveNewThreadEnvMode,
+  resolveProjectSettings,
+} from "@vibecodinger/shared/projectSettings";
 
 import type { DraftSessionState } from "../composerDraftStore";
 import { appAtomRegistry } from "../rpc/atomRegistry";
@@ -8,7 +11,7 @@ import { readEnvironment } from "../state/environments";
 import { readUnloadedThreadCount } from "../state/olderSettledShelf";
 import { environmentSummaries } from "../state/presentation";
 import { resolveNewDraftStartFromOrigin } from "./chatThreadActions";
-import { peekT3ProjectFile } from "./t3ProjectFileDefaults";
+import { peekVibeCodingerProjectFile } from "./vibeCodingerProjectFileDefaults";
 
 function newThreadWorkspace(projectRef: ScopedProjectRef) {
   const project = readProject(projectRef);
@@ -22,7 +25,7 @@ function newThreadWorkspace(projectRef: ScopedProjectRef) {
       .get(environmentSummaries.connectedEnvironmentIdsAtom)
       .includes(projectRef.environmentId);
   const projectFile = consultProjectFile
-    ? (peekT3ProjectFile(projectRef.environmentId, project.workspaceRoot) ?? null)
+    ? (peekVibeCodingerProjectFile(projectRef.environmentId, project.workspaceRoot) ?? null)
     : null;
   const projectSettings = resolveProjectSettings(
     settings,

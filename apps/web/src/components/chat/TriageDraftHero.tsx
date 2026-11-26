@@ -27,33 +27,13 @@ export function TriageDraftHero(props: {
         <T>What went wrong?</T>
       </h1>
       <p className="mt-2 flex h-6 w-full items-center justify-center gap-1.5 text-sm">
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-        <Tooltip>
-          <TooltipTrigger
-            render={<span tabIndex={0} className="min-w-0 truncate font-medium text-foreground" />}
-          >
-            {props.machineLabel ?? <T>This machine</T>}
-            {props.serverVersion === null ? null : (
-              <span className="ml-1.5 font-normal text-muted-foreground">
-                v{props.serverVersion}
-              </span>
-            )}
-          </TooltipTrigger>
-          <TooltipPopup side="bottom">
-            <T>
-              The agent reads VibeCodinger's logs and source here, and asks before it applies a fix
-              or posts anything.
-            </T>
-          </TooltipPopup>
-        </Tooltip>
-=======
         <SharedTooltipTrigger
           render={<span tabIndex={0} className="min-w-0 truncate font-medium text-foreground" />}
           label={
             <>
               <T>
-                The agent reads T3 Code's logs and source here, and asks before it applies a fix or
-                posts anything.
+                The agent reads VibeCodinger's logs and source here, and asks before it applies a
+                fix or posts anything.
               </T>
             </>
           }
@@ -64,7 +44,6 @@ export function TriageDraftHero(props: {
             <span className="ml-1.5 font-normal text-muted-foreground">v{props.serverVersion}</span>
           )}
         </SharedTooltipTrigger>
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
         <span aria-hidden className="text-muted-foreground">
           ·
         </span>

@@ -219,8 +219,8 @@ const fnmLoginShell = (dir: string) => {
       `multishell="/run/user/1000/fnm_multishells/$((1000 + n))_17956/bin"`,
       // `fnm env` prepends to the server's PATH the shell inherited (handed over in `path`).
       `path="$multishell:/home/me/.local/share/fnm:$(cat "${dir}/path")"`,
-      'printf "__T3CODE_ENV_PATH_START__\\n%s\\n__T3CODE_ENV_PATH_END__\\n" "$path"',
-      'printf "__T3CODE_ENV_FNM_MULTISHELL_PATH_START__\\n%s\\n__T3CODE_ENV_FNM_MULTISHELL_PATH_END__\\n" "${multishell%/bin}"',
+      'printf "__VIBECODINGER_ENV_PATH_START__\\n%s\\n__VIBECODINGER_ENV_PATH_END__\\n" "$path"',
+      'printf "__VIBECODINGER_ENV_FNM_MULTISHELL_PATH_START__\\n%s\\n__VIBECODINGER_ENV_FNM_MULTISHELL_PATH_END__\\n" "${multishell%/bin}"',
     ].join("\n"),
     { mode: 0o755 },
   );

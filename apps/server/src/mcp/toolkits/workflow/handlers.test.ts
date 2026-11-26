@@ -225,7 +225,7 @@ it.effect("questions are narrowed to a kind, and runs to a tag", () =>
           { action: "list" as const, tag: "backlog" },
         ],
         (input) =>
-          toolkit.handle("t3_workflow", input).pipe(
+          toolkit.handle("vc_workflow", input).pipe(
             Stream.unwrap,
             Stream.runCollect,
             Effect.map((parts) => parts.at(-1)?.result),
@@ -298,7 +298,7 @@ it.effect(
         const answer = (invocation: McpInvocationContext.McpInvocationScope) =>
           server
             .callTool({
-              name: "t3_workflow",
+              name: "vc_workflow",
               arguments: {
                 action: "signal",
                 runId: "run-1",
@@ -350,8 +350,8 @@ it.effect(
         ),
       );
       expect(result.refusals).toEqual([
-        "Tool 't3_workflow' not found",
-        "Tool 't3_workflow' not found",
+        "Tool 'vc_workflow' not found",
+        "Tool 'vc_workflow' not found",
       ]);
       expect(result.sent).toBe(false);
       expect(named).toEqual(["t3 CLI"]);

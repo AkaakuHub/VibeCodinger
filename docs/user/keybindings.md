@@ -45,13 +45,9 @@ Remap under **Copy Link or Thread** and **Copy Number** in **Settings → Keybin
 
 ## Edit the configuration file
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 Keybindings live on the environment's machine, in
 `~/.vibecodinger/userdata/keybindings.json` by default. You can edit this file directly.
 It is a JSON array of rules:
-=======
-Keybindings are stored on the environment's machine at `~/.t3/userdata/keybindings.json` as a JSON array:
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 ```json
 [

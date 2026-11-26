@@ -15,16 +15,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SymbolView } from "../../components/ui/AppSymbol";
 import { AppText as Text } from "../../components/ui/AppText";
 import { tryCopyTextWithHaptic } from "../../lib/copyTextWithHaptic";
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-=======
-import { mobilePreferencesAtom, saveMobilePreferences } from "../../state/preferences";
-import { useAtomCommand } from "../../state/use-atom-command";
-import {
-  ConnectionTracesSwitch,
-  connectionTracesAvailable,
-} from "../observability/ConnectionTracesSwitch";
-import { crashReportingAvailable, setCrashReportsEnabled } from "../observability/observe";
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 import { ListActionRow as SettingsActionRow } from "../../components/ui/ListActionRow";
 import { SettingsScreen } from "../settings/components/SettingsScreen";
 import { SettingsSection } from "../settings/components/SettingsSection";
@@ -109,12 +99,6 @@ export function SettingsDiagnosticsRouteScreen() {
         contentContainerClassName="gap-6 px-5 pt-4"
         contentContainerStyle={{ paddingBottom: Math.max(insets.bottom, 18) + 18 }}
       >
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-=======
-        {crashReportingAvailable ? <CrashReportsSetting /> : null}
-        {connectionTracesAvailable ? <ConnectionTracesSetting /> : null}
-
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
         <SettingsSection title={gt("Startup crashes")}>
           {state.status === "loading" ? (
             <View className="items-center gap-3 px-6 py-8">
@@ -164,77 +148,6 @@ export function SettingsDiagnosticsRouteScreen() {
   );
 }
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-=======
-function CrashReportsSetting() {
-  const preferences = useAtomValue(mobilePreferencesAtom);
-  const savePreferences = useAtomCommand(saveMobilePreferences, { reportFailure: false });
-  // One change at a time, so a slow save never turns sending back on after a later opt-out.
-  const [saving, setSaving] = useState(false);
-  const gt = useGT();
-  const ready = AsyncResult.isSuccess(preferences) && !preferences.waiting;
-  const enabled = AsyncResult.isSuccess(preferences)
-    ? preferences.value.crashReportsEnabled !== false
-    : true;
-
-  const change = (value: boolean) => {
-    setSaving(true);
-    // Sending stops before the save and starts only after it.
-    if (!value) void setCrashReportsEnabled(false);
-    savePreferences({ crashReportsEnabled: value })
-      .then((result) => {
-        if (result._tag === "Failure") {
-          console.warn("[diagnostics] could not save the crash report setting", result.cause);
-          return value ? undefined : setCrashReportsEnabled(true);
-        }
-        return value ? setCrashReportsEnabled(true) : undefined;
-      })
-      .catch((error: unknown) => {
-        console.warn("[diagnostics] could not apply the crash report setting", error);
-      })
-      .finally(() => setSaving(false));
-  };
-
-  return (
-    <View className="gap-3">
-      <SettingsSection title={gt("Crash reports")}>
-        <SettingsSwitchRow
-          icon="tray.and.arrow.up"
-          label={gt("Send crash reports")}
-          disabled={!ready || saving}
-          value={enabled}
-          onValueChange={change}
-        />
-      </SettingsSection>
-      <Text className="px-2 text-sm leading-normal text-foreground-muted">
-        <T>
-          When the app crashes or hits an error, it sends the error message, the stack trace, the
-          app version, and the device model and OS version to the T3 Code team. Each launch also
-          sends startup timings. Reports carry a random ID for this install.
-        </T>
-      </Text>
-    </View>
-  );
-}
-
-function ConnectionTracesSetting() {
-  const gt = useGT();
-  return (
-    <View className="gap-3">
-      <SettingsSection title={gt("Connection diagnostics")}>
-        <ConnectionTracesSwitch />
-      </SettingsSection>
-      <Text className="px-2 text-sm leading-normal text-foreground-muted">
-        {gt(
-          "When the app connects to a computer through {product}, it sends the T3 Code team how long each step took, any error type, an ID for this app session, and the app version. Traces never include your threads, prompts, or code.",
-          { product: "T3 Connect" },
-        )}
-      </Text>
-    </View>
-  );
-}
-
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 function EmptyState(props: {
   readonly icon: "exclamationmark.triangle" | "checkmark.circle";
   readonly title: string;

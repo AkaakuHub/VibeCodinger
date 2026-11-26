@@ -4,15 +4,11 @@ T3 Code includes integrated terminals running on the environment's host machine,
 
 ## Choose a shell
 
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 Set `VIBECODINGER_TERMINAL_SHELL` in the environment that launches the T3 Code server
 to choose the executable used for new terminals. Use an executable name or its
 full path, without surrounding quotes or command-line arguments. An unset or
 blank value keeps the platform default. If the executable cannot be started,
 T3 Code tries its usual fallback shells.
-=======
-Set `T3CODE_TERMINAL_SHELL` in the T3 server's environment to an executable name or full path (no quotes or arguments) to override the platform default shell for new terminals. This does not affect agent commands or project setup/settle scripts.
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 Example for Git Bash on Windows (PowerShell, then fully quit and reopen T3 Code):
 

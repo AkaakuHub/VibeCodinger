@@ -336,24 +336,15 @@ export default function FileBrowserPanel({
       }
     },
     paths: [],
-<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
-    renderRowDecoration: ({ item, row }) =>
-      row.kind === "directory" &&
-      row.isExpanded &&
-      loadingDirectoriesRef.current.has(item.path.replace(/\/$/, ""))
-        ? { icon: "vc-tree-icon-loading", title: gt("Loading…") }
-        : null,
-=======
     renderRowDecoration: ({ item, row }) => {
       const path = item.path.replace(/\/$/, "");
       const open = row.kind === "directory" && row.isExpanded;
       // Pierre calls this for the rows it renders, which is the only sign of what is on screen.
       revalidateDirectory(open ? path : path.slice(0, Math.max(0, path.lastIndexOf("/"))));
       return open && loadingDirectoriesRef.current.has(path)
-        ? { icon: "t3-tree-icon-loading", title: gt("Loading…") }
+        ? { icon: "vc-tree-icon-loading", title: gt("Loading…") }
         : null;
     },
->>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
     search: false,
     onSearchChange: (value) => setQuery(value ?? ""),
     unsafeCSS: PIERRE_TREE_UNSAFE_CSS,

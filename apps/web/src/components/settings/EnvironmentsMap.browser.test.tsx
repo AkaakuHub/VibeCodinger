@@ -44,11 +44,7 @@ const hub: FleetEnvironmentInput = {
 const renderSettingsMap = () =>
   render(
     <AppRouteModal label="Settings">
-      <EnvironmentsMap
-        onAddEnvironment={() => {}}
-        renderSavedEnvironment={() => null}
-        renderConnectMachine={() => null}
-      />
+      <EnvironmentsMap onAddEnvironment={() => {}} renderSavedEnvironment={() => null} />
     </AppRouteModal>,
     { router: "/settings/connections" },
   );
@@ -127,7 +123,6 @@ describe("EnvironmentsMap", () => {
           graph={graph}
           stacks={[stack!]}
           environments={[]}
-          connectProblem={null}
           selection={{ kind: "stack", id: stack!.id }}
           found={null}
           onSelect={onSelect}
@@ -135,7 +130,6 @@ describe("EnvironmentsMap", () => {
           onLinkBack={() => {}}
           onToggleStack={() => {}}
           renderSavedEnvironment={() => null}
-          renderConnectMachine={() => null}
           onAddEnvironment={() => {}}
         />
       </AppRouteModal>,
