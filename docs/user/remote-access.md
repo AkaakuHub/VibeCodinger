@@ -10,8 +10,8 @@ For a headless host, VibeCodinger can terminate HTTPS and WebSocket TLS itself. 
 in the server process environment. The certificate and key must be PEM files,
 and the certificate must cover the Tailscale hostname and be trusted by your
 clients. The TLS listener binds to `127.0.0.1` and requires TLS 1.3. Once enabled,
-only local environment discovery used by `vibecodinger pair` is available on the regular
-loopback HTTP port. All remote API calls, attachments, and previews on this
+the regular loopback HTTP port serves local discovery for `vibecodinger pair` and
+authenticated local MCP calls. All remote API calls, attachments, and previews on this
 server use HTTPS.
 
 Once VibeCodinger is listening, forward TCP from the tailnet to the TLS port. For
@@ -146,6 +146,11 @@ unavailable or all eligible machines are full, choose a machine manually to cont
 Mobile keeps its manual environment selection.
 
 ### Tailscale HTTPS
+
+Tailscale Serve provisions and renews the HTTPS certificate. VibeCodinger
+also requires application-level encryption for WebSocket RPC on the Tailnet
+HTTPS route. Pair over that HTTPS address to pin the host key. File transfers
+and other HTTP requests use Tailscale HTTPS.
 
 Join both devices to a tailnet with [MagicDNS and HTTPS certificates](https://tailscale.com/docs/how-to/set-up-https-certificates) enabled (on Linux, grant [operator permission](https://tailscale.com/docs/reference/troubleshooting/linux/linux-operator-permission)).
 

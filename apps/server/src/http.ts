@@ -37,7 +37,7 @@ import * as HttpIncomingMessage from "effect/http/HttpIncomingMessage";
 import * as HttpApiBuilder from "effect/http-api/HttpApiBuilder";
 
 import * as ServerConfig from "./config.ts";
-import { isDirectTlsRequest } from "./transportTls.ts";
+import { requiresSocketE2ee } from "./transportTls.ts";
 import * as ServerE2eeIdentity from "./auth/ServerE2eeIdentity.ts";
 import { ASSET_ROUTE_PREFIX, readMcpAppHtml, resolveAsset } from "./assets/AssetAccess.ts";
 import { sourceControlMediaResponse } from "./assets/sourceControlMediaResponse.ts";
@@ -362,7 +362,7 @@ export const layerServerEnvironmentHttpApi = HttpApiBuilder.group(
         yield* annotateEnvironmentRequest(args.endpoint.name);
         const descriptor = yield* serverEnvironment.getDescriptor;
         const request = yield* HttpServerRequest.HttpServerRequest;
-        if (!isDirectTlsRequest(request)) return descriptor;
+        if (!requiresSocketE2ee(request)) return descriptor;
         const { publicKey } = yield* identity.keypair.pipe(Effect.orDie);
         return { ...descriptor, e2eeServerIdentityKey: encodeIdentityKey(publicKey) };
       }),

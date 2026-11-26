@@ -4,6 +4,7 @@ import * as NodeHttp from "node:http";
 import * as NodeTls from "node:tls";
 // @effect-diagnostics nodeBuiltinImport:off - Node owns the TLS and HTTP sockets.
 import type * as NodeNet from "node:net";
+import { isLocalLoopbackHost, isTailnetHost } from "@vibecodinger/shared/hostClassification";
 import * as Config from "effect/Config";
 import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";
@@ -20,9 +21,21 @@ class TransportTlsError extends Schema.TaggedError<TransportTlsError>()("Transpo
   cause: Schema.optional(Schema.Defect()),
 }) {}
 
-export const isDirectTlsRequest = (request: { readonly source: object }): boolean =>
+const isDirectTlsRequest = (request: { readonly source: object }): boolean =>
   request.source instanceof NodeHttp.IncomingMessage &&
   request.source.socket instanceof NodeTls.TLSSocket;
+
+export const requiresSocketE2ee = (request: HttpServerRequest.HttpServerRequest): boolean => {
+  if (isDirectTlsRequest(request)) return true;
+  if (!(request.source instanceof NodeHttp.IncomingMessage)) return false;
+  const peer = request.source.socket.remoteAddress;
+  // Serve terminates HTTPS on this host. A peer outside loopback cannot assert that transport.
+  if (peer === undefined || !isLocalLoopbackHost(peer.replace(/^::ffff:/, ""))) return false;
+  if (request.headers["x-forwarded-proto"] !== "https") return false;
+  const host = request.headers.host;
+  const url = host === undefined ? null : URL.parse(`https://${host}`);
+  return url !== null && isTailnetHost(url.hostname);
+};
 
 const portConfig = Config.option(Config.Int("VIBECODINGER_TLS_PORT"));
 

@@ -283,7 +283,7 @@ import {
   wrapServerSocketWithE2ee,
 } from "@vibecodinger/shared/socketE2ee";
 import * as ServerE2eeIdentity from "./auth/ServerE2eeIdentity.ts";
-import { isDirectTlsRequest } from "./transportTls.ts";
+import { requiresSocketE2ee } from "./transportTls.ts";
 import { isNetworkPath } from "@vibecodinger/shared/path";
 import {
   SOCKET_FRAME_PARTS_QUERY_PARAM,
@@ -3663,7 +3663,7 @@ export const layer = Layer.unwrap(
             { status: 426 },
           );
         }
-        const encrypted = isDirectTlsRequest(request);
+        const encrypted = requiresSocketE2ee(request);
         if (encrypted !== (url.value.searchParams.get(SOCKET_E2EE_QUERY_PARAM) === "1")) {
           return HttpServerResponse.jsonUnsafe(
             { code: "encrypted_transport_required" },
