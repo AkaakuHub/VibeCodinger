@@ -13,11 +13,11 @@ launch VibeCodinger and configure providers afterwards.
 Install the `t3` command to `~/.local/bin`:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/AkaakuHub/t3code/main/scripts/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/AkaakuHub/VibeCodinger/main/scripts/install.sh | sh
 ```
 
 ```powershell
-irm https://raw.githubusercontent.com/AkaakuHub/t3code/main/scripts/install.ps1 | iex
+irm https://raw.githubusercontent.com/AkaakuHub/VibeCodinger/main/scripts/install.ps1 | iex
 ```
 
 This installs the `vibecodinger` command to `~/.local/bin`. If that folder is not on your
@@ -54,7 +54,7 @@ run a server there, build it from source with `vp`, which provides the Node vers
 ([Install vp](../operations/00_development.md#first-checkout)):
 
 ```bash
-git clone https://github.com/AkaakuHub/t3code
+git clone https://github.com/AkaakuHub/VibeCodinger
 cd t3code && vp i && vp run build:desktop
 node apps/server/dist/bin.mjs
 ```
@@ -65,7 +65,7 @@ update it with `git pull` and a rebuild.
 ## Desktop app
 
 Download the installer for your operating system and architecture from
-[GitHub Releases](https://github.com/AkaakuHub/t3code/releases).
+[GitHub Releases](https://github.com/AkaakuHub/VibeCodinger/releases).
 
 ### Linux
 
@@ -118,7 +118,7 @@ folder paths, so in the web app use **Add project** instead.
 ## Mobile app
 
 Download the unsigned iPhone IPA from the fork's
-[GitHub Releases](https://github.com/AkaakuHub/t3code/releases) and sign it before
+[GitHub Releases](https://github.com/AkaakuHub/VibeCodinger/releases) and sign it before
 installing it. Pair with your host over
 [Tailscale](./remote-access.md#direct-tls-over-tailscale).
 

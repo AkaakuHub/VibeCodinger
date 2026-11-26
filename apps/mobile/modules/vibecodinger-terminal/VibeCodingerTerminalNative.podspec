@@ -7,7 +7,7 @@ Pod::Spec.new do |s|
   s.version = package['version']
   s.summary = 'Native terminal surface for VibeCodinger mobile.'
   s.description = 'Native terminal surface bridge used by the VibeCodinger React Native app.'
-  s.homepage = 'https://github.com/AkaakuHub/t3code'
+  s.homepage = 'https://github.com/AkaakuHub/VibeCodinger'
   s.license = { :type => 'UNLICENSED' }
   s.author = { 'T3 Tools' => 'hello@t3tools.com' }
   s.platforms = { :ios => '16.1' }

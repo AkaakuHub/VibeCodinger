@@ -1,4 +1,4 @@
-export const RELEASES_URL = "https://github.com/AkaakuHub/t3code/releases";
+export const RELEASES_URL = "https://github.com/AkaakuHub/VibeCodinger/releases";
 
 export const TRIAGE_CLI_COMMAND = "vibecodinger triage";
 

@@ -7,7 +7,7 @@ Pod::Spec.new do |s|
   s.version = package['version']
   s.summary = 'Native @pierre/highlights syntax highlighter for VibeCodinger mobile.'
   s.description = 'Runs the @pierre/highlights lexers, compiled from WebAssembly to C with wasm2c.'
-  s.homepage = 'https://github.com/AkaakuHub/t3code'
+  s.homepage = 'https://github.com/AkaakuHub/VibeCodinger'
   s.license = { :type => 'UNLICENSED' }
   s.author = { 'T3 Tools' => 'hello@t3tools.com' }
   s.platforms = { :ios => min_ios_version_supported }

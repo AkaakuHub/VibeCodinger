@@ -27,7 +27,7 @@ describe("parseVibeCodingerProjectFile", () => {
   it("reads project defaults from JSONC with a URL in a block comment", () => {
     expect(
       parseVibeCodingerProjectFile(`{
-        /* See https://raw.githubusercontent.com/AkaakuHub/t3code/main/docs/schema/vibecodinger.json */
+        /* See https://raw.githubusercontent.com/AkaakuHub/VibeCodinger/main/docs/schema/vibecodinger.json */
         "defaultThreadEnvMode": "worktree"
       }`),
     ).toEqual({ defaultThreadEnvMode: "worktree" });

@@ -342,7 +342,10 @@ describe("ssh tunnel scripts", () => {
           assert.include(result.stderr, "download attempt");
           // A bare curl error does not tell the user that vibecodinger itself could not be downloaded.
           assert.include(result.stderr, ARCHIVE.archiveVersion);
-          assert.include(result.stderr, "https://github.com/AkaakuHub/t3code/releases/download");
+          assert.include(
+            result.stderr,
+            "https://github.com/AkaakuHub/VibeCodinger/releases/download",
+          );
         } else {
           assert.notInclude(result.stderr, "download attempt");
           assert.include(result.stderr, "has no vibecodinger release archive.");

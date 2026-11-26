@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
   s.version = '1.0.0'
   s.summary = 'Local recording conversion for VibeCodinger dictation.'
   s.author = 'T3 Tools'
-  s.homepage = 'https://github.com/AkaakuHub/t3code'
+  s.homepage = 'https://github.com/AkaakuHub/VibeCodinger'
   s.platform = :ios, '18.0'
   s.source = { :path => '.' }
   s.static_framework = true

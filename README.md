@@ -8,7 +8,7 @@ VibeCodinger runs coding agents on your own machine and lets you continue a thre
 
 ## Releases
 
-The fork's [GitHub Releases](https://github.com/AkaakuHub/t3code/releases) page is the distribution location for Windows, Linux, macOS, and iPhone builds. With [Remote AltServer](https://github.com/altstoreio/FAQ/blob/main/release-notes/altstore.md#altstore-23) set up in AltStore Classic, import `VibeCodinger-unsigned.ipa` under **My Apps** to sign and install it on the iPhone.
+The fork's [GitHub Releases](https://github.com/AkaakuHub/VibeCodinger/releases) page is the distribution location for Windows, Linux, macOS, and iPhone builds. With [Remote AltServer](https://github.com/altstoreio/FAQ/blob/main/release-notes/altstore.md#altstore-23) set up in AltStore Classic, import `VibeCodinger-unsigned.ipa` under **My Apps** to sign and install it on the iPhone.
 
 Start with a server and at least one configured agent. To connect another device securely over Tailscale, use the server's [direct TLS setup](./docs/user/remote-access.md#direct-tls-over-tailscale), then create a one-time code with `vibecodinger pair` and enter it in **Add Environment**.
 

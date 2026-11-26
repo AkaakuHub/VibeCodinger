@@ -1,4 +1,4 @@
-export const LEGAL_URL = "https://github.com/AkaakuHub/t3code/blob/main/docs/user/privacy.md";
+export const LEGAL_URL = "https://github.com/AkaakuHub/VibeCodinger/blob/main/docs/user/privacy.md";
 
 function webDocumentIdentity(value: string): string | null {
   try {

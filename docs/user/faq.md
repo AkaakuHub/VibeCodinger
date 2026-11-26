@@ -43,7 +43,7 @@ Agents run on the machine that hosts VibeCodinger. To connect from another compu
 
 ## How do I use VibeCodinger on my phone?
 
-Install a native build from the fork and pair it with the server. Keep the host running while you use the phone. [Releases](https://github.com/AkaakuHub/t3code/releases) · [Remote access](./remote-access.md#direct-tls-over-tailscale)
+Install a native build from the fork and pair it with the server. Keep the host running while you use the phone. [Releases](https://github.com/AkaakuHub/VibeCodinger/releases) · [Remote access](./remote-access.md#direct-tls-over-tailscale)
 
 ## Will I get banned for using my subscription?
 

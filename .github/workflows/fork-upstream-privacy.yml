@@ -12,7 +12,7 @@ permissions:
 jobs:
   privacy:
     name: Keep removed features disabled
-    if: github.repository == 'AkaakuHub/t3code'
+    if: github.repository == 'AkaakuHub/VibeCodinger'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:

@@ -4,7 +4,7 @@ Pod::Spec.new do |s|
   s.summary = 'WebSocket client with permessage-deflate for VibeCodinger mobile.'
   s.description = 'React Native ships SocketRocket on iOS, which never negotiates compression. This module dials the VibeCodinger server through URLSessionWebSocketTask, which offers permessage-deflate on its own.'
   s.author = 'T3 Tools'
-  s.homepage = 'https://github.com/AkaakuHub/t3code'
+  s.homepage = 'https://github.com/AkaakuHub/VibeCodinger'
   s.platform = :ios, '18.0'
   s.source = { :path => '.' }
   s.static_framework = true

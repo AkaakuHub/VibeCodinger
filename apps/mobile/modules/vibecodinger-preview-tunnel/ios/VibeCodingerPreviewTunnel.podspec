@@ -4,7 +4,7 @@ Pod::Spec.new do |s|
   s.summary = 'Webview whose localhost is another VibeCodinger environment.'
   s.description = "Loads an environment's loopback pages on the device through the server's preview tunnel, keeping their localhost origin."
   s.author = 'T3 Tools'
-  s.homepage = 'https://github.com/AkaakuHub/t3code'
+  s.homepage = 'https://github.com/AkaakuHub/VibeCodinger'
   s.platform = :ios, '18.0'
   s.source = { :path => '.' }
   s.static_framework = true

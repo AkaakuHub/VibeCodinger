@@ -3780,7 +3780,7 @@ const buildDesktopArtifactUnlocked = Effect.fn("buildDesktopArtifactUnlocked")(f
     description:
       "VibeCodinger is an open-source desktop app for coding agents. Work with your existing agent subscriptions, review code changes, and run commands in your projects. Connect from desktop, web, or mobile to continue working remotely.",
     license: "MIT",
-    homepage: "https://github.com/AkaakuHub/t3code",
+    homepage: "https://github.com/AkaakuHub/VibeCodinger",
     author: "AkaakuHub",
     main: "apps/desktop/dist-electron/boot.cjs",
     build: yield* createBuildConfig(

@@ -549,7 +549,7 @@ if ! vc_runtime_ready; then
     elif command -v wget >/dev/null 2>&1; then wget -q --timeout=30 --tries=1 "$1" -O "$2"
     else printf 'Remote host needs curl or wget to download %s.\\n' "$VIBECODINGER_ARCHIVE" >&2; exit 1
     fi || {
-      printf 'Could not download vibecodinger %s from %s. If this host cannot reach it, install vibecodinger %s on it with https://raw.githubusercontent.com/AkaakuHub/t3code/main/scripts/install.sh (VIBECODINGER_VERSION=%s; VIBECODINGER_RELEASE_BASE_URL selects a mirror).\\n' "$VIBECODINGER_ARCHIVE_VERSION" "$1" "$VIBECODINGER_ARCHIVE_VERSION" "$VIBECODINGER_ARCHIVE_VERSION" >&2
+      printf 'Could not download vibecodinger %s from %s. If this host cannot reach it, install vibecodinger %s on it with https://raw.githubusercontent.com/AkaakuHub/VibeCodinger/main/scripts/install.sh (VIBECODINGER_VERSION=%s; VIBECODINGER_RELEASE_BASE_URL selects a mirror).\\n' "$VIBECODINGER_ARCHIVE_VERSION" "$1" "$VIBECODINGER_ARCHIVE_VERSION" "$VIBECODINGER_ARCHIVE_VERSION" >&2
       exit 1
     }
   }

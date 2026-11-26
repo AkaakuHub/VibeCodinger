@@ -4,7 +4,7 @@ Pod::Spec.new do |s|
   s.summary        = 'Native attributed composer editor for VibeCodinger mobile.'
   s.description    = 'UIKit-backed rich text composer with atomic skill and file tokens.'
   s.author         = 'T3 Tools'
-  s.homepage       = 'https://github.com/AkaakuHub/t3code'
+  s.homepage       = 'https://github.com/AkaakuHub/VibeCodinger'
   s.platforms      = {
     :ios => '16.4',
   }

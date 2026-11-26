@@ -8,7 +8,7 @@ permissions: {}
 jobs:
   package:
     if: >-
-      github.repository == 'AkaakuHub/t3code' && github.ref == 'refs/heads/main'
+      github.repository == 'AkaakuHub/VibeCodinger' && github.ref == 'refs/heads/main'
     runs-on: xcode-27
     timeout-minutes: 60
     permissions:

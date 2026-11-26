@@ -13,7 +13,7 @@ permissions:
 jobs:
   bundle:
     if: >-
-      github.repository == 'AkaakuHub/t3code' && github.ref == 'refs/heads/main'
+      github.repository == 'AkaakuHub/VibeCodinger' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     outputs:

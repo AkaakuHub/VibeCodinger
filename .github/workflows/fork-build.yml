@@ -27,7 +27,7 @@ concurrency:
 jobs:
   desktop:
     if: &release_source >-
-      github.repository == 'AkaakuHub/t3code' && github.ref == 'refs/heads/main' &&
+      github.repository == 'AkaakuHub/VibeCodinger' && github.ref == 'refs/heads/main' &&
       (github.event_name == 'workflow_dispatch' ||
        github.event.workflow_run.event == 'push' &&
        github.event.workflow_run.conclusion == 'success' &&

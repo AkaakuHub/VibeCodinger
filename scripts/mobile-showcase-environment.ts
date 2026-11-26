@@ -107,7 +107,7 @@ export const SHOWCASE_PROJECTS = [
     id: "vibecodinger",
     title: "VibeCodinger",
     directory: "vibecodinger",
-    repositoryUrl: "https://github.com/AkaakuHub/t3code.git",
+    repositoryUrl: "https://github.com/AkaakuHub/VibeCodinger.git",
     favicon: PROJECT_FAVICONS.vibecodinger,
   },
   {
@@ -294,7 +294,7 @@ async function seedVibeCodingerWorkspace(workspaceRoot: string): Promise<void> {
   );
   await initializeRepository({
     workspaceRoot,
-    repositoryUrl: "https://github.com/AkaakuHub/t3code.git",
+    repositoryUrl: "https://github.com/AkaakuHub/VibeCodinger.git",
     commitMessage: "Show connected environments",
   });
   await runGit(workspaceRoot, ["checkout", "-b", "feat/remote-command-center"]);

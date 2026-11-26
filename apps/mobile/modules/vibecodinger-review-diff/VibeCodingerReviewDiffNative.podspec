@@ -7,7 +7,7 @@ Pod::Spec.new do |s|
   s.version = package['version']
   s.summary = 'Native review diff debug surface for VibeCodinger mobile.'
   s.description = 'Native iOS review diff renderer used to prototype fast mobile review scrolling.'
-  s.homepage = 'https://github.com/AkaakuHub/t3code'
+  s.homepage = 'https://github.com/AkaakuHub/VibeCodinger'
   s.license = { :type => 'UNLICENSED' }
   s.author = { 'T3 Tools' => 'hello@t3tools.com' }
   s.platforms = { :ios => '16.1' }

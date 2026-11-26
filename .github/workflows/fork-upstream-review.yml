@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   propose:
-    if: github.repository == 'AkaakuHub/t3code' && github.ref == 'refs/heads/main'
+    if: github.repository == 'AkaakuHub/VibeCodinger' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: write

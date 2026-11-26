@@ -1,11 +1,11 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/AkaakuHub/t3code/main/docs/schema/vibecodinger.json",
+  "$id": "https://raw.githubusercontent.com/AkaakuHub/VibeCodinger/main/docs/schema/vibecodinger.json",
   "type": "object",
   "properties": {
     "$schema": {
       "type": "string",
-      "description": "URL of the JSON Schema for this file, typically \"https://raw.githubusercontent.com/AkaakuHub/t3code/main/docs/schema/vibecodinger.json\"."
+      "description": "URL of the JSON Schema for this file, typically \"https://raw.githubusercontent.com/AkaakuHub/VibeCodinger/main/docs/schema/vibecodinger.json\"."
     },
     "iconPath": {
       "type": "string",
@@ -112,5 +112,5 @@
   },
   "additionalProperties": false,
   "title": "T3 project file",
-  "description": "Checked-in project configuration for VibeCodinger (vibecodinger.json at the repository root). See https://github.com/AkaakuHub/t3code for documentation."
+  "description": "Checked-in project configuration for VibeCodinger (vibecodinger.json at the repository root). See https://github.com/AkaakuHub/VibeCodinger for documentation."
 }

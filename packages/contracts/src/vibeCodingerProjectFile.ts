@@ -8,7 +8,7 @@ import type { ProjectScopedServerSettingKey, ServerSettings } from "./settings.t
 export const VIBECODINGER_PROJECT_FILE_NAME = "vibecodinger.json";
 
 export const VIBECODINGER_PROJECT_FILE_SCHEMA_URL =
-  "https://raw.githubusercontent.com/AkaakuHub/t3code/main/docs/schema/vibecodinger.json";
+  "https://raw.githubusercontent.com/AkaakuHub/VibeCodinger/main/docs/schema/vibecodinger.json";
 
 const VIBECODINGER_PROJECT_FILE_PATH_MAX_LENGTH = 512;
 const VIBECODINGER_PROJECT_FILE_COMMAND_MAX_LENGTH = 4096;
@@ -153,7 +153,7 @@ export const VibeCodingerProjectFile = Schema.Struct({
 }).annotate({
   title: "T3 project file",
   description:
-    "Checked-in project configuration for VibeCodinger (vibecodinger.json at the repository root). See https://github.com/AkaakuHub/t3code for documentation.",
+    "Checked-in project configuration for VibeCodinger (vibecodinger.json at the repository root). See https://github.com/AkaakuHub/VibeCodinger for documentation.",
 });
 export type VibeCodingerProjectFile = typeof VibeCodingerProjectFile.Type;
 

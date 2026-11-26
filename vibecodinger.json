@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/AkaakuHub/t3code/main/docs/schema/vibecodinger.json",
+  "$schema": "https://raw.githubusercontent.com/AkaakuHub/VibeCodinger/main/docs/schema/vibecodinger.json",
   "iconPath": "assets/dev/blueprint-web-apple-touch-180.png",
   "scripts": [
     {
