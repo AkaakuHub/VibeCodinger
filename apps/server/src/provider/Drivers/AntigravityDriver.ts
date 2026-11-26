@@ -597,7 +597,8 @@ export const AntigravityDriver: ProviderDriver<AntigravitySettings, AntigravityD
         reason: "unsupported",
         message: "Update Antigravity to read subscription limits.",
       });
-      const failed = makeUnavailableUsageLimits({ checkedAt, reason: "probeFailed" });
+      const probeFailed = (message: string) =>
+        makeUnavailableUsageLimits({ checkedAt, reason: "probeFailed", message });
       const result = yield* Effect.gen(function* () {
         const resolved = yield* installation.resolve(settings.binaryPath, processEnvironment);
         if (resolved.version !== null && !supportsUsageCommand(resolved.version)) {
@@ -626,11 +627,16 @@ export const AntigravityDriver: ProviderDriver<AntigravitySettings, AntigravityD
             }),
           ).pipe(Effect.provideService(ChildProcessSpawner.ChildProcessSpawner, spawner));
         const version = executable.version ?? parseCliVersionResult(yield* run(["--version"]));
-        if (version === null) return failed;
+        if (version === null) return probeFailed("Could not read the Antigravity CLI version.");
         if (!supportsUsageCommand(version)) return unsupportedVersion;
         const usage = yield* run(usageSpawn.args);
-        const windows = usage.code === 0 ? parseAntigravityCliUsage(usage.stdout) : undefined;
-        if (windows === undefined) return failed;
+        if (usage.code !== 0) {
+          return probeFailed(`Antigravity CLI /usage exited with code ${usage.code}.`);
+        }
+        const windows = parseAntigravityCliUsage(usage.stdout);
+        if (windows === undefined) {
+          return probeFailed("Antigravity CLI /usage did not return a readable quota report.");
+        }
         return windows.length > 0
           ? makeUsageLimits({ checkedAt, windows })
           : makeUnavailableUsageLimits({
@@ -638,8 +644,12 @@ export const AntigravityDriver: ProviderDriver<AntigravitySettings, AntigravityD
               reason: "unsupported",
               message: "Antigravity reported no subscription limits for this account.",
             });
-      }).pipe(Effect.scoped, Effect.timeout("60 seconds"), Effect.option);
-      return Option.getOrElse(result, () => failed);
+      }).pipe(
+        Effect.scoped,
+        Effect.catch(() => Effect.succeed(probeFailed("Could not run Antigravity CLI /usage."))),
+        Effect.timeoutOption("60 seconds"),
+      );
+      return Option.getOrElse(result, () => probeFailed("Antigravity CLI /usage timed out."));
     });
 
     const provider = yield* makeAntigravityProvider(settings, {
