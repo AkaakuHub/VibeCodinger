@@ -2509,6 +2509,16 @@ export const layerWsRpc = (
               }
             }
             const { instanceId, cwd } = input;
+            if (input.refreshUsageOnDemand === true) {
+              const instances = yield* providerInstances.listInstances;
+              yield* Effect.forEach(
+                instances.filter(
+                  (instance) => instanceId === undefined || instanceId === instance.instanceId,
+                ),
+                (instance) => instance.snapshot.refreshUsageOnDemand ?? Effect.void,
+                { discard: true },
+              );
+            }
             if (input.omitProviders === true && (instanceId === undefined || cwd === undefined)) {
               return { providers: [] };
             }
