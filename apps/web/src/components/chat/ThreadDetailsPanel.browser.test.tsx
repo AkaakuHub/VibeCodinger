@@ -309,7 +309,7 @@ it("lists the vibecodinger.json actions on disk when the actions menu opens agai
   await chooser.click();
   await expect.element(page.getByRole("menu")).not.toBeInTheDocument();
 
-  // A setup hook rewrites this checkout's vibecodinger.json outside T3 Code.
+  // A setup hook rewrites this checkout's vibecodinger.json outside VibeCodinger.
   t3File.disk = t3Json("Dev 4200");
 
   await chooser.click();
