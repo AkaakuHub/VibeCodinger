@@ -75,9 +75,9 @@ telemetry-related changes and keeps the fork's workflow definitions. Review
 upstream workflow changes separately. The PR records the exact upstream
 commit in `.github/upstream-reviewed` for the next comparison.
 
-Set `UPSTREAM_REVIEW_TOKEN` to a dedicated GitHub credential scoped to this
-repository with Contents and Pull requests write access. The workflow creates
-the review branch and PR. Approval and merge stay with the maintainer.
+Enable **Allow GitHub Actions to create and approve pull requests** in the
+fork’s Actions settings. The workflow uses its job token to create the branch
+and PR. Review the proposal and approve its CI runs before merging.
 
 ## Desktop artifacts
 
