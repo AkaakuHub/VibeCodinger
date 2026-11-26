@@ -75,7 +75,7 @@ describe.skipIf(HostProcess.Platform.defaultValue() !== "linux")("installer home
 describe.skipIf(HostProcess.Platform.defaultValue() !== "linux")("installer channel lookup", () => {
   it.each([
     // regression: #32897
-    ["stable", "1.2.3", 1],
+    ["stable", "1.2.3-pr.4.1", 1],
     ["preview", "1.2.4-preview.20261019.50", 0],
   ])("finds %s %s behind nightlies and %i HTTP 504s", async (channel, version, failures) => {
     const root = await NodeFSP.mkdtemp(
@@ -88,7 +88,7 @@ describe.skipIf(HostProcess.Platform.defaultValue() !== "linux")("installer chan
       const body =
         url.pathname === "/AkaakuHub/VibeCodinger/releases/latest" &&
         request.headers.accept === "application/json"
-          ? { tag_name: "v1.2.3" }
+          ? { tag_name: "v1.2.3-pr.4.1" }
           : url.pathname === "/repos/AkaakuHub/VibeCodinger/releases"
             ? { "1": nightlies, "2": [{ tag_name: `v${version}` }, { tag_name: "v1.2.3" }] }[
                 url.searchParams.get("page") ?? ""

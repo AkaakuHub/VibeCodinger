@@ -1,7 +1,8 @@
 import { AuthOrchestrationOperateScope } from "@vibecodinger/contracts";
 import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 
-import { canMaintainEnvironment, findEnvironmentUpdate } from "./environment-maintenance";
+import { canMaintainEnvironment } from "./environment-maintenance";
+import { findReleaseUpdate } from "../updates/release-updates";
 
 afterEach(() => vi.unstubAllGlobals());
 
@@ -63,6 +64,20 @@ describe("environment release checks", () => {
         .join("")}</feed>`,
     );
 
+  it("detects a newer fork build from the public release page", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (url: string) =>
+        url === "https://github.com/AkaakuHub/VibeCodinger/releases/latest"
+          ? Response.json({ tag_name: "v0.1.12-pr.5.1" })
+          : new Response(null, { status: 404 }),
+      ),
+    );
+
+    expect(await findReleaseUpdate("0.1.12-pr.4.1", signal)).toBe("0.1.12-pr.5.1");
+    expect(await findReleaseUpdate("0.1.12-pr.5.1", signal)).toBeNull();
+  });
+
   it("keeps nightly and preview hosts on their channel without using the anonymous API quota", async () => {
     vi.stubGlobal(
       "fetch",
@@ -78,14 +93,14 @@ describe("environment release checks", () => {
           : new Response(null, { status: 403 }),
       ),
     );
-    expect(await findEnvironmentUpdate("1.0.0-nightly.20260923.1", signal)).toBe(
+    expect(await findReleaseUpdate("1.0.0-nightly.20260923.1", signal)).toBe(
       "1.0.0-nightly.20260924.2",
     );
-    expect(await findEnvironmentUpdate("1.0.0-nightly.20260924.2", signal)).toBeNull();
-    expect(await findEnvironmentUpdate("1.0.0-preview.20260923.1", signal)).toBe(
+    expect(await findReleaseUpdate("1.0.0-nightly.20260924.2", signal)).toBeNull();
+    expect(await findReleaseUpdate("1.0.0-preview.20260923.1", signal)).toBe(
       "1.0.0-preview.20260924.3",
     );
-    expect(await findEnvironmentUpdate("1.0.0-preview.20260925.1", signal)).toBeNull();
+    expect(await findReleaseUpdate("1.0.0-preview.20260925.1", signal)).toBeNull();
   });
 
   it("finds a published preview beyond the ten-entry feed and first API page", async () => {
@@ -111,7 +126,7 @@ describe("environment release checks", () => {
         throw new Error(`Unexpected release request: ${url}`);
       }),
     );
-    expect(await findEnvironmentUpdate("1.0.0-preview.20260923.1", signal)).toBe(
+    expect(await findReleaseUpdate("1.0.0-preview.20260923.1", signal)).toBe(
       "1.0.0-preview.20260924.3",
     );
   });
@@ -119,7 +134,7 @@ describe("environment release checks", () => {
   it("reports failed checks instead of claiming the server is current", async () => {
     for (const status of [403, 429]) {
       vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(null, { status })));
-      await expect(findEnvironmentUpdate("1.0.0", signal)).rejects.toThrow(String(status));
+      await expect(findReleaseUpdate("1.0.0", signal)).rejects.toThrow(String(status));
     }
     vi.stubGlobal(
       "fetch",
@@ -127,10 +142,10 @@ describe("environment release checks", () => {
         url.endsWith(".atom") ? feed("v1.0.0") : Response.json([{ tag_name: "v1.0.0" }]),
       ),
     );
-    await expect(findEnvironmentUpdate("1.0.0-nightly.20260923.1", signal)).rejects.toThrow(
+    await expect(findReleaseUpdate("1.0.0-nightly.20260923.1", signal)).rejects.toThrow(
       "No nightly release",
     );
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(Response.json({ error: "invalid" })));
-    await expect(findEnvironmentUpdate("1.0.0", signal)).rejects.toThrow();
+    await expect(findReleaseUpdate("1.0.0", signal)).rejects.toThrow();
   });
 });

@@ -421,6 +421,7 @@ const config: ExpoConfig = {
   extra: {
     appVariant: APP_VARIANT,
     iosPersonalTeamBuild: isIosPersonalTeamBuild,
+    forkReleaseVersion: repoEnv.VIBECODINGER_FORK_RELEASE_VERSION,
   },
   experiments: {
     // Metro only runs babel-plugin-react-compiler when this is set; see src/reactCompilerCoverage.test.ts.

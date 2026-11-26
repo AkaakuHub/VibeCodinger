@@ -7,7 +7,7 @@ import { AsyncResult, Atom } from "effect/reactivity";
 import { msg } from "gt-react-native";
 
 import { m } from "../../i18n/messages";
-import { findEnvironmentUpdate } from "./environment-maintenance";
+import { findReleaseUpdate } from "../updates/release-updates";
 
 export interface EnvironmentReleaseCheck {
   readonly fromVersion: string;
@@ -42,7 +42,7 @@ export const environmentReleaseCheckAtom = Atom.family((environmentId: Environme
     Effect.gen(function* () {
       const fromVersion = yield* Effect.tryPromise({ try: readServerVersion, catch: asError });
       const targetVersion = yield* Effect.tryPromise({
-        try: (signal) => findEnvironmentUpdate(fromVersion, signal),
+        try: (signal) => findReleaseUpdate(fromVersion, signal),
         catch: asError,
       }).pipe(
         Effect.timeoutOrElse({

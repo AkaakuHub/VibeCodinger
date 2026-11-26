@@ -396,6 +396,23 @@ export const make = Effect.gen(function* () {
   const fileSystem = yield* FileSystem.FileSystem;
   const desktopSettings = yield* DesktopAppSettings.DesktopAppSettings;
   const policy = yield* DesktopUpdatePolicy.DesktopUpdatePolicy;
+  const manualInstall =
+    environment.platform === "darwin" &&
+    environment.isPackaged &&
+    /-pr\.\d+\.\d+$/.test(environment.appVersion) &&
+    !(yield* fileSystem
+      .readFileString(environment.path.join(environment.appRoot, "package.json"))
+      .pipe(
+        Effect.flatMap(
+          Schema.decodeEffect(
+            Schema.fromJsonString(
+              Schema.Struct({ vibecodingerSignedMacUpdates: Schema.optionalKey(Schema.Boolean) }),
+            ),
+          ),
+        ),
+        Effect.map((metadata) => metadata.vibecodingerSignedMacUpdates === true),
+        Effect.orElseSucceed(() => false),
+      ));
   // Any user can set the mock flag, so it never replaces an administrator's update source.
   const mockUpdates = config.mockUpdates && policy.message === null;
 
@@ -663,6 +680,7 @@ export const make = Effect.gen(function* () {
   const downloadAvailableUpdate = Effect.fn("desktop.updates.downloadAvailableUpdate")(function* (
     refresh: boolean,
   ) {
+    if (manualInstall) return { accepted: false, completed: false };
     const admission = yield* Effect.scoped(
       admitAfterCheck(
         Effect.gen(function* () {
@@ -838,6 +856,7 @@ export const make = Effect.gen(function* () {
     Ref.get(notAppliedVersionRef).pipe(
       Effect.map((notAppliedVersion) => ({
         ...createBaseUpdateState(channel, disabledReason, environment),
+        ...(manualInstall ? { manualInstall: true as const } : {}),
         // Callers fall back to the channel's reason only when nothing else turns updates off.
         ...(Option.isSome(disabledReason) &&
         disabledReason.value === Option.getOrUndefined(channelBlockedReason(channel))
@@ -1017,7 +1036,7 @@ export const make = Effect.gen(function* () {
   const installWithExpectedVersion = Effect.fn("desktop.updates.install")(function* (
     expectedVersion?: string,
   ) {
-    if (yield* Ref.get(desktopState.quitting)) {
+    if (manualInstall || (yield* Ref.get(desktopState.quitting))) {
       return {
         accepted: false,
         completed: false,
@@ -1356,7 +1375,10 @@ export const make = Effect.gen(function* () {
       const settings = yield* desktopSettings.get;
       const disabledReason = yield* resolveDisabledReason;
       // A blocked nightly channel still lets the user switch back to stable, so it stays updatable.
-      yield* Ref.set(desktopState.canInstallUpdates, Option.isNone(disabledReason));
+      yield* Ref.set(
+        desktopState.canInstallUpdates,
+        !manualInstall && Option.isNone(disabledReason),
+      );
       yield* setState(
         yield* baseUpdateState(
           settings.updateChannel,

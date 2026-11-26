@@ -10,7 +10,7 @@ import { msg } from "gt-react";
 import { m, type MessageResolver } from "../i18n/messages";
 import { channelSwitchLabel } from "./sidebar/updateEverything.logic";
 
-export type DesktopUpdateButtonAction = "download" | "install" | "none";
+export type DesktopUpdateButtonAction = "download" | "install" | "release" | "none";
 
 const DEFAULT_DESKTOP_RELEASE_REPOSITORY = "AkaakuHub/VibeCodinger";
 const GITHUB_REPOSITORY_SEGMENT = /^[A-Za-z0-9._-]+$/u;
@@ -63,7 +63,7 @@ export function resolveDesktopUpdateButtonAction(
     return "install";
   }
   if (state.status === "available") {
-    return "download";
+    return state.manualInstall && state.availableVersion ? "release" : "download";
   }
   if (state.status === "error") {
     if (state.errorContext === "download" && state.availableVersion) {
@@ -134,6 +134,9 @@ export function getDesktopUpdateButtonTooltip(
     );
   }
   if (state.status === "available") {
+    if (state.manualInstall && state.availableVersion) {
+      return resolve(msg("Update {version} available", { version: state.availableVersion }));
+    }
     return state.availableVersion === null
       ? resolve(msg("Update available ready to download"))
       : resolve(msg("Update {version} ready to download", { version: state.availableVersion }));

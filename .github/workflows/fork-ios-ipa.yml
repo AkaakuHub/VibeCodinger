@@ -40,6 +40,10 @@ jobs:
       - name: Install mobile dependencies
         run: vp install --frozen-lockfile --filter=@vibecodinger/mobile... --filter=@vibecodinger/scripts...
 
+      - name: Set the installed release version
+        shell: bash
+        run: echo "VIBECODINGER_FORK_RELEASE_VERSION=$(sh .github/scripts/fork-release-version.sh)" >> "$GITHUB_ENV"
+
       - name: Generate the Xcode project
         working-directory: apps/mobile
         run: vp exec expo prebuild --clean --platform ios --no-install

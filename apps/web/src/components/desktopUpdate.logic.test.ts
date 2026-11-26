@@ -31,6 +31,17 @@ const baseState: DesktopUpdateState = {
 };
 
 describe("desktop update button state", () => {
+  it("opens the release page for a manual update", () => {
+    expect(
+      resolveDesktopUpdateButtonAction({
+        ...baseState,
+        status: "available",
+        availableVersion: "1.0.0-pr.5.1",
+        manualInstall: true,
+      }),
+    ).toBe("release");
+  });
+
   it("keeps retry action available after a download error", () => {
     const state: DesktopUpdateState = {
       ...baseState,

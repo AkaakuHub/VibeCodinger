@@ -17,6 +17,7 @@ import {
   registerHiddenUpdateTap,
   runAppUpdateCheck,
 } from "../updates/app-updates";
+import { ForkReleaseUpdateRow } from "./components/ForkReleaseUpdateRow";
 import { SettingsRow } from "./components/SettingsRow";
 import { SettingsSection } from "./components/SettingsSection";
 import { SettingsScreen } from "./components/SettingsScreen";
@@ -54,6 +55,7 @@ function AppSettingsSection() {
   const hiddenUpdateTapCount = useRef(0);
 
   const version = Constants.expoConfig?.version ?? "0.0.0";
+  const forkReleaseVersion: unknown = Constants.expoConfig?.extra?.forkReleaseVersion;
   // Match app.config.ts's production fallback to avoid mislabeling builds as development.
   const variant = (Constants.expoConfig?.extra?.appVariant as string | undefined) ?? "production";
   const variantLabel = variant === "production" ? "" : capitalize(variant);
@@ -141,6 +143,9 @@ function AppSettingsSection() {
         target="SettingsOpenSourceLicenses"
       />
       <SettingsRow icon="doc.text" label={gt("Legal")} fullScreenTarget="SettingsLegal" />
+      {typeof forkReleaseVersion === "string" ? (
+        <ForkReleaseUpdateRow version={forkReleaseVersion} />
+      ) : null}
       {updateCheckAvailable ? (
         <Pressable
           accessibilityLabel={gt("Version {version}", { version: versionLabel })}

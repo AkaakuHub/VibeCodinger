@@ -46,10 +46,12 @@ import {
   getDesktopUpdateButtonTooltip,
   getDesktopUpdateDisabledReason,
   getDesktopUpdateInstallConfirmationMessage,
+  getDesktopUpdateReleaseUrl,
   installDesktopUpdate,
   isDesktopUpdateButtonDisabled,
   resolveDesktopUpdateButtonAction,
 } from "../../components/desktopUpdate.logic";
+import { openDesktopUpdateReleaseNotes } from "../desktopUpdate.toast";
 import { ProviderModelPicker } from "../chat/ProviderModelPicker";
 import { TraitsPicker } from "../chat/TraitsPicker";
 import { isElectron } from "../../env";
@@ -223,6 +225,12 @@ function AboutVersionSection() {
 
     const action = updateState ? resolveDesktopUpdateButtonAction(updateState) : "none";
 
+    if (action === "release" && updateState) {
+      const url = getDesktopUpdateReleaseUrl(updateState.availableVersion);
+      if (url) void openDesktopUpdateReleaseNotes(bridge, url);
+      return;
+    }
+
     if (action === "download") {
       void downloadLocalUpdate(bridge, { notifyDownloaded: false });
       return;
@@ -324,7 +332,11 @@ function AboutVersionSection() {
       ? !canCheckForUpdate(updateState)
       : isDesktopUpdateButtonDisabled(updateState);
 
-  const actionLabel: Record<string, string> = { download: gt("Download"), install: gt("Install") };
+  const actionLabel: Record<string, string> = {
+    download: gt("Download"),
+    install: gt("Install"),
+    release: gt("View release on GitHub"),
+  };
   const statusLabel: Record<string, string> = {
     checking: gt("Checking…"),
     downloading: gt("Downloading…"),
@@ -334,7 +346,7 @@ function AboutVersionSection() {
   const buttonLabel =
     actionLabel[action] ?? statusLabel[updateState?.status ?? ""] ?? gt("Check for Updates");
   const description =
-    action === "download" || action === "install"
+    action !== "none"
       ? gt("Update available.")
       : (getDesktopUpdateDisabledReason(updateState, updatesDenial, messages) ??
         gt("Current version of the application."));

@@ -37,8 +37,18 @@ test("fork release write access is isolated from build jobs", () => {
   const { desktop, ios, android, publish } = jobs("workflows/fork-build.yml");
   for (const build of [desktop, ios, android]) {
     assert.match(build, /^ {6}contents: read$/m);
-    assert.doesNotMatch(build, /secrets:|: write\b/);
+    assert.doesNotMatch(build, /: write\b/);
   }
+  assert.doesNotMatch(ios + android, /secrets:/);
+  assert.doesNotMatch(desktop, /secrets: inherit/);
+  assert.deepEqual(Array.from(desktop.matchAll(/secrets\.(\w+)/g), (match) => match[1]).sort(), [
+    "APPLE_API_ISSUER",
+    "APPLE_API_KEY",
+    "APPLE_API_KEY_ID",
+    "CSC_KEY_PASSWORD",
+    "CSC_LINK",
+    "MACOS_PROVISIONING_PROFILE",
+  ]);
   assert.match(publish, /^ {6}contents: write$/m);
   assert.doesNotMatch(publish, /actions\/checkout@/);
   assert.ok(!runsProjectCode(publish), "the fork release job runs build code with a write token");

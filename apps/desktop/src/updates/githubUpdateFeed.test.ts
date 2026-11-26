@@ -1,4 +1,5 @@
 import * as NodeModule from "node:module";
+import * as HostProcess from "@vibecodinger/shared/HostProcess";
 
 import { GitHubProvider } from "electron-updater/out/providers/GitHubProvider.js";
 import { describe, expect, it } from "vite-plus/test";
@@ -13,11 +14,11 @@ const semver = NodeModule.createRequire(
 const REPO = "/pingdotgg/t3code";
 const nightly = (build: number) => `v0.1.10-nightly.20261112.${build}`;
 
-const atomFeed = (tags: ReadonlyArray<string>) =>
+const atomFeed = (tags: ReadonlyArray<string>, repo = REPO) =>
   `<feed xmlns="http://www.w3.org/2005/Atom">${tags
     .map(
       (tag) =>
-        `<entry><link rel="alternate" type="text/html" href="https://github.com${REPO}/releases/tag/${tag}"/><title>${tag}</title><content type="html">${tag} feed notes</content></entry>`,
+        `<entry><link rel="alternate" type="text/html" href="https://github.com${repo}/releases/tag/${tag}"/><title>${tag}</title><content type="html">${tag} feed notes</content></entry>`,
     )
     .join("")}</feed>`;
 
@@ -64,6 +65,48 @@ const offeredRelease = async (
 
 // What filled releases.atom on 2026-11-12: ten tags, none of them a nightly.
 const crowdedFeed = Array.from({ length: 10 }, (_, i) => `v0.1.10-preview.20261112.${4550 + i}`);
+
+it("offers the latest published fork build on every desktop platform", async () => {
+  const repo = "/AkaakuHub/VibeCodinger";
+  const version = "0.1.12-pr.5.1";
+  const tag = `v${version}`;
+  const arch = HostProcess.Architecture.defaultValue();
+  const linuxArchSuffix = arch === "x64" ? "" : `-${arch}`;
+  for (const [platform, manifest, file] of [
+    ["darwin", "latest-mac.yml", "VibeCodinger.zip"],
+    ["win32", "latest.yml", "VibeCodinger-x64.exe"],
+    ["linux", `latest-linux${linuxArchSuffix}.yml`, "VibeCodinger.AppImage"],
+  ] as const) {
+    const request = async ({ path }: { readonly path?: string | null }) => {
+      switch (path) {
+        case `${repo}/releases.atom`:
+          return atomFeed([tag], repo);
+        case `${repo}/releases/latest`:
+          return JSON.stringify({ tag_name: tag });
+        case `${repo}/releases/download/${tag}/${manifest}`:
+          return `version: ${version}\nfiles:\n  - url: ${file}\n    sha512: checksum\n`;
+        default:
+          throw new Error(`Unexpected request: ${path}`);
+      }
+    };
+    const provider = new GitHubProvider(
+      { provider: "github", owner: "AkaakuHub", repo: "VibeCodinger" },
+      {
+        allowPrerelease: false,
+        channel: "latest",
+        currentVersion: semver.parse("0.1.12-pr.4.1"),
+        fullChangelog: false,
+      } as ProviderArgs[1],
+      { isUseMultipleRangeRequest: false, platform, executor: { request } } as ProviderArgs[2],
+    );
+
+    const update = await provider.getLatestVersion();
+    expect(update.version).toBe(version);
+    expect(provider.resolveFiles(update)[0]?.url.pathname).toBe(
+      `${repo}/releases/download/${tag}/${file}`,
+    );
+  }
+});
 
 describe("GitHubProvider nightly lookup", () => {
   it.each([

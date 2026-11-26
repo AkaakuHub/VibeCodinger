@@ -562,6 +562,7 @@ jobs:
           VIBECODINGER_DESKTOP_REUSE_RESOURCE_MONITOR: true
           VIBECODINGER_DESKTOP_REUSE_LINUX_CAPTURE_HELPERS: ${{ steps.capture_helper_cache.outputs.cache-hit == 'true' }}
           VIBECODINGER_DESKTOP_UNTRUSTED_BUNDLE: ${{ inputs.untrusted_bundle }}
+          VIBECODINGER_FORK_RELEASE: ${{ inputs.release_channel == 'fork' }}
           CSC_LINK: ${{ secrets.CSC_LINK }}
           CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
           APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
@@ -823,6 +824,15 @@ jobs:
           retention-days: ${{ inputs.artifact_retention_days }}
           # Installers, zips and blockmaps are already compressed; deflating them again saves under 0.3%.
           compression-level: 0
+
+      - name: Upload fork update manifests
+        if: inputs.release_channel == 'fork'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: update-manifest-${{ inputs.platform }}-${{ inputs.arch }}
+          path: release-publish/latest*.yml
+          if-no-files-found: error
+          retention-days: 2
 
       - name: Upload resource monitor
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

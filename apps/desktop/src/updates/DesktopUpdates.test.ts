@@ -143,6 +143,27 @@ describe("DesktopUpdates", () => {
     ).pipe(Effect.provide(harness.layer));
   });
 
+  it.effect("offers releases without installing them on an unsigned macOS fork build", () => {
+    const harness = makeHarness({ appVersion: "1.2.3-pr.4.1" });
+    return Effect.scoped(
+      Effect.gen(function* () {
+        const updates = yield* DesktopUpdates.DesktopUpdates;
+        yield* updates.configure;
+        assert.isTrue((yield* updates.check("manual")).checked);
+
+        harness.emit("update-available", { version: "1.2.3-pr.5.1" });
+        yield* flushCallbacks;
+
+        const state = yield* updates.getState;
+        assert.equal(state.availableVersion, "1.2.3-pr.5.1");
+        assert.isTrue(state.manualInstall);
+        assert.isFalse((yield* updates.download).accepted);
+        assert.isFalse((yield* updates.install).accepted);
+        assert.equal(harness.downloadCount(), 0);
+      }),
+    ).pipe(Effect.provide(harness.layer));
+  });
+
   it.effect("re-checks an offered update without announcing it again", () => {
     const harness = makeHarness();
 
