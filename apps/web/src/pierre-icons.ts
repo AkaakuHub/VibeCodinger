@@ -130,6 +130,34 @@ const VIBECODINGER_FILE_ICON_SPRITE = `
   <symbol id="vc-file-icon-toml" viewBox="0 0 24 24">
     <path style="fill: light-dark(#84848a, #adadb1)" d="M.014 0h5.34v2.652H2.888v18.681h2.468V24H.015V0Zm17.622 5.049v2.78h-4.274v12.935h-3.008V7.83H6.059V5.05h11.577ZM23.986 24h-5.34v-2.652h2.467V2.667h-2.468V0h5.34v24Z" />
   </symbol>
+  <!-- Pierre VS Code Icons 0.0.10, MIT license. -->
+  <symbol id="t3-file-icon-typescript-test" viewBox="0 0 16 16" style="color: light-dark(#d52c36, #ff6762)">
+    <path fill="currentColor" d="M8 1C2.24 1 1 2.24 1 8s1.24 7 7 7 7-1.24 7-7-1.24-7-7-7" opacity=".2"/><path fill="currentColor" d="M8.1 9.64h.95c.04.62.28.76 1.28.76s1.2-.14 1.2-.85c0-.66-.2-.85-1.2-1.07-1.79-.38-2.18-.7-2.18-1.86C8.15 5.3 8.54 5 10.31 5c1.67 0 2.04.26 2.07 1.42h-.95c-.02-.43-.23-.53-1.1-.53-1 0-1.22.14-1.22.74 0 .52.22.7 1.24.92 1.76.38 2.15.73 2.15 2 0 1.44-.4 1.75-2.24 1.75-1.8 0-2.18-.3-2.15-1.66m-3 1.57V5.99H3.5v-.9h4.21v.9H6.1v5.22z"/>
+  </symbol>
+  <symbol id="t3-file-icon-javascript-test" viewBox="0 0 16 16" style="color: light-dark(#d52c36, #ff6762)">
+    <path fill="currentColor" d="M8 1C2.24 1 1 2.24 1 8s1.24 7 7 7 7-1.24 7-7-1.24-7-7-7" opacity=".2"/><path fill="currentColor" d="M8.1 9.64h.95c.04.62.28.76 1.28.76s1.2-.14 1.2-.85c0-.66-.2-.85-1.2-1.07-1.79-.38-2.18-.7-2.18-1.86C8.15 5.3 8.54 5 10.31 5c1.67 0 2.04.26 2.07 1.42h-.95c-.02-.43-.23-.53-1.1-.53-1 0-1.22.14-1.22.74 0 .52.22.7 1.24.92 1.76.38 2.15.73 2.15 2 0 1.44-.4 1.75-2.24 1.75-1.8 0-2.18-.3-2.15-1.66M3.5 9.5h.98c0 .76.15.92.85.92.77 0 .94-.18.94-1.02V5.1h1v4.34c0 1.54-.35 1.87-1.92 1.87-1.55 0-1.89-.32-1.86-1.8"/>
+  </symbol>
+  <symbol id="t3-file-icon-csharp" viewBox="0 0 16 16" style="color: light-dark(#a631be, #d568ea)">
+    <path fill="currentColor" fill-rule="evenodd" d="M8 1q.084 0 .166.021.098.023.186.075c1.055.624 4.22 2.486 5.277 3.11.085.05.15.112.209.192h-.002q.015.018.028.037a.5.5 0 0 1 .103.21q.031.102.033.21v6.29a.71.71 0 0 1-.347.616l-5.307 3.144a.68.68 0 0 1-.693 0l-5.307-3.144A.72.72 0 0 1 2 11.145V4.832a.71.71 0 0 1 .346-.612l5.288-3.126A.7.7 0 0 1 7.992 1zm2.901 4.349a3.75 3.75 0 1 0 0 5.302l-1.06-1.06a2.25 2.25 0 1 1 0-3.182z" clip-rule="evenodd"/>
+  </symbol>
+  <symbol id="t3-file-icon-elixir" viewBox="0 0 16 16" style="color: light-dark(#a631be, #d568ea)">
+    <path fill="currentColor" fill-rule="evenodd" d="M7.661 1.526c.309-.245.744-.008.776.384.39 4.791 3.877 4.387 4.057 8.347q.004.09.006.181a4.59 4.59 0 0 1-1.724 3.59A4.44 4.44 0 0 1 8.001 15c-2.642 0-4.522-2.256-4.5-4.797.014-1.133.384-3.134 1.35-5.09.623-1.26 1.493-2.5 2.675-3.477z" clip-rule="evenodd"/>
+  </symbol>
+  <symbol id="t3-file-icon-kotlin" viewBox="0 0 16 16" style="color: light-dark(#d32a61, #ff678d)">
+    <path fill="currentColor" d="M13.14 13.145a.5.5 0 0 1-.352.855H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h9.762a.5.5 0 0 1 .348.86l-4.5 4.344a1 1 0 0 0-.01 1.429z"/>
+  </symbol>
+  <symbol id="t3-file-icon-objc" viewBox="0 0 16 16" style="color: light-dark(#d5512f, #ff8c5b)">
+    <path fill="currentColor" fill-rule="evenodd" d="M8 1q.084 0 .166.021.098.023.186.075c1.055.624 4.22 2.486 5.277 3.11.085.05.15.112.209.192h-.002q.015.018.028.037a.5.5 0 0 1 .103.21q.031.102.033.21v6.29a.71.71 0 0 1-.347.616l-5.307 3.144a.68.68 0 0 1-.693 0l-5.307-3.144A.72.72 0 0 1 2 11.145V4.832a.71.71 0 0 1 .346-.612l5.288-3.126A.7.7 0 0 1 7.992 1zm2.901 4.349a3.75 3.75 0 1 0 0 5.302l-1.06-1.06a2.25 2.25 0 1 1 0-3.182z" clip-rule="evenodd"/>
+  </symbol>
+  <symbol id="t3-file-icon-pnpm" viewBox="0 0 16 16" style="color: light-dark(#d47628, #ffa359)">
+    <path fill="currentColor" d="M4.5 11a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-3a.5.5 0 0 1 .5-.5zm5 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-3a.5.5 0 0 1 .5-.5zm5 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-3a.5.5 0 0 1 .5-.5zm-5-5a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-3a.5.5 0 0 1 .5-.5z" opacity=".4"/><path fill="currentColor" d="M14.5 6a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-3a.5.5 0 0 1 .5-.5zm-10-5a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-3a.5.5 0 0 1 .5-.5zm5 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-3a.5.5 0 0 1 .5-.5zm5 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-3a.5.5 0 0 1 .5-.5z"/>
+  </symbol>
+  <symbol id="t3-file-icon-vitest" viewBox="0 0 16 16" style="color: light-dark(#199f43, #5ecc71)">
+    <path fill="currentColor" d="M7.734 14.318a.36.36 0 0 1-.522.114l-6.065-4.395A.36.36 0 0 1 1 9.748V4.452a.36.36 0 0 1 .569-.29L5.277 6.85a.72.72 0 0 0 1.047-.227l3.072-5.44A.36.36 0 0 1 9.708 1h4.932c.275 0 .448.294.313.532z"/>
+  </symbol>
+  <symbol id="t3-file-icon-rolldown" viewBox="0 0 16 16" style="color: light-dark(#d5512f, #ff8c5b)">
+    <path fill="currentColor" d="M13.466 1c.291 0 .45.35.264.582l-3.18 3.933c-.375.462-.056 1.165.529 1.165h3.076c.292 0 .451.35.264.582l-6.154 7.61a.338.338 0 0 1-.53 0l-6.154-7.61c-.187-.231-.028-.582.264-.582H4.92c.584 0 .903-.703.53-1.165L2.268 1.582C2.082 1.351 2.242 1 2.534 1z"/>
+  </symbol>
 </svg>`;
 
 export const VIBECODINGER_PIERRE_ICONS = {
@@ -141,12 +169,50 @@ export const VIBECODINGER_PIERRE_ICONS = {
     "tsconfig.json": "file-tree-builtin-typescript",
     "agents.md": "vc-file-icon-agents",
     "pnpm-lock.yaml": "vc-file-icon-pnpm",
+    "pnpm-lock.yml": "vc-file-icon-pnpm",
     "pnpm-workspace.yaml": "vc-file-icon-pnpm",
+    "pnpm-workspace.yml": "vc-file-icon-pnpm",
+    "pnpmfile.js": "vc-file-icon-pnpm",
+    "pnpmfile.cjs": "vc-file-icon-pnpm",
+    "mix.lock": "vc-file-icon-elixir",
+    "vitest.config.js": "vc-file-icon-vitest",
+    "vitest.config.ts": "vc-file-icon-vitest",
+    "vitest.config.mjs": "vc-file-icon-vitest",
+    "vitest.config.mts": "vc-file-icon-vitest",
+    "vitest.config.cjs": "vc-file-icon-vitest",
+    "vitest.config.cts": "vc-file-icon-vitest",
+    "vitest.workspace.js": "vc-file-icon-vitest",
+    "vitest.workspace.ts": "vc-file-icon-vitest",
+    "vitest.workspace.mjs": "vc-file-icon-vitest",
+    "vitest.workspace.mts": "vc-file-icon-vitest",
+    "rolldown.config.js": "vc-file-icon-rolldown",
+    "rolldown.config.ts": "vc-file-icon-rolldown",
+    "rolldown.config.mjs": "vc-file-icon-rolldown",
+    "rolldown.config.mts": "vc-file-icon-rolldown",
+    "rolldown.config.cjs": "vc-file-icon-rolldown",
+    "rolldown.config.cts": "vc-file-icon-rolldown",
+    ".oxlintrc.jsonc": "file-tree-builtin-oxc",
+    "oxlint.config.ts": "file-tree-builtin-oxc",
+    "oxlint.config.mts": "file-tree-builtin-oxc",
+    ".oxfmtrc.json": "file-tree-builtin-oxc",
+    ".oxfmtrc.jsonc": "file-tree-builtin-oxc",
+    "oxfmt.config.ts": "file-tree-builtin-oxc",
+    "oxfmt.config.mts": "file-tree-builtin-oxc",
   },
   byFileExtension: {
     ...Object.fromEntries(
       VIDEO_FILE_EXTENSIONS.map((extension) => [extension, "vc-file-icon-video"]),
     ),
+    "test.js": "vc-file-icon-javascript-test",
+    "spec.js": "vc-file-icon-javascript-test",
+    "test.jsx": "vc-file-icon-javascript-test",
+    "spec.jsx": "vc-file-icon-javascript-test",
+    "test.ts": "vc-file-icon-typescript-test",
+    "spec.ts": "vc-file-icon-typescript-test",
+    "test.tsx": "vc-file-icon-typescript-test",
+    "spec.tsx": "vc-file-icon-typescript-test",
+    m: "vc-file-icon-objc",
+    mm: "vc-file-icon-objc",
     pdf: "vc-file-icon-pdf",
     doc: "vc-file-icon-word",
     docx: "vc-file-icon-word",

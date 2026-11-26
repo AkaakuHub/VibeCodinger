@@ -11,7 +11,7 @@ import { scopeProjectRef } from "@vibecodinger/client-runtime/environment";
 import { isScratchProject } from "@vibecodinger/client-runtime/state/projects";
 
 import type { ComposerThreadTarget, DraftId } from "../../composerDraftStore";
-import { useVibeCodingerProjectFileScripts } from "../../hooks/useVibeCodingerProjectFileScripts";
+import { useVibeCodingerProjectFileState } from "../../hooks/useVibeCodingerProjectFileScripts";
 import { type EnvMode, type EnvironmentOption } from "../BranchToolbar.logic";
 import { BranchToolbar } from "../BranchToolbar";
 import GitActionsControl from "../GitActionsControl";
@@ -101,7 +101,7 @@ export function ThreadDetailsPanel(props: ThreadDetailsPanelProps) {
   const visible = useClientSettings(resolveThreadDetailsVisibility);
   const gt = useGT();
   const [menuPosition, setMenuPosition] = useState<{ x: number; y: number } | null>(null);
-  const fileScripts = useVibeCodingerProjectFileScripts(
+  const vcFile = useVibeCodingerProjectFileState(
     props.environmentId,
     props.activeProjectScripts && visible.scripts ? props.gitCwd : null,
   );
@@ -243,7 +243,8 @@ export function ThreadDetailsPanel(props: ThreadDetailsPanelProps) {
                         environmentId={props.environmentId}
                         displayMode="panel"
                         scripts={props.activeProjectScripts}
-                        fileScripts={fileScripts}
+                        fileScripts={vcFile.scripts}
+                        onActionsMenuOpen={vcFile.refresh}
                         preferredScriptId={props.preferredScriptId}
                         onRunScript={props.onRunProjectScript}
                         onAddScript={props.onAddProjectScript}

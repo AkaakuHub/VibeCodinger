@@ -77,10 +77,7 @@ Linux needs systemd user services. Setup enables lingering so VibeCodinger start
 boot and keeps running after logout. If this needs administrator permission,
 setup prints a recovery command before changing the service.
 
-macOS starts the service when you log in and stops it when you log out. Keep the
-Mac logged in and awake for unattended remote access. Installing over SSH while
-nobody is logged in at the Mac's screen can fail at the final start step; the
-service is still installed and will start at the next login.
+> Note: Signing out of T3 Connect does not stop or uninstall the background service.
 
 Windows starts the service when you log in and stops it when you sign out. It
 runs without a window as the `vibecodinger-<domain>-<user name>` task in Task Scheduler, and Task
@@ -113,8 +110,13 @@ Start with `vibecodinger service status` on the host. It prints the log path and
 checks whether the installed service is running, enabled, and allowed to survive
 logout.
 
-If it stops when your SSH session closes, check for `linger-disabled`. An
-administrator can enable lingering with:
+| Status                                 | Fix                                                                                                                                             |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `linger-disabled`                      | Run `sudo loginctl enable-linger "$(id -un)"` (or `ssh -t your-server '...'`), then retry setup as your normal user. Never run T3 Code as root. |
+| `linger-unavailable`                   | Check `loginctl show-user "$(id -un)" --property=Linger` and verify `systemd-logind`.                                                           |
+| `user-manager-unavailable`             | Run `systemctl --user status` in a login session to verify systemd user support.                                                                |
+| `service-disabled` / `service-stopped` | Check the log and `systemctl --user status t3code.service`, then run `t3 service install`.                                                      |
+| `restart-pending`                      | Run `t3 service restart` to switch to the newly installed version.                                                                              |
 
 ```sh
 sudo loginctl enable-linger "$(id -un)"

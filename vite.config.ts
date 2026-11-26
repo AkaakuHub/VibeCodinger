@@ -300,6 +300,7 @@ export default defineConfig({
       "vibecodinger/no-native-title-tooltip": "error",
       // Test files only (the rule checks the filename).
       "vibecodinger/no-polling-loop-in-tests": "error",
+      "vibecodinger/no-layout-command-approval-writes": "error",
       "vibecodinger/no-raw-mcp-registration": "error",
       "vibecodinger/no-real-time-wait-in-tests": "error",
       "vibecodinger/no-test-in-loop": "error",
@@ -395,6 +396,16 @@ export default defineConfig({
       {
         files: ["apps/server/src/mcp/McpHttpServer.ts"],
         rules: { "vibecodinger/no-raw-mcp-registration": "off" },
+      },
+      {
+        // The client RPC, the layer that builds it, and the tests that stand in for a person.
+        files: [
+          "apps/server/src/ws.ts",
+          "apps/server/src/server.ts",
+          "apps/server/src/ws.test.ts",
+          "apps/server/src/workspace/TaskFolders.testkit.ts",
+        ],
+        rules: { "vibecodinger/no-layout-command-approval-writes": "off" },
       },
       {
         files: ["apps/web/src/**"],

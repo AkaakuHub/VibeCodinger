@@ -10,11 +10,11 @@ launch VibeCodinger and configure providers afterwards.
 
 ## Command line
 
+Install the `t3` command to `~/.local/bin`:
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/AkaakuHub/t3code/main/scripts/install.sh | sh
 ```
-
-On Windows, in PowerShell:
 
 ```powershell
 irm https://raw.githubusercontent.com/AkaakuHub/t3code/main/scripts/install.ps1 | iex
@@ -130,10 +130,7 @@ before sharing.
 
 ## Providers
 
-Open **Settings → Providers** in the web or desktop app, select the environment,
-and enable the provider you want. Installation, login, and configuration belong
-to that environment's machine, even when you connect from a phone or another
-computer.
+Open **Settings → Providers** (web or desktop), select the environment, and enable the providers you use. Installation and sign-in always happen on the **environment's machine**.
 
 | Provider            | Install and authenticate                                                                                                                                  |
 | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -233,8 +230,9 @@ installation, update checks, and shutdown limits keep their existing behavior.
 
 ## Next steps
 
+- [User guide index](./README.md): overview of how T3 Code works.
 - [Working with threads](./thread-sidebar.md): start tasks and organize parallel work.
-- [Permission modes](./permission-modes.md): choose when agents ask before acting.
+- [Permission modes](./permission-modes.md): control when agents ask before acting.
 - [Remote access](./remote-access.md): connect from another device.
 - [Running in the background](./background-service.md): keep a host available.
 - [Updating VibeCodinger](./updating.md): update the app and connected servers.

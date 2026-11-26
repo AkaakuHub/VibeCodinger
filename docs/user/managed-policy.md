@@ -43,7 +43,7 @@ Every user on the machine can read the policy, so do not put credentials in it.
 
 ## Where the policy goes
 
-Use one of these per machine:
+Use **one** source per machine (having both a native policy and a policy file prevents T3 Code from starting):
 
 | OS      | Native policy                                                                                             | Policy file                                             |
 | ------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
@@ -129,13 +129,10 @@ Each key under `settings` is a setting's path in the server's `settings.json`, s
 `storageCleanup.logsAfterDays`. Run `vibecodinger policy settings` to list every path a policy can manage,
 with its default.
 
-- `"locked": false` sets a default. It applies wherever the user has not chosen a value of their
-  own, and users can change it.
-- `"locked": true` sets the value. Users and agents cannot change it, in Settings or in a project's
-  settings, and Settings shows the control as managed by your organization. Removing the policy
-  brings back the user's own value.
+- `"locked": false` sets a default (users can override).
+- `"locked": true` enforces the value across Settings and project overrides.
 
-A few settings need care:
+Key constraints:
 
 - A default cannot add an entry, such as a provider instance, because users could never remove it.
   Lock the entry instead, or set provider fields with [`providers.instances`](#providers).
@@ -185,11 +182,7 @@ A few settings need care:
 
 ### Permission modes
 
-`maxRuntimeMode` is the broadest [permission mode](./permission-modes.md) any thread may use:
-`approval-required` (Supervised), `auto-accept-edits`, `auto`, or `full-access`. It covers threads
-that users start, agents start, and scheduled tasks start. A thread already above the limit cannot
-run another turn until someone lowers its mode; its queued messages send once that happens. New
-threads start at the limit when the user's default is above it.
+`maxRuntimeMode` caps all threads (`approval-required`, `auto-accept-edits`, `auto`, or `full-access`). Threads above the cap cannot run until lowered.
 
 With `maxRuntimeMode` set, you own each provider's launch settings: binary path, launch arguments,
 config home, and the environment variables set on each provider. They come from
@@ -213,7 +206,7 @@ The limit decides which modes VibeCodinger asks the provider for. It is not a sa
 
 ### Clients and T3 Connect
 
-`clients` lists how the server may run:
+`clients` allows any subset of `desktop`, `local-browser`, and `remote` (keep `desktop` on desktop machines).
 
 - `desktop`: as the desktop app's own server.
 - `local-browser`: as a server only browsers on this machine reach, such as `npx vibecodinger`.

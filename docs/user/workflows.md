@@ -2,9 +2,9 @@
 
 A workflow is a TypeScript script that chains agents, plain code, schedules, webhooks, issue and pull request events, and questions to you into one durable run that survives server restarts. Each step's result is saved when it succeeds, so restarts pick up where the run left off and failures do not lose earlier work. Workflows are an early feature: start runs from the `vibecodinger` CLI or a trigger, and follow them in the app.
 
-For one prompt on a timer or webhook, use a scheduled task. Use a workflow when work has stages — such as triage, a fix, your approval, and a release.
+Use a **scheduled task** for a single prompt on a timer or webhook; use a **workflow** for multi-stage pipelines (e.g., triage → fix → approval → release).
 
-## Turn on workflows
+## Enable workflows
 
 Workflows are a Labs feature, off by default. Turn on **Settings → Labs → Workflows** for the server that runs them. On a server without a desktop, set `"workflowsEnabled": true` in `userdata/settings.json` in its T3 home (`~/.vibecodinger` by default). While off, nothing in the workflows folder runs and `vibecodinger workflow` says how to turn it on; runs are kept and continue once it is on again.
 
@@ -38,11 +38,7 @@ export default workflow(
 
 Start it with `vibecodinger workflow start release --input '{"name":"v1.4"}' --key v1.4`, then answer its question in the app. `T3`, `Effect`, `Schema` and `Option` are provided; a workflow file imports nothing from T3 or Effect. Name files with letters, digits, `-`, `_` and `.`; other names are skipped with a warning.
 
-Saving checks that the file loads, does not duplicate a workflow name and version, and does not remove a version with unfinished runs. A file that fails these checks keeps its last working version while the Workflows page (and the server log) shows why; other files are not affected. A change held back by unfinished runs goes in by itself once those runs end or are cancelled. Mistakes inside a workflow body surface when a run hits them and pauses. To change steps while runs are unfinished, add the new body under a higher `version` and keep the old one until those runs end.
-
-Dot-files and subfolders are ignored. Keep shared helpers in a subfolder and restart the server after editing an imported file.
-
-## Start and steer
+## CLI commands
 
 ```sh
 vibecodinger workflow start <name> --input '<json>' --key <key>
@@ -66,9 +62,9 @@ Every start needs a `--key`: starting twice with the same key returns the same r
 - **Webhooks:** `vibecodinger workflow hooks` prints each hook's path; prepend your server's address. The path contains the hook's secret, so share it only with the sender. A sender's retry that repeats its delivery header (such as GitHub's `X-GitHub-Delivery`) starts no second run, and bodies over 1 MiB are refused. A hook starts at most 60 runs a minute; requests past that get `429` and can be sent again a minute later. Organization policies blocking webhook tasks block workflow webhooks too.
 - **Issues and pull requests:** workflows can start on new issues or pull requests and read, comment on, or update them via **Settings → Source control & issues** — no webhook needed. T3 Code checks roughly once a minute, and only items opened after the workflow was first loaded start runs.
 
-## Follow runs in the app
+## Follow runs, agent threads, and failures
 
-Open the Workflows page with **Open workflows** in the command palette of the web or desktop app; the entry shows once a connected server has workflows on. Filter by **Needs you**, **Running**, or **All** (skipped runs stay hidden unless toggled on), open child runs from their parent, and answer questions, resume paused runs, or cancel active runs (requires permission to operate threads). The issues and pull requests a run touched show as chips under its title and on the steps that touched them; a chip opens the item beside the run, in a tab next to any agent transcripts you opened.
+Open **Open workflows** from the command palette (web/desktop) to filter **Needs you**, **Running**, or **All**, inspect agent threads, answer questions, resume, or cancel runs.
 
 ### Agent threads
 

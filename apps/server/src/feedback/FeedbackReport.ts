@@ -165,6 +165,7 @@ export const VIBECODINGER_CLI_COMMANDS: ReadonlyArray<string> = [
   "vibecodinger workflow resume",
   "vibecodinger workflow cancel",
   "vibecodinger workflow signal",
+  "vibecodinger workflow withdraw",
   "vibecodinger workflow questions",
   "vibecodinger workflow hooks",
   "vibecodinger workflow store",

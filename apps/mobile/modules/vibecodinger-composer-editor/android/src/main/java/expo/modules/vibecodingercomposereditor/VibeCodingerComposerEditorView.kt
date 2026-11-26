@@ -907,7 +907,7 @@ internal class SelectionAwareEditText(
     val payload = VibeCodingerComposerClipboard.read(context)
     val hasContextHtml = payload["html"]?.contains("data-vibecodinger-context-fragment=") == true
     return when {
-      hasContextHtml -> pasteContext(payload)
+      !payload["fragment"].isNullOrEmpty() || hasContextHtml -> pasteContext(payload)
       pasteImagesOrInterceptedText() -> true
       isSingleItemClip() && VibeCodingerComposerClipboard.hasThreadLink(
         payload["text"].orEmpty()

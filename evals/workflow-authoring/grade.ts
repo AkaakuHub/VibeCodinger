@@ -12,6 +12,10 @@ import * as Result from "effect/Result";
 import * as Stream from "effect/Stream";
 
 import WorkflowsMigration from "../../apps/server/src/persistence/Migrations/110_Workflows.ts";
+import WorkflowRunTagsMigration from "../../apps/server/src/persistence/Migrations/115_WorkflowRunTags.ts";
+import WorkflowMailSenderMigration from "../../apps/server/src/persistence/Migrations/117_WorkflowMailSender.ts";
+import WorkflowPoolsMigration from "../../apps/server/src/persistence/Migrations/118_WorkflowPools.ts";
+import WorkflowRunSubjectMigration from "../../apps/server/src/persistence/Migrations/119_WorkflowRunSubject.ts";
 import type { WorkflowDefinition } from "../../apps/server/src/workflows/workflow.ts";
 import {
   type AgentResult,
@@ -76,7 +80,15 @@ const world = Effect.fn("gradeWorkflow.world")(function* (
     prefix: "vibecodinger-workflow-eval-",
   });
   const database = NodeSqliteClient.layer({ filename: path.join(directory, "state.sqlite") });
-  yield* Effect.provide(WorkflowsMigration, database);
+  yield* Effect.provide(
+    WorkflowsMigration.pipe(
+      Effect.andThen(WorkflowRunTagsMigration),
+      Effect.andThen(WorkflowMailSenderMigration),
+      Effect.andThen(WorkflowPoolsMigration),
+      Effect.andThen(WorkflowRunSubjectMigration),
+    ),
+    database,
+  );
   const turns: Array<AgentTurnInput> = [];
   const asked = new Map<string, AgentTurnInput>();
   const agents = WorkflowAgents.of({
@@ -127,8 +139,9 @@ const world = Effect.fn("gradeWorkflow.world")(function* (
         .pipe(Effect.timeoutOption("10 seconds")),
     asks: (workflows, runId) =>
       workflows.watch.pipe(
-        Stream.filterMap((snapshot) => {
-          const question = snapshot.questions.find((asked) => asked.runId === runId);
+        // A question comes in the first list, or in the update where it is asked.
+        Stream.filterMap((update) => {
+          const question = update.questions.find((asked) => asked.runId === runId);
           return question === undefined ? Result.failVoid : Result.succeed(question.name);
         }),
         Stream.runHead,

@@ -1,5 +1,6 @@
 import { layerWithoutOfficialRelay } from "./cloud/officialRelay.ts";
 import * as ProviderEventLoggers from "@vibecodinger/provider-core/server/ProviderEventLoggers";
+import * as DatabaseMigrationProgress from "./persistence/DatabaseMigrationProgress.ts";
 import * as EnvironmentKeys from "./cloud/environmentKeys.ts";
 import * as AssetSigner from "./assets/AssetSigner.ts";
 import * as WorkspacePreviewRevisions from "./assets/WorkspacePreviewRevisions.ts";
@@ -22,6 +23,7 @@ import * as FeatureFlags from "@vibecodinger/shared/FeatureFlags";
 import * as HostProcess from "@vibecodinger/shared/HostProcess";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
+import * as Ref from "effect/Ref";
 import * as Layer from "effect/Layer";
 import * as Stream from "effect/Stream";
 import { HttpRouter, HttpServer } from "effect/http";
@@ -135,6 +137,8 @@ import * as VibeCodingerProjectFileLoader from "./project/VibeCodingerProjectFil
 import * as RepositoryIdentityResolver from "./project/RepositoryIdentityResolver.ts";
 import * as WorkspaceEntries from "./workspace/WorkspaceEntries.ts";
 import * as WorkspaceFolders from "./workspace/WorkspaceFolders.ts";
+import * as LayoutCommandApprovals from "./workspace/LayoutCommandApprovals.ts";
+import * as LayoutCommandApprovalWrites from "./workspace/LayoutCommandApprovalWrites.ts";
 import * as TaskFolders from "./workspace/TaskFolders.ts";
 import * as TaskFolderStore from "./workspace/TaskFolderStore.ts";
 import * as KnownWorkspaces from "./workspace/KnownWorkspaces.ts";
@@ -307,6 +311,7 @@ const layerSpawner = SpawnWorker.layerServer.pipe(Layer.provide(NodeServices.lay
 const layerHttpServer = Layer.unwrap(
   Effect.gen(function* () {
     const config = yield* ServerConfig.ServerConfig;
+    const migrationProgress = yield* DatabaseMigrationProgress.DatabaseMigrationProgress;
     // Before binding: a host the policy does not allow must never listen, not even briefly.
     const policy = yield* ManagedPolicy.ManagedPolicy;
     const bindHost = yield* ManagedLimits.checkServerReachability(policy, {
@@ -319,6 +324,7 @@ const layerHttpServer = Layer.unwrap(
     const runSync = Effect.runSyncWith(yield* Effect.context<never>());
     const server = rejectRequestsUntilServing(
       keepIdleConnections(guardHttpResponseWriteErrors(NodeHttp.createServer())),
+      () => Ref.getUnsafe(migrationProgress.current),
     );
     if (config.privateNetworkOnly) runSync(closeNonPrivateNetworkConnections(server));
     return NodeHttpServer.layer(() => server, {
@@ -526,6 +532,8 @@ const layerTaskFolders = TaskFolders.layer.pipe(
   Layer.provide(
     Layer.mergeAll(
       TaskFolderStore.layer,
+      LayoutCommandApprovals.layer,
+      ManagedPolicy.layer,
       ProjectStore.layer,
       ProjectionStoreV2.layer,
       VcsProcess.layer,
@@ -669,7 +677,7 @@ const layerRuntimeCoreDependenciesBase = Layer.mergeAll(
   Layer.provideMerge(layerOrchestrationApplication),
   // One hub, which the feeders above and the workflow store inside the runtime publish to.
   Layer.provideMerge(MilestoneHub.layer),
-  Layer.provideMerge(layerTaskFolders),
+  Layer.provideMerge(Layer.merge(layerTaskFolders, LayoutCommandApprovalWrites.layer)),
   Layer.provideMerge(RuntimeLayer.layerEventInfrastructure),
   Layer.provideMerge(Layer.merge(ProjectStore.layer, ThreadSearch.layer)),
   Layer.provideMerge(SecretCheck.layer),
@@ -1087,6 +1095,7 @@ const layerMakeServer = Layer.unwrap(
       ),
       Layer.provide(layerActivation),
       Layer.provideMerge(layerHttpServer),
+      Layer.provide(DatabaseMigrationProgress.layer),
       Layer.provide(layerApplicationObservability),
       Layer.provideMerge(layerWithoutOfficialRelay),
       Layer.provide(VcsProcess.layer),
