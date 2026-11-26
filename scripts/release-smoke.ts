@@ -3,6 +3,7 @@ import * as NodeChildProcess from "node:child_process";
 import * as NodeFS from "node:fs";
 import * as NodeOS from "node:os";
 import * as NodePath from "node:path";
+import * as NodeProcess from "node:process";
 import * as NodeURL from "node:url";
 import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
@@ -254,39 +255,18 @@ try {
     assertPackageVersion(NodePath.resolve(tempRoot, relativePath), "9.9.9-smoke.0");
   }
 
-  const nightlyReleaseMetadata = NodeChildProcess.execFileSync(
-    process.execPath,
-    [
-      NodePath.resolve(repoRoot, "scripts/resolve-nightly-release.ts"),
-      "--date",
-      "20260413",
-      "--run-number",
-      "321",
-      "--sha",
-      "abcdef1234567890",
-      "--root",
-      tempRoot,
-    ],
+  const forkReleaseVersion = NodeChildProcess.execFileSync(
+    "sh",
+    [NodePath.resolve(repoRoot, ".github/scripts/fork-release-version.sh")],
     {
-      cwd: repoRoot,
+      cwd: tempRoot,
+      env: { ...NodeProcess.env, GITHUB_RUN_NUMBER: "321", GITHUB_RUN_ATTEMPT: "2" },
       encoding: "utf8",
     },
-  );
-  assertContains(
-    nightlyReleaseMetadata,
-    "version=9.9.10-nightly.20260413.321",
-    "Expected nightly metadata to contain the derived nightly version.",
-  );
-  assertContains(
-    nightlyReleaseMetadata,
-    "tag=v9.9.10-nightly.20260413.321",
-    "Expected nightly metadata to contain the derived nightly tag.",
-  );
-  assertContains(
-    nightlyReleaseMetadata,
-    "name=VibeCodinger Nightly 9.9.10-nightly.20260413.321 (abcdef123456)",
-    "Expected nightly metadata to include the short commit SHA in the release name.",
-  );
+  ).trim();
+  if (forkReleaseVersion !== "9.9.9-pr.321.2") {
+    throw new Error(`Unexpected fork release version: ${forkReleaseVersion}`);
+  }
 
   const { arm64Path, x64Path } = writeMacManifestFixtures(tempRoot);
   const { arm64Path: winArm64Path, x64Path: winX64Path } = writeWindowsManifestFixtures(

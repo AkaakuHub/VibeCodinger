@@ -1,0 +1,105 @@
+name: Fork Android APK
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+env:
+  NODE_OPTIONS: --max-old-space-size=8192
+
+jobs:
+  android:
+    name: Android debug APK (arm64)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      VIBECODINGER_SHOWCASE_ANDROID_ABI: arm64-v8a
+      CMAKE_C_COMPILER_LAUNCHER: ccache
+      CMAKE_CXX_COMPILER_LAUNCHER: ccache
+      CCACHE_BASEDIR: ${{ github.workspace }}
+      CCACHE_COMPILERCHECK: content
+      CCACHE_MAXSIZE: 512M
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          sparse-checkout: |
+            /*
+            !/.repos/
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@250f29ce396baf5e8f24498e17c0dfdebabc26eb # v1.15.0
+        with:
+          node-version-file: package.json
+          cache: true
+          run-install: |
+            args:
+              - --filter=@vibecodinger/mobile...
+              - --filter=@vibecodinger/scripts...
+              - --filter=vibecodinger...
+
+      - name: Expose pnpm
+        run: |
+          pnpm_version="$(node --print "require('./package.json').packageManager.split('@').pop()")"
+          vp_pnpm_bin="$HOME/.vite-plus/package_manager/pnpm/$pnpm_version/pnpm/bin"
+          echo "$vp_pnpm_bin" >> "$GITHUB_PATH"
+          "$vp_pnpm_bin/pnpm" --version
+
+      - name: Setup Java
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Setup Gradle cache
+        uses: gradle/actions/setup-gradle@0723195856401067f7a2779048b490ace7a47d7c # v5.0.2
+        with:
+          cache-read-only: false
+
+      - name: Set up ccache
+        id: ccache
+        run: |
+          echo "CCACHE_DIR=$RUNNER_TEMP/android-ccache" >> "$GITHUB_ENV"
+          if ! command -v ccache >/dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y ccache
+          fi
+
+      - name: Cache Android C and C++ compilation results
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        env:
+          CACHE_PREFIX: android-ccache-v1-${{ runner.os }}-${{ runner.arch }}-${{ env.VIBECODINGER_SHOWCASE_ANDROID_ABI }}-${{ hashFiles('pnpm-lock.yaml') }}-
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ${{ env.CACHE_PREFIX }}${{ hashFiles('apps/mobile/app.config.ts', 'apps/mobile/plugins/**', 'apps/mobile/modules/**/android/**', 'apps/mobile/modules/**/cpp/**') }}
+          restore-keys: ${{ env.CACHE_PREFIX }}
+
+      - name: Generate Android build project
+        working-directory: apps/mobile
+        env:
+          APP_VARIANT: production
+          EXPO_NO_TELEMETRY: "1"
+        run: pnpm exec expo prebuild --clean --platform android --no-install
+
+      - name: Build Android APK
+        working-directory: apps/mobile/android
+        env:
+          APP_VARIANT: production
+          EXPO_NO_TELEMETRY: "1"
+        run: ./gradlew app:assembleDebug --build-cache "-PreactNativeArchitectures=$VIBECODINGER_SHOWCASE_ANDROID_ABI"
+
+      - name: Upload Android APK
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: android-arm64-debug-apk
+          path: apps/mobile/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 0
+
+      - name: Report Android native cache statistics
+        if: ${{ !cancelled() && steps.ccache.outcome == 'success' }}
+        run: ccache --show-stats
