@@ -27,6 +27,7 @@ import {
   type AntigravityAuthConfig,
   type AntigravityProfile,
   buildAntigravityAcpSpawnInput,
+  buildAntigravityUsageSpawnInput,
   isAntigravitySignInRequiredError,
   makeAntigravityStderrHandler,
   makeAntigravityStdoutTransform,
@@ -634,6 +635,38 @@ it.layer(NodeServices.layer)("Antigravity profile preparation", (it) => {
       yield* fs.writeFileString(profile.tokenPath, "synthetic-token-fixture");
       yield* prepareAntigravityProfile({ profileDirectory: profile.geminiHome });
       expect(yield* fs.readFileString(profile.tokenPath)).toBe("synthetic-token-fixture");
+    }),
+  );
+
+  it.effect("uses the ACP account from a separate CLI home for usage reads", () =>
+    Effect.gen(function* () {
+      const fs = yield* FileSystem.FileSystem;
+      const path = yield* Path.Path;
+      const directory = yield* fs.makeTempDirectoryScoped();
+      const profile = yield* prepareAntigravityProfile({
+        profileDirectory: path.join(directory, "profile"),
+      });
+      yield* fs.writeFileString(profile.tokenPath, "synthetic-token-fixture");
+      const runtimeTempDirectory = yield* fs.makeTempDirectoryScoped();
+      const acpSpawn = buildAntigravityAcpSpawnInput({
+        installation: { executablePath: "agy" },
+        profile,
+        cwd: directory,
+      });
+      const usageSpawn = yield* buildAntigravityUsageSpawnInput({
+        profile,
+        acpSpawn,
+        runtimeTempDirectory,
+      });
+      const usageProfile = path.join(usageSpawn.cwd, ".gemini", "antigravity-cli");
+      expect(yield* fs.realPath(usageProfile)).toBe(yield* fs.realPath(profile.acpDirectory));
+      expect(
+        yield* fs.readFileString(path.join(usageProfile, path.basename(profile.tokenPath))),
+      ).toBe("synthetic-token-fixture");
+      expect(usageSpawn.env.HOME).toBe(runtimeTempDirectory);
+      if (profile.platform === "win32") {
+        expect(usageSpawn.env.USERPROFILE).toBe(runtimeTempDirectory);
+      }
     }),
   );
 

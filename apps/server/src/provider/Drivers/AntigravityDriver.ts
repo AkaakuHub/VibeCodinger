@@ -44,10 +44,12 @@ import {
   antigravityAuthLabel,
   antigravityAuthUsesBrowser,
   buildAntigravityAcpSpawnInput,
+  buildAntigravityUsageSpawnInput,
   isAntigravitySignInRequiredError,
   prepareAntigravityProfile,
   resolveAntigravityInstanceDirectories,
   type AntigravityAuthConfig,
+  type AntigravityProfile,
 } from "../antigravityAuthSupport.ts";
 import {
   antigravityModelOptions,
@@ -236,6 +238,8 @@ export const AntigravityDriver: ProviderDriver<AntigravitySettings, AntigravityD
       {
         readonly executable: AntigravityInstallation.AntigravityExecutable;
         readonly spawn: AcpSessionRuntime.AcpSpawnInput;
+        readonly profile: AntigravityProfile;
+        readonly runtimeTempDirectory: string;
       },
       AcpErrors.AcpError | ProviderSetupError,
       Scope.Scope
@@ -305,6 +309,8 @@ export const AntigravityDriver: ProviderDriver<AntigravitySettings, AntigravityD
       );
       return {
         executable,
+        profile,
+        runtimeTempDirectory,
         spawn: buildAntigravityAcpSpawnInput({
           installation: executable,
           profile,
@@ -591,28 +597,31 @@ export const AntigravityDriver: ProviderDriver<AntigravitySettings, AntigravityD
       const windows = yield* Effect.gen(function* () {
         const resolved = yield* installation.resolve(settings.binaryPath, processEnvironment);
         if (resolved.version !== null && !supportsUsageCommand(resolved.version)) return [];
-        const { executable, spawn } = yield* prepareSpawn(userHome, processEnvironment);
+        const { executable, spawn, profile, runtimeTempDirectory } = yield* prepareSpawn(
+          userHome,
+          processEnvironment,
+        );
+        const usageSpawn = yield* buildAntigravityUsageSpawnInput({
+          profile,
+          acpSpawn: spawn,
+          runtimeTempDirectory,
+        }).pipe(
+          Effect.provideService(FileSystem.FileSystem, fileSystem),
+          Effect.provideService(Path.Path, path),
+        );
         const run = (args: ReadonlyArray<string>) =>
           spawnAndCollect(
-            spawn.command,
-            ChildProcess.make(spawn.command, args, {
-              cwd: spawn.cwd,
-              env: spawn.env,
+            usageSpawn.command,
+            ChildProcess.make(usageSpawn.command, args, {
+              cwd: usageSpawn.cwd,
+              env: usageSpawn.env,
               extendEnv: false,
               shell: false,
             }),
           ).pipe(Effect.provideService(ChildProcessSpawner.ChildProcessSpawner, spawner));
         const version = executable.version ?? parseCliVersionResult(yield* run(["--version"]));
         if (!supportsUsageCommand(version)) return [];
-        const result = yield* run([
-          ...spawn.args.slice(1).filter((arg) => arg !== "--disable-telemetry"),
-          "--settings",
-          '{"enableTelemetry":false}',
-          "-p",
-          "/usage",
-          "--output-format",
-          "json",
-        ]);
+        const result = yield* run(usageSpawn.args);
         return result.code === 0 ? parseAntigravityCliUsage(result.stdout) : [];
       }).pipe(Effect.scoped, Effect.timeout("20 seconds"), Effect.option);
       if (Option.isNone(windows)) return unavailable("probeFailed");

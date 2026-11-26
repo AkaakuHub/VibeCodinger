@@ -570,6 +570,53 @@ export function buildAntigravityAcpSpawnInput(input: {
   };
 }
 
+export const buildAntigravityUsageSpawnInput = Effect.fn("buildAntigravityUsageSpawnInput")(
+  function* (input: {
+    readonly profile: AntigravityProfile;
+    readonly acpSpawn: AcpSessionRuntime.AcpSpawnInput;
+    readonly runtimeTempDirectory: string;
+  }) {
+    const fs = yield* FileSystem.FileSystem;
+    const path = yield* Path.Path;
+    const home = input.runtimeTempDirectory;
+    const geminiHome = path.join(home, ".gemini");
+    yield* fs.makeDirectory(geminiHome);
+    // Print mode reads the CLI profile under the home directory instead of taking ACP path flags.
+    yield* Effect.tryPromise({
+      try: () =>
+        NodeFSP.symlink(
+          input.profile.acpDirectory,
+          path.join(geminiHome, "antigravity-cli"),
+          input.profile.platform === "win32" ? "junction" : "dir",
+        ),
+      catch: () => authSupportError("The Antigravity CLI profile could not be linked."),
+    });
+    const inherited = Object.fromEntries(
+      Object.entries(input.acpSpawn.env ?? {}).filter(
+        ([name]) => !["HOME", "USERPROFILE"].includes(name.toUpperCase()),
+      ),
+    );
+    return {
+      ...input.acpSpawn,
+      args: [
+        "--settings",
+        '{"disableSlashCommands":false}',
+        "-p",
+        "/usage",
+        "--output-format",
+        "json",
+      ],
+      cwd: home,
+      env: {
+        ...inherited,
+        HOME: home,
+        ...(input.profile.platform === "win32" ? { USERPROFILE: home } : {}),
+        GEMINI_HOME: geminiHome,
+      },
+    } satisfies AcpSessionRuntime.AcpSpawnInput;
+  },
+);
+
 /** Where `agy acp --login` sends Google; the page shows a code the user pastes back. */
 const ANTIGRAVITY_CODE_REDIRECT_URI = "https://antigravity.google/oauth-callback";
 
