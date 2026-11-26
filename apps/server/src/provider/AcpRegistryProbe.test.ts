@@ -572,11 +572,12 @@ await import(pathToFileURL(agentPath).href);
                     args: [mockAgentPath],
                     env: {
                       ...process.env,
-                      T3_ACP_SESSION_LIFECYCLE: "1",
-                      T3_ACP_V2_MANAGEMENT: "1",
-                      T3_ACP_REQUEST_LOG_PATH: requestLogPath,
-                      T3_ACP_PROMPT_RESPONSE_TEXT: '{"title":"Migrate Sessions to Postgres"}',
-                      T3_ACP_OMIT_MODEL_OPTIONS: omitModelOptions ? "1" : "0",
+                      VIBECODINGER_ACP_SESSION_LIFECYCLE: "1",
+                      VIBECODINGER_ACP_V2_MANAGEMENT: "1",
+                      VIBECODINGER_ACP_REQUEST_LOG_PATH: requestLogPath,
+                      VIBECODINGER_ACP_PROMPT_RESPONSE_TEXT:
+                        '{"title":"Migrate Sessions to Postgres"}',
+                      VIBECODINGER_ACP_OMIT_MODEL_OPTIONS: omitModelOptions ? "1" : "0",
                     },
                   },
                 }),

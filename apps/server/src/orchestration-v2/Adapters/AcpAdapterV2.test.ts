@@ -7584,7 +7584,7 @@ describe("AcpAdapterV2", () => {
       childProcessSpawner: yield* ChildProcessSpawner.ChildProcessSpawner,
       mockAgentPath: yield* bundledMockAgentPath,
       environment: {
-        T3_ACP_HANG_PROMPT_FOREVER: "1",
+        VIBECODINGER_ACP_HANG_PROMPT_FOREVER: "1",
         ...agentEnvironment?.({ workspace, elsewhere }),
       },
       wrapRuntime: (runtime) => ({
@@ -7842,7 +7842,7 @@ describe("AcpAdapterV2", () => {
   it.effect("auto-accepts an edit named by id whose updates from the agent were all read", () =>
     Effect.gen(function* () {
       const turn = yield* startAutoAcceptEditsTurn("edit-read-updates", ({ workspace }) => ({
-        T3_ACP_EMIT_EDIT_UPDATES_THEN_REQUEST: JSON.stringify([
+        VIBECODINGER_ACP_EMIT_EDIT_UPDATES_THEN_REQUEST: JSON.stringify([
           {
             sessionUpdate: "tool_call_update",
             toolCallId: "edit-tracked",
@@ -7918,7 +7918,7 @@ describe("AcpAdapterV2", () => {
         const turn = yield* startAutoAcceptEditsTurn("edit-unread-update", ({ workspace }) => {
           const inside = `${workspace}/src/a.ts`;
           return {
-            T3_ACP_EMIT_EDIT_UPDATES_THEN_REQUEST: JSON.stringify([
+            VIBECODINGER_ACP_EMIT_EDIT_UPDATES_THEN_REQUEST: JSON.stringify([
               {
                 sessionUpdate: "tool_call_update",
                 toolCallId: "edit-tracked",
