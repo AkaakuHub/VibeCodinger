@@ -80,10 +80,10 @@ jobs:
 
           tag="vibecodinger-build-${GITHUB_SHA:0:12}"
           gh release create "$tag" release-assets/* --target "$GITHUB_SHA" \
-            --prerelease --latest=false --title "VibeCodinger ${GITHUB_SHA:0:12}" \
+            --latest --title "VibeCodinger ${GITHUB_SHA:0:12}" \
             --notes "Built from `$GITHUB_SHA`. The iPhone IPA requires signing before installation."
-          previous=$(gh release list --limit 100 --json tagName,isDraft,isPrerelease \
-            --jq '.[] | select(.isPrerelease and (.isDraft | not)) | .tagName')
+          previous=$(gh release list --limit 100 --json tagName,isDraft \
+            --jq '.[] | select(.isDraft | not) | .tagName')
           while IFS= read -r old; do
             if [[ "$old" =~ ^vibecodinger-build-[0-9a-f]{12}$ && "$old" != "$tag" ]]; then
               gh release delete "$old" --yes --cleanup-tag
