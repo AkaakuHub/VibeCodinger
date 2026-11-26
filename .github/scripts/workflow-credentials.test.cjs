@@ -28,11 +28,9 @@ test("npm publishing is bound to the environment that admits only main and v* ta
 });
 
 test("the iPhone package job has read-only repository access", () => {
-  const { package: build, "draft-release": publish } = jobs("workflows/fork-ios-ipa.yml");
+  const { package: build } = jobs("workflows/fork-ios-ipa.yml");
   assert.match(build, /^ {6}contents: read$/m);
-  assert.doesNotMatch(build, /secrets\.|contents: write/);
-  assert.match(publish, /^ {6}contents: write$/m);
-  assert.ok(!runsProjectCode(publish), "the draft release job runs build code with a write token");
+  assert.doesNotMatch(read("workflows/fork-ios-ipa.yml"), /secrets\.|contents: write/);
 });
 
 test("the release version bump is pushed by a job that installs nothing, with a token for this repository only", () => {

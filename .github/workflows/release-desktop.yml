@@ -98,6 +98,10 @@ on:
       release_channel:
         required: true
         type: string
+      artifact_retention_days:
+        required: false
+        default: 0
+        type: number
 
 # electron-builder leaves the default arch (x64) out of the unpacked app's
 # directory name.
@@ -467,6 +471,7 @@ jobs:
           name: cli-${{ inputs.platform }}-${{ inputs.arch }}
           path: release-cli/*
           if-no-files-found: error
+          retention-days: ${{ inputs.artifact_retention_days }}
           # The archive is already gzip or zip; deflating it again saves under 2%.
           compression-level: 0
 
@@ -668,6 +673,7 @@ jobs:
           name: cli-${{ inputs.platform }}-${{ inputs.arch }}
           path: release-cli/*
           if-no-files-found: error
+          retention-days: ${{ inputs.artifact_retention_days }}
           # The archive is already gzip or zip; deflating it again saves under 2%.
           compression-level: 0
 
@@ -814,6 +820,7 @@ jobs:
           name: desktop-${{ inputs.platform }}-${{ inputs.arch }}
           path: release-publish/*
           if-no-files-found: error
+          retention-days: ${{ inputs.artifact_retention_days }}
           # Installers, zips and blockmaps are already compressed; deflating them again saves under 0.3%.
           compression-level: 0
 
@@ -823,6 +830,7 @@ jobs:
           name: resource-monitor-${{ inputs.resource_key }}
           path: resource-monitor-publish/${{ inputs.resource_key }}/*
           if-no-files-found: error
+          retention-days: ${{ inputs.artifact_retention_days }}
 
   verify:
     name: Verify
