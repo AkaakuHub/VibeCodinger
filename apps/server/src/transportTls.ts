@@ -4,6 +4,7 @@ import * as NodeHttp from "node:http";
 import * as NodeTls from "node:tls";
 // @effect-diagnostics nodeBuiltinImport:off - Node owns the TLS and HTTP sockets.
 import type * as NodeNet from "node:net";
+import { isLocalLoopbackHost, isTailnetHost } from "@vibecodinger/shared/hostClassification";
 import * as Config from "effect/Config";
 import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";
@@ -13,14 +14,34 @@ import * as Schema from "effect/Schema";
 import * as Schedule from "effect/Schedule";
 import { HttpRouter, HttpServerRequest, HttpServerResponse } from "effect/http";
 
+import { MCP_HTTP_PATH } from "./httpCors.ts";
+
 class TransportTlsError extends Schema.TaggedError<TransportTlsError>()("TransportTlsError", {
   message: Schema.String,
   cause: Schema.optional(Schema.Defect()),
 }) {}
 
-export const isDirectTlsRequest = (request: { readonly source: object }): boolean =>
+const isDirectTlsRequest = (request: { readonly source: object }): boolean =>
   request.source instanceof NodeHttp.IncomingMessage &&
   request.source.socket instanceof NodeTls.TLSSocket;
+
+export const requiresSocketE2ee = (request: HttpServerRequest.HttpServerRequest): boolean => {
+  if (isDirectTlsRequest(request)) return true;
+  if (!(request.source instanceof NodeHttp.IncomingMessage)) return false;
+  return isTailscaleHttpsForward(request.source.socket.remoteAddress, request.headers);
+};
+
+export const isTailscaleHttpsForward = (
+  peer: string | undefined,
+  headers: HttpServerRequest.HttpServerRequest["headers"],
+): boolean => {
+  // Serve terminates HTTPS on this host. A peer outside loopback cannot assert that transport.
+  if (peer === undefined || !isLocalLoopbackHost(peer.replace(/^::ffff:/, ""))) return false;
+  if (headers["x-forwarded-proto"] !== "https") return false;
+  const host = headers.host;
+  const url = host === undefined ? null : URL.parse(`https://${host}`);
+  return url !== null && isTailnetHost(url.hostname);
+};
 
 const portConfig = Config.option(Config.Int("VIBECODINGER_TLS_PORT"));
 
@@ -31,12 +52,15 @@ export const layerRequireTls = Layer.unwrap(
       (effect) =>
         Effect.flatMap(HttpServerRequest.HttpServerRequest, (request) => {
           if (isDirectTlsRequest(request)) return effect;
-          // The headless pairing CLI discovers the local listener before minting its link.
           if (
-            request.method === "GET" &&
-            request.url === "/.well-known/vibecodinger/environment" &&
+            request.source instanceof NodeHttp.IncomingMessage &&
+            request.source.socket.remoteAddress === "127.0.0.1" &&
             /^127\.0\.0\.1(?::\d+)?$/.test(request.headers.host ?? "") &&
-            request.headers["x-forwarded-proto"] === undefined
+            request.headers["x-forwarded-proto"] === undefined &&
+            request.headers["x-forwarded-for"] === undefined &&
+            ((request.method === "GET" &&
+              request.url === "/.well-known/vibecodinger/environment") ||
+              request.url === MCP_HTTP_PATH)
           ) {
             return effect;
           }

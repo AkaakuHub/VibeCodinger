@@ -162,7 +162,7 @@ describe("socketE2ee", () => {
     }).pipe(Effect.provide(layerE2eeCrypto)),
   );
 
-  it.live("handshake and bidirectional records round-trip", () =>
+  it.live("handshake delivers writes queued before the reader opens", () =>
     Effect.gen(function* () {
       const pair = yield* makeSocketPair;
       const identity = yield* generateIdentityKeypair();
@@ -195,9 +195,12 @@ describe("socketE2ee", () => {
             environmentId: ENVIRONMENT_ID,
             expectedServerIdentityKey: identity.publicKey,
           });
-          const reader = yield* wrapped.reader;
           const writer = yield* wrapped.writer;
-          yield* writer.write('{"from":"client"}');
+          const firstWrite = yield* Effect.forkScoped(writer.write('{"from":"client"}'), {
+            startImmediately: true,
+          });
+          const reader = yield* wrapped.reader;
+          yield* Fiber.join(firstWrite).pipe(Effect.timeout("5 seconds"));
           yield* writer.write('{"from":"client-2"}');
           const batch = yield* reader.pull;
           assert.deepEqual([...batch], ['{"from":"server"}']);
