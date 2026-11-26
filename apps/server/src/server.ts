@@ -1,5 +1,11 @@
 import { layerWithoutOfficialRelay } from "./cloud/officialRelay.ts";
 import * as ProviderEventLoggers from "@vibecodinger/provider-core/server/ProviderEventLoggers";
+<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
+=======
+import * as DatabaseMigrationProgress from "./persistence/DatabaseMigrationProgress.ts";
+import type { RelayManagedEndpointRuntimeConfig } from "@vibecodinger/contracts/relay";
+import * as Random from "effect/Random";
+>>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 import * as EnvironmentKeys from "./cloud/environmentKeys.ts";
 import * as AssetSigner from "./assets/AssetSigner.ts";
 import * as WorkspacePreviewRevisions from "./assets/WorkspacePreviewRevisions.ts";
@@ -22,6 +28,11 @@ import * as FeatureFlags from "@vibecodinger/shared/FeatureFlags";
 import * as HostProcess from "@vibecodinger/shared/HostProcess";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
+<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
+=======
+import * as Option from "effect/Option";
+import * as Ref from "effect/Ref";
+>>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 import * as Layer from "effect/Layer";
 import * as Stream from "effect/Stream";
 import { HttpRouter, HttpServer } from "effect/http";
@@ -135,6 +146,8 @@ import * as VibeCodingerProjectFileLoader from "./project/VibeCodingerProjectFil
 import * as RepositoryIdentityResolver from "./project/RepositoryIdentityResolver.ts";
 import * as WorkspaceEntries from "./workspace/WorkspaceEntries.ts";
 import * as WorkspaceFolders from "./workspace/WorkspaceFolders.ts";
+import * as LayoutCommandApprovals from "./workspace/LayoutCommandApprovals.ts";
+import * as LayoutCommandApprovalWrites from "./workspace/LayoutCommandApprovalWrites.ts";
 import * as TaskFolders from "./workspace/TaskFolders.ts";
 import * as TaskFolderStore from "./workspace/TaskFolderStore.ts";
 import * as KnownWorkspaces from "./workspace/KnownWorkspaces.ts";
@@ -307,6 +320,7 @@ const layerSpawner = SpawnWorker.layerServer.pipe(Layer.provide(NodeServices.lay
 const layerHttpServer = Layer.unwrap(
   Effect.gen(function* () {
     const config = yield* ServerConfig.ServerConfig;
+    const migrationProgress = yield* DatabaseMigrationProgress.DatabaseMigrationProgress;
     // Before binding: a host the policy does not allow must never listen, not even briefly.
     const policy = yield* ManagedPolicy.ManagedPolicy;
     const bindHost = yield* ManagedLimits.checkServerReachability(policy, {
@@ -317,6 +331,7 @@ const layerHttpServer = Layer.unwrap(
     });
     yield* ManagedLimits.closeTailscaleServeTo(policy, { host: bindHost, port: config.port });
     const runSync = Effect.runSyncWith(yield* Effect.context<never>());
+<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
     const server = rejectRequestsUntilServing(
       keepIdleConnections(guardHttpResponseWriteErrors(NodeHttp.createServer())),
     );
@@ -340,6 +355,30 @@ const layerHttpServer = Layer.unwrap(
       ),
       Layer.merge(layerSpawner),
     );
+=======
+    return NodeHttpServer.layer(
+      () => {
+        const server = rejectRequestsUntilServing(
+          keepIdleConnections(guardHttpResponseWriteErrors(NodeHttp.createServer())),
+          () => Ref.getUnsafe(migrationProgress.current),
+        );
+        if (config.privateNetworkOnly) {
+          runSync(closeNonPrivateNetworkConnections(server));
+        }
+        return server;
+      },
+      {
+        host: bindHost,
+        port: config.port,
+        gracefulShutdownTimeout: HTTP_PREEMPTIVE_SHUTDOWN_GRACE_MS,
+        // Context takeover stays enabled (ws default) so the compression
+        // window is shared across frames — that also makes small frames cheap
+        // to compress, so no size threshold is set (ws only honors
+        // `threshold` when context takeover is disabled).
+        websocket: { perMessageDeflate: true },
+      },
+    ).pipe(Layer.merge(layerSpawner));
+>>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
   }),
 ).pipe(
   Layer.provide(ManagedPolicy.layer),
@@ -526,6 +565,8 @@ const layerTaskFolders = TaskFolders.layer.pipe(
   Layer.provide(
     Layer.mergeAll(
       TaskFolderStore.layer,
+      LayoutCommandApprovals.layer,
+      ManagedPolicy.layer,
       ProjectStore.layer,
       ProjectionStoreV2.layer,
       VcsProcess.layer,
@@ -669,7 +710,7 @@ const layerRuntimeCoreDependenciesBase = Layer.mergeAll(
   Layer.provideMerge(layerOrchestrationApplication),
   // One hub, which the feeders above and the workflow store inside the runtime publish to.
   Layer.provideMerge(MilestoneHub.layer),
-  Layer.provideMerge(layerTaskFolders),
+  Layer.provideMerge(Layer.merge(layerTaskFolders, LayoutCommandApprovalWrites.layer)),
   Layer.provideMerge(RuntimeLayer.layerEventInfrastructure),
   Layer.provideMerge(Layer.merge(ProjectStore.layer, ThreadSearch.layer)),
   Layer.provideMerge(SecretCheck.layer),
@@ -1087,6 +1128,7 @@ const layerMakeServer = Layer.unwrap(
       ),
       Layer.provide(layerActivation),
       Layer.provideMerge(layerHttpServer),
+      Layer.provide(DatabaseMigrationProgress.layer),
       Layer.provide(layerApplicationObservability),
       Layer.provideMerge(layerWithoutOfficialRelay),
       Layer.provide(VcsProcess.layer),

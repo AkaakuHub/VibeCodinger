@@ -16,8 +16,15 @@ import type * as AcpCompat from "effect-acp/compat";
 
 import { beginAcpMockPrompt } from "./acpMockCancellationState.ts";
 
+<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 const requestLogPath = process.env.VIBECODINGER_ACP_REQUEST_LOG_PATH;
 const antigravityProfile = process.env.VIBECODINGER_ACP_ANTIGRAVITY === "1";
+=======
+const requestLogPath = process.env.T3_ACP_REQUEST_LOG_PATH;
+const antigravityProfile = process.env.T3_ACP_ANTIGRAVITY === "1";
+const antigravityThoughtLevel = process.env.T3_ACP_ANTIGRAVITY_THOUGHT_LEVEL === "1";
+const antigravityResumeThoughtLevel = process.env.T3_ACP_RESUME_THOUGHT_LEVEL;
+>>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 // GitHub Copilot CLI advertises URL-shaped session mode ids.
 const copilotModesProfile = process.env.VIBECODINGER_ACP_COPILOT_MODES === "1";
 const copilotModeId = (name: string) =>
@@ -63,11 +70,26 @@ const floodStderr = process.env.VIBECODINGER_ACP_FLOOD_STDERR === "1";
 const hangPromptForever = process.env.VIBECODINGER_ACP_HANG_PROMPT_FOREVER === "1";
 const agentVersion = process.env.VIBECODINGER_ACP_AGENT_VERSION ?? "0.0.0";
 const geminiApiKey = process.env.GEMINI_API_KEY;
+<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 const idleError = process.env.VIBECODINGER_ACP_IDLE_ERROR;
 const emitTrackedToolCallKindThenHang =
   process.env.VIBECODINGER_ACP_EMIT_TRACKED_TOOL_CALL_KIND_THEN_HANG;
 const clientFsProbePath = process.env.VIBECODINGER_ACP_CLIENT_FS_PROBE_PATH;
 const clientFsProbeLogPath = process.env.VIBECODINGER_ACP_CLIENT_FS_PROBE_LOG_PATH;
+=======
+const idleError = process.env.T3_ACP_IDLE_ERROR;
+const emitTrackedToolCallKindThenHang = process.env.T3_ACP_EMIT_TRACKED_TOOL_CALL_KIND_THEN_HANG;
+// A JSON array of `update` objects written as they are, valid or not, for the tool call
+// "edit-tracked"; an edit permission request naming only that id follows them.
+const editUpdatesThenRequest =
+  process.env.T3_ACP_EMIT_EDIT_UPDATES_THEN_REQUEST === undefined
+    ? undefined
+    : Schema.decodeSync(Schema.fromJsonString(Schema.Array(Schema.Unknown)))(
+        process.env.T3_ACP_EMIT_EDIT_UPDATES_THEN_REQUEST,
+      );
+const clientFsProbePath = process.env.T3_ACP_CLIENT_FS_PROBE_PATH;
+const clientFsProbeLogPath = process.env.T3_ACP_CLIENT_FS_PROBE_LOG_PATH;
+>>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 const encodeJson = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
 const emitEmptySuccessfulBash = process.env.VIBECODINGER_ACP_EMIT_EMPTY_SUCCESSFUL_BASH === "1";
 const emitEmptySuccessfulBashThenHang =
@@ -131,6 +153,7 @@ let currentModeId = antigravityProfile
     ? copilotModeId("agent")
     : "ask";
 let currentModelId = antigravityProfile ? "gemini-test-low" : "default";
+let currentAntigravityThoughtLevel = "high";
 let parameterizedModelPicker = false;
 let currentReasoning = "medium";
 let currentContext = "272k";
@@ -166,6 +189,9 @@ process.once("SIGINT", () => {
 });
 
 function configOptions(): ReadonlyArray<AcpSchema.SessionConfigOption> {
+  if (process.env.T3_ACP_OMIT_MODEL_OPTIONS === "1") {
+    return [];
+  }
   if (antigravityProfile) {
     return [
       {
@@ -184,6 +210,30 @@ function configOptions(): ReadonlyArray<AcpSchema.SessionConfigOption> {
         currentValue: currentModeId,
         options: availableModes.map((mode) => ({ value: mode.id, name: mode.name })),
       },
+      ...(antigravityThoughtLevel
+        ? [
+            {
+              configId: "thought_level",
+              name: "Thinking Level",
+              category: "thought_level",
+              type: "select" as const,
+              currentValue: currentAntigravityThoughtLevel,
+              options:
+                currentModelId === "gemini-test-high"
+                  ? [
+                      { value: "low", name: "Low" },
+                      { value: "medium", name: "Medium" },
+                      { value: "high", name: "High" },
+                    ]
+                  : [
+                      { value: "low", name: "Low" },
+                      { value: "medium", name: "Medium" },
+                      { value: "high", name: "High" },
+                      { value: "xhigh", name: "Extra" },
+                    ],
+            },
+          ]
+        : []),
     ];
   }
   if (parameterizedModelPicker) {
@@ -669,6 +719,9 @@ const program = Effect.gen(function* () {
         },
       });
       if (antigravityProfile) {
+        if (antigravityResumeThoughtLevel) {
+          currentAntigravityThoughtLevel = antigravityResumeThoughtLevel;
+        }
         yield* publishAntigravityCommands(request.sessionId);
       }
       return {
@@ -897,6 +950,12 @@ const program = Effect.gen(function* () {
       }
       if (request.configId === "model" && typeof request.value === "string") {
         currentModelId = request.value;
+        if (antigravityProfile && antigravityThoughtLevel) {
+          currentAntigravityThoughtLevel = request.value === "gemini-test-high" ? "medium" : "high";
+        }
+      }
+      if (request.configId === "thought_level" && typeof request.value === "string") {
+        currentAntigravityThoughtLevel = request.value;
       }
       if (request.configId === "agent" && typeof request.value === "string") {
         currentAgent = request.value;
@@ -1354,6 +1413,15 @@ const program = Effect.gen(function* () {
           },
           {
             sessionUpdate: "tool_call_update",
+            toolCallId: "structured-search-grep-output",
+            title: "Grep",
+            kind: "search",
+            status: "completed",
+            rawInput: { pattern: "needle", path: "src" },
+            rawOutput: "src/a.ts:3:const needle = 1;\nsrc/b.ts:9:needle();",
+          },
+          {
+            sessionUpdate: "tool_call_update",
             toolCallId: "structured-search-query-no-output",
             title: "Grep",
             kind: "search",
@@ -1595,6 +1663,40 @@ const program = Effect.gen(function* () {
           },
         });
         if (!failPrompt && promptCount !== failPromptOrdinal) return yield* Effect.never;
+      }
+
+      if (editUpdatesThenRequest !== undefined) {
+        for (const update of editUpdatesThenRequest) {
+          writeJsonRpcNotification("session/update", { sessionId: requestedSessionId, update });
+        }
+        const permission = yield* agent.client.requestPermission({
+          sessionId: requestedSessionId,
+          title: "Edit file",
+          subject: {
+            type: "tool_call",
+            toolCall: { toolCallId: "edit-tracked", title: "Edit file", kind: "edit" },
+          },
+          options: [
+            { optionId: permissionOptionIds.allowOnce, name: "Allow once", kind: "allow_once" },
+            { optionId: permissionOptionIds.rejectOnce, name: "Reject", kind: "reject_once" },
+          ],
+        });
+        // The answer is reported as a tool call so a test can read it from the turn's items.
+        yield* agent.client.sessionUpdate({
+          sessionId: requestedSessionId,
+          update: {
+            sessionUpdate: "tool_call_update",
+            toolCallId: `edit-answered:${
+              permission.outcome.outcome === "selected"
+                ? permission.outcome.optionId
+                : permission.outcome.outcome
+            }`,
+            title: "Edit answered",
+            kind: "other",
+            status: "completed",
+          },
+        });
+        return yield* Effect.never;
       }
 
       if (failPrompt || promptCount === failPromptOrdinal) {

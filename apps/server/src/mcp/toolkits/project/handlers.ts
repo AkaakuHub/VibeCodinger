@@ -37,8 +37,17 @@ import {
   resolveProjectSettings,
 } from "@vibecodinger/shared/projectSettings";
 import { resolveProjectScripts } from "@vibecodinger/shared/projectScripts";
+<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 import { parseVibeCodingerProjectFile } from "@vibecodinger/shared/vibeCodingerProjectFile";
 import { resolveRuntimeMode } from "../../delegatedTaskModes.ts";
+=======
+import { parseT3ProjectFile } from "@vibecodinger/shared/t3ProjectFile";
+import {
+  providerOptionDescriptors,
+  refuseAgentModePick,
+  resolveRuntimeMode,
+} from "../../delegatedTaskModes.ts";
+>>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 import * as McpInvocationContext from "../../McpInvocationContext.ts";
 import * as McpToolAccess from "../../McpToolAccess.ts";
 import * as OrchestrationMcp from "../../OrchestratorMcpService.ts";
@@ -339,6 +348,16 @@ export const layer = McpToolAccess.toLayer(ProjectToolkit, {
             const provider = OrchestrationMcp.withWorkspaceModels(providers, cwd).find(
               (candidate) => candidate.instanceId === instanceId,
             );
+            // Checked with the same provider snapshot that validates the options below.
+            yield* refuseAgentModePick({
+              callerRuntimeMode: context.limits.runtimeMode,
+              picked: requestedSelection.options,
+              descriptors: providerOptionDescriptors(provider),
+              held:
+                caller?.modelSelection.instanceId === instanceId
+                  ? caller.modelSelection.options
+                  : undefined,
+            });
             if (provider === undefined) return requestedSelection;
             yield* OrchestrationMcp.requireAdvertisedModel(provider, model);
             const options = yield* OrchestrationMcp.validateModelOptions(

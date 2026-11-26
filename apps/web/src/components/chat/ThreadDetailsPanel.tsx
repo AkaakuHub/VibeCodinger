@@ -11,7 +11,11 @@ import { scopeProjectRef } from "@vibecodinger/client-runtime/environment";
 import { isScratchProject } from "@vibecodinger/client-runtime/state/projects";
 
 import type { ComposerThreadTarget, DraftId } from "../../composerDraftStore";
+<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 import { useVibeCodingerProjectFileScripts } from "../../hooks/useVibeCodingerProjectFileScripts";
+=======
+import { useT3ProjectFileState } from "../../hooks/useT3ProjectFileScripts";
+>>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 import { type EnvMode, type EnvironmentOption } from "../BranchToolbar.logic";
 import { BranchToolbar } from "../BranchToolbar";
 import GitActionsControl from "../GitActionsControl";
@@ -101,7 +105,11 @@ export function ThreadDetailsPanel(props: ThreadDetailsPanelProps) {
   const visible = useClientSettings(resolveThreadDetailsVisibility);
   const gt = useGT();
   const [menuPosition, setMenuPosition] = useState<{ x: number; y: number } | null>(null);
+<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
   const fileScripts = useVibeCodingerProjectFileScripts(
+=======
+  const t3File = useT3ProjectFileState(
+>>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
     props.environmentId,
     props.activeProjectScripts && visible.scripts ? props.gitCwd : null,
   );
@@ -243,7 +251,8 @@ export function ThreadDetailsPanel(props: ThreadDetailsPanelProps) {
                         environmentId={props.environmentId}
                         displayMode="panel"
                         scripts={props.activeProjectScripts}
-                        fileScripts={fileScripts}
+                        fileScripts={t3File.scripts}
+                        onActionsMenuOpen={t3File.refresh}
                         preferredScriptId={props.preferredScriptId}
                         onRunScript={props.onRunProjectScript}
                         onAddScript={props.onAddProjectScript}

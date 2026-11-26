@@ -231,7 +231,13 @@ function antigravityEnvironment(
       ? { SSL_CERT_FILE: profile.caBundlePath }
       : {}),
     GEMINI_HOME: profile.geminiHome,
+<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
     AGY_CLI_DISABLE_AUTO_UPDATE: "1",
+=======
+    AGY_ACP_FORCE_FILE_STORAGE: "1",
+    // agy's troubleshooting docs specify "true"; the interactive CLI keeps self-updating with "1".
+    AGY_CLI_DISABLE_AUTO_UPDATE: "true",
+>>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
     BROWSER: profile.browserCommand,
     PYTHONUNBUFFERED: "1",
     ELECTRON_RUN_AS_NODE: "1",

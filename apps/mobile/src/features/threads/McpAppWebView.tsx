@@ -15,8 +15,11 @@ import { scopeThreadRef } from "@vibecodinger/client-runtime/environment";
 import { squashAtomCommandFailure } from "@vibecodinger/client-runtime/state/runtime";
 import { CommandId, MessageId } from "@vibecodinger/contracts";
 import {
+<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
   MCP_APP_DOCUMENT_MESSAGE,
   MCP_APP_DOCUMENT_MESSAGE_KEY,
+=======
+>>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
   mcpAppAllowAttribute,
   mcpAppFileName,
   mcpAppReferencesEqual,
@@ -48,9 +51,11 @@ import { useEnvironmentQuery } from "../../state/query";
 import { enqueueThreadOutboxMessage } from "../../state/thread-outbox";
 import { useAtomCommand } from "../../state/use-atom-command";
 import { useAppearancePreferences } from "../settings/appearance/AppearancePreferencesProvider";
+import { mcpAppRelayDocument } from "./mcpAppRelayDocument";
 import { MCP_APP_INLINE_MAX_HEIGHT, mcpAppInlineHeight } from "./mcpAppSizing";
 
 const ROW_BOTTOM_MARGIN = 8;
+<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 
 // Android exposes `ReactNativeWebView` to every frame, so a frame nested in the
 // app could post to React Native directly. The outer page therefore wraps what
@@ -76,6 +81,9 @@ if(plain)send(e.data);else if(waiting<256){unconfirmed[probe]=e.data;waiting+=1;
 window.__vibeCodingerMcpAppReceive=function(m){if(!live)return;if(port)port.postMessage({message:m,origin:location.origin});else if(plain&&frame.contentWindow)frame.contentWindow.postMessage(m,"*");};
 frame.src=${JSON.stringify(src).replace(/</g, "\\u003c")};})();</script></body></html>`;
 }
+=======
+const PRODUCT_NAME = "T3 Code";
+>>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 const commandFailure = (result: {
   readonly cause: Parameters<typeof squashAtomCommandFailure>[0]["cause"];
@@ -135,6 +143,7 @@ export function ThreadMcpApp(props: {
   const [uri, setUri] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [navigatedAway, setNavigatedAway] = useState(false);
+  const [bridgeMissing, setBridgeMissing] = useState(false);
   // Equal app content must retain its reference to preserve the live document host.
   // A different app needs a new document even when its asset URL is unchanged,
   // so the WebView key moves on with the document key, not only the URL.
@@ -145,6 +154,7 @@ export function ThreadMcpApp(props: {
     setUri(null);
     setLoaded(false);
     setNavigatedAway(false);
+    setBridgeMissing(false);
     setDocumentKeyState((value) => value + 1);
   }
   const fullscreen = props.displayMode === "fullscreen";
@@ -524,7 +534,7 @@ export function ThreadMcpApp(props: {
   const source =
     uri === null
       ? null
-      : { html: outerDocument(uri, mcpAppAllowAttribute(app.permissions), secret) };
+      : { html: mcpAppRelayDocument(uri, mcpAppAllowAttribute(app.permissions), secret) };
 
   if (presentedFullscreen) {
     return (
@@ -568,7 +578,17 @@ export function ThreadMcpApp(props: {
 
   return (
     <View style={fullscreen ? { flex: 1 } : { height, marginBottom: ROW_BOTTOM_MARGIN }}>
-      {navigatedAway ? (
+      {bridgeMissing ? (
+        // Only a server that binds the app to its document gets a bridge; without one the app cannot run.
+        <View className="flex-1 items-center justify-center rounded-lg border border-border px-4">
+          <Text className="text-center text-sm text-foreground-muted">
+            <T>
+              The <Var>{app.server}</Var> app needs a newer <Var>{PRODUCT_NAME}</Var> server on this
+              environment. Update the server to use it.
+            </T>
+          </Text>
+        </View>
+      ) : navigatedAway ? (
         <View className="flex-1 items-center justify-center">
           <Text className="text-sm text-foreground-muted">
             <T>
@@ -612,6 +632,11 @@ export function ThreadMcpApp(props: {
               setNavigatedAway(true);
               return;
             }
+            if (Predicate.isObject(message) && message.t3 === "unlinked") {
+              host?.dispose();
+              setBridgeMissing(true);
+              return;
+            }
             userActive.current = envelope.active === true;
             host?.receive(message);
             userActive.current = false;
@@ -626,7 +651,7 @@ export function ThreadMcpApp(props: {
           </Text>
         </View>
       ) : null}
-      {uri !== null && !loaded && !crashed && !navigatedAway ? (
+      {uri !== null && !loaded && !crashed && !navigatedAway && !bridgeMissing ? (
         <View pointerEvents="none" className="absolute inset-0 items-center justify-center">
           <AppActivityIndicator />
         </View>

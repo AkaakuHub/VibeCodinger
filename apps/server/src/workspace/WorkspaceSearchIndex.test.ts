@@ -307,10 +307,31 @@ it.live("answers content searches with git grep while a slow content index build
     const fileSystem = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
     const vcsProcess = yield* VcsProcess.VcsProcess;
+<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
     const cwd = yield* fileSystem.makeTempDirectoryScoped({
       prefix: "vibecodinger-content-warmup-",
     });
     yield* vcsProcess.run({ operation: "test.gitInit", command: "git", args: ["init"], cwd });
+=======
+    const repoRoot = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3-content-warmup-" });
+    yield* vcsProcess.run({
+      operation: "test.gitInit",
+      command: "git",
+      args: ["init"],
+      cwd: repoRoot,
+    });
+    // User git config must not change git grep's records or make it refuse --untracked.
+    for (const setting of ["grep.column", "grep.fullName", "submodule.recurse"]) {
+      yield* vcsProcess.run({
+        operation: "test.gitConfig",
+        command: "git",
+        args: ["config", setting, "true"],
+        cwd: repoRoot,
+      });
+    }
+    const cwd = path.join(repoRoot, "project");
+    yield* fileSystem.makeDirectory(cwd);
+>>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
     yield* fileSystem.writeFileString(path.join(cwd, ".gitignore"), "ignored.txt\n");
     yield* fileSystem.makeDirectory(path.join(cwd, "src"));
     yield* fileSystem.writeFileString(
@@ -737,6 +758,36 @@ it.effect("finds symlinks in folders past the first page of the index", () =>
       expect(directorySearch.mock.calls.map(([, options]) => options?.pageIndex)).toEqual([
         0, 1_000,
       ]);
+    }),
+  ).pipe(Effect.provide(testLayer)),
+);
+
+it.effect("keeps symlinks Git does not ignore when a link's name looks like a git pathspec", () =>
+  Effect.scoped(
+    Effect.gen(function* () {
+      if ((yield* HostProcess.Platform) === "win32") return;
+      const fileSystem = yield* FileSystem.FileSystem;
+      const path = yield* Path.Path;
+      const vcsProcess = yield* VcsProcess.VcsProcess;
+      const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "t3code-symlink-pathspec-" });
+      yield* vcsProcess.run({ operation: "test.gitInit", command: "git", args: ["init"], cwd });
+      yield* fileSystem.writeFileString(path.join(cwd, ".gitignore"), "ignored-link\n");
+      yield* fileSystem.writeFileString(path.join(cwd, "a.ts"), "");
+      yield* fileSystem.symlink("a.ts", path.join(cwd, "docs-link"));
+      yield* fileSystem.symlink("a.ts", path.join(cwd, ":(link)"));
+      yield* fileSystem.symlink("a.ts", path.join(cwd, "ignored-link"));
+      // Stage so `ls-files --others` skips it and `listGitIgnored` must hide it.
+      yield* vcsProcess.run({
+        operation: "test.gitAdd",
+        command: "git",
+        args: ["add", "-f", "ignored-link"],
+        cwd,
+      });
+      fakeSymlinkFinder([]);
+
+      const searchIndex = yield* WorkspaceSearchIndex.make(cwd);
+
+      expect(yield* listedPaths(searchIndex)).toEqual([":(link)", "docs-link"]);
     }),
   ).pipe(Effect.provide(testLayer)),
 );

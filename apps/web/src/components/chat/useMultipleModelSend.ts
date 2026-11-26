@@ -8,11 +8,15 @@ import {
   type ThreadId,
 } from "@vibecodinger/contracts";
 import { scopeThreadRef } from "@vibecodinger/client-runtime/environment";
+<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 import { deriveThreadTitleSeed } from "@vibecodinger/client-runtime/operations";
 import {
   settlePromise,
   squashAtomCommandFailure,
 } from "@vibecodinger/client-runtime/state/runtime";
+=======
+import { settlePromise, squashAtomCommandFailure } from "@vibecodinger/client-runtime/state/runtime";
+>>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 import type { EnvironmentProject } from "@vibecodinger/client-runtime/state/shell";
 import { useNavigate } from "@tanstack/react-router";
 import { newMessageId } from "~/lib/utils";
@@ -35,6 +39,7 @@ import { stackedThreadToast, toastManager } from "../ui/toast";
 import {
   boundAttachmentIds,
   type ComposerSendSnapshot,
+  deriveComposerSendTitle,
   type makeThreadErrorSetter,
   withMessageContext,
 } from "../ChatView.logic";
@@ -124,7 +129,7 @@ export function useMultipleModelSend(input: MultipleModelSendInput) {
     readonly isCurrentSend: () => boolean;
     readonly draftChangedDuringPreparation: () => boolean;
   }) => {
-    const { attachments: attachmentsSnapshot, messageText } = sendSnapshot;
+    const { attachments: attachmentsSnapshot } = sendSnapshot;
     const failedSelections: ModelSelection[] = [];
     let clearedDraft = false;
     let releasedComposer = false;
@@ -143,10 +148,7 @@ export function useMultipleModelSend(input: MultipleModelSendInput) {
       const context = buildOutgoingMessageContext(
         boundAttachmentIds(attachments, attachmentsSnapshot),
       );
-      const title = deriveThreadTitleSeed(
-        { text: messageText, attachments: attachmentsSnapshot },
-        m,
-      );
+      const title = deriveComposerSendTitle(sendSnapshot);
       clearComposerDraftContent(composerDraftTarget);
       if (currentRouteThreadKeyRef.current === routeThreadKey) {
         promptRef.current = "";

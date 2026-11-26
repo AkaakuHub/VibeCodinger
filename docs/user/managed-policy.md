@@ -1,5 +1,6 @@
 # Managed policy
 
+<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 A managed policy lets an administrator configure VibeCodinger for every user on a machine. It sets
 defaults and locks for settings, and limits such as the broadest permission mode or which
 providers may run. The VibeCodinger server on the machine enforces it for every app that connects:
@@ -16,6 +17,17 @@ the desktop app, a browser, or the mobile app.
    [check what the server loaded](#check-what-the-server-loaded).
 
 The desktop app includes the `vibecodinger` command; see [The `vibecodinger` command](./install.md#the-t3-command).
+=======
+A managed policy lets an administrator set defaults, lock settings, and restrict capabilities (such as maximum permission mode, allowed providers, or remote access) for every user on a machine. The T3 Code server enforces the policy for all connected clients (desktop, web, and mobile).
+
+## Roll out a policy
+
+1. Author a JSON policy (see [Write a policy](#write-a-policy)). Do **not** include secrets—all local users can read the policy.
+2. Validate it: `t3 policy check policy.json`.
+3. Deploy via MDM/GPO or a file to [one supported location](#where-the-policy-goes).
+4. Restart T3 Code on the machine (policies load at startup only).
+5. Verify with `t3 policy show`.
+>>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 ## Write a policy
 
@@ -35,16 +47,21 @@ The desktop app includes the `vibecodinger` command; see [The `vibecodinger` com
 }
 ```
 
+<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 `schemaVersion` and `organization` are required. Users see the organization's name in Settings
 and beside each control the policy locks, with a link to `supportUrl` if you set one. [`settings`](#settings)
 sets defaults and locks, and [`limits`](#limits) restricts what VibeCodinger may do.
 
 Every user on the machine can read the policy, so do not put credentials in it.
+=======
+`schemaVersion` and `organization` are required. Locked controls display your organization name and optional `supportUrl` in Settings.
+>>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 ## Where the policy goes
 
-Use one of these per machine:
+Use **one** source per machine (having both a native policy and a policy file prevents T3 Code from starting):
 
+<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 | OS      | Native policy                                                                                             | Policy file                                             |
 | ------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
 | macOS   | Configuration profile for `net.akaaku.vibecodinger`                                                       | `/Library/Application Support/VibeCodinger/policy.json` |
@@ -128,15 +145,34 @@ cannot enforce, so upgrade VibeCodinger before you deploy a policy that uses the
 Each key under `settings` is a setting's path in the server's `settings.json`, such as
 `storageCleanup.logsAfterDays`. Run `vibecodinger policy settings` to list every path a policy can manage,
 with its default.
+=======
+| OS          | Native policy                                                                     | Policy file (admin-writable only)                 |
+| ----------- | --------------------------------------------------------------------------------- | ------------------------------------------------- |
+| **macOS**   | Device configuration profile for `com.t3tools.t3code`                             | `/Library/Application Support/T3Code/policy.json` |
+| **Windows** | GPO template or `Policy` (`REG_SZ`) under `HKLM\SOFTWARE\Policies\T3Tools\T3Code` | `C:\Program Files\T3Code\policy.json`             |
+| **Linux**   | —                                                                                 | `/etc/t3code/policy.json`                         |
 
-- `"locked": false` sets a default. It applies wherever the user has not chosen a value of their
-  own, and users can change it.
-- `"locked": true` sets the value. Users and agents cannot change it, in Settings or in a project's
-  settings, and Settings shows the control as managed by your organization. Removing the policy
-  brings back the user's own value.
+- **macOS profile**: Generate `macos/t3code.mobileconfig` with `t3 policy templates <dir> --policy policy.json` (or `plutil -convert xml1 -o com.t3tools.t3code.plist policy.json`). Deploy as a single device profile (profiles cannot represent `null`; use a policy file if needed).
+- **Windows GPO**: Generate `windows/t3code.admx` and `windows/en-US/t3code.adml` with `t3 policy templates <dir>`, import into `PolicyDefinitions`/Intune under **Computer Configuration → Administrative Templates → T3 Code**, set **Organization**, run `gpupdate /target:computer /force`, and restart T3 Code.
+- **Windows registry**: Set `Policy` (`REG_SZ`) to single-line JSON (do not mix with GPO template values).
 
-A few settings need care:
+## Check what the server loaded
 
+Run `t3 policy show` as the user running T3 Code to inspect the installed policy, fingerprint, and whether the running server has loaded it. After any policy change or removal, restart the desktop app or run `t3 service restart`. Removing a policy restores the user's own saved settings.
+
+> Note: T3 Code **refuses to start** if a policy is unreadable, invalid, uses unknown keys from a newer version, or conflicts with another policy source. Always validate with `t3 policy check` and upgrade T3 Code before deploying newer keys.
+
+## Settings
+
+Run `t3 policy settings` to list every manageable path from `settings.json` and its default.
+>>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
+
+- `"locked": false` sets a default (users can override).
+- `"locked": true` enforces the value across Settings and project overrides.
+
+Key constraints:
+
+<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 - A default cannot add an entry, such as a provider instance, because users could never remove it.
   Lock the entry instead, or set provider fields with [`providers.instances`](#providers).
 - A setting that can be empty, such as `defaultModelSelection`, is managed as a whole. You cannot
@@ -158,6 +194,15 @@ A few settings need care:
 
 `limits` restricts what VibeCodinger may do. Leave a key out to keep VibeCodinger's normal behavior.
 
+=======
+- Lock `worktreeCleanup` together with `storageCleanup` worktree rules.
+- `observability` (OTLP endpoints) cannot be managed by policy.
+- Manage `idleCompaction` (not legacy `compactIdleThreads`).
+- Lock `providerInstances.<id>` as a whole, or pin per-driver fields under [`limits.providers.instances`](#providers).
+
+## Limits
+
+>>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 ```json
 {
   "schemaVersion": 1,
@@ -169,6 +214,11 @@ A few settings need care:
     "webhookTasks": false,
     "browserCookieImport": false,
     "previewTunnel": false,
+<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
+=======
+    "worktreeLayoutCommands": false,
+    "telemetry": false,
+>>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
     "providers": {
       "allowedDrivers": ["claudeAgent", "codex"],
       "instances": {
@@ -185,12 +235,9 @@ A few settings need care:
 
 ### Permission modes
 
-`maxRuntimeMode` is the broadest [permission mode](./permission-modes.md) any thread may use:
-`approval-required` (Supervised), `auto-accept-edits`, `auto`, or `full-access`. It covers threads
-that users start, agents start, and scheduled tasks start. A thread already above the limit cannot
-run another turn until someone lowers its mode; its queued messages send once that happens. New
-threads start at the limit when the user's default is above it.
+`maxRuntimeMode` caps all threads (`approval-required`, `auto-accept-edits`, `auto`, or `full-access`). Threads above the cap cannot run until lowered.
 
+<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 With `maxRuntimeMode` set, you own each provider's launch settings: binary path, launch arguments,
 config home, and the environment variables set on each provider. They come from
 [`providers.instances`](#providers) or VibeCodinger's defaults, and users cannot change them, because a
@@ -210,11 +257,15 @@ VibeCodinger can place under the limit. Users still choose which ACP Registry ag
 
 The limit decides which modes VibeCodinger asks the provider for. It is not a sandbox; see
 [What a policy does not cover](#what-a-policy-does-not-cover).
+=======
+When `maxRuntimeMode` is set, users cannot modify provider launch settings (`binaryPath`, `launchArgs`, config home, or env vars)—pin required values (including absolute `binaryPath`s so user `PATH` entries can't shadow them) in `providers.instances`. Leave `acpRegistry` out of `allowedDrivers` if you don't want users adding arbitrary ACP Registry agents.
+>>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 
 ### Clients and T3 Connect
 
-`clients` lists how the server may run:
+`clients` allows any subset of `desktop`, `local-browser`, and `remote` (keep `desktop` on desktop machines).
 
+<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
 - `desktop`: as the desktop app's own server.
 - `local-browser`: as a server only browsers on this machine reach, such as `npx vibecodinger`.
 - `remote`: reachable from phones, other computers, and app.t3.codes over the network.
@@ -304,3 +355,32 @@ the policy in its own processes, which run as the user, so it stops users from c
 settings in VibeCodinger but does not stop a user who modifies or replaces VibeCodinger itself. A version
 from before managed policy ignores it too. To control which builds can run, use your device
 management tool's application controls.
+=======
+- Omitting `remote` restricts the server to loopback, revokes paired devices, disables LAN/Tailscale Serve/T3 Connect, and refuses startup if a Tailscale Serve route still forwards to T3 Code (or if a legacy service has LAN enabled—run `t3 up --no-lan`).
+- Set `"connect": false` to disable T3 Connect while allowing LAN/Tailscale remote access.
+
+### Other capabilities
+
+- `webhookTasks: false`: Disables scheduled-task and workflow webhooks.
+- `browserCookieImport: false`: Disables importing cookies from other browsers.
+- `previewTunnel: false`: Disables remote `localhost` tunneling and port forwarding (streams tabs instead).
+- `worktreeLayoutCommands: false`: Disables `t3.json` `worktreeLayout` `create`/`remove` commands.
+- `telemetry: false`: Disables product usage data and relay tracing for the server, desktop app, and server-opened browsers (does not control `app.t3.codes` or mobile).
+
+### Providers
+
+- `providers.allowedDrivers`: Whitelist of driver IDs (`codex`, `claudeAgent`, `cursor`, `grok`, `opencode`, `antigravity`, `fx`, `kiro`, `pi`, `muse`, `acpRegistry`).
+- `providers.instances`: Sets or locks (`"locked": true`) fields across all instances of a driver (e.g., Bedrock/gateway env vars, `binaryPath`, `launchArgs`). Locking `codex` (or using `maxRuntimeMode`) disables ChatGPT-managed Codex; locking `opencode` disables external `serverUrl`.
+
+### Updates
+
+- `mode`: `"auto"` or `"off"` (when updates are managed externally).
+- `feedUrl`: Custom update mirror matching GitHub Release layout (`latest*.yml` and installers at root; `t3-*` archives and `SHA256SUMS` under `v<version>/`).
+- `allowNightly: false`: Disables the nightly channel.
+
+## What a policy does not cover
+
+- **Provider CLIs**: Restrict underlying CLIs with their own managed settings (e.g., Claude Code managed settings).
+- **WSL**: Managed Windows desktop disables its WSL environment; a server started manually inside WSL reads `/etc/t3code/policy.json` in that distro.
+- **Local admins / port forwarding**: Administrators can modify policies or T3 Code binaries, and users can still port-forward loopback sockets with external tools. Use OS/MDM controls for binary integrity and network isolation.
+>>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432

@@ -164,6 +164,7 @@ const make = Effect.gen(function* () {
   /** What this environment's Connections calls the client that asked. */
   const clientLabelOf = (sessionId: AuthSessionId) =>
     auth.listClientSessions(sessionId).pipe(
+<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
       Effect.map((sessions) => {
         const client = sessions.find((session) => session.sessionId === sessionId)?.client;
         return (
@@ -173,6 +174,14 @@ const make = Effect.gen(function* () {
         );
       }),
       Effect.orElseSucceed(() => "VibeCodinger client"),
+=======
+      Effect.map((sessions) =>
+        EnvironmentAuth.clientSessionLabel(
+          sessions.find((session) => session.sessionId === sessionId)?.client,
+        ),
+      ),
+      Effect.orElseSucceed(() => "T3 Code client"),
+>>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
     );
 
   /** Asks the linked environment for a pairing; `payload` says for whom. */

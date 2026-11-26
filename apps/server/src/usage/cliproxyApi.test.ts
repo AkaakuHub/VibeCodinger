@@ -513,11 +513,30 @@ describe("CLIProxyAPI built-in management API", () => {
     }),
   );
 
+<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
+=======
+  it.effect.each([
+    { name: "a refused xAI call", provider: "xai", status: 403, body: { error: "denied" } },
+    { name: "a malformed xAI answer", provider: "xai", status: 200, body: { config: "x" } },
+  ])("reports $name as unreadable", ({ provider, status, body }) =>
+    Effect.gen(function* () {
+      const test = fixture({
+        accounts: [{ id: `${provider}.json`, auth_index: "a", provider }],
+        upstream: () => ({ status, body }),
+      });
+      const [account] = yield* (yield* test.api).readAccounts(config);
+      expect(account?.usageLimits.unavailable?.reason).toBe("probeFailed");
+    }),
+  );
+
+>>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
   it.effect("skips accounts of providers the hub table does not know", () =>
     Effect.gen(function* () {
       const test = fixture({
         accounts: [
           { id: "kiro.json", auth_index: "k", provider: "kiro", email: "k@example.com" },
+          // Antigravity only allows ACP clients, so its internal quota API is never called.
+          { id: "antigravity.json", auth_index: "g", provider: "antigravity", project_id: "p" },
           { ...accounts[0]!, provider: "claude" },
         ],
         upstream: () => ({ status: 200, body: { five_hour: { utilization: 1, resets_at: null } } }),
@@ -525,6 +544,7 @@ describe("CLIProxyAPI built-in management API", () => {
       const result = yield* (yield* test.api).readAccounts(config);
       expect(result.map((account) => account.driver)).toEqual(["claudeAgent"]);
       expect(test.requests.map((request) => request.body?.auth_index)).not.toContain("k");
+      expect(test.requests.map((request) => request.body?.auth_index)).not.toContain("g");
     }),
   );
 

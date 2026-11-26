@@ -1,4 +1,5 @@
 import type { OrchestrationV2TurnItem } from "@vibecodinger/contracts";
+import { parseGrepOutput } from "@vibecodinger/shared/grepOutput";
 import { HTML_RENDER_TOOL_NAME } from "@vibecodinger/shared/htmlRender";
 import { resolveVibeCodingerMcpToolId } from "@vibecodinger/shared/vibeCodingerMcpToolPresentation";
 import { formatReadToolLabel, formatSearchToolLabel } from "@vibecodinger/shared/toolActivity";
@@ -317,7 +318,9 @@ export function openCodeToolTurnItem(
           ? {}
           : {
               results: [
-                { fileName: searchRoot, preview: output.slice(0, SEARCH_PREVIEW_MAX_CHARS) },
+                ...(parseGrepOutput(output, searchRoot) ?? [
+                  { fileName: searchRoot, preview: output.slice(0, SEARCH_PREVIEW_MAX_CHARS) },
+                ]),
               ],
             }),
       };

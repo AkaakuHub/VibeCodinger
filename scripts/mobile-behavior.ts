@@ -1,10 +1,9 @@
 #!/usr/bin/env node
-// @effect-diagnostics nodeBuiltinImport:off globalDate:off globalTimers:off globalFetch:off - Host-side device automation uses Node subprocess and filesystem APIs directly.
+// @effect-diagnostics nodeBuiltinImport:off globalDate:off - Host-side device automation uses Node subprocess and filesystem APIs directly.
 
 import * as NodeChildProcess from "node:child_process";
 import * as NodeFS from "node:fs";
 import * as NodeFSP from "node:fs/promises";
-import * as NodeOS from "node:os";
 import * as NodePath from "node:path";
 import * as NodeProcess from "node:process";
 import * as NodeReadline from "node:readline";
@@ -12,7 +11,14 @@ import * as NodeURL from "node:url";
 
 import { CASES } from "./mobile-behavior/cases.ts";
 import { blockingResults, resultsFor, summarize, type SampleRow } from "./mobile-behavior/grade.ts";
-import { Device, type Pool, poolError, run } from "./mobile-e2e/device.ts";
+import { type Device, run } from "./mobile-e2e/device.ts";
+import {
+  leaseAndInstall,
+  openPool,
+  releaseOnCrash,
+  renewWhileRunning,
+  type PoolAccess,
+} from "./mobile-behavior/pool.ts";
 import type { Pose } from "./mobile-e2e/poses.ts";
 
 const REPO_ROOT = NodePath.resolve(NodePath.dirname(NodeURL.fileURLToPath(import.meta.url)), "..");
@@ -32,34 +38,14 @@ interface TargetRun {
   readonly error?: string;
 }
 
-/** Keeps a lease alive while the cases run: they go minutes without an agent-device call. */
-function renewWhileRunning(pool: Pool, stateDir: string, session: string, token: string) {
-  const gateway = pool.agentDeviceUrl.replace(/\/v1\/agent-device\/?$/, "");
-  const timer = setInterval(() => {
-    const record = NodePath.join(stateDir, "remote-connections", `${session}.json`);
-    void NodeFSP.readFile(record, "utf8")
-      .then((text) => (JSON.parse(text) as { leaseId: string }).leaseId)
-      .then((leaseId) =>
-        fetch(`${gateway}/v1/leases/${encodeURIComponent(leaseId)}/renew`, {
-          method: "POST",
-          headers: { authorization: `Bearer ${token}` },
-        }),
-      )
-      .catch(() => undefined);
-  }, 90_000);
-  return () => clearInterval(timer);
-}
-
 async function runTarget(
   target: Target,
-  pool: Pool,
+  access: PoolAccess,
   runId: string,
   outputDirectory: string,
-  config: string,
-  stateDir: string,
-  token: string,
   passThrough: ReadonlyArray<string>,
 ): Promise<TargetRun> {
+  const { pool, config } = access;
   const directory = NodePath.join(outputDirectory, target.id);
   await NodeFSP.mkdir(directory, { recursive: true });
   const pose: Pose = {
@@ -69,22 +55,14 @@ async function runTarget(
     form: target.form,
     appearance: "light",
   };
-  let device: Device | null = null;
-  for (let attempt = 1; !device; attempt++) {
-    try {
-      log(target.id, `leasing ${target.device}`);
-      device = await Device.lease(pose, pool, attempt === 1 ? runId : `${runId}-retry`);
-      log(target.id, "installing the dev client");
-      await device.install();
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      await device?.release();
-      device = null;
-      if (attempt >= 2 || !poolError(message)) return { target, directory, error: message };
-      log(target.id, `retrying after: ${message.split("\n")[0]}`);
-    }
+  let device: Device;
+  try {
+    device = await leaseAndInstall(pose, pool, runId, (message) => log(target.id, message));
+  } catch (error) {
+    return { target, directory, error: error instanceof Error ? error.message : String(error) };
   }
-  const stopRenewing = renewWhileRunning(pool, stateDir, device.session, token);
+  const stopRenewing = renewWhileRunning(access, device.session);
+  const stopCrashGuard = releaseOnCrash(device, access);
   try {
     log(target.id, "running the behavior cases");
     const child = NodeChildProcess.spawn(
@@ -126,6 +104,7 @@ async function runTarget(
       : { target, directory, error: `the cases stopped (exit ${code}); see ${directory}/run.log` };
   } finally {
     stopRenewing();
+    stopCrashGuard();
     await device.release();
   }
 }
@@ -149,16 +128,10 @@ async function main() {
     ...values("--case").flatMap((value) => ["--case", value]),
   ];
 
-  const agentDeviceUrl = NodeProcess.env.SIMLOCK_AGENT_DEVICE_URL;
-  const token = NodeProcess.env.AGENT_DEVICE_DAEMON_AUTH_TOKEN;
-  if (!agentDeviceUrl || !token)
-    throw new Error(
-      "Set SIMLOCK_AGENT_DEVICE_URL (<gateway>/v1/agent-device) and AGENT_DEVICE_DAEMON_AUTH_TOKEN (a Simlock agent token) to run on the device pool.",
-    );
-
   const runId = new Date().toISOString().replaceAll(/[:.]/g, "-");
   const outputDirectory = NodePath.join(REPO_ROOT, "artifacts/mobile-behavior", runId);
   await NodeFSP.mkdir(outputDirectory, { recursive: true });
+<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
   const rootDir = await NodeFSP.mkdtemp(
     NodePath.join(NodeOS.tmpdir(), "vibecodinger-mobile-behavior-"),
   );
@@ -177,6 +150,9 @@ async function main() {
     workspace,
     env: { ...NodeProcess.env, AGENT_DEVICE_CONFIG: config, PWD: workspace },
   };
+=======
+  const access = await openPool(REPO_ROOT, outputDirectory);
+>>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
   try {
     // A cache miss builds the dev client, which can outlast a lease, so it is ready first.
     log("behavior", "preparing the ios dev client");
@@ -186,9 +162,7 @@ async function main() {
       { cwd: REPO_ROOT, timeoutMs: 1_800_000 },
     );
     const runs = await Promise.all(
-      targets.map((target) =>
-        runTarget(target, pool, runId, outputDirectory, config, stateDir, token, passThrough),
-      ),
+      targets.map((target) => runTarget(target, access, runId, outputDirectory, passThrough)),
     );
 
     const rows = runs.flatMap((entry) => {
@@ -222,7 +196,7 @@ async function main() {
     );
     process.exitCode = blocking.length || stopped.length ? 1 : 0;
   } finally {
-    await NodeFSP.rm(rootDir, { recursive: true, force: true });
+    await access.close();
   }
 }
 

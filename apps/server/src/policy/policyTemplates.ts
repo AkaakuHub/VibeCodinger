@@ -121,6 +121,21 @@ const policies = (): ReadonlyArray<Policy> => [
     toggle: "PreviewTunnel",
   },
   {
+<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
+=======
+    id: "WorktreeLayoutCommands",
+    title: "Allow project worktree layout commands",
+    help: "Disabled stops T3 Code from running the worktreeLayout commands a project's t3.json declares, whether or not a user approved them. Such a project gets no new worktree threads; existing thread folders are restored and removed without the project's commands.",
+    toggle: "WorktreeLayoutCommands",
+  },
+  {
+    id: "Telemetry",
+    title: "Allow usage data",
+    help: "Disabled stops T3 Code from sending product usage data and relay connection traces. Enabled cannot turn them on for a user who turned them off.",
+    toggle: "Telemetry",
+  },
+  {
+>>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
     id: "AllowedDrivers",
     title: "Allowed providers",
     help: "Only the checked providers may run. Threads on other providers stay, marked unavailable.\n\nDisabled or Not Configured: no restriction.",

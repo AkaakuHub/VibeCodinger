@@ -189,6 +189,39 @@ const make = Effect.gen(function* () {
       );
   });
 
+<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
+=======
+  /** Sends a stored report as the `agent.feedback` event; false when telemetry refuses it. */
+  const deliver = Effect.fn("FeedbackStore.deliver")(function* (
+    report: Omit<FeedbackReport, "sent">,
+    dimensions: Partial<ProviderDimensions>,
+  ) {
+    const { kind, subject, expected, actual, workaround, trace, userRequested, source } = report;
+    // A report links to no install. One that left without the user seeing it carries only its
+    // categories; the agent's text stays in the local copy.
+    const sent = yield* analytics.record(
+      "agent.feedback",
+      {
+        kind,
+        subject,
+        ...(userRequested ? { expected, actual, workaround } : {}),
+        trace,
+        userRequested,
+        source,
+        ...dimensions,
+      },
+      { anonymous: true },
+    );
+    if (!sent) {
+      // A failed clear leaves the report reading as sent, on purpose: uncertain reads as sent.
+      yield* sql`UPDATE agent_feedback SET sent = 0 WHERE id = ${report.id}`.pipe(
+        Effect.mapError(storageError),
+      );
+    }
+    return sent;
+  });
+
+>>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
   const store = Effect.fn("FeedbackStore.store")(function* ({
     preview,
     id,

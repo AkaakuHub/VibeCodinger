@@ -1,5 +1,8 @@
 import { useAtomValue } from "@effect/atom-react";
-import { createEnvironmentSessionAtoms } from "@vibecodinger/client-runtime/state/session";
+import {
+  createEnvironmentSessionAtoms,
+  sessionDeniesScope,
+} from "@vibecodinger/client-runtime/state/session";
 import {
   type AuthEnvironmentScope,
   type AuthSessionState,
@@ -34,6 +37,33 @@ export function useEnvironmentScope(
   );
 }
 
+<<<<<<< 540352f163c19136cb2703e6edfd0857a6d5c886
+=======
+export function useEnvironmentCanConfigureRelay(environmentId: EnvironmentId | null): boolean {
+  return useAtomValue(
+    environmentId === null
+      ? EMPTY_SESSION_STATE_ATOM
+      : environmentSession.sessionStateAtom(environmentId),
+    (result) => sessionHasScope(result, AuthRelayConfigureScope),
+  );
+}
+
+export function readEnvironmentCanConfigureRelay(environmentId: EnvironmentId): boolean {
+  const result = appAtomRegistry.get(environmentSession.sessionStateAtom(environmentId));
+  return sessionHasScope(result, AuthRelayConfigureScope);
+}
+
+/** This client's own session on the environment, or null until the host has said. */
+export function useEnvironmentSessionId(environmentId: EnvironmentId | null): string | null {
+  return useAtomValue(
+    environmentId === null
+      ? EMPTY_SESSION_STATE_ATOM
+      : environmentSession.sessionStateAtom(environmentId),
+    (result) => AsyncResult.getOrElse(result, () => null)?.sessionId ?? null,
+  );
+}
+
+>>>>>>> 22d45b4fa870caa1844be46c7bf217bb07517432
 export function sessionHasScope(
   result: AsyncResult.AsyncResult<AuthSessionState, unknown>,
   scope: AuthEnvironmentScope,
@@ -68,6 +98,29 @@ export function readEnvironmentScope(
   scope: AuthEnvironmentScope,
 ): boolean {
   return sessionHasScope(
+    appAtomRegistry.get(environmentSession.sessionStateAtom(environmentId)),
+    scope,
+  );
+}
+
+/** Unlike `!useEnvironmentScope`, stays false until the host has answered without the scope. */
+export function useEnvironmentScopeDenied(
+  environmentId: EnvironmentId | null,
+  scope: AuthEnvironmentScope,
+): boolean {
+  return useAtomValue(
+    environmentId === null
+      ? EMPTY_SESSION_STATE_ATOM
+      : environmentSession.sessionStateAtom(environmentId),
+    (result) => sessionDeniesScope(result, scope),
+  );
+}
+
+export function readEnvironmentScopeDenied(
+  environmentId: EnvironmentId,
+  scope: AuthEnvironmentScope,
+): boolean {
+  return sessionDeniesScope(
     appAtomRegistry.get(environmentSession.sessionStateAtom(environmentId)),
     scope,
   );
