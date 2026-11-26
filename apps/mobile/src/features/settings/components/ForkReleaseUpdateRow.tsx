@@ -1,5 +1,6 @@
 import { useAtomRefresh, useAtomValue } from "@effect/atom-react";
 import { CLI_RELEASES_PAGE_URL, releaseAssetUrl } from "@vibecodinger/shared/cliRelease";
+import * as Data from "effect/Data";
 import * as Effect from "effect/Effect";
 import { AsyncResult, Atom } from "effect/reactivity";
 import { useGT } from "gt-react-native";
@@ -9,11 +10,16 @@ import * as Dialog from "../../../components/ui/Dialog";
 import { findReleaseUpdate } from "../../updates/release-updates";
 import { SettingsRow } from "./SettingsRow";
 
+class ForkReleaseCheckError extends Data.TaggedError("ForkReleaseCheckError")<{
+  readonly cause: unknown;
+}> {}
+
 const releaseCheckAtom = Atom.family((version: string) =>
   Atom.make(
-    Effect.tryPromise((signal) => findReleaseUpdate(version, signal)).pipe(
-      Effect.timeout("20 seconds"),
-    ),
+    Effect.tryPromise({
+      try: (signal) => findReleaseUpdate(version, signal),
+      catch: (cause) => new ForkReleaseCheckError({ cause }),
+    }).pipe(Effect.timeout("20 seconds")),
   ),
 );
 
