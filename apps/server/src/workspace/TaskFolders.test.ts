@@ -530,11 +530,11 @@ it.live("keeps a checkout that gained work while its folder's remove command wai
       const ran = path.join(tmp, "ran");
       // The project's teardown clears a checkout's drafts.
       yield* fileSystem.writeFileString(
-        path.join(shop, "t3.json"),
+        path.join(shop, "vibecodinger.json"),
         JSON.stringify({
           worktreeLayout: {
-            create: `mkdir -p "$T3_WORKTREE_PROJECT_PATH" && git -C "$T3_PROJECT_ROOT/api" worktree add -q -b "$T3_WORKTREE_BRANCH" "$T3_WORKTREE_PROJECT_PATH/api"`,
-            remove: `echo "$T3_WORKTREE_ROOT" >> "${ran}"; rm -f "$T3_WORKTREE_PROJECT_PATH/api/draft.txt"`,
+            create: `mkdir -p "$VIBECODINGER_WORKTREE_PROJECT_PATH" && git -C "$VIBECODINGER_PROJECT_ROOT/api" worktree add -q -b "$VIBECODINGER_WORKTREE_BRANCH" "$VIBECODINGER_WORKTREE_PROJECT_PATH/api"`,
+            remove: `echo "$VIBECODINGER_WORKTREE_ROOT" >> "${ran}"; rm -f "$VIBECODINGER_WORKTREE_PROJECT_PATH/api/draft.txt"`,
           },
         }),
       );
@@ -1159,18 +1159,18 @@ it.live("resumes once an excluded dependency's worktree is replaced by a clone",
   ),
 );
 
-// A project whose `t3.json` lays its own folder out, with a marker file per command that ran.
+// A project whose `vibecodinger.json` lays its own folder out, with a marker file per command that ran.
 const layoutProject = Effect.gen(function* () {
   const { fileSystem, path, tmp, run, repository } = yield* fixture;
   const project = yield* repository("project");
   const ran = (name: string) => fileSystem.exists(path.join(tmp, name));
   const writeLayout = (create: string, remove: string) =>
     fileSystem.writeFileString(
-      path.join(project, "t3.json"),
+      path.join(project, "vibecodinger.json"),
       JSON.stringify({
         worktreeLayout: {
           // Restore runs it again, when the branch is already there.
-          create: `touch "${path.join(tmp, create)}" && (git worktree add -q "$T3_WORKTREE_PROJECT_PATH" "$T3_WORKTREE_BRANCH" 2>/dev/null || git worktree add -q -b "$T3_WORKTREE_BRANCH" "$T3_WORKTREE_PROJECT_PATH")`,
+          create: `touch "${path.join(tmp, create)}" && (git worktree add -q "$VIBECODINGER_WORKTREE_PROJECT_PATH" "$VIBECODINGER_WORKTREE_BRANCH" 2>/dev/null || git worktree add -q -b "$VIBECODINGER_WORKTREE_BRANCH" "$VIBECODINGER_WORKTREE_PROJECT_PATH")`,
           remove: `touch "${path.join(tmp, remove)}"`,
         },
       }),
@@ -1430,10 +1430,10 @@ it.live(
         const { fileSystem, path, run, project, createFor } = yield* layoutProject;
         // Lays out the first request's folder and fails for any other branch.
         yield* fileSystem.writeFileString(
-          path.join(project, "t3.json"),
+          path.join(project, "vibecodinger.json"),
           JSON.stringify({
             worktreeLayout: {
-              create: `[ "$T3_WORKTREE_BRANCH" = one ] && git worktree add -q -b one "$T3_WORKTREE_PROJECT_PATH"`,
+              create: `[ "$VIBECODINGER_WORKTREE_BRANCH" = one ] && git worktree add -q -b one "$VIBECODINGER_WORKTREE_PROJECT_PATH"`,
             },
           }),
         );
