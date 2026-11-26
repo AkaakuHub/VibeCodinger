@@ -1774,7 +1774,7 @@ export const makeGitVcsDriverCore = Effect.fn("makeGitVcsDriverCore")(function* 
         .filter(Boolean)
         .map((name) => name.toLowerCase()),
     );
-    // A branch nested under a name (`t3-fix/child`) blocks it as surely as one with the name.
+    // A branch nested under a name (`vibecodinger-fix/child`) blocks it as surely as one with the name.
     const blockedNames = new Set(branches);
     for (const branch of branches) {
       const segments = branch.split("/");
@@ -3191,7 +3191,7 @@ export const makeGitVcsDriverCore = Effect.fn("makeGitVcsDriverCore")(function* 
       });
       const branchConfig = new Map(configRows.filter(([key]) => isCurrentBranchKey(key)));
       const configValue = (key: string) => trimAsciiWhitespace(branchConfig.get(key) ?? "");
-      const configuredBaseRef = configValue(`${branchPrefix}t3-merge-base-ref`);
+      const configuredBaseRef = configValue(`${branchPrefix}vibecodinger-merge-base-ref`);
       const configuredBase =
         configValue(branchBaseConfigKey(branch ?? "")) ||
         configValue(legacyBranchBaseConfigKey(branch ?? ""));

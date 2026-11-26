@@ -5354,11 +5354,15 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
         yield* git(cwd, ["push", "upstream", "main"]);
         yield* git(cwd, ["fetch", "origin"]);
         yield* git(cwd, ["fetch", "upstream"]);
-        yield* git(cwd, ["checkout", "-b", "t3/temporary"]);
-        yield* git(cwd, ["config", "branch.t3/temporary.vibecodinger-merge-base", "main"]);
+        yield* git(cwd, ["checkout", "-b", "vibecodinger/temporary"]);
         yield* git(cwd, [
           "config",
-          "branch.t3/temporary.vibecodinger-merge-base-ref",
+          "branch.vibecodinger/temporary.vibecodinger-merge-base",
+          "main",
+        ]);
+        yield* git(cwd, [
+          "config",
+          "branch.vibecodinger/temporary.vibecodinger-merge-base-ref",
           "refs/remotes/upstream/main",
         ]);
         yield* writeTextFile(cwd, "feature.txt", "thread work\n");
@@ -5377,7 +5381,7 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
               !command.args.includes("status.showUntrackedFiles")
             ) {
               if (!(yield* Ref.getAndSet(renameClaimed, true))) {
-                yield* git(cwd, ["branch", "-m", "t3/temporary", "feature/named"]).pipe(
+                yield* git(cwd, ["branch", "-m", "vibecodinger/temporary", "feature/named"]).pipe(
                   Effect.provideService(GitVcsDriver.GitVcsDriver, outer),
                   Effect.orDie,
                 );
@@ -5395,7 +5399,7 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
 
         const status = yield* driver.statusDetailsLocal(cwd, { includeBranchChanges: true });
 
-        assert.strictEqual(status.branch, "t3/temporary");
+        assert.strictEqual(status.branch, "vibecodinger/temporary");
         assert.deepStrictEqual(status.branchChanges, {
           baseRef: null,
           insertions: 1,
@@ -6387,7 +6391,7 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
             const configured = yield* driver.execute({
               operation: "GitVcsDriver.test.base",
               cwd: linked,
-              args: ["config", "--get", "branch.feature.t3-merge-base-ref"],
+              args: ["config", "--get", "branch.feature.vibecodinger-merge-base-ref"],
               allowNonZeroExit: true,
             });
             const base = configured.exitCode === 0 ? configured.stdout.trim() : defaultRef;
@@ -6419,7 +6423,7 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
 
           let snapshot = yield* readPoll();
           const digest = yield* driver.readRefSnapshot(linked);
-          yield* git(cwd, ["update-ref", "refs/t3/checkpoints/thread/turn", next]);
+          yield* git(cwd, ["update-ref", "refs/vibecodinger/checkpoints/thread/turn", next]);
           assert.notEqual(yield* driver.readRefSnapshot(linked), digest);
           assert.equal(yield* readPoll(), snapshot);
           assert.notEqual(
@@ -6448,7 +6452,7 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
           yield* git(linked, [
             "config",
             "--worktree",
-            "branch.feature.t3-merge-base-ref",
+            "branch.feature.vibecodinger-merge-base-ref",
             "refs/remotes/origin/main",
           ]);
           const configuredBase = yield* readPoll();
@@ -6476,7 +6480,11 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
             newRefName: "local-feature",
           });
           assert.equal(
-            yield* git(localWorktree, ["config", "--get", "branch.local-feature.t3-merge-base"]),
+            yield* git(localWorktree, [
+              "config",
+              "--get",
+              "branch.local-feature.vibecodinger-merge-base",
+            ]),
             "local-base",
           );
           yield* git(localWorktree, ["commit", "--allow-empty", "-m", "local feature"]);
@@ -6484,7 +6492,11 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
           const local = yield* pollLocal;
           assert.isNotNull(local);
           assert.equal(local?.details.aheadCount, 1);
-          yield* git(cwd, ["update-ref", "refs/t3/checkpoints/thread/unrelated", initial]);
+          yield* git(cwd, [
+            "update-ref",
+            "refs/vibecodinger/checkpoints/thread/unrelated",
+            initial,
+          ]);
           assert.equal((yield* pollLocal)?.inputStamp, local?.inputStamp);
           const featureHead = yield* git(localWorktree, ["rev-parse", "HEAD"]);
           yield* git(cwd, ["update-ref", "refs/heads/local-base", featureHead]);
