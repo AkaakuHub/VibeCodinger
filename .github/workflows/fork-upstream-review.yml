@@ -16,11 +16,10 @@ jobs:
     if: github.repository == 'AkaakuHub/t3code' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      pull-requests: read
+      contents: write
+      pull-requests: write
     env:
       GH_TOKEN: ${{ github.token }}
-      PROPOSAL_TOKEN: ${{ secrets.UPSTREAM_REVIEW_TOKEN }}
     steps:
       - name: Prepare a review branch without running upstream code
         shell: bash
@@ -122,11 +121,6 @@ jobs:
             echo 'No approval or merge is performed by this workflow.'
           } > "$RUNNER_TEMP/upstream-review-body.md"
 
-          if [[ -z "$PROPOSAL_TOKEN" ]]; then
-            echo "::error::Set UPSTREAM_REVIEW_TOKEN to a dedicated repository token with Contents and Pull requests write access."
-            exit 1
-          fi
-          export GH_TOKEN="$PROPOSAL_TOKEN"
           if git ls-remote --exit-code --heads "$remote" "refs/heads/$head" >/dev/null; then
             git fetch --no-tags "$remote" "refs/heads/$head"
             if [[ "$(git show -s --format=%P FETCH_HEAD)" != "$base" ||
