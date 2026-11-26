@@ -705,6 +705,7 @@ jobs:
   release:
     needs: check
     if: >-
+      !cancelled() && needs.check.result == 'success' &&
       github.event_name == 'push' && github.repository == 'AkaakuHub/VibeCodinger' &&
       github.ref == 'refs/heads/main'
     uses: ./.github/workflows/fork-build.yml
