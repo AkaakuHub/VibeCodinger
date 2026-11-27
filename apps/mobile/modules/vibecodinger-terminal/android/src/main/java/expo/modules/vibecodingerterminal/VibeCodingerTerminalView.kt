@@ -108,6 +108,13 @@ class VibeCodingerTerminalView(context: Context, appContext: AppContext) : ExpoV
       emitResize()
     }
 
+  var fontFamily: String = "monospace"
+    set(value) {
+      field = value
+      terminalCanvas.fontFamily = value
+      emitResize()
+    }
+
   var appearanceScheme: String = "dark"
 
   // The PTY grid shared by every attached client, or empty before the server reports one.

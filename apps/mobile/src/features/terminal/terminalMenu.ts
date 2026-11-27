@@ -1,5 +1,6 @@
 import { type KnownTerminalSession } from "@vibecodinger/client-runtime/state/terminal";
 import { DEFAULT_TERMINAL_ID, type ProjectScript } from "@vibecodinger/contracts";
+import { fileBasename, isWindowsAbsolutePath } from "@vibecodinger/shared/path";
 import { nextTerminalId } from "@vibecodinger/shared/terminalLabels";
 import { resolveTerminalSessionLabel } from "@vibecodinger/shared/terminalLabelsCopy";
 import * as Arr from "effect/Array";
@@ -31,14 +32,12 @@ export function basename(input: string | null): string | null {
   if (!input) {
     return null;
   }
-
-  const normalized = input.replace(/\/+$/, "");
-  if (normalized.length === 0) {
-    return "/";
+  // A backslash is a legal character in POSIX folder names, so only Windows paths split on it.
+  if (isWindowsAbsolutePath(input)) {
+    return fileBasename(input);
   }
-
-  const segments = normalized.split("/");
-  return segments[segments.length - 1] ?? normalized;
+  const normalized = input.replace(/\/+$/, "");
+  return normalized.length === 0 ? "/" : normalized.slice(normalized.lastIndexOf("/") + 1);
 }
 
 export function getTerminalStatusLabel(

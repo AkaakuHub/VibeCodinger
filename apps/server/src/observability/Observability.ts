@@ -2,6 +2,7 @@ import * as HttpObservability from "@vibecodinger/shared/httpObservability";
 import { makeLocalFileTracer, makeTraceSink } from "@vibecodinger/shared/observability";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
+import * as LogLevel from "effect/LogLevel";
 import * as References from "effect/References";
 import * as Tracer from "effect/Tracer";
 import * as Statement from "effect/sql/Statement";
@@ -47,6 +48,13 @@ export const layer = Layer.unwrap(
           maxFiles: config.traceMaxFiles,
           batchWindowMs: config.traceBatchWindowMs,
           sink,
+<<<<<<< 334bfa7258208f9b0a5daecdd42b9d9aa4fffe67
+=======
+          sampleRoutineSpans:
+            config.traceTimingEnabled &&
+            LogLevel.isGreaterThanOrEqualTo(config.traceMinLevel, "Info"),
+          ...(delegate ? { delegate } : {}),
+>>>>>>> 3f2ddfba8b8ec877afb6a6c68554a748cb55bf94
         });
 
         const heapAttribution = yield* HeapAttribution.make(tracer);

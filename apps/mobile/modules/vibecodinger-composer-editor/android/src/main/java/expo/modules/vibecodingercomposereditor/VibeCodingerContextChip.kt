@@ -16,6 +16,7 @@ import kotlin.math.min
 class VibeCodingerContextChip(
   content: Content,
   fontSize: Float,
+  chipTypeface: Typeface,
   private val color: Int,
   maximumWidth: Float,
   density: Float
@@ -30,15 +31,25 @@ class VibeCodingerContextChip(
 
   private val paint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
     textSize = fontSize
+<<<<<<< 334bfa7258208f9b0a5daecdd42b9d9aa4fffe67:apps/mobile/modules/vibecodinger-composer-editor/android/src/main/java/expo/modules/vibecodingercomposereditor/VibeCodingerContextChip.kt
     typeface = chipTypeface()
     color = this@VibeCodingerContextChip.color
+=======
+    typeface = chipTypeface
+    color = this@T3ContextChip.color
+>>>>>>> 3f2ddfba8b8ec877afb6a6c68554a748cb55bf94:apps/mobile/modules/t3-composer-editor/android/src/main/java/expo/modules/t3composereditor/T3ContextChip.kt
   }
   private val em = fontSize
 
   private val detailPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
     textSize = fontSize * 0.84f
+<<<<<<< 334bfa7258208f9b0a5daecdd42b9d9aa4fffe67:apps/mobile/modules/vibecodinger-composer-editor/android/src/main/java/expo/modules/vibecodingercomposereditor/VibeCodingerContextChip.kt
     typeface = chipTypeface()
     color = this@VibeCodingerContextChip.color
+=======
+    typeface = chipTypeface
+    color = this@T3ContextChip.color
+>>>>>>> 3f2ddfba8b8ec877afb6a6c68554a748cb55bf94:apps/mobile/modules/t3-composer-editor/android/src/main/java/expo/modules/t3composereditor/T3ContextChip.kt
   }
   private val detailText = if (content.detail.isEmpty()) "" else " ${content.detail}"
   private val detailWidth = if (detailText.isEmpty()) 0f else detailPaint.measureText(detailText)
@@ -87,13 +98,13 @@ class VibeCodingerContextChip(
   }
 
   companion object {
-    private const val CHIP_FONT_FAMILY = "DMSans-Medium"
+    private const val DM_SANS_MEDIUM = "DMSans-Medium"
 
-    // Matches the iOS chips; builds without the bundled font keep the platform medium.
-    private fun chipTypeface(): Typeface {
+    /** Matches the iOS chips: DM Sans text gets DM Sans Medium, anything else the platform medium. */
+    fun typefaceFor(fontFamily: String): Typeface {
       val fonts = ReactFontManager.getInstance()
-      return if (CHIP_FONT_FAMILY in fonts.customFontFamilies) {
-        fonts.getTypeface(CHIP_FONT_FAMILY, Typeface.NORMAL, null)
+      return if (fontFamily.startsWith("DMSans") && DM_SANS_MEDIUM in fonts.customFontFamilies) {
+        fonts.getTypeface(DM_SANS_MEDIUM, Typeface.NORMAL, null)
       } else {
         Typeface.create("sans-serif-medium", Typeface.NORMAL)
       }

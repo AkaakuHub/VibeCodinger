@@ -1,4 +1,15 @@
 import * as NetService from "@vibecodinger/shared/Net";
+<<<<<<< 334bfa7258208f9b0a5daecdd42b9d9aa4fffe67
+=======
+import { isWildcardHost, normalizeHostname } from "@vibecodinger/shared/hostClassification";
+import {
+  OtlpHeadersFromString,
+  OtlpProtocol,
+  type SignalExport,
+} from "@vibecodinger/shared/observability";
+import * as OtelEnvironment from "@vibecodinger/shared/otelEnvironment";
+import { parsePersistedServerObservabilitySettings } from "@vibecodinger/shared/serverSettings";
+>>>>>>> 3f2ddfba8b8ec877afb6a6c68554a748cb55bf94
 import { DesktopBackendBootstrap, PortSchema } from "@vibecodinger/contracts";
 import * as Config from "effect/Config";
 import * as Duration from "effect/Duration";
@@ -386,9 +397,16 @@ export const resolveServerConfig = Effect.fn("config.resolveServerConfig")(funct
     normalizedFlags.host,
     Option.fromUndefinedOr(env.host),
     Option.fromUndefinedOr(bootstrap?.host),
+<<<<<<< 334bfa7258208f9b0a5daecdd42b9d9aa4fffe67
   );
   // `vibecodinger service install` writes VIBECODINGER_LAN=false for a new
   // service; one installed before VIBECODINGER_LAN existed keeps listening.
+=======
+  ).pipe(Option.map((host) => (isWildcardHost(host) ? normalizeHostname(host) : host)));
+  // Private networks only, so clients learn a LAN address and prefer it over
+  // T3 Connect. `t3 service install` writes T3CODE_LAN=false for a new
+  // service; one installed before T3CODE_LAN existed keeps listening.
+>>>>>>> 3f2ddfba8b8ec877afb6a6c68554a748cb55bf94
   const lan = resolveOptionPrecedence(normalizedFlags.lan, Option.fromUndefinedOr(env.lan));
   const privateNetworkOnly =
     Option.isNone(explicitHost) &&

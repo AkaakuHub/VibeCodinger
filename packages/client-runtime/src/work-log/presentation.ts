@@ -25,10 +25,18 @@ import { classifyToolActivity } from "@vibecodinger/shared/toolActivity";
 import { toolOutputIndicatesFailure } from "@vibecodinger/shared/toolOutput";
 
 import {
+<<<<<<< 334bfa7258208f9b0a5daecdd42b9d9aa4fffe67
   summarizeVibeCodingerToolCalls,
   vibeCodingerToolResultIndicatesFailure,
   type VibeCodingerToolSummaryCall,
 } from "@vibecodinger/client-runtime/vibeCodingerToolSummary";
+=======
+  summarizeT3ToolCalls,
+  t3ToolOutcomeLabel,
+  t3ToolResultIndicatesFailure,
+  type T3ToolSummaryCall,
+} from "@vibecodinger/client-runtime/t3ToolSummary";
+>>>>>>> 3f2ddfba8b8ec877afb6a6c68554a748cb55bf94
 import { mFallback, msg } from "gt-i18n";
 import { vibeCodingerToolSentence } from "./vibeCodingerToolSentences.ts";
 import type { MFunctionType } from "gt-i18n/types";
@@ -304,15 +312,32 @@ export function resolveWorkEntryToolPresentation(
     workEntryToolName(entry),
     workEntryToolInput(entry),
   );
+  const output = workEntryToolOutput(entry);
+  const failed = definition !== null && t3ToolResultIndicatesFailure(output);
   const status = entry.toolLifecycleStatus ?? fallbackStatus;
+<<<<<<< 334bfa7258208f9b0a5daecdd42b9d9aa4fffe67
   return resolveVibeCodingerMcpToolPresentation(
     definition,
     definition && vibeCodingerToolResultIndicatesFailure(workEntryToolOutput(entry))
       ? "failed"
       : status,
+=======
+  const presentation = resolveT3McpToolPresentation(
+    definition,
+    failed ? "failed" : status,
+>>>>>>> 3f2ddfba8b8ec877afb6a6c68554a748cb55bf94
     entry.toolData,
     resolve,
   );
+  if (definition === null || presentation === null || failed || status !== "completed") {
+    return presentation;
+  }
+  const outcomeLabel = t3ToolOutcomeLabel(
+    definition.summaryAction,
+    { input: workEntryToolInput(entry), output, outcome: "completed" },
+    resolve,
+  );
+  return outcomeLabel === undefined ? presentation : { ...presentation, displayName: outcomeLabel };
 }
 
 function asRecord(value: unknown): Record<string, unknown> | null {

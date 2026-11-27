@@ -34,8 +34,13 @@ describe("T3 device instructions", () => {
   it("keep the failure rule from taking over or closing a session another thread holds", () => {
     // agent-device's DEVICE_IN_USE advice is to rerun with the owner's --session or close it first.
     assert.include(
+<<<<<<< 334bfa7258208f9b0a5daecdd42b9d9aa4fffe67
       VIBECODINGER_DEVICE_TOOL_INSTRUCTIONS,
       "follow its advice once, but never reuse or close another session; if it still fails,",
+=======
+      T3_CODE_DEVICE_TOOL_INSTRUCTIONS,
+      "follow its advice once, but never reuse or close another session unless the user explicitly asked; if it still fails,",
+>>>>>>> 3f2ddfba8b8ec877afb6a6c68554a748cb55bf94
     );
   });
 

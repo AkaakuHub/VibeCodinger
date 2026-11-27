@@ -1,10 +1,15 @@
 import type { PreviewCard as PreviewCardPrimitive } from "@base-ui/react/preview-card";
 import { isAtomCommandInterrupted } from "@vibecodinger/client-runtime/state/runtime";
+<<<<<<< 334bfa7258208f9b0a5daecdd42b9d9aa4fffe67
 import { useMessages } from "gt-react";
 import {
   parsePullRequestAnchor,
   pullRequestLinkCommit,
 } from "@vibecodinger/shared/pullRequestAnchor";
+=======
+import { T, useMessages, Var } from "gt-react";
+import { parsePullRequestAnchor, pullRequestLinkCommit } from "@vibecodinger/shared/pullRequestAnchor";
+>>>>>>> 3f2ddfba8b8ec877afb6a6c68554a748cb55bf94
 import type { EnvironmentId, PullRequestRef } from "@vibecodinger/contracts";
 import {
   cloneElement,
@@ -203,17 +208,24 @@ function LinkedComment({
   subject: Extract<ReturnType<typeof pullRequestLinkSubject>, { kind: "comment" }>;
 }) {
   const outcome = pullRequestReviewOutcome(subject.reviewState);
+  const author = (
+    <span className="min-w-0 truncate font-medium text-foreground">
+      {actorLabel(subject.author)}
+    </span>
+  );
   return (
     <div className="mt-2 min-w-0">
       <div className="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
         <PullRequestActorAvatar actor={subject.author} className="size-4" />
-        <span className="min-w-0 truncate font-medium text-foreground">
-          {actorLabel(subject.author)}
-        </span>
         {outcome === null ? (
-          <span className="shrink-0">commented</span>
+          <T>
+            <Var>{author}</Var> <span className="shrink-0">commented</span>
+          </T>
         ) : (
-          <PullRequestReviewOutcomeBadge outcome={outcome} className="shrink-0" />
+          <>
+            {author}
+            <PullRequestReviewOutcomeBadge outcome={outcome} className="shrink-0" />
+          </>
         )}
         <span aria-hidden>·</span>
         <span className="shrink-0">
