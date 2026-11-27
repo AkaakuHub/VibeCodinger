@@ -4,10 +4,18 @@
   !define VCStrRep '${UnStrRep}'
 !else
   ${StrRep}
+<<<<<<< 334bfa7258208f9b0a5daecdd42b9d9aa4fffe67
   !define VCStrRep '${StrRep}'
+=======
+  !define T3StrRep '${StrRep}'
+  Var t3AppWasRunning
+>>>>>>> 3f2ddfba8b8ec877afb6a6c68554a748cb55bf94
 !endif
 
 !macro customAppRunningMessages
+  !ifndef BUILD_UNINSTALLER
+    StrCpy $t3AppWasRunning 1
+  !endif
   Push $0
   Push $1
   ${If} $IsPowerShellAvailable == 0
@@ -39,4 +47,12 @@
       WinShell::SetLnkAUMI "$newStartMenuLink" "${APP_ID}"
     ${EndIf}
   !endif
+
+  # The template relaunches after a silent install only with --force-run, which WinGet does not pass.
+  ${If} ${Silent}
+  ${AndIfNot} ${isForceRun}
+  ${AndIf} $t3AppWasRunning == 1
+    HideWindow
+    ${StdUtils.ExecShellAsUser} $0 "$launchLink" "open" ""
+  ${EndIf}
 !macroend

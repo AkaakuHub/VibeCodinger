@@ -32,11 +32,20 @@ function toVibeCodingerProjectFile(
 export async function readVibeCodingerProjectFile(
   environmentId: EnvironmentId,
   workspaceRoot: string,
+<<<<<<< 334bfa7258208f9b0a5daecdd42b9d9aa4fffe67:apps/web/src/lib/vibeCodingerProjectFileDefaults.ts
 ): Promise<VibeCodingerProjectFile | null> {
   const result = await executeAtomQuery(
     appAtomRegistry,
     getProjectFileQueryAtom(environmentId, workspaceRoot, VIBECODINGER_PROJECT_FILE_NAME),
     { reportDefect: false, reportFailure: false },
+=======
+  signal?: AbortSignal,
+): Promise<T3ProjectFile | null> {
+  const result = await executeAtomQuery(
+    appAtomRegistry,
+    getProjectFileQueryAtom(environmentId, workspaceRoot, T3_PROJECT_FILE_NAME),
+    { reportDefect: false, reportFailure: false, signal },
+>>>>>>> 3f2ddfba8b8ec877afb6a6c68554a748cb55bf94:apps/web/src/lib/t3ProjectFileDefaults.ts
   );
   return toVibeCodingerProjectFile(
     environmentId,

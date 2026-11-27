@@ -9,6 +9,7 @@ import { compactMetricAttributes, outcomeFromExit } from "./Attributes.ts";
 
 export const rpcRequestsTotal = Metric.counter("vc_rpc_requests_total", {
   description: "Total RPC requests handled by the websocket RPC server.",
+  incremental: true,
 });
 
 export const rpcRequestDuration = Metric.timer("vc_rpc_request_duration", {
@@ -17,6 +18,7 @@ export const rpcRequestDuration = Metric.timer("vc_rpc_request_duration", {
 
 export const orchestrationCommandsTotal = Metric.counter("vc_orchestration_commands_total", {
   description: "Total orchestration commands dispatched, by outcome.",
+  incremental: true,
 });
 
 export const orchestrationCommandDuration = Metric.timer("vc_orchestration_command_duration", {
@@ -27,6 +29,7 @@ export const orchestrationEffectClaimsTotal = Metric.counter(
   "vc_orchestration_effect_claims_total",
   {
     description: "Total completed orchestration effect outbox claim attempts by result.",
+    incremental: true,
   },
 );
 
@@ -37,10 +40,12 @@ export const orchestrationEffectQueueWait = Metric.timer("vc_orchestration_effec
 
 export const providerSessionsTotal = Metric.counter("vc_provider_sessions_total", {
   description: "Total provider session lifecycle operations.",
+  incremental: true,
 });
 
 export const providerTurnsTotal = Metric.counter("vc_provider_turns_total", {
   description: "Total provider turn lifecycle operations.",
+  incremental: true,
 });
 
 export const providerTurnDuration = Metric.timer("vc_provider_turn_duration", {
@@ -73,6 +78,7 @@ export const serverEventLoopDelayMax = Metric.gauge("vc_server_event_loop_delay_
 
 export const runsTotal = Metric.counter("vc_runs_total", {
   description: "Runs that finished, by outcome. A later rollback does not count again.",
+  incremental: true,
 });
 
 export const runDuration = Metric.timer("vc_run_duration", {
@@ -85,6 +91,7 @@ export const runQueueWait = Metric.timer("vc_run_queue_wait", {
 
 export const gitCommandsTotal = Metric.counter("vc_git_commands_total", {
   description: "Total git commands executed by the server runtime.",
+  incremental: true,
 });
 
 export const gitCommandDuration = Metric.timer("vc_git_command_duration", {
@@ -93,10 +100,12 @@ export const gitCommandDuration = Metric.timer("vc_git_command_duration", {
 
 export const terminalSessionsTotal = Metric.counter("vc_terminal_sessions_total", {
   description: "Total terminal sessions started.",
+  incremental: true,
 });
 
 export const webhookDeliveriesTotal = Metric.counter("vc_webhook_deliveries_total", {
   description: "Webhook requests handled, by outcome and source.",
+  incremental: true,
 });
 
 export const webhookDeliveryDuration = Metric.timer("vc_webhook_delivery_duration", {
@@ -110,14 +119,17 @@ export const webhookHeldDelay = Metric.timer("vc_webhook_held_delay", {
 
 export const webhookRunsTotal = Metric.counter("vc_webhook_runs_total", {
   description: "Runs started from webhook deliveries, by outcome.",
+  incremental: true,
 });
 
 export const secretRequestsTotal = Metric.counter("vc_secret_requests_total", {
   description: "Secrets agents asked users for, by how each request ended.",
+  incremental: true,
 });
 
 export const secretRefsConsumedTotal = Metric.counter("vc_secret_refs_consumed_total", {
   description: "Secret refs tools tried to use, by result.",
+  incremental: true,
 });
 
 export const metricAttributes = (
