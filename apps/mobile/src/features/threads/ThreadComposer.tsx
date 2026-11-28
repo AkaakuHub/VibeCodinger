@@ -8,6 +8,9 @@ import {
   squashAtomCommandFailure,
 } from "@vibecodinger/client-runtime/state/runtime";
 import { AsyncResult } from "effect/reactivity";
+import { isSkillReloadCommand } from "@vibecodinger/client-runtime/providerSkills";
+import { serverEnvironment } from "../../state/server";
+import { useAtomCommand } from "../../state/use-atom-command";
 import { useAtomValue } from "@effect/atom-react";
 import { clampFileAttachmentUploadBytes } from "@vibecodinger/client-runtime/state/attachments";
 import {
@@ -372,6 +375,9 @@ export const ThreadComposer = function ThreadComposer(props: ThreadComposerProps
     });
   };
   const { onSendMessage, onChangeDraftMessage, onShowUsageLimits } = props;
+  const refreshProviders = useAtomCommand(serverEnvironment.refreshProviders, {
+    reportFailure: false,
+  });
   const usageLimitsOffered =
     selectedProviderStatus !== null &&
     hasProviderUsageLimits(
@@ -586,6 +592,26 @@ export const ThreadComposer = function ThreadComposer(props: ThreadComposerProps
     if (AsyncResult.isFailure(sent)) {
       console.error("[composer] send failed", squashAtomCommandFailure(sent));
     }
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
+=======
+    if (sent.value === null) return;
+    if (isSkillReloadCommand(draftAtSend.text) && props.projectCwd) {
+      void refreshProviders({
+        environmentId: props.environmentId,
+        input: {
+          instanceId: currentModelSelection.instanceId,
+          cwd: props.projectCwd,
+          fresh: true,
+        },
+      });
+    }
+    // Arm after send so preference reads and native Activity startup do not delay tap-frame feedback.
+    armAgentAwarenessLiveActivityForLocalWork({
+      environmentId: props.environmentId,
+      threadTitle: props.selectedThread.title,
+      projectTitle: props.environmentLabel ?? "T3 Code",
+    });
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
   };
 
   const nativeImageSubmit = useSubmitAfterNativeImages({

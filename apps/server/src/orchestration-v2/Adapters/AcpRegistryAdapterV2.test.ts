@@ -1618,12 +1618,39 @@ describe("AcpRegistryAdapterV2", () => {
         new: stdio("Bearer opened-token"),
         load: stdio("Bearer rotated-token"),
       });
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
       assert.deepEqual(
         yield* sessionMcpServers({ agentId: "gemini" }, { VIBECODINGER_ACP_MCP_HTTP: "1" }),
         {
           new: stdio("Bearer opened-token"),
           load: stdio("Bearer rotated-token"),
         },
+=======
+      assert.deepEqual(yield* sessionMcpServers({ agentId: "gemini" }, { T3_ACP_MCP_HTTP: "1" }), {
+        new: stdio("Bearer opened-token"),
+        load: stdio("Bearer rotated-token"),
+      });
+      // Local agy / antigravity commands defer optional tools through tool_call, as the Antigravity provider does.
+      const agyStdio = stdio("Bearer opened-token");
+      const expectedAgyStdio = [
+        {
+          ...agyStdio[0],
+          env: [...agyStdio[0]!.env, { name: "T3_ACP_MCP_TOOL_EXPOSURE", value: "deferred-proxy" }],
+        },
+      ];
+      assert.deepEqual(
+        (yield* sessionMcpServers({ source: "local", commandPath: "agy", commandArgs: ["acp"] }))
+          .new,
+        expectedAgyStdio,
+      );
+      assert.deepEqual(
+        (yield* sessionMcpServers({
+          source: "local",
+          commandPath: "antigravity",
+          commandArgs: ["acp"],
+        })).new,
+        expectedAgyStdio,
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
       );
       // Command Code cannot start the stdio bridge on Windows: it spawns MCP commands through
       // cmd.exe, which splits the unquoted T3 executable path at the space.

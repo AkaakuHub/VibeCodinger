@@ -331,6 +331,48 @@ export function WelcomePage({
   );
 }
 
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
+=======
+function TelemetryNotice({ environmentId }: { readonly environmentId: EnvironmentId }) {
+  const messages = useMessages();
+  const telemetryOff = managedTelemetryOffMessage(useManagedPolicy(environmentId), messages);
+  return (
+    <p className="mt-auto pt-12 text-2xs leading-relaxed text-muted-foreground/70">
+      {telemetryOff === undefined ? (
+        <T>
+          T3 Code collects pseudonymous product usage data to improve the app. To opt out, see the{" "}
+          <a
+            className="underline decoration-current/40 underline-offset-2 hover:text-muted-foreground"
+            href={PRIVACY_POLICY_URL}
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            privacy policy
+          </a>
+          .
+        </T>
+      ) : (
+        <>
+          {telemetryOff}{" "}
+          <T>
+            See the{" "}
+            <a
+              className="underline decoration-current/40 underline-offset-2 hover:text-muted-foreground"
+              href={PRIVACY_POLICY_URL}
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              privacy policy
+            </a>
+            .
+          </T>
+        </>
+      )}
+    </p>
+  );
+}
+
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
 // Each part of the page is one band: its label on the left, its rows on the right.
 function WelcomeSection({
   title,

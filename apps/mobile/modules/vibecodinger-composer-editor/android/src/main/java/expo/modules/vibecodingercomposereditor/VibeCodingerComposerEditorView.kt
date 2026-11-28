@@ -284,6 +284,7 @@ class VibeCodingerComposerEditorView(context: Context, appContext: AppContext) :
   }
 
   fun setFontFamily(fontFamily: String) {
+    chipTypeface = T3ContextChip.typefaceFor(fontFamily)
     editor.typeface = if (fontFamily.contains("Mono", ignoreCase = true)) {
       Typeface.MONOSPACE
     } else {
@@ -291,6 +292,7 @@ class VibeCodingerComposerEditorView(context: Context, appContext: AppContext) :
     }
     applyLineHeight()
     editor.applyPlaceholder()
+    applyTokenSpans()
   }
 
   fun setFontSize(fontSize: Float) {
@@ -489,6 +491,8 @@ class VibeCodingerComposerEditorView(context: Context, appContext: AppContext) :
       x >= minOf(left, right) && x <= maxOf(left, right)
   }
 
+  private var chipTypeface = T3ContextChip.typefaceFor("DMSans-Regular")
+
   private fun applyTokenSpans() {
     val editable = editor.text ?: return
     editable.getSpans(
@@ -511,7 +515,12 @@ class VibeCodingerComposerEditorView(context: Context, appContext: AppContext) :
               tintsIcon = token.tintsIcon
             ),
             fontSize = editor.textSize,
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751:apps/mobile/modules/vibecodinger-composer-editor/android/src/main/java/expo/modules/vibecodingercomposereditor/VibeCodingerComposerEditorView.kt
             color = VibeCodingerContextChip.color(token.accent, editor.currentTextColor),
+=======
+            chipTypeface = chipTypeface,
+            color = T3ContextChip.color(token.accent, editor.currentTextColor),
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd:apps/mobile/modules/t3-composer-editor/android/src/main/java/expo/modules/t3composereditor/T3ComposerEditorView.kt
             maximumWidth = (
               editor.width.takeIf {
                 it > 0

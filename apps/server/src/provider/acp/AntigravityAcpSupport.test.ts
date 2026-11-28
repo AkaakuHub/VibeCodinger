@@ -16,6 +16,7 @@ import { resolveAttachmentPath } from "../../attachmentStore.ts";
 import {
   applyAntigravityAcpModelSelection,
   antigravityPermissionDisposition,
+  antigravityServesT3Code,
   antigravitySessionMeta,
   antigravitySessionMode,
   buildAntigravityPrompt,
@@ -57,20 +58,40 @@ function makeModelRuntime(
   };
 }
 
-describe("Antigravity release gates", () => {
+describe("antigravityServesT3Code", () => {
+  // The model manifest accepts the same `v` and `agy_acp_server_` prefixes.
   it.each([
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
     { version: "1.5.0", advertisedAppend: false },
     { version: "1.5.1", advertisedAppend: false },
     { version: "1.5.7", advertisedAppend: true },
     { version: undefined, advertisedAppend: false },
     { version: "unknown", advertisedAppend: false },
   ])("$version: advertised system append $advertisedAppend", ({ version, advertisedAppend }) => {
+=======
+    ["1.5.0", false],
+    ["v1.5.0", false],
+    ["agy_acp_server_1.5.0", false],
+    ["1.5.1", true],
+    ["agy_acp_server_1.5.12", true],
+    ["custom", true],
+  ] as const)("%s → %s", (version, serves) => {
+    expect(antigravityServesT3Code(version)).toBe(serves);
+  });
+});
+
+describe("Antigravity system prompt append", () => {
+  it.each([false, true])("advertised append %s", (advertisedAppend) => {
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
     const initialize = {
       protocolVersion: 1,
       ...(advertisedAppend
         ? { agentCapabilities: { _meta: { antigravity: { systemPrompt: { append: true } } } } }
         : {}),
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
       ...(version === undefined ? {} : { agentInfo: { name: "Antigravity ACP Server", version } }),
+=======
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
     };
     // Helpers send no append.
     expect(antigravitySessionMeta(initialize)).toBeUndefined();
@@ -139,11 +160,23 @@ describe("Antigravity Auto", () => {
         toolCall: { toolCallId: "call-1", title, kind: "execute", rawInput },
         options: [{ optionId: "allow", name: "Allow", kind: "allow_once" }],
       });
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
       for (const vcCall of [
         request("Run mcp_vibe-codinger_vc_thread_list?"),
         request("MCP Tool delegate_task", {
           ServerName: "vibe-codinger",
           ToolName: "delegate_task",
+=======
+      for (const t3Call of [
+        request("Run mcp_t3-code_t3_thread_list?"),
+        request("Run mcp_t3-code_tool_search?"),
+        request("Run mcp_t3-code_tool_call?", { name: "preview_status", arguments: {} }),
+        request("MCP Tool delegate_task", { ServerName: "t3-code", ToolName: "delegate_task" }),
+        request("MCP Tool tool_call", {
+          ServerName: "t3-code",
+          ToolName: "tool_call",
+          Arguments: { name: "preview_status", arguments: {} },
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
         }),
       ]) {
         expect(antigravityPermissionDisposition(policy, vcCall)).toBe("allow");
@@ -160,10 +193,26 @@ describe("Antigravity Auto", () => {
       for (const otherCall of [
         // Names no server, so another MCP server's tool of the same name looks identical.
         request("Running preview_status"),
+        request("Running tool_call"),
+        request("Run mcp_t3-code_tool_call?"),
+        request("Run mcp_t3-code_tool_call?", { name: "tool_call", arguments: {} }),
+        request("Run mcp_t3-code_tool_call?", { name: "tool_search", arguments: {} }),
+        request("Run mcp_t3-code_tool_call?", { name: "unknown_tool", arguments: {} }),
+        request("MCP Tool tool_call", {
+          ServerName: "t3-code",
+          ToolName: "tool_call",
+          Arguments: { name: "unknown_tool", arguments: {} },
+        }),
         request("Run mcp_github_create_issue"),
         request("MCP Tool preview_status", { ServerName: "other", ToolName: "preview_status" }),
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
         request("Run mcp_vibe-codinger_preview_status", {
           CommandLine: "Run mcp_vibe-codinger_preview_status",
+=======
+        request("MCP Tool tool_call", { ServerName: "other", ToolName: "tool_call" }),
+        request("Run mcp_t3-code_preview_status", {
+          CommandLine: "Run mcp_t3-code_preview_status",
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
         }),
         // A directly called tool's rawInput is its own arguments, whatever their names.
         request("Run mcp_github_create_issue", {

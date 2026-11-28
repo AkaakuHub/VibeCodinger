@@ -2594,6 +2594,16 @@ export function AboutSettingsPanel() {
       <SettingsSection id="legal" title={gt("Legal")}>
         <SettingsRow
           {...setting("privacy-policy")}
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
+=======
+          description={
+            telemetryOff === undefined
+              ? gt(
+                  "How we handle your data, including the pseudonymous product usage data T3 Code collects.",
+                )
+              : gt("How we handle your data. {telemetryOff}", { telemetryOff })
+          }
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
           control={
             <Button
               render={

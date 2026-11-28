@@ -468,7 +468,8 @@ it.live("adopts the checkouts a project's own layout command makes, and runs its
     Effect.gen(function* () {
       const { fileSystem, path, tmp, run, repository, worktreeCount } = yield* fixture;
       const shop = path.join(tmp, "shop");
-      const api = yield* repository("shop/api");
+      const apiName = "api\u2028tools";
+      const api = yield* repository(`shop/${apiName}`);
       const web = yield* repository("shop/web");
       // The project checks `api` out itself, copies its build cache and leaves `web` out.
       yield* fileSystem.writeFileString(
@@ -476,8 +477,12 @@ it.live("adopts the checkouts a project's own layout command makes, and runs its
         JSON.stringify({
           worktreeLayout: {
             // A plain project's folder is no worktree, even when the command leaves a `.git` there.
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
             create:
               'mkdir -p "$VIBECODINGER_WORKTREE_PROJECT_PATH/cache" && git init -q "$VIBECODINGER_WORKTREE_PROJECT_PATH" && printf %s "$VIBECODINGER_WORKTREE_REPOSITORIES" > "$VIBECODINGER_WORKTREE_PROJECT_PATH/chosen" && git -C "$VIBECODINGER_PROJECT_ROOT/api" worktree add -q -b "$VIBECODINGER_WORKTREE_BRANCH" "$VIBECODINGER_WORKTREE_PROJECT_PATH/api" "$VIBECODINGER_WORKTREE_BASE"',
+=======
+            create: `mkdir -p "$T3_WORKTREE_PROJECT_PATH/cache" && git init -q "$T3_WORKTREE_PROJECT_PATH" && printf %s "$T3_WORKTREE_REPOSITORIES" > "$T3_WORKTREE_PROJECT_PATH/chosen" && git -C "$T3_PROJECT_ROOT/${apiName}" worktree add -q -b "$T3_WORKTREE_BRANCH" "$T3_WORKTREE_PROJECT_PATH/${apiName}" "$T3_WORKTREE_BASE"`,
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
             // Cleanup never deletes files that exist only here, so the teardown clears its own.
             remove:
               'touch "$VIBECODINGER_PROJECT_ROOT/torn-down" && rm -rf "$VIBECODINGER_WORKTREE_PROJECT_PATH/cache" "$VIBECODINGER_WORKTREE_PROJECT_PATH/chosen" "$VIBECODINGER_WORKTREE_PROJECT_PATH/.git"',
@@ -492,7 +497,7 @@ it.live("adopts the checkouts a project's own layout command makes, and runs its
 
       assert.isFalse(taskFolder.projectIsWorktree);
       assert.deepEqual(taskFolder.repositories, [
-        { repositoryPath: api, worktreePath: path.join(taskFolder.root, "api"), name: "api" },
+        { repositoryPath: api, worktreePath: path.join(taskFolder.root, apiName), name: apiName },
       ]);
       assert.isTrue(yield* fileSystem.exists(path.join(taskFolder.root, "cache")));
       assert.equal(
@@ -500,7 +505,7 @@ it.live("adopts the checkouts a project's own layout command makes, and runs its
         `${api}\n${web}`,
       );
       assert.equal(
-        yield* run(path.join(taskFolder.root, "api"), "symbolic-ref", "--short", "HEAD"),
+        yield* run(path.join(taskFolder.root, apiName), "symbolic-ref", "--short", "HEAD"),
         "feature",
       );
       assert.equal(yield* worktreeCount(web), 1);

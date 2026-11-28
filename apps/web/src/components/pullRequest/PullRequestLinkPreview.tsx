@@ -1,10 +1,15 @@
 import type { PreviewCard as PreviewCardPrimitive } from "@base-ui/react/preview-card";
 import { isAtomCommandInterrupted } from "@vibecodinger/client-runtime/state/runtime";
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
 import { useMessages } from "gt-react";
 import {
   parsePullRequestAnchor,
   pullRequestLinkCommit,
 } from "@vibecodinger/shared/pullRequestAnchor";
+=======
+import { T, useMessages, Var } from "gt-react";
+import { parsePullRequestAnchor, pullRequestLinkCommit } from "@vibecodinger/shared/pullRequestAnchor";
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
 import type { EnvironmentId, PullRequestRef } from "@vibecodinger/contracts";
 import {
   cloneElement,
@@ -127,6 +132,7 @@ export function PullRequestLinkPreview({
       : card?.author?.name && card.author.name !== card.author.login
         ? `${card.author.name} (@${card.author.login})`
         : (card?.author?.login ?? null);
+  const createdAt = preview === null ? null : <RelativeTime timestamp={preview.createdAt} />;
 
   return (
     <PreviewCard open={open} onOpenChange={setOpen} actionsRef={previewActionsRef}>
@@ -174,11 +180,13 @@ export function PullRequestLinkPreview({
                   <div className="mt-2 flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
                     <PullRequestActorAvatar actor={card.author} className="size-4" />
                     <span className="min-w-0 truncate">{authorLabel}</span>
-                    {preview === null ? null : (
+                    {createdAt === null ? null : (
                       <>
                         <span aria-hidden>·</span>
                         <span className="shrink-0">
-                          opened <RelativeTime timestamp={preview.createdAt} />
+                          <T>
+                            opened <Var>{createdAt}</Var>
+                          </T>
                         </span>
                       </>
                     )}
@@ -203,17 +211,24 @@ function LinkedComment({
   subject: Extract<ReturnType<typeof pullRequestLinkSubject>, { kind: "comment" }>;
 }) {
   const outcome = pullRequestReviewOutcome(subject.reviewState);
+  const author = (
+    <span className="min-w-0 truncate font-medium text-foreground">
+      {actorLabel(subject.author)}
+    </span>
+  );
   return (
     <div className="mt-2 min-w-0">
       <div className="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
         <PullRequestActorAvatar actor={subject.author} className="size-4" />
-        <span className="min-w-0 truncate font-medium text-foreground">
-          {actorLabel(subject.author)}
-        </span>
         {outcome === null ? (
-          <span className="shrink-0">commented</span>
+          <T>
+            <Var>{author}</Var> <span className="shrink-0">commented</span>
+          </T>
         ) : (
-          <PullRequestReviewOutcomeBadge outcome={outcome} className="shrink-0" />
+          <>
+            {author}
+            <PullRequestReviewOutcomeBadge outcome={outcome} className="shrink-0" />
+          </>
         )}
         <span aria-hidden>·</span>
         <span className="shrink-0">

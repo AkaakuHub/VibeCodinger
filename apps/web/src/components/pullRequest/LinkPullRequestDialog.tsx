@@ -5,11 +5,16 @@ import {
   resolveLinkPullRequestInput,
 } from "@vibecodinger/client-runtime/pull-request-link-input";
 import { useAtomValue } from "@effect/atom-react";
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
 import {
   settlePromise,
   squashAtomCommandFailure,
 } from "@vibecodinger/client-runtime/state/runtime";
 import { msg, T, useGT } from "gt-react";
+=======
+import { settlePromise, squashAtomCommandFailure } from "@vibecodinger/client-runtime/state/runtime";
+import { msg, T, useGT, useMessages } from "gt-react";
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
 import { useRef, useState } from "react";
 import { m } from "~/i18n/messages";
 
@@ -70,6 +75,7 @@ function LinkPullRequestDialog({
   onOpenChange,
 }: LinkPullRequestDialogProps) {
   const gt = useGT();
+  const resolveMessage = useMessages();
   const inputRef = useRef<HTMLInputElement>(null);
   const submittingRef = useRef(false);
   const [reference, setReference] = useState("");
@@ -94,11 +100,14 @@ function LinkPullRequestDialog({
     }
   }
 
-  const resolved = resolveLinkPullRequestInput({
-    reference,
-    project: ownProject,
-    hasProject: (reference) => linking.canLink(reference.url),
-  });
+  const resolved = resolveLinkPullRequestInput(
+    {
+      reference,
+      project: ownProject,
+      hasProject: (reference) => linking.canLink(reference.url),
+    },
+    resolveMessage,
+  );
 
   const submit = async () => {
     if (submittingRef.current) return;

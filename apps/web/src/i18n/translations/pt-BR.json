@@ -1,4 +1,7 @@
 {
+  "6c6e16b9488f8b91": "Role para ler tudo.",
+  "035aab5e99159bd8": "{count, plural, one {… {hidden} caractere do meio não é exibido.} other {… {hidden} caracteres do meio não são exibidos.}} O texto termina com:",
+  "011b1ef726fa9928": "Role cada parte para ler tudo.",
   "4bcfa3b976a421cf": "Chat paralelo",
   "23be753133ae6950": "Thread",
   "0001ae5846061bb6": "Thread em {machine}",
@@ -54,7 +57,7 @@
   "929a11e234f6e5d9": "Instale as ferramentas de linha de comando do Azure ({cli}) e ative o suporte ao Azure DevOps com {command}.",
   "ad599e9de33538dd": "Adicione um token do Bitbucket em Configurações → Controle de versão e issues.",
   "d810ecd91e8cf9d0": "Instale a CLI do Origin com {install} e execute {login}.",
-  "eb0f60ef4f92ab7d": "Instale o {fj} 0.6 ou posterior em {fjUrl} e execute {fjLogin}, ou instale o {tea} 0.16 ou posterior em {teaUrl} e execute {teaLogin} para cada servidor Forgejo ou Gitea.",
+  "1a04c8d36a7b29d3": "Instale o {fj} 0.6 ou posterior em {fjUrl} e execute {fjLogin}, ou instale o {gt} 2.0 ou posterior em {gtUrl} e execute {gtLogin} para cada servidor Forgejo ou Gitea.",
   "d026a85e2e50e675": "Instale a CLI do GitCafe com {install} e execute {login}, salve um token nas Configurações ou defina {variable} no servidor.",
   "22d3c0c48a34b5b3": "Instale a CLI do TanStack Source com {install} e execute {login}, salve um token nas Configurações ou defina {variable} no servidor.",
   "756c80ad262ef315": "Aguardando na thread original",
@@ -722,9 +725,11 @@
   "8360d689ebc7f829": "Fazer push e criar {shortLabel} a partir do branch padrão?",
   "daa408bb99d21d18": "{kind, select, pr {Esta ação vai fazer push dos commits locais e criar um PR em \"{branch}\". Você pode continuar neste branch ou criar um branch de feature e executar a mesma ação nele.} mr {Esta ação vai fazer push dos commits locais e criar um MR em \"{branch}\". Você pode continuar neste branch ou criar um branch de feature e executar a mesma ação nele.} generic {Esta ação vai fazer push dos commits locais e criar uma solicitação de alteração em \"{branch}\". Você pode continuar neste branch ou criar um branch de feature e executar a mesma ação nele.} other {Esta ação vai fazer push dos commits locais e criar {changeRequest} em \"{branch}\". Você pode continuar neste branch ou criar um branch de feature e executar a mesma ação nele.}}",
   "8471c4c5a50ffde3": "Ainda não é possível navegar pelas issues deste host.",
-  "2f4a47129f89fe22": "Não conectado. Adicione uma chave de API pessoal para listar as issues.",
+  "4a727b074bbbc5b2": "Não conectado. Adicione sua chave de API pessoal para listar as issues.",
+  "b40c70c4488dcebe": "Não conectado. Adicione seu token de API para listar as issues.",
   "024baab60525a419": "A credencial salva foi recusada.",
-  "2613c232516f3c72": "Conectado como {account} · nenhum projeto vinculado ainda. Escolha uma equipe para um projeto para listar as issues dele.",
+  "1e89798e3a9050c6": "Conectado como {account} · nenhum projeto vinculado ainda. Vincule um a uma equipe do Linear para listar as issues dele.",
+  "c3ab6f9e8b29fbf1": "Conectado como {account} · nenhum projeto vinculado ainda. Vincule um a um projeto do Jira para listar as issues dele.",
   "77d07bfe2f8ee19d": "{count, plural, one {Conectado como {account} · {count} projeto vinculado} other {Conectado como {account} · {count} projetos vinculados}}",
   "3eb9a01099aaf799": "{count}s",
   "3618302947c280f0": "{count}min",
@@ -878,7 +883,7 @@
   "1c7254ae11bf7cdc": "{days}d",
   "352655bb7a196642": "{kind, select, sideChat {{need, select, input {O chat paralelo precisa de uma resposta} approval {O chat paralelo precisa de aprovação} other {O chat paralelo precisa de você}}} other {{need, select, input {O subagente precisa de uma resposta} approval {O subagente precisa de aprovação} other {O subagente precisa de você}}}}",
   "e931fd397ade526b": "{kind, select, sideChat {{need, select, input {{count} chats paralelos precisam de uma resposta} approval {{count} chats paralelos precisam de aprovação} other {{count} chats paralelos precisam de você}}} subagent {{need, select, input {{count} subagentes precisam de uma resposta} approval {{count} subagentes precisam de aprovação} other {{count} subagentes precisam de você}}} other {{need, select, input {{count} threads precisam de uma resposta} approval {{count} threads precisam de aprovação} other {{count} threads precisam de você}}}}",
-  "4bed196a655ab14f": "{live} de {total} agentes trabalhando",
+  "f7b40089dae502b6": "{total, plural, one {{live} de {total} agente trabalhando} other {{live} de {total} agentes trabalhando}}",
   "ba1727ddc7a0a0b6": "{count, plural, one {{count} agente concluído} other {{count} agentes concluídos}}",
   "4dd09c829329a994": "Mensagem na fila",
   "3f0b962160edbe6d": "Não foi possível sincronizar a thread.",
@@ -1061,6 +1066,14 @@
   "ba7ecd149f928753": "Este arquivo compactado contém mais de 2.048 entradas.",
   "cafff24d04793cb2": "Um caminho do arquivo compactado é longo demais para pré-visualizar.",
   "bd059a3d5a8adb64": "O arquivo compactado expandido excede o limite de tamanho ou de taxa de compressão da pré-visualização.",
+  "3771480d7421e412": "Este arquivo exige uma senha.",
+  "00fa8cef0040eed9": "Senha incorreta. Tente novamente.",
+  "ad70bb0e647d4f2a": "A visualização não abre arquivos com este tipo de criptografia.",
+  "541090660afda71b": "Senha do arquivo",
+  "51cbb1c3dc221ce0": "Desbloquear",
+  "53c28271192e5707": "Este arquivo está danificado ou não é um documento válido do Office.",
+  "0f959b69c5eb2499": "Este e-book exige um leitor compatível com seu DRM.",
+  "533f7af3d2552cd0": "Este não é um arquivo Office Open XML válido.",
   "38528c344a654546": "Este não é um arquivo ZIP legível.",
   "fa4dba951ad2aa73": "Diretório ZIP64 não suportado.",
   "4353267e54b426a8": "Este diretório ZIP64 é grande demais ou está danificado.",
@@ -1305,6 +1318,68 @@
   "236c40a5bfff326b": "Pré-visualizar uma página HTML",
   "d50c9102ebabaf33": "Renderizar uma página HTML",
   "76db419f308fcdd3": "Enviar uma mensagem",
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
+=======
+  "82cd930e04e53875": "Terminal {number}",
+  "d2146b1dd32ff633": "A entrada de licença {number} não é um objeto.",
+  "5ed82191ac3b6445": "A entrada de licença {number} tem um formato inválido.",
+  "90adc194b2b0dd10": "O manifesto de licenças de código aberto tem um formato não suportado.",
+  "38444760dd2d533d": "O manifesto de licenças de código aberto contém uma entrada duplicada: {key}",
+  "3b343f492b261db1": "Recursos",
+  "f6445a8627bd1674": "Desktop",
+  "473e894125a6ac11": "Ferramentas do dispositivo",
+  "253dba75f81779d6": "Celular",
+  "2416e6e5fb5efe36": "Servidor",
+  "9200c1b85dc2eb60": "Web",
+  "0ced5c7ac38d9a3e": "Thread não está mais disponível",
+  "81aae1aa9fd28d60": "Thread em outra máquina",
+  "cde8054f4b731275": "Uso do computador",
+  "5fc322a3962d0df9": "Executar JavaScript",
+  "5eec1cf7045ad6ec": "Skill: {name}",
+  "c98f53ab0acc45eb": "Pesquisou {query} em {target}",
+  "7254a8551c823c95": "Pesquisou arquivos {glob} em {target}",
+  "e051938d8808eec3": "Pesquisou arquivos {glob}",
+  "b506d22e0ff01abc": "Pesquisou {query}",
+  "daaf9769441db5f0": "Pesquisou em {target}",
+  "51e961b37f0ca780": "Leu um arquivo e mais {count}",
+  "c13753167634f7aa": "Leu o arquivo",
+  "5ce648cd03020fd9": "Leu {path} e mais {count}",
+  "5d6c2898401c94e6": "Leu {path}",
+  "69150fe436b3a0c2": "{count, plural, one {{count} registro de uso malformado ou inconsistente foi ignorado; o uso pode estar incompleto.} other {{count} registros de uso malformados ou inconsistentes foram ignorados; o uso pode estar incompleto.}}",
+  "ee448ceb6820ce2f": "{environment} roda uma versão mais antiga do servidor e fica fora dos totais.",
+  "732708950237004e": "Este cliente é mais antigo que o servidor em {environment}; o uso dele fica fora dos totais.",
+  "9758c2ede06aa19b": "Hoje às {hour}",
+  "9102fd47fc686f0f": "Ontem às {hour}",
+  "72777a9fb1f7f637": "Geral",
+  "cb42b8946f737f0c": "Todo o uso do seu plano neste ciclo de cobrança.",
+  "935292957f8578fb": "Modelos do Cursor",
+  "23eed587f1bef1a6": "Grok, Composer e Auto usam esta cota.",
+  "d2becdc27390c92c": "Outros modelos",
+  "3abbefc7732635ff": "Cota de uso para modelos de terceiros, como Claude, GPT e Gemini.",
+  "7d72af75b2812d60": "{provider} em {environment}",
+  "bb34eaf6ddc55a72": "Esta conta não tem limites de assinatura.",
+  "42a2622893a6bced": "Não foi possível ler os limites.",
+  "4897e228d3185c96": "Nenhum limite informado.",
+  "e27d2cb964df5dd5": "{source}: nenhuma conta informada.",
+  "161135f0aea4d1ca": "{source}: nenhuma conta do Codex, Claude ou Grok. Ignorados: {providers}.",
+  "1b503134018285f4": "{days}d {hours}h",
+  "164c674cf062933a": "{label} · {count} restantes · expira em {expires}",
+  "9c82c39589c23938": "{label} · {count} restantes",
+  "ea4eaa756c937d3a": "Usar",
+  "62fe380944ff5a47": "{label}: {description} Isso não pode ser desfeito.",
+  "fc7f69efcfa6fa32": "Nenhum crédito de redefinição guardado",
+  "be7fd67c538a99a0": "{count} guardados · expira em {expires}",
+  "603898508c61abb0": "{count} guardados",
+  "80813412d30e05f2": "{count, plural, one {{count} crédito de redefinição guardado · o próximo expira em {expires}} other {{count} créditos de redefinição guardados · o próximo expira em {expires}}}",
+  "339a8b9c91c17917": "{count, plural, one {{count} crédito de redefinição guardado} other {{count} créditos de redefinição guardados}}",
+  "a32fe113106964ca": "Usar redefinição",
+  "4a3009c018ce574b": "Isso usa um crédito da sua conta e limpa as janelas de limite de taxa atuais. Não pode ser desfeito.",
+  "b00abca6f215c94c": "renova agora",
+  "e407cc274c656f2a": "Renova em instantes",
+  "522713f306fbe418": "em {duration}",
+  "391f43ef06ab0614": "↻ {duration}",
+  "c47ebef856c52c5f": "renova em {duration}",
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
   "aeac6844ac2cde59": "Texto simples",
   "d1d2b3130458bf2e": "Assembly",
   "06ca993fa4236249": "Pergunte qualquer coisa. @ arquivos, $ skills, / comandos",
@@ -1533,6 +1608,8 @@
   "737d3c6bec93f9e6": "Escolher arquivos para a página",
   "e6a3fa7cfc14f86a": "Caixa de diálogo do navegador",
   "61a552a67e9e3eac": "Resposta da caixa de diálogo",
+  "cb5c27218e96e407": "Nome de usuário",
+  "182a659d70f8ea72": "Senha",
   "3d000b56e95f3150": "Liberar o controle",
   "0633c3bcdcb95b2f": "Assumir o controle",
   "b8ba763621bcdd70": "O navegador do servidor carregou esta página, mas não a está desenhando. Tente recarregar ou abra a página em um navegador neste computador.",
@@ -2353,6 +2430,7 @@
   "2906d1220b6a2872": "Abrir na visualização principal",
   "69ba5155e6e2ef95": "Renomear",
   "feaf5290a4413745": "Duplicar",
+  "7a5864ba348e1f8e": "Fechar as abas selecionadas",
   "44c90f8f19346bfb": "Fechar as outras",
   "e6cd4726a7513754": "Fechar à direita",
   "31bb653872b12d14": "Fechar todas",
@@ -3040,6 +3118,10 @@
   "c646366e142ba05f": "O estado do WSL do desktop não está disponível.",
   "228dcd284ea651b3": "Falha ao carregar o estado do WSL.",
   "b08d105dd2553f8d": "O projeto não apareceu no app para desktop.",
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
+=======
+  "bf45d68027d21097": "{organization} desativou os dados de uso do produto.",
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
   "d85822b18e9475df": "Gerenciado por {organization}.",
   "a6dd531d58080010": "Conecte-se a este servidor para verificar as versões.",
   "314cdccee9c14774": "Este servidor não permite consultas ao registro. Atualize-o antes de trocar de canal.",
@@ -3387,7 +3469,7 @@
   "12170596ff889d5b": "Anexar novamente",
   "748efc40dc99b309": "Remova para enviar",
   "fd3d4318e7b094fa": "Rascunho",
-  "9c421cab815b9905": "{count, plural, one {Mostrar mais {count} imagem anexada} other {Mostrar mais {count} imagens anexadas}}",
+  "c7f5c98f1e79cc6c": "{count, plural, one {Mostrar mais {count} imagem anexada} other {Mostrar mais {count} imagens anexadas}}",
   "ae136257600738d3": "Anexar arquivos",
   "3e04fb123bbf31b4": "Não foi possível salvar o anexo do rascunho localmente, e ele pode se perder ao navegar.",
   "81709882b9996586": "Anexar arquivos",
@@ -3678,6 +3760,7 @@
   "6c71d251d9917587": "Copiar como Markdown",
   "d510b122f84051a0": "Copiar como CSV",
   "66c4ee40252d9dec": "Copiar como HTML",
+  "7b8a7cd89a22d822": "Copiar como PNG",
   "2912e4ac3697686b": "Ler a thread em {label}",
   "ced684880c2e1961": "Permitir que {server} execute {tool}?",
   "b66fa23b5647b62d": "Enviar esta mensagem de {server}?",
@@ -4110,6 +4193,7 @@
   "ac242b57dbfa5259": "Gerenciar tarefas agendadas",
   "d93c0db04f4c8e46": "Editar automação",
   "3fe420ed9b5bdb75": "Executar agora",
+  "fdf273ca647a967f": "Excluir",
   "0c433351a8606e50": [
     "Não foi possível carregar as automações: ",
     {
@@ -4843,7 +4927,7 @@
   "55b562c00e37321b": "Não foi possível forçar a parada do agente",
   "ede15a83eedec569": "Turno parado; o agente ainda está encerrando",
   "f360accf1ccac178": "Turno parado; o processo do agente continuou em execução",
-  "5b660a378c56cc91": "{others, plural, =0 {Ele é compartilhado com outras threads em andamento. Pare-as para liberá-lo.} one {Ele é compartilhado com {others} thread em andamento. Pare-a para liberá-lo.} other {Ele é compartilhado com {others} threads em andamento. Pare-as para liberá-lo.}}",
+  "46f927ee332c1065": "{others, plural, =0 {Ele é compartilhado com outras threads em andamento. Pare-as para liberá-lo.} one {Ele é compartilhado com {others} thread em andamento. Pare-a para liberá-lo.} other {Ele é compartilhado com {others} threads em andamento. Pare-as para liberá-lo.}}",
   "f5948facf9a10261": "{count, plural, one {{count} thread iniciada em segundo plano} other {{count} threads iniciadas em segundo plano}}",
   "d2a83704191622a6": "Falha ao enviar as mensagens.",
   "c11072d4a6072902": "Não foi possível enviar um prompt em segundo plano",
@@ -5012,7 +5096,10 @@
   "c928303400ccaf24": "Falha ao iniciar o device hub.",
   "4cb21672153c1f18": "Nenhum simulador ou emulador foi encontrado neste ambiente.",
   "c82410197256eb53": "Simuladores iOS",
+  "31a71fec6b5f2bf3": "Dispositivos Android",
+  "1bd21d5284dc2d8e": "Dispositivos iOS",
   "ac18a5e35195a258": "Emuladores Android",
+  "f28d1d2b5f30a8cd": "Físico",
   "94215375ea2558b8": "Em execução",
   "f8a65d4d662389b0": "Parado",
   "381ceed77cb8b2b3": "Parar {name}",
@@ -5369,6 +5456,7 @@
   "76ebb03de52c92d6": "O visualizador de texto parou.",
   "f48162e8e8c12af7": "Não foi possível carregar o visualizador de texto. Feche o arquivo e tente novamente.",
   "bc4c5b13d38a5da7": "Pré-visualização fechada.",
+  "0e573160f73e19bc": "O arquivo não está disponível.",
   "6ad6c8fbb630657d": "O arquivo não está disponível.",
   "9450d1827ef336a1": "Outra cópia está em andamento.",
   "8f48999eb6d9e2e3": "{count, plural, one {{formatted} linha} other {{formatted} linhas}}",
@@ -5483,7 +5571,7 @@
   "49fcdf7d785a7898": "Este documento não tem páginas ou tem páginas demais para pré-visualizar.",
   "ee14f5cbb1b6c147": "Este EPUB não tem um pacote legível.",
   "2c479479cc06e82a": "Este EPUB não tem capítulos ou tem capítulos demais para pré-visualizar.",
-  "e1ac859f1e48d3ba": "Este EPUB não tem capítulos XHTML legíveis.",
+  "0db9c445225f7238": "Este EPUB não tem capítulos nem páginas de imagem legíveis.",
   "5ce28a21b6d79300": "Uma célula do notebook é grande demais para pré-visualizar.",
   "fe23def0d6158eb5": "Pré-visualização de notebooks limitada a arquivos com menos de 8 MB.",
   "6ffd50a91efb2fee": "A pré-visualização suporta notebooks na versão 4 com até 500 células.",
@@ -5521,13 +5609,11 @@
   "0ea90ecfb29b642c": "Esta pasta de trabalho contém metadados de célula inválidos.",
   "6ffc73f0194ef1e7": "Esta pasta de trabalho não tem dados de planilha.",
   "4d34510886acf15f": "Esta pasta de trabalho contém blocos de folha de estilo duplicados.",
-  "1c23e08fcf99f59d": "Esta pasta de trabalho tem formatos de número personalizados demais.",
   "87b291f622900431": "Esta pasta de trabalho tem planilhas inválidas ou em excesso.",
   "e355efff77791140": "Falta uma planilha nesta pasta de trabalho.",
   "13e79167614022e3": "O documento expandido é grande demais para pré-visualizar com segurança.",
-  "bf65cedd89849991": "Este arquivo está danificado, criptografado ou não é um documento do Office válido.",
+  "bbe126c259d4d596": "Descriptografar este documento exige processamento demais para a prévia.",
   "a6e5ef4b138e6a43": "Este arquivo contém entradas compactadas demais para pré-visualizar.",
-  "73b9f84158ee314d": "Este não é um arquivo Office Open XML válido. Arquivos criptografados não são suportados.",
   "75315613ba8fdf22": "O mecanismo do Office parou",
   "c5e464f821c84612": "O mecanismo do Office enviou uma resposta ilegível",
   "307a2cb3be7a765b": "Este navegador não tem fontes em workers",
@@ -5846,6 +5932,29 @@
   ],
   "216ab7514aea1d61": "Começar sem agente",
   "501ce2d99da8bfd1": "Configure um agente para começar.",
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
+=======
+  "b089e0792d542bed": [
+    "O T3 Code coleta dados de uso do produto pseudonimizados para melhorar o app. Para recusar, consulte a",
+    " ",
+    {
+      "t": "a",
+      "i": 1,
+      "c": "política de privacidade"
+    },
+    "."
+  ],
+  "b33f35083757b42c": [
+    "Consulte a",
+    " ",
+    {
+      "t": "a",
+      "i": 1,
+      "c": "política de privacidade"
+    },
+    "."
+  ],
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
   "f77d000c0710f066": "Ativar",
   "4ed27bf946e504db": "Configurar",
   "7a26eaacff0607f7": [
@@ -6394,8 +6503,6 @@
   "0e3eede94227c151": "Preparando o checkout {term, select, mr {do merge request} cr {da solicitação de alteração} other {do pull request}}...",
   "f5fd3733da6e3556": "Não foi possível abrir uma thread para o checkout",
   "09f38e303898401f": "Não foi possível preparar o checkout {term, select, mr {do merge request} cr {da solicitação de alteração} other {do pull request}}",
-  "853a77d42f86c918": "Checkout feito, mas a thread ficou onde estava",
-  "0746dfa692f895cc": "O checkout está pronto em `{branch}`. Aponte uma thread para ele pelo seletor de branch e pergunte novamente.",
   "88db70a96177d202": "Checkout feito aqui",
   "baa66fde3613022b": "Checkout feito",
   "10feb68552356a08": "Este repositório está no branch {term, select, mr {do merge request} cr {da solicitação de alteração} other {do pull request}}, com uma thread aberta nele.",
@@ -6498,6 +6605,7 @@
   "7074711ac6cc6f5c": "Falhando",
   "75b2bb15e4624860": "Indisponível",
   "ff6b088c383bf910": "Pesquisar autores",
+  "a766a8ac2670096c": "{count, plural, one {{count} merge carregado} other {{count} merges carregados}}",
   "d6179a157948c07c": "Nenhum autor encontrado",
   "353773803bf92ad4": "Não foi possível pesquisar autores no host",
   "e3e2d073449a0289": "Qualquer pessoa",
@@ -7132,8 +7240,8 @@
     },
     "."
   ],
-  "432e85a50e2e7964": [
-    "Mostra a cota de cada conta agrupada pelo hub, ao lado dos provedores em",
+  "28988b067c83383c": [
+    "Mostra a cota de cada conta do Codex, Claude e Grok agrupada pelo hub, ao lado dos provedores em",
     " ",
     {
       "i": 1,
@@ -8266,7 +8374,7 @@
   "a6a6dc235b108747": "Permite que os agentes usem o navegador compartilhado. Os projetos podem substituir isso.",
   "ea5fed973bfc1aca": "Redefinir o acesso padrão ao navegador para o padrão",
   "19e1f74805f4a1fb": "Acesso dos agentes ao navegador",
-  "b395b88284e3bca2": "Mostra a pré-visualização flutuante quando um agente abre um navegador ou dispositivo, a menos que o agente diga o contrário.",
+  "d6ccca83a1676fcb": "Mostra a pré-visualização flutuante quando um agente abre um navegador ou dispositivo, a menos que o agente diga o contrário, e quando você fecha o painel direito.",
   "6aadfd59cf60b4b5": "Redefinir \"Mostrar pré-visualização flutuante automaticamente\" para o padrão",
   "e4a7ec61190bc1f9": "Mostrar pré-visualização flutuante automaticamente",
   "3705c53cb3e76a28": "Não foi possível limpar os dados de {name}",
@@ -8371,6 +8479,8 @@
   "056721d1036d33fb": "Terminal: dividir verticalmente",
   "8b92648854e6ddaa": "Terminal: novo",
   "16dfd6305f3951a3": "Terminal: fechar",
+  "6394fa415ab91b34": "Terminal: anterior",
+  "2f766180f9d12615": "Terminal: próximo",
   "0e54f664e6fdc156": "Painel direito: alternar",
   "81e0e9f4304d2f01": "Painel direito: novo",
   "afdfe975da764288": "Painel da thread: alternar",
@@ -9188,6 +9298,7 @@
   "9bc60e1d0ef816cf": "Bytes de armazenamento",
   "85de927f664ee3cb": "Bytes lógicos",
   "ec1f81bc9b395fb9": "Todos os bytes de E/S",
+  "9fd31461cee8ff82": "{count, plural, one {{count} processo} other {{count} processos}}",
   "7905928d59208450": "Leitura",
   "637254a20a8e24a5": "Gravação",
   "ab9f29f78275f7bd": "Disponível quando esta página roda dentro do app desktop.",
@@ -9210,8 +9321,9 @@
   "42828d2fd1f35806": "Memória residente",
   "e97f1b37426da9ff": "{bytes} de picos combinados dos processos",
   "3dd6eb5644a6ed8b": "Número de processos",
-  "85f0adb1de45cbc1": "{processStarts} inícios · {processExits} saídas",
+  "57320c95780c065c": "{processStarts, plural, one {{processStarts} início} other {{processStarts} inícios}} · {processExits, plural, one {{processExits} saída} other {{processExits} saídas}}",
   "0f0ae2813abd70e4": "Taxa de leitura",
+  "dc52330df5cc4586": "{bytes} observados",
   "d032b2addb6f00dc": "Taxa de gravação",
   "910a0c5f01321f81": "Limite de velocidade da CPU",
   "0360d3113c5a74f7": "Estado térmico {thermalState}",
@@ -9235,6 +9347,7 @@
   "7b2e770a310d3271": "Processo principal do Electron",
   "953cb034cd2e65ae": "Tempo de coleta",
   "75f59f3b8b292536": "Varredura de processos",
+  "cb9f65e224af203d": "{retained}/{scanned} mantidos",
   "30d77fc0bc57f102": "Inacessível",
   "69c367f8a75a477d": "Sidecar",
   "543ff5a7f825adc3": "Reinícios",
@@ -9321,7 +9434,12 @@
   "543ef9fcaf8aa96f": "Desligado",
   "5173c50b0a60847c": "Atualização disponível: {serverVersion} → {clientVersion}",
   "987c5623ba70f390": "Rotas",
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
   "70b995132edc5e32": "servidor {label}",
+=======
+  "36d52134b8b8d455": "{count, plural, one {{count} rota} other {{count} rotas}}",
+  "80a2ef2c87f7f180": "servidor {label}",
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
   "08f54865b364957d": "Atualizar",
   "b426469630d60955": "Desligar {label}",
   "61207ca324e04bd5": "Ligar {label}",
@@ -9590,6 +9708,7 @@
   "7f11b5e6dfa0bc56": "Personalizado",
   "aea25315995268e1": "Herda",
   "c8d6af8aaa94a464": "Padrão",
+  "652e3aad21933d17": "{summary} · {count, plural, one {{count} substituição de projeto} other {{count} substituições de projeto}}",
   "0a39976ec0fb3e49": "{overrideSummary}. Mostrar de onde vem este valor",
   "99af2d06aa2b6d12": "Redefinir",
   "7e9fca5fb426044a": "Redefinir tudo",
@@ -9801,7 +9920,13 @@
   "c424bee294b9f778": "Este ambiente é gerenciado por {organization}. Algumas configurações e recursos seguem a política dela.",
   "82d9538af590f58c": "Veja seus agentes, importe projetos e configure seu celular.",
   "6a48fd0a37e725a1": "Jurídico",
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
   "e9d6be8065fa9611": "Avisos de dependências, recursos e ferramentas opcionais usados pelo VibeCodinger.",
+=======
+  "bcbd81fcef7fff67": "Como tratamos seus dados, incluindo os dados de uso do produto pseudonimizados que o T3 Code coleta.",
+  "e741b1ab9396053a": "Como tratamos seus dados. {telemetryOff}",
+  "0bffbbf4d7f780c0": "Avisos de dependências, recursos e ferramentas opcionais usados pelo T3 Code.",
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
   "e39a57514be028e9": "Revisar",
   "7c0512387c3a42ea": "Estável",
   "3476687eaa175b32": "Nightly",
@@ -10402,6 +10527,7 @@
   "d6845667c3278af2": "Não autenticado",
   "7813f10f3f534004": "Status desconhecido",
   "4f3c3b40b25cac07": "Alternar visibilidade da conta de controle de versão",
+  "fc3bfdc366686e4b": "Alternar visibilidade da conta de controle de versão: {account}",
   "16ffdd2f02752973": "Alternar detalhes de {label}",
   "b98fef2c26258e7b": "Oferecer {label} ao adicionar ou publicar um projeto",
   "516da46e1bc929e2": "Ambiente do servidor",
@@ -10901,6 +11027,7 @@
   "a3d6cb2d2df7ba2c": "Ordenar temas",
   "10410b403844f02a": "Pesquisando temas...",
   "5b96cf033ef08594": "{count, plural, one {{count} tema compatível encontrado.} other {{count} temas compatíveis encontrados.}}",
+  "90d1efbdea5f026b": "{count, plural, one {{formatted} download} other {{formatted} downloads}}",
   "9fa117e7d44abcb0": "Um tema de cores da comunidade para o seu editor.",
   "0b3502b77bb8e870": "Ver o código-fonte de {name}",
   "5b9eab168f1435c0": "Atualizando {name}",
@@ -12392,5 +12519,181 @@
   "27d76249d09eb69f": "Guia de revisão pronto",
   "faa3bb26abb39c93": "O guia de revisão falhou",
   "b7df38b7d8792d78": "Abrir guia",
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
   "9e91e9a77b664e4e": "Não foi possível iniciar um guia de revisão"
+=======
+  "9e91e9a77b664e4e": "Não foi possível iniciar um guia de revisão",
+  "99d51127f573296b": "Outra conta",
+  "8ec2c57414669b79": "Conecte um segundo espaço de trabalho ou usuário do {tracker}.",
+  "99963c0142e17f00": "Para a nova conta do {tracker}.",
+  "6d8e4ebc889bace9": "Adicionar conta",
+  "8a883c4fbc127b68": "Ativando o merge automático da pilha...",
+  "5fb2a26ae31e8983": "Não foi possível ativar o merge automático da pilha",
+  "986d0dcbf4dd0098": "Merge automático da pilha ativado",
+  "f3ed1f63c8a3eef2": "{host} vai mesclar a pilha até o #{number} quando os requisitos forem atendidos.",
+  "bd536a0a1754f6cb": "Não foi possível cancelar o merge automático da pilha",
+  "bb90ac3b2f3a72d5": "O host recusou o cancelamento do merge automático. Atualize e tente novamente.",
+  "9c28753c777c37b7": "{count, plural, one {Mesclar automaticamente {count} {term, select, mr {merge request} cr {solicitação de alteração} other {pull request}}?} other {Mesclar automaticamente {count} {term, select, mr {merge requests} cr {solicitações de alteração} other {pull requests}}?}}",
+  "a86b49982e18784d": "Mescla o #{number} e as camadas não mescladas abaixo dele em {base} usando {method} quando todas atenderem aos requisitos de {host}. Isso pode acontecer imediatamente.",
+  "b1afda5c964deee4": [
+    "Merge automático da pilha (",
+    {
+      "i": 1,
+      "k": "_gt_value_1",
+      "v": "v"
+    },
+    ")"
+  ],
+  "33d18dda74f6d7b3": "Cancelar merge automático da pilha",
+  "012c67c7f1a99e33": "Merge automático da pilha",
+  "4a18481bea4b4ad5": "Novo dispositivo conectado a {environmentLabel}",
+  "4144ab6aa487528a": "{device} se conectou pelo {product}. Não foi você? Revise.",
+  "a10cfdb27152c757": "{count, plural, one {{count} dispositivo se conectou} other {{count} dispositivos se conectaram}} pelo {product}. Não foi você? Revise.",
+  "e0856d6a402ad821": "A política de {organization} não permite comandos de layout de worktree de projetos.",
+  "206811f6f441bfc7": "Este projeto prepara os worktrees com um comando próprio, que ninguém aprovou como está escrito agora. Esta conexão não pode aprová-lo: aprove-o em um cliente que possa usar o terminal.",
+  "b8087c9a70c26da9": "Não foi possível aprovar o comando de layout de worktree.",
+  "49eda70cfd56e621": "Executado quando uma thread em worktree começa e quando a pasta dela é restaurada",
+  "188ccaa1199f5611": "Executado quando o worktree de uma thread é removido",
+  "7e8476e7306acabe": "Permitir que este projeto execute seus comandos de worktree?",
+  "8e11914556fd8b13": [
+    {
+      "i": 1,
+      "k": "_gt_value_1",
+      "v": "v"
+    },
+    " prepara as threads em worktree com comandos próprios de ",
+    {
+      "t": "code",
+      "i": 2,
+      "c": "t3.json"
+    },
+    ". Eles são executados na máquina deste ambiente com as suas permissões, fora de qualquer sandbox de agente. Você será perguntado de novo sempre que o texto deles mudar."
+  ],
+  "46807acd02a4ff72": "Aprovar e continuar",
+  "a9cb97fca6a6576b": "Comando de criação",
+  "90f45a354884ccdd": "Comando de remoção",
+  "78e308ada516928b": "Não foi possível aprovar o comando",
+  "a0c772d32a233da6": "Não foi possível revogar a aprovação",
+  "0cdc8cdbed3e5eae": "Layout de worktree",
+  "c17b25519e2b194e": "Não foi possível carregar os comandos de layout de worktree",
+  "5ccd5614c65f8d1f": "Revogar a aprovação do comando {kind}",
+  "80c3794a5fa12f3a": "Aprovar o comando {kind}",
+  "f206891e124c77b0": [
+    "O ",
+    {
+      "t": "code",
+      "i": 1,
+      "c": "t3.json"
+    },
+    " deste projeto prepara as threads em worktree com comandos próprios. Eles são executados na máquina deste ambiente com as suas permissões e somente como aprovados aqui: um comando cujo texto muda precisa de aprovação de novo."
+  ],
+  "f6a91589456cca50": "Aprovado",
+  "c92657bb7f2293ff": "Precisa de aprovação",
+  "f1e5c1be1ac92361": "Aprovar",
+  "fcb5f3c4d4753326": "Esta conexão não pode aprovar comandos. Use um cliente que possa usar o terminal.",
+  "7150557773b3818b": "Na fila",
+  "efbeb3993ee2c3f5": "Na fila de {pool}",
+  "0398ca6c1d24b92d": "na fila, o próximo",
+  "0af6d5ffd5166214": "{count, plural, one {na fila, {count} à frente} other {na fila, {count} à frente}}",
+  "49be26a27dcb30e5": "na fila",
+  "4e96712d839ccbff": "{who} disse {choice}",
+  "19097cfb8f5a79cf": [
+    {
+      "i": 1,
+      "k": "_gt_value_1",
+      "v": "v"
+    },
+    " disse",
+    " ",
+    {
+      "t": "span",
+      "i": 2,
+      "c": {
+        "i": 3,
+        "k": "_gt_value_3",
+        "v": "v"
+      }
+    },
+    "."
+  ],
+  "e7bbf693910057bf": [
+    {
+      "i": 1,
+      "k": "_gt_value_1",
+      "v": "v"
+    },
+    " disse",
+    " ",
+    {
+      "t": "span",
+      "i": 2,
+      "c": {
+        "i": 3,
+        "k": "_gt_value_3",
+        "v": "v"
+      }
+    },
+    ": ",
+    {
+      "i": 4,
+      "k": "_gt_value_4",
+      "v": "v"
+    }
+  ],
+  "3759768c5d342c22": [
+    "respondida",
+    " ",
+    {
+      "i": 1,
+      "k": "_gt_value_1",
+      "v": "v"
+    }
+  ],
+  "e114d37b32ab0dc7": [
+    {
+      "i": 1,
+      "k": "_gt_value_1",
+      "v": "v"
+    },
+    " precisa de um motivo."
+  ],
+  "91aadfc843c600de": "Verificar conta Google",
+  "201490988858b511": "retirada por {by}",
+  "99451a5d2d40440f": "Retirada por {by}.",
+  "3ee30a50b70fffab": "Retirada por {by}: {reason}",
+  "92e129bf413a1220": "retirada",
+  "800966eb58181745": "Verificando quais idiomas o modelo suporta…",
+  "410dded6e21c280d": "Os guardados estão cheios",
+  "1af8d12ac21cb183": "Os guardados comportam {max} prompts. Restaure ou exclua um para abrir espaço; o campo de texto ficou como estava.",
+  "381ceed77cb8b2b3": "Parar {name}",
+  "5b9fda36b610d25c": "Parar",
+  "1d372f6d555dde3c": "Parar todos os dispositivos",
+  "06d3fe3e6b255d15": [
+    "+",
+    {
+      "i": 1,
+      "k": "_gt_value_1",
+      "v": "v"
+    },
+    " mais"
+  ],
+  "f1b18820c0ab93ac": [
+    "+",
+    {
+      "i": 1,
+      "k": "_gt_value_1",
+      "v": "v"
+    },
+    " mais em Itens vinculados"
+  ],
+  "717c1c47a852a1a5": "Pausar narração",
+  "0eceb5780908eb6c": "Ler em voz alta",
+  "3ee98da81538c6de": "Não foi possível reproduzir a narração.",
+  "95435f0b59cb2193": "Prévia de áudio",
+  "4a12506938295127": "Informe primeiro {field}.",
+  "5807c08e225c6b3d": "Baixar",
+  "0d50b5bfe7151ece": "Não foi possível baixar o arquivo",
+  "eb1fd384ad5919dd": "Nota interna",
+  "b45f0b467e9406d0": "Responder ao cliente"
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
 }
