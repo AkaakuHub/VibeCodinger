@@ -34,8 +34,13 @@ describe("T3 device instructions", () => {
   it("keep the failure rule from taking over or closing a session another thread holds", () => {
     // agent-device's DEVICE_IN_USE advice is to rerun with the owner's --session or close it first.
     assert.include(
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
       VIBECODINGER_DEVICE_TOOL_INSTRUCTIONS,
       "follow its advice once, but never reuse or close another session; if it still fails,",
+=======
+      T3_CODE_DEVICE_TOOL_INSTRUCTIONS,
+      "follow its advice once, but never reuse or close another session unless the user explicitly asked; if it still fails,",
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
     );
   });
 
@@ -99,9 +104,20 @@ describe("T3 device instructions", () => {
       vcAcpPromptWithInstructions({ prompt: "Again.", state, previousState: state }),
       "Again.",
     );
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
     assert.notInclude(
       vcAcpPromptWithInstructions({ prompt: "Hi.", state }),
       "## VibeCodinger devices",
     );
+=======
+    assert.notInclude(t3AcpPromptWithInstructions({ prompt: "Hi.", state }), "## T3 Code devices");
+    const withProxy = t3AcpPromptWithInstructions({
+      prompt: "Render a chart.",
+      state: { ...state, toolExposure: "deferred-proxy" },
+    });
+    assert.include(withProxy, "including `delegate_task`");
+    assert.include(withProxy, "tool_call({ name, arguments })");
+    assert.notInclude(t3AcpPromptWithInstructions({ prompt: "Hi.", state }), "tool_call(");
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
   });
 });

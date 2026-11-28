@@ -1,4 +1,15 @@
 import * as NetService from "@vibecodinger/shared/Net";
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
+=======
+import { isWildcardHost, normalizeHostname } from "@vibecodinger/shared/hostClassification";
+import {
+  OtlpHeadersFromString,
+  OtlpProtocol,
+  type SignalExport,
+} from "@vibecodinger/shared/observability";
+import * as OtelEnvironment from "@vibecodinger/shared/otelEnvironment";
+import { parsePersistedServerObservabilitySettings } from "@vibecodinger/shared/serverSettings";
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
 import { DesktopBackendBootstrap, PortSchema } from "@vibecodinger/contracts";
 import * as Config from "effect/Config";
 import * as Duration from "effect/Duration";
@@ -231,6 +242,30 @@ const resolveOptionPrecedence = <Value>(
   ...values: ReadonlyArray<Option.Option<Value>>
 ): Option.Option<Value> => Option.firstSomeOf(values);
 
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
+=======
+const loadPersistedObservabilitySettings = Effect.fn(function* (settingsPath: string) {
+  const fs = yield* FileSystem.FileSystem;
+  const exists = yield* fs.exists(settingsPath).pipe(Effect.orElseSucceed(() => false));
+  if (!exists) {
+    return { otlpTracesUrl: undefined, otlpMetricsUrl: undefined, otlpLogsUrl: undefined };
+  }
+
+  const raw = yield* fs.readFileString(settingsPath).pipe(Effect.orElseSucceed(() => ""));
+  return parsePersistedServerObservabilitySettings(raw);
+});
+
+export const normalizeServerCwdArgument = Effect.fn("config.normalizeServerCwdArgument")(function* (
+  argument: string,
+) {
+  const cwd = argument.trimEnd();
+  const trimmed = cwd.trimStart();
+  if (cwd === trimmed || trimmed === "." || trimmed === "..") return trimmed;
+  const path = yield* Path.Path;
+  return path.parse(yield* expandHomePath(trimmed)).root === "" ? cwd : trimmed;
+});
+
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
 export const resolveServerConfig = Effect.fn("config.resolveServerConfig")(function* (
   flags: CliServerFlags,
   cliLogLevel: Option.Option<LogLevel.LogLevel>,
@@ -238,6 +273,7 @@ export const resolveServerConfig = Effect.fn("config.resolveServerConfig")(funct
     readonly startupPresentation?: ServerConfig.StartupPresentation;
     readonly forceAutoBootstrapProjectFromCwd?: boolean;
     readonly rejectRunningServer?: boolean;
+    readonly prepareDirectories?: boolean;
     readonly selectAutomaticPort?: (
       preferred: number,
       host: string | undefined,
@@ -295,8 +331,10 @@ export const resolveServerConfig = Effect.fn("config.resolveServerConfig")(funct
       resolveOptionPrecedence(explicitBaseDir, Option.fromUndefinedOr(bootstrap?.appDataHome)),
     ),
   );
-  const rawCwd = Option.getOrElse(normalizedFlags.cwd, () => process.cwd());
-  const cwd = path.resolve(yield* expandHomePath(rawCwd.trim()));
+  const rawCwd = Option.isSome(normalizedFlags.cwd)
+    ? yield* normalizeServerCwdArgument(normalizedFlags.cwd.value)
+    : process.cwd().trim();
+  const cwd = path.resolve(yield* expandHomePath(rawCwd));
   const derivedPaths = yield* ServerConfig.deriveServerPaths(baseDir, devUrl, {
     baseDirIsExplicit: Option.isSome(explicitBaseDir),
   });
@@ -324,10 +362,22 @@ export const resolveServerConfig = Effect.fn("config.resolveServerConfig")(funct
       });
     }
   }
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
   yield* fs.makeDirectory(cwd, { recursive: true });
   yield* ServerConfig.ensureServerDirectories(derivedPaths);
   const serverTracePath = env.traceFile ?? derivedPaths.serverTracePath;
   yield* fs.makeDirectory(path.dirname(serverTracePath), { recursive: true });
+=======
+  const serverTracePath = env.traceFile ?? derivedPaths.serverTracePath;
+  if (options?.prepareDirectories !== false) {
+    yield* fs.makeDirectory(cwd, { recursive: true });
+    yield* ServerConfig.ensureServerDirectories(derivedPaths);
+    yield* fs.makeDirectory(path.dirname(serverTracePath), { recursive: true });
+  }
+  const persistedObservabilitySettings = yield* loadPersistedObservabilitySettings(
+    derivedPaths.settingsPath,
+  );
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
   const startupPresentation = options?.startupPresentation ?? "browser";
   const isHeadlessStartup = startupPresentation === "headless";
   const noBrowser = Option.getOrElse(
@@ -386,9 +436,16 @@ export const resolveServerConfig = Effect.fn("config.resolveServerConfig")(funct
     normalizedFlags.host,
     Option.fromUndefinedOr(env.host),
     Option.fromUndefinedOr(bootstrap?.host),
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
   );
   // `vibecodinger service install` writes VIBECODINGER_LAN=false for a new
   // service; one installed before VIBECODINGER_LAN existed keeps listening.
+=======
+  ).pipe(Option.map((host) => (isWildcardHost(host) ? normalizeHostname(host) : host)));
+  // Private networks only, so clients learn a LAN address and prefer it over
+  // T3 Connect. `t3 service install` writes T3CODE_LAN=false for a new
+  // service; one installed before T3CODE_LAN existed keeps listening.
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
   const lan = resolveOptionPrecedence(normalizedFlags.lan, Option.fromUndefinedOr(env.lan));
   const privateNetworkOnly =
     Option.isNone(explicitHost) &&
@@ -463,7 +520,7 @@ export const resolveServerConfig = Effect.fn("config.resolveServerConfig")(funct
 export const resolveCliAuthConfig = (
   flags: CliAuthLocationFlags,
   cliLogLevel: Option.Option<LogLevel.LogLevel>,
-  options?: { readonly quietLogs?: boolean },
+  options?: { readonly quietLogs?: boolean; readonly prepareDirectories?: boolean },
 ) => {
   const resolved = resolveServerConfig(
     {
@@ -482,6 +539,7 @@ export const resolveCliAuthConfig = (
       lan: Option.none(),
     },
     cliLogLevel,
+    options,
   );
   // Logs go to stdout, where --json and --token-only print, and resolving can
   // log, for example when it sweeps abandoned attachment uploads.

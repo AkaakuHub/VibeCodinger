@@ -94,13 +94,18 @@ export function agentScopeCommand(input: {
   readonly command: string;
   readonly args: ReadonlyArray<string>;
   readonly scope?: AgentSystemdScope | undefined;
+  readonly shell?: string | undefined;
 }): AgentScopeCommand {
-  const { command, args, scope } = input;
+  const { command, args, scope, shell = "/bin/sh" } = input;
   if (scope === undefined) {
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
     return { command: "/bin/sh", args: ["-c", LAUNCH_SCRIPT, "vc-agent", command, ...args] };
+=======
+    return { command: shell, args: ["-c", LAUNCH_SCRIPT, "t3-agent", command, ...args] };
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
   }
   return {
-    command: "/bin/sh",
+    command: shell,
     args: [
       "-c",
       SCOPED_LAUNCH_SCRIPT,

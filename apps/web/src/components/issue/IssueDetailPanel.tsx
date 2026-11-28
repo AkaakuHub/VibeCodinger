@@ -6,6 +6,7 @@ import {
 import { createIssueCommentPager } from "@vibecodinger/client-runtime/state/issues";
 import {
   issueAssigneeHeld,
+  issueAssigneeSearchView,
   issueAssigneesAfterPicks,
   issueLabelsAfterPicks,
   issuePicksAfterFailedWrite,
@@ -42,29 +43,36 @@ import {
   UsersIcon,
 } from "lucide-react";
 import { msg, T, useGT, useMessages, Var } from "gt-react";
-import { useContext, useState, type ReactNode } from "react";
+import { useContext, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 
 import { RefreshIcon } from "~/components/ui/refresh-icon";
 import { m } from "~/i18n/messages";
 import { issueEnvironment, refreshIssueLists } from "~/state/issues";
 import { useProjects } from "~/state/entities";
 import { useEnvironmentQuery } from "~/state/query";
+import { useDebouncedValue } from "~/state/queries";
 import { useOpenLink } from "~/browser/useOpenLink";
 import { useAtomCommand } from "~/state/use-atom-command";
 import { formatRelativeTimeLabel } from "~/timestampFormat";
 
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
+import { Badge } from "../ui/badge";
 import { Button, InlineButton } from "../ui/button";
 import { Input } from "../ui/input";
 import { Menu, MenuItem, MenuPopup, MenuTrigger } from "../ui/menu";
 import { cn } from "~/lib/utils";
+import { LRUCache } from "~/lib/lruCache";
 import { PullRequestMetaRow, PullRequestSection } from "../pullRequest/PullRequestSummaryTab";
+import { holdScrollTop } from "../pullRequest/holdLinkedNodeInView";
 import { toastManager } from "../ui/toast";
 import { PullRequestCandidatePicker } from "../pullRequest/PullRequestCandidatePicker";
 import { PullRequestCommentBody } from "../pullRequest/PullRequestCommentBody";
 import { PullRequestDetailTitleRow } from "../pullRequest/PullRequestDetailLayout";
 import { PullRequestEditButton } from "../pullRequest/PullRequestEditButton";
-import { PullRequestMarkdown } from "../pullRequest/PullRequestMarkdown";
+import {
+  PullRequestMarkdown,
+  PullRequestMarkdownPanelContext,
+} from "../pullRequest/PullRequestMarkdown";
 import { PullRequestMarkdownEditor } from "../pullRequest/PullRequestMarkdownEditor";
 import { readableFailure } from "../pullRequest/pullRequestDetail.logic";
 import { pullRequestLabelColor } from "../pullRequest/pullRequestList.logic";
@@ -140,7 +148,7 @@ function IssueLabelPicker({
   );
   const update = useAtomCommand(issueEnvironment.update, { reportFailure: false });
   const applied = new Set(detail.labels.map((label) => label.name));
-  const needle = query.toLowerCase();
+  const needle = query.trim().toLowerCase();
   const candidates = (candidatesQuery.data?.labels ?? []).filter(
     (label) =>
       needle.length === 0 ||
@@ -255,14 +263,23 @@ function IssueAssigneePicker({
   const candidatesQuery = useEnvironmentQuery(
     open ? issueEnvironment.candidates({ environmentId, input: reference }) : null,
   );
-  const update = useAtomCommand(issueEnvironment.update, { reportFailure: false });
-  const needle = query.toLowerCase();
-  const candidates = (candidatesQuery.data?.assignees ?? []).filter(
-    (candidate) =>
-      needle.length === 0 ||
-      candidate.login.toLowerCase().includes(needle) ||
-      (candidate.name ?? "").toLowerCase().includes(needle),
+  const debouncedQuery = useDebouncedValue(query.trim(), 250);
+  const searchable = candidatesQuery.data?.assigneeSearch === true;
+  const hostQuery = searchable && debouncedQuery.length > 0 ? debouncedQuery : null;
+  const search = useEnvironmentQuery(
+    open && hostQuery !== null
+      ? issueEnvironment.candidates({ environmentId, input: { ...reference, query: hostQuery } })
+      : null,
   );
+  const view = issueAssigneeSearchView({
+    loaded: candidatesQuery.data?.assignees ?? [],
+    searchable,
+    query,
+    debouncedQuery,
+    search,
+  });
+  const update = useAtomCommand(issueEnvironment.update, { reportFailure: false });
+  const candidates = view.candidates;
   const onOpenChange = (nextOpen: boolean) => {
     setOpen(nextOpen);
     if (nextOpen) {
@@ -305,8 +322,8 @@ function IssueAssigneePicker({
       query={query}
       onQueryChange={setQuery}
       searchLabel={gt("Search people")}
-      isPending={candidatesQuery.isPending && candidatesQuery.data === null}
-      error={candidatesQuery.data === null ? candidatesQuery.error : null}
+      isPending={(candidatesQuery.isPending && candidatesQuery.data === null) || view.pending}
+      error={candidatesQuery.data === null ? candidatesQuery.error : view.error}
       candidates={candidates}
       emptyLabel={gt("Nobody can be assigned here.")}
       noMatchLabel={gt("Nobody matches that.")}
@@ -416,6 +433,8 @@ function IssueEventText({
   );
 }
 
+const issueScrollPositions = new LRUCache<number>(128, 64 * 1024);
+
 export function IssueDetailPanel({
   environmentId,
   reference,
@@ -456,6 +475,31 @@ export function IssueDetailPanel({
   const [titleDraft, setTitleDraft] = useState("");
   const [saving, setSaving] = useState(false);
   const [changingState, setChangingState] = useState(false);
+  const listPanelRef = useContext(PullRequestMarkdownPanelContext);
+  const panelRef = threadRef ?? listPanelRef;
+  const scrollKey =
+    detail === null
+      ? null
+      : JSON.stringify([
+          panelRef.environmentId,
+          panelRef.threadId,
+          environmentId,
+          reference.projectId,
+          detail.url,
+        ]);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const restoringScroll = useRef(false);
+  // oxlint-disable-next-line vibecodinger/no-unreasoned-state-sync -- restores the issue scroller before paint, including when detail loads after a remount
+  useLayoutEffect(() => {
+    const scroller = scrollRef.current;
+    if (scrollKey === null || scroller === null) return;
+    const scrollTop = issueScrollPositions.get(scrollKey) ?? 0;
+    if (scrollTop === 0) return;
+    restoringScroll.current = true;
+    return holdScrollTop(scroller, scrollTop, () => {
+      restoringScroll.current = false;
+    });
+  }, [scrollKey]);
 
   if (detail === null) {
     if (detailQuery.error !== null && !detailQuery.isPending) {
@@ -608,6 +652,16 @@ export function IssueDetailPanel({
   return (
     <div className="relative flex h-full min-h-0 flex-col">
       <div
+        ref={scrollRef}
+        onScroll={(event) => {
+          if (scrollKey !== null && !restoringScroll.current) {
+            issueScrollPositions.set(
+              scrollKey,
+              event.currentTarget.scrollTop,
+              8 + scrollKey.length * 2,
+            );
+          }
+        }}
         className={cn(
           "min-h-0 flex-1 overflow-y-auto",
           // Room for the floating composer, so the last comment can scroll clear of it.
@@ -650,9 +704,13 @@ export function IssueDetailPanel({
               aria-label={gt("Refresh issue")}
               disabled={detailQuery.isPending}
               onClick={() =>
-                void pager.refresh(registry, () =>
-                  executeAtomQuery(registry, detailAtom, { refresh: true, reportFailure: false }),
-                )
+                void pager.refresh(registry, () => {
+                  issueEnvironment.oweDetailRefresh(registry, detailAtom);
+                  return executeAtomQuery(registry, detailAtom, {
+                    refresh: true,
+                    reportFailure: false,
+                  });
+                })
               }
             >
               <RefreshIcon size="sm" refreshing={detailQuery.isPending} />
@@ -909,11 +967,19 @@ export function IssueDetailPanel({
               item.kind === "comment" ? (
                 <article
                   key={`c:${item.comment.id}`}
-                  className="flex flex-col gap-2 rounded-lg border border-border/60 p-3"
+                  className={cn(
+                    "flex flex-col gap-2 rounded-lg border border-border/60 p-3",
+                    item.comment.internal && "border-warning/32 bg-warning-surface",
+                  )}
                 >
                   <h3>
                     <PullRequestMetaLine className="text-xs text-muted-foreground">
                       <PullRequestActorLabel actor={item.comment.author} />
+                      {item.comment.internal ? (
+                        <Badge size="sm" variant="warning">
+                          {gt("Internal note")}
+                        </Badge>
+                      ) : null}
                       {item.comment.url ? (
                         <InlineButton
                           tone="muted"
@@ -974,6 +1040,7 @@ export function IssueDetailPanel({
           environmentId={environmentId}
           reference={reference}
           blocked={canComment ? null : (blocked ?? gt("You cannot comment here."))}
+          audiences={detail.commentAudiences === true}
         />
       ) : null}
     </div>

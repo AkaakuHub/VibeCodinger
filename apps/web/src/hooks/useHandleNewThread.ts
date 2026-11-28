@@ -10,12 +10,10 @@ import {
   type ThreadId,
 } from "@vibecodinger/contracts";
 import { type AnyRouter, useRouter } from "@tanstack/react-router";
-import { flushSync } from "react-dom";
 import {
   composerDraftHasUserContent,
   markPromotedDraftThreadByRef,
   type DraftId,
-  type DraftSessionState,
   type DraftThreadEnvMode,
   type DraftThreadState,
   useComposerDraftStore,
@@ -48,10 +46,15 @@ import {
   threadHasStarted,
 } from "../lib/chatThreadActions";
 import type { EnvironmentProject } from "@vibecodinger/client-runtime/state/shell";
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
 import {
   peekVibeCodingerProjectFile,
   readVibeCodingerProjectFile,
 } from "../lib/vibeCodingerProjectFileDefaults";
+=======
+import { trackPendingWorkspaceDefault } from "../lib/draftWorkspaceDefaults";
+import { peekT3ProjectFile, readT3ProjectFile } from "../lib/t3ProjectFileDefaults";
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
 import { appAtomRegistry } from "../rpc/atomRegistry";
 import { environmentSummaries } from "../state/presentation";
 import { environmentServerConfigsAtom } from "../state/server";
@@ -78,6 +81,7 @@ export function readLastUsedProjectKey(): string | null {
   }
 }
 
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
 // Drafts that opened before their project's vibecodinger.json was read. A send waits for the file's
 // workspace default unless the user has already chosen a workspace.
 interface ProvisionalWorkspace {
@@ -111,6 +115,8 @@ export function readPendingWorkspaceDefault(draftId: DraftId): Promise<void> | n
   return keepsProvisionalWorkspace(draft, pending) ? pending.settled : null;
 }
 
+=======
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
 interface NewThreadWorkspaceOptions {
   branch?: string | null;
   worktreePath?: string | null;
@@ -294,31 +300,15 @@ export function createNewThreadHandler(router: AnyRouter) {
       }
       const envMode = envModeFor(null);
       const applyProjectFile = (draftId: DraftId) => {
-        const provisional: ProvisionalWorkspace = {
-          envMode,
-          openedManual: getDraftSession(draftId)?.environmentSelection === "manual",
-        };
-        const settled = projectFileRead
-          .then((projectFile) => {
-            const fileEnvMode = envModeFor(projectFile);
-            const draft = getDraftSession(draftId);
-            if (fileEnvMode === envMode || !keepsProvisionalWorkspace(draft, provisional)) return;
-            // Commit before a waiting send re-reads the composer's workspace.
-            flushSync(() =>
-              setDraftThreadContext(draftId, {
-                envMode: fileEnvMode,
-                ...(draft.startFromOrigin === startFromOriginFor(envMode)
-                  ? { startFromOrigin: startFromOriginFor(fileEnvMode) }
-                  : {}),
-              }),
-            );
-          })
-          .finally(() => {
-            if (pendingWorkspaceDefaults.get(draftId)?.settled === settled) {
-              pendingWorkspaceDefaults.delete(draftId);
-            }
-          });
-        pendingWorkspaceDefaults.set(draftId, { ...provisional, settled });
+        trackPendingWorkspaceDefault(
+          draftId,
+          projectRef,
+          { envMode, startFromOrigin: startFromOriginFor(envMode) },
+          projectFileRead.then((projectFile) => {
+            const envMode = envModeFor(projectFile);
+            return { envMode, startFromOrigin: startFromOriginFor(envMode) };
+          }),
+        );
       };
       return { envMode, applyProjectFile };
     };

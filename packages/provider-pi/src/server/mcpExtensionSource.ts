@@ -498,22 +498,34 @@ export default async function vibeCodingerMcpExtension(pi: ExtensionAPI) {
     // in history or guidance. Eagerly load T3 schemas, including after tree
     // restores, while retaining deferred exposure for Pi's allowlist rules.
     // Pi still applies --tools/--exclude-tools to this active loadout.
+    const eagerSchemas = ctx.model?.api === "openai-completions";
     const required = [
       ...(hasToolSearch ? ["tool_search"] : []),
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
       ...(ctx.model?.api === "openai-completions" ? catalog.map((tool) => "mcp__vibe-codinger__" + tool.name) : []),
+=======
+      ...(eagerSchemas ? catalog.map((tool) => "mcp__t3-code__" + tool.name) : []),
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
     ];
     const current = pi.getActiveTools();
     const missing = required.filter((name) => !current.includes(name));
     if (missing.length > 0) pi.setActiveTools([...current, ...missing]);
     // An alias is callable only while active, and Pi records every active
     // declaration in the transcript, hidden or not. Calls to the alias of an
-    // active public tool are renamed at message_end instead.
+    // active public tool are renamed at message_end instead. Once tool_search
+    // loads a deferred tool, its alias is already in the transcript: dropping it
+    // re-declares it in the prompt head, so the next request misses the cache.
     const registered = new Set(pi.getAllTools().map((tool) => tool.name));
     const loaded = pi.getActiveTools();
     const aliases = catalog
       .filter((tool) => registered.has(ALIAS_PREFIX + tool.name) &&
         followsPublicTool(tool.name, registered, loaded) &&
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
         !loaded.includes("mcp__vibe-codinger__" + tool.name))
+=======
+        (!loaded.includes("mcp__t3-code__" + tool.name) ||
+          (!eagerSchemas && isDeferred(tool.name) && loaded.includes(ALIAS_PREFIX + tool.name))))
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
       .map((tool) => ALIAS_PREFIX + tool.name);
     const kept = loaded.filter((name) => !name.startsWith(ALIAS_PREFIX) || aliases.includes(name));
     const added = aliases.filter((name) => !loaded.includes(name));

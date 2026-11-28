@@ -1,9 +1,14 @@
 import { resolvePullRequestAuthorFilter, SourceControlProviderKind } from "@vibecodinger/contracts";
 import * as Effect from "effect/Effect";
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
 import type {
   PullRequestCapabilities,
   PullRequestViewerPermissions,
 } from "@vibecodinger/contracts";
+=======
+import { rollupCheckStatuses } from "@vibecodinger/source-control-core/server/pullRequestChecks";
+import type { PullRequestCapabilities, PullRequestViewerPermissions } from "@vibecodinger/contracts";
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
 
 import * as BitbucketApi from "./BitbucketApi.ts";
 import * as BitbucketPullRequestApi from "./BitbucketPullRequestApi.ts";
@@ -232,7 +237,8 @@ export const make = Effect.gen(function* () {
           api.getPullRequest(target),
           api.getDiffStat(target),
           recoverRead(api.getMergeability(target), "unknown" as const),
-          recoverRead(api.listChecks(target), []),
+          // Null keeps the last known checks state; an empty list would claim no checks exist.
+          recoverRead(api.listChecks(target), null),
           recoverRead(api.getRepositoryPermission(target), true),
         ],
         { concurrency: 5 },
@@ -255,7 +261,10 @@ export const make = Effect.gen(function* () {
             mergedAt: pullRequest.state === "merged" ? pullRequest.closedAt : null,
             closedAt: pullRequest.state === "closed" ? pullRequest.closedAt : null,
             reviewers: pullRequest.reviewers,
-            checks,
+            checks: checks ?? [],
+            ...(checks === null
+              ? {}
+              : { checksState: rollupCheckStatuses(checks.map((check) => check.status)) }),
             // Bitbucket exposes no strategy permissions; unsupported strategies fail at merge.
             mergeCapabilities: { merge: true, squash: true, rebase: true },
             viewerPermissions: bitbucketViewerPermissions({ canWrite }),

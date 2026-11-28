@@ -1,8 +1,13 @@
 import type { FileDiffMetadata } from "@pierre/diffs";
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
 import type {
   PullRequestReviewGuideExcerpt,
   PullRequestReviewGuideStop,
 } from "@vibecodinger/contracts";
+=======
+import type { PullRequestReviewGuideExcerpt, PullRequestReviewGuideStop } from "@vibecodinger/contracts";
+import { quoteGitPatchPath } from "@vibecodinger/shared/gitPatchPath";
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
 import { mFallback, msg } from "gt-i18n";
 import type { MFunctionType } from "gt-i18n/types";
 
@@ -131,11 +136,9 @@ export function rowsToPatch(
   rows: ReadonlyArray<DiffRow>,
 ): string {
   if (rows.length === 0) return "";
-  const lines = [
-    `diff --git a/${previousPath} b/${path}`,
-    `--- a/${previousPath}`,
-    `+++ b/${path}`,
-  ];
+  const oldName = quoteGitPatchPath(`a/${previousPath}`);
+  const newName = quoteGitPatchPath(`b/${path}`);
+  const lines = [`diff --git ${oldName} ${newName}`, `--- ${oldName}`, `+++ ${newName}`];
   let start = 0;
   while (start < rows.length) {
     let end = start;

@@ -542,9 +542,10 @@ function normalizeToolCallStatus(
   }
 }
 
-function normalizeCommandValue(value: unknown): string | undefined {
+// `verbatim` keeps each string as the agent sent it. An approval shows that text, edges included.
+function normalizeCommandValue(value: unknown, verbatim = false): string | undefined {
   if (typeof value === "string" && value.trim().length > 0) {
-    return value.trim();
+    return verbatim ? value : value.trim();
   }
   if (!Array.isArray(value)) {
     return undefined;
@@ -554,33 +555,35 @@ function normalizeCommandValue(value: unknown): string | undefined {
     if (typeof entry === "string") {
       const part = entry.trim();
       if (part.length > 0) {
-        parts.push(part);
+        parts.push(verbatim ? entry : part);
       }
     }
   }
   return parts.length > 0 ? parts.join(" ") : undefined;
 }
 
-function extractCommandFromTitle(title: string | undefined): string | undefined {
+function extractCommandFromTitle(title: string | undefined, verbatim = false): string | undefined {
   if (!title) {
     return undefined;
   }
-  const match = /`([^`]+)`/.exec(title);
-  return match?.[1]?.trim() || undefined;
+  const command = /`([^`]+)`/.exec(title)?.[1];
+  if (!command?.trim()) return undefined;
+  return verbatim ? command : command.trim();
 }
 
 function extractToolCallCommand(
   rawInput: unknown,
   title: string | undefined,
   kind: string | undefined,
+  verbatim = false,
 ): string | undefined {
   if (isRecord(rawInput)) {
-    const directCommand = normalizeCommandValue(rawInput.command);
+    const directCommand = normalizeCommandValue(rawInput.command, verbatim);
     if (directCommand) {
       return directCommand;
     }
     const executable = typeof rawInput.executable === "string" ? rawInput.executable.trim() : "";
-    const args = normalizeCommandValue(rawInput.args);
+    const args = normalizeCommandValue(rawInput.args, verbatim);
     if (executable && args) {
       return `${executable} ${args}`;
     }
@@ -592,7 +595,7 @@ function extractToolCallCommand(
   if (kind !== "execute") {
     return undefined;
   }
-  return extractCommandFromTitle(title);
+  return extractCommandFromTitle(title, verbatim);
 }
 
 function filePathFromToolValue(value: unknown): string | undefined {
@@ -1144,6 +1147,38 @@ const VIBECODINGER_MCP_BARE_TITLE_CALL = /^(?<tool>[A-Za-z0-9_]+)(?::\s*\{|$)/;
 // Antigravity titles calls "Running <tool>" or, from agy 1.5.8, "Run mcp_<server>_<tool>"; prompts end in "?".
 const ANTIGRAVITY_TOOL_TITLE = /^Run(?:ning)? (?<name>[^\s?]+)\??$/;
 
+const T3_MCP_TOOL_CALL_PROXY = "tool_call";
+
+function unwrapT3ToolCallProxy(
+  identity: AcpMcpToolCallIdentity,
+  rawInput: Record<string, unknown> | undefined,
+): AcpMcpToolCallIdentity {
+  if (!/^t3[-_ ]?code$/i.test(identity.server) || identity.tool !== T3_MCP_TOOL_CALL_PROXY) {
+    return identity;
+  }
+  // Native MCP wrappers pass `{ name, arguments }` directly; `is_mcp_tool_call` nests them under `arguments`.
+  const innerRaw =
+    typeof rawInput?.name === "string"
+      ? rawInput
+      : isRecord(rawInput?.arguments)
+        ? rawInput.arguments
+        : undefined;
+  const delegated = typeof innerRaw?.name === "string" ? innerRaw.name.trim() : "";
+  if (
+    delegated.length === 0 ||
+    delegated === T3_MCP_TOOL_CALL_PROXY ||
+    delegated === "tool_search"
+  ) {
+    return identity;
+  }
+  const delegatedInput = isRecord(innerRaw?.arguments) ? innerRaw.arguments : {};
+  return {
+    server: "t3-code",
+    tool: delegated,
+    input: delegatedInput,
+  };
+}
+
 /** ACP lacks typed MCP calls; recognize provider metadata and terminal fallback commands. */
 export function extractMcpToolCallIdentity(
   toolCall: AcpToolCallState,
@@ -1156,7 +1191,7 @@ export function extractMcpToolCallIdentity(
   const server = typeof rawInput?.server === "string" ? rawInput.server.trim() : "";
   const tool = typeof rawInput?.tool === "string" ? rawInput.tool.trim() : "";
   if (meta?.is_mcp_tool_call === true && server.length > 0 && tool.length > 0) {
-    return { server, tool };
+    return unwrapT3ToolCallProxy({ server, tool }, rawInput);
   }
   // Antigravity reaches MCP tools its context budget left out through call_mcp_tool, an execute
   // call titled "MCP Tool <tool>" whose rawInput names the server, tool, and arguments.
@@ -1164,7 +1199,10 @@ export function extractMcpToolCallIdentity(
   const proxiedTool = typeof rawInput?.ToolName === "string" ? rawInput.ToolName.trim() : "";
   if (proxiedServer.length > 0 && proxiedTool.length > 0) {
     const input = isRecord(rawInput?.Arguments) ? rawInput.Arguments : undefined;
-    return { server: proxiedServer, tool: proxiedTool, ...(input === undefined ? {} : { input }) };
+    return unwrapT3ToolCallProxy(
+      { server: proxiedServer, tool: proxiedTool, ...(input === undefined ? {} : { input }) },
+      input,
+    );
   }
   // Kiro names the server in `_meta.kiro.serverName` and the call in `rawInput.tool_id`
   // ("<server>::<tool>"), with the tool's own input under `rawInput.arguments`.
@@ -1186,8 +1224,20 @@ export function extractMcpToolCallIdentity(
     : undefined;
   const metaServerId = typeof meta?.serverId === "string" ? meta.serverId.trim() : "";
   const metaToolName = typeof meta?.toolName === "string" ? meta.toolName.trim() : "";
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
   if (/^vibe[-_ ]?codinger$/i.test(metaServerId) && metaToolName.length > 0) {
     for (const knownTool of VIBECODINGER_MCP_TOOL_NAMES) {
+=======
+  if (/^t3[-_ ]?code$/i.test(metaServerId) && metaToolName.length > 0) {
+    if (
+      metaToolName === T3_MCP_TOOL_CALL_PROXY ||
+      metaToolName.endsWith(`_${T3_MCP_TOOL_CALL_PROXY}`) ||
+      metaToolName.endsWith(`.${T3_MCP_TOOL_CALL_PROXY}`)
+    ) {
+      return unwrapT3ToolCallProxy({ server: "t3-code", tool: T3_MCP_TOOL_CALL_PROXY }, rawInput);
+    }
+    for (const knownTool of T3_MCP_TOOL_NAMES) {
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
       const boundary = metaToolName.length - knownTool.length - 1;
       if (
         metaToolName === knownTool ||
@@ -1249,10 +1299,18 @@ export function extractMcpToolCallIdentity(
     if (qualified?.[1] && qualified[2] && !/^vibe[-_ ]?codinger$/i.test(qualified[1]))
       return { server: qualified[1], tool: qualified[2] };
     const name = ANTIGRAVITY_TOOL_TITLE.exec(trimmed)?.groups?.name ?? trimmed;
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
     const match =
       VIBECODINGER_MCP_TITLE_CALL.exec(name) ??
       VIBECODINGER_MCP_TITLE_SUFFIX_CALL.exec(name) ??
       VIBECODINGER_MCP_BARE_TITLE_CALL.exec(name);
+=======
+    const qualifiedMatch = T3_MCP_TITLE_CALL.exec(name) ?? T3_MCP_TITLE_SUFFIX_CALL.exec(name);
+    if (qualifiedMatch?.groups?.tool === T3_MCP_TOOL_CALL_PROXY) {
+      return unwrapT3ToolCallProxy({ server: "t3-code", tool: T3_MCP_TOOL_CALL_PROXY }, rawInput);
+    }
+    const match = qualifiedMatch ?? T3_MCP_BARE_TITLE_CALL.exec(name);
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
     const candidateTool = match?.groups?.tool;
     if (candidateTool !== undefined && VIBECODINGER_MCP_TOOL_NAMES.has(candidateTool)) {
       return { server: "vibe-codinger", tool: candidateTool };
@@ -1268,7 +1326,14 @@ export function extractMcpToolCallIdentity(
     const match = ACP_MCP_FALLBACK_CALL.exec(command);
     if (match?.[1] !== undefined) {
       const input = acpMcpFallbackInput(match[2]);
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
       return { server: "vibe-codinger", tool: match[1], ...(input === undefined ? {} : { input }) };
+=======
+      return unwrapT3ToolCallProxy(
+        { server: "t3-code", tool: match[1], ...(input === undefined ? {} : { input }) },
+        input,
+      );
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
     }
   }
   return undefined;
@@ -1426,9 +1491,17 @@ export function parsePermissionRequest(
     { fallbackStatus: "pending" },
   );
   const kind = normalizeToolKind(params.toolCall.kind) ?? "unknown";
+  // The person approves the command or title as the agent sent it, so the card gets its edges too:
+  // a trailing carriage return is part of what would run.
+  const sentTitle = params.toolCall.title ?? undefined;
   const detail =
-    toolCall?.command ??
-    toolCall?.title ??
+    (toolCall?.command === undefined
+      ? undefined
+      : (extractToolCallCommand(params.toolCall.rawInput, sentTitle, toolCall.kind, true) ??
+        toolCall.command)) ??
+    (toolCall?.title !== undefined && toolCall.title === sentTitle?.trim()
+      ? sentTitle
+      : toolCall?.title) ??
     toolCall?.detail ??
     (typeof params.sessionId === "string" ? `Session ${params.sessionId}` : undefined);
   return {

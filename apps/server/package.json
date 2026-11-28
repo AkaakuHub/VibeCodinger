@@ -1,6 +1,11 @@
 {
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
   "name": "vibecodinger",
   "version": "0.1.12",
+=======
+  "name": "t3",
+  "version": "0.1.13",
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -41,6 +46,7 @@
     "@effect/platform-node-shared": "catalog:",
     "@ff-labs/fff-node": "0.11.0",
     "@muse-code/sdk": "1.4.6",
+    "@vibecodinger/issue-tracker-jira": "workspace:*",
     "@vibecodinger/issue-tracker-linear": "workspace:*",
     "@vibecodinger/provider-acp": "workspace:*",
     "@vibecodinger/provider-acp-registry": "workspace:*",
@@ -63,6 +69,7 @@
     "@vibecodinger/source-control-gitlab": "workspace:*",
     "@vibecodinger/source-control-tanstack-source": "workspace:*",
     "character-entities": "2.0.2",
+    "character-entities-legacy": "3.0.0",
     "diff": "8.0.3",
     "effect": "catalog:",
     "ffi-rs": "1.3.2",

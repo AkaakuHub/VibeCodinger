@@ -26,7 +26,11 @@ export async function refreshEnvironmentLimits(
       runAtomCommand(
         registry,
         serverEnvironment.refreshProviders,
+<<<<<<< 7fa8be15bd9b767bd51bc62484531cfe73d3a751
         { environmentId, input: { refreshUsageOnDemand: true } },
+=======
+        { environmentId, input: { limitsOnly: true } },
+>>>>>>> ab1915b658e54d665e29fef824087a41186706cd
         { reportFailure: false },
       ),
     options.automatic,
